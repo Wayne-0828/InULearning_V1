@@ -1,0 +1,191 @@
+/**
+ * 管理員應用程式認證管理 (Admin App Authentication) - InULearning 個人化學習平台
+ * 
+ * 功能：
+ * - JWT Token 管理
+ * - 登入狀態檢查
+ * - 自動登入
+ * - 登出功能
+ */
+
+class AdminAuthManager {
+    constructor() {
+        this.apiClient = new ApiClient();
+        this.currentUser = null;
+        this.init();
+    }
+    
+    /**
+     * 初始化認證管理器
+     */
+    init() {
+        this.checkAuthStatus();
+        this.setupEventListeners();
+    }
+    
+    /**
+     * 設定事件監聽器
+     */
+    setupEventListeners() {
+        // 登出按鈕
+        const logoutBtn = document.getElementById('logout-btn');
+        if (logoutBtn) {
+            logoutBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                this.logout();
+            });
+        }
+    }
+    
+    /**
+     * 檢查認證狀態
+     */
+    async checkAuthStatus() {
+        const token = Utils.getStorageItem('admin_token');
+        
+        if (!token) {
+            this.redirectToLogin();
+            return;
+        }
+        
+        try {
+            this.apiClient.setAuthToken(token);
+            const response = await this.apiClient.get('/auth/verify');
+            
+            if (response.success) {
+                this.currentUser = response.data.user;
+                this.updateUI();
+            } else {
+                this.clearAuth();
+                this.redirectToLogin();
+            }
+        } catch (error) {
+            console.error('認證檢查失敗:', error);
+            this.clearAuth();
+            this.redirectToLogin();
+        }
+    }
+    
+    /**
+     * 更新 UI 顯示
+     */
+    updateUI() {
+        if (this.currentUser) {
+            const adminNameElement = document.getElementById('admin-name');
+            if (adminNameElement) {
+                adminNameElement.textContent = this.currentUser.name || this.currentUser.email;
+            }
+        }
+    }
+    
+    /**
+     * 登入
+     * @param {string} email - 電子郵件
+     * @param {string} password - 密碼
+     */
+    async login(email, password) {
+        try {
+            Utils.showLoading();
+            
+            const response = await this.apiClient.post('/auth/login', {
+                email: email,
+                password: password,
+                role: 'admin'
+            });
+            
+            if (response.success) {
+                const { access_token, user } = response.data;
+                
+                // 儲存 Token 和用戶資訊
+                Utils.setStorageItem('admin_token', access_token);
+                Utils.setStorageItem('admin_user', JSON.stringify(user));
+                
+                this.currentUser = user;
+                this.apiClient.setAuthToken(access_token);
+                
+                // 顯示成功訊息
+                Utils.showAlert('登入成功！', 'success');
+                
+                // 延遲跳轉
+                setTimeout(() => {
+                    window.location.href = 'index.html';
+                }, 1000);
+            } else {
+                Utils.showAlert(response.message || '登入失敗', 'error');
+            }
+        } catch (error) {
+            console.error('登入錯誤:', error);
+            Utils.showAlert('登入失敗，請檢查網路連線', 'error');
+        } finally {
+            Utils.hideLoading();
+        }
+    }
+    
+    /**
+     * 登出
+     */
+    async logout() {
+        try {
+            const token = Utils.getStorageItem('admin_token');
+            if (token) {
+                // 呼叫登出 API
+                await this.apiClient.post('/auth/logout');
+            }
+        } catch (error) {
+            console.error('登出 API 錯誤:', error);
+        } finally {
+            this.clearAuth();
+            Utils.showAlert('已成功登出', 'success');
+            
+            setTimeout(() => {
+                this.redirectToLogin();
+            }, 1000);
+        }
+    }
+    
+    /**
+     * 清除認證資訊
+     */
+    clearAuth() {
+        Utils.removeStorageItem('admin_token');
+        Utils.removeStorageItem('admin_user');
+        this.currentUser = null;
+        this.apiClient.clearAuthToken();
+    }
+    
+    /**
+     * 跳轉到登入頁面
+     */
+    redirectToLogin() {
+        if (window.location.pathname !== '/admin-app/pages/login.html') {
+            window.location.href = 'pages/login.html';
+        }
+    }
+    
+    /**
+     * 檢查是否已登入
+     * @returns {boolean}
+     */
+    isAuthenticated() {
+        return !!Utils.getStorageItem('admin_token') && !!this.currentUser;
+    }
+    
+    /**
+     * 取得當前用戶
+     * @returns {Object|null}
+     */
+    getCurrentUser() {
+        return this.currentUser;
+    }
+    
+    /**
+     * 取得認證 Token
+     * @returns {string|null}
+     */
+    getToken() {
+        return Utils.getStorageItem('admin_token');
+    }
+}
+
+// 全域認證管理器實例
+const adminAuth = new AdminAuthManager(); 

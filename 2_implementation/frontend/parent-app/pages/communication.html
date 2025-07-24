@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>親師溝通 - InU Learning【因你而學】</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"/>
+    <link rel="stylesheet" href="../css/main.css">
+    <style>
+        body {
+            font-family: 'Noto Sans TC', sans-serif;
+        }
+    </style>
+</head>
+<body class="bg-gray-100">
+    <div class="flex h-screen bg-white">
+        <!-- 側邊欄 -->
+        <aside class="w-64 bg-blue-800 text-white flex flex-col">
+            <a class="block" href="../index.html">
+                <div class="flex items-center justify-center p-6 hover:bg-blue-700">
+                    <img alt="InU Learning Logo" class="w-24 h-24 rounded-full" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBkUkYI-c0qBm9BcHamuWBs9ebu6mgGni1SlXL6giHvgu2WnHxHaQYkRoAlzI_OZ8yNf6Rn90d73q13vLeMoBfFP0mQHcxlf2YHE9__XhpOUl-OvECBnRad91AKcE4dKkTJtEoAm_alktSTzu_Aw9Fah_2IQ6YeqBALwAqrLNP2oghwOkLSyBMdfpOrW24nKk3dnl3z6piT9-S0cISDfJ5rhAlBYvIzoAhypgUHvJCzxlSG9ag8QMkltK1Hu_rX4jqdQgGuOD2JLzo"/>
+                </div>
+                <div class="px-6 pb-4 hover:bg-blue-700">
+                    <h1 class="text-xl font-bold text-center">InU Learning</h1>
+                    <p class="text-sm text-center">【因你而學】</p>
+                </div>
+            </a>
+            <nav class="flex-1 px-4 py-4 space-y-2">
+                <a class="flex items-center px-4 py-2 text-gray-100 hover:bg-blue-700 rounded-lg" href="../index.html">
+                    <span class="material-icons">home</span>
+                    <span class="ml-3">家長儀表板</span>
+                </a>
+                <a class="flex items-center px-4 py-2 text-gray-100 hover:bg-blue-700 rounded-lg" href="children.html">
+                    <span class="material-icons">family_restroom</span>
+                    <span class="ml-3">子女管理</span>
+                </a>
+                <a class="flex items-center px-4 py-2 text-gray-100 hover:bg-blue-700 rounded-lg" href="progress.html">
+                    <span class="material-icons">trending_up</span>
+                    <span class="ml-3">學習進度</span>
+                </a>
+                <a class="flex items-center px-4 py-2 text-gray-100 hover:bg-blue-700 rounded-lg" href="reports.html">
+                    <span class="material-icons">assessment</span>
+                    <span class="ml-3">學習報告</span>
+                </a>
+                <a class="flex items-center px-4 py-2 text-gray-100 bg-blue-700 rounded-lg" href="communication.html">
+                    <span class="material-icons">chat</span>
+                    <span class="ml-3">親師溝通</span>
+                </a>
+                <a class="flex items-center px-4 py-2 text-gray-100 hover:bg-blue-700 rounded-lg" href="profile.html">
+                    <span class="material-icons">person</span>
+                    <span class="ml-3">個人資料</span>
+                </a>
+            </nav>
+            <div class="p-4 border-t border-blue-700">
+                <button id="logoutBtn" class="w-full flex items-center px-4 py-2 text-gray-100 hover:bg-blue-700 rounded-lg">
+                    <span class="material-icons">logout</span>
+                    <span class="ml-3">登出</span>
+                </button>
+            </div>
+        </aside>
+
+        <!-- 主要內容區 -->
+        <div class="flex-1 flex flex-col overflow-hidden">
+            <!-- 頂部導航 -->
+            <header class="flex justify-between items-center p-4 bg-white border-b">
+                <div class="flex items-center flex-1">
+                    <button class="text-gray-500 focus:outline-none lg:hidden">
+                        <span class="material-icons">menu</span>
+                    </button>
+                    <div class="relative text-gray-600 focus-within:text-gray-400 ml-4 flex-1 max-w-md">
+                        <span class="absolute inset-y-0 left-0 flex items-center pl-2">
+                            <button class="p-1 focus:outline-none" type="submit">
+                                <span class="material-icons">search</span>
+                            </button>
+                        </span>
+                        <input autocomplete="off" class="py-2 text-sm text-gray-700 bg-gray-200 rounded-md pl-10 focus:outline-none focus:bg-white focus:text-gray-900 w-full" name="q" placeholder="搜尋..." type="search"/>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <div id="userInfo" class="hidden">
+                        <span class="text-sm text-gray-600">歡迎，</span>
+                        <span id="userName" class="text-sm font-medium text-blue-600"></span>
+                    </div>
+                    <div id="authButtons">
+                        <a class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors" href="login.html">登入</a>
+                        <a class="bg-gray-200 text-gray-800 px-4 py-2 rounded-lg hover:bg-gray-300 transition-colors" href="register.html">註冊</a>
+                    </div>
+                </div>
+            </header>
+
+            <!-- 主要內容 -->
+            <main class="flex-1 overflow-x-hidden overflow-y-auto bg-gray-100">
+                <div class="container mx-auto px-6 py-8">
+                    <!-- 頁面標題 -->
+                    <div class="mb-8">
+                        <h1 class="text-3xl font-bold text-gray-800 mb-2">親師溝通</h1>
+                        <p class="text-gray-600">與教師保持良好溝通，共同促進子女學習</p>
+                    </div>
+
+                    <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
+                        <!-- 聯絡人列表 -->
+                        <div class="lg:col-span-1">
+                            <div class="bg-white rounded-lg shadow-md p-6">
+                                <div class="flex items-center justify-between mb-4">
+                                    <h2 class="text-lg font-semibold text-gray-800">聯絡人</h2>
+                                    <button class="btn btn-outline btn-sm" onclick="showAddContactModal()">
+                                        <span class="material-icons text-sm">add</span>
+                                    </button>
+                                </div>
+                                <div class="space-y-2">
+                                    <div class="contact-item p-3 rounded-lg cursor-pointer hover:bg-blue-50 transition-colors" onclick="selectContact('teacher1')">
+                                        <div class="flex items-center">
+                                            <img src="https://via.placeholder.com/40x40" alt="教師頭像" class="w-10 h-10 rounded-full mr-3">
+                                            <div class="flex-1">
+                                                <p class="text-sm font-medium text-gray-800">王老師</p>
+                                                <p class="text-xs text-gray-500">數學科</p>
+                                            </div>
+                                            <span class="w-2 h-2 bg-green-500 rounded-full"></span>
+                                        </div>
+                                    </div>
+                                    <div class="contact-item p-3 rounded-lg cursor-pointer hover:bg-blue-50 transition-colors" onclick="selectContact('teacher2')">
+                                        <div class="flex items-center">
+                                            <img src="https://via.placeholder.com/40x40" alt="教師頭像" class="w-10 h-10 rounded-full mr-3">
+                                            <div class="flex-1">
+                                                <p class="text-sm font-medium text-gray-800">李老師</p>
+                                                <p class="text-xs text-gray-500">國語科</p>
+                                            </div>
+                                            <span class="w-2 h-2 bg-gray-400 rounded-full"></span>
+                                        </div>
+                                    </div>
+                                    <div class="contact-item p-3 rounded-lg cursor-pointer hover:bg-blue-50 transition-colors" onclick="selectContact('teacher3')">
+                                        <div class="flex items-center">
+                                            <img src="https://via.placeholder.com/40x40" alt="教師頭像" class="w-10 h-10 rounded-full mr-3">
+                                            <div class="flex-1">
+                                                <p class="text-sm font-medium text-gray-800">陳老師</p>
+                                                <p class="text-xs text-gray-500">英文科</p>
+                                            </div>
+                                            <span class="w-2 h-2 bg-green-500 rounded-full"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 聊天區域 -->
+                        <div class="lg:col-span-3">
+                            <div class="bg-white rounded-lg shadow-md flex flex-col h-96">
+                                <!-- 聊天標題 -->
+                                <div class="flex items-center justify-between p-4 border-b">
+                                    <div class="flex items-center">
+                                        <img src="https://via.placeholder.com/40x40" alt="教師頭像" class="w-10 h-10 rounded-full mr-3">
+                                        <div>
+                                            <h3 class="text-lg font-medium text-gray-800">王老師</h3>
+                                            <p class="text-sm text-gray-500">數學科 • 在線</p>
+                                        </div>
+                                    </div>
+                                    <div class="flex space-x-2">
+                                        <button class="p-2 text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-lg">
+                                            <span class="material-icons">phone</span>
+                                        </button>
+                                        <button class="p-2 text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-lg">
+                                            <span class="material-icons">videocam</span>
+                                        </button>
+                                        <button class="p-2 text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-lg">
+                                            <span class="material-icons">more_vert</span>
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <!-- 聊天訊息 -->
+                                <div class="flex-1 overflow-y-auto p-4 space-y-4" id="chatMessages">
+                                    <div class="flex justify-start">
+                                        <div class="flex items-end space-x-2">
+                                            <img src="https://via.placeholder.com/32x32" alt="教師頭像" class="w-8 h-8 rounded-full">
+                                            <div class="bg-gray-100 rounded-lg px-4 py-2 max-w-xs">
+                                                <p class="text-sm text-gray-800">您好！我是小明的數學老師，想跟您討論一下他的學習情況。</p>
+                                                <p class="text-xs text-gray-500 mt-1">14:30</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="flex justify-end">
+                                        <div class="flex items-end space-x-2">
+                                            <div class="bg-blue-600 text-white rounded-lg px-4 py-2 max-w-xs">
+                                                <p class="text-sm">您好王老師！很高興收到您的訊息。</p>
+                                                <p class="text-xs text-blue-100 mt-1">14:32</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="flex justify-start">
+                                        <div class="flex items-end space-x-2">
+                                            <img src="https://via.placeholder.com/32x32" alt="教師頭像" class="w-8 h-8 rounded-full">
+                                            <div class="bg-gray-100 rounded-lg px-4 py-2 max-w-xs">
+                                                <p class="text-sm text-gray-800">小明最近在數學方面有很好的進步，特別是在幾何題目上表現出色。</p>
+                                                <p class="text-xs text-gray-500 mt-1">14:33</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="flex justify-end">
+                                        <div class="flex items-end space-x-2">
+                                            <div class="bg-blue-600 text-white rounded-lg px-4 py-2 max-w-xs">
+                                                <p class="text-sm">太好了！我們在家也有督促他練習，看來效果不錯。</p>
+                                                <p class="text-xs text-blue-100 mt-1">14:35</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- 輸入區域 -->
+                                <div class="border-t p-4">
+                                    <div class="flex items-center space-x-2">
+                                        <button class="p-2 text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-lg">
+                                            <span class="material-icons">attach_file</span>
+                                        </button>
+                                        <div class="flex-1">
+                                            <input type="text" id="messageInput" placeholder="輸入訊息..." class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                                        </div>
+                                        <button class="btn" onclick="sendMessage()">
+                                            <span class="material-icons">send</span>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 最近對話 -->
+                    <div class="bg-white rounded-lg shadow-md p-6 mt-8">
+                        <h2 class="text-xl font-semibold text-gray-800 mb-4">最近對話</h2>
+                        <div class="space-y-4">
+                            <div class="conversation-item flex items-center p-4 border rounded-lg hover:bg-gray-50 cursor-pointer transition-colors">
+                                <img src="https://via.placeholder.com/50x50" alt="教師頭像" class="w-12 h-12 rounded-full mr-4">
+                                <div class="flex-1">
+                                    <div class="flex items-center justify-between">
+                                        <h3 class="font-medium text-gray-800">李老師 (國語科)</h3>
+                                        <span class="text-xs text-gray-500">2小時前</span>
+                                    </div>
+                                    <p class="text-sm text-gray-600 mt-1">關於小華的作文練習，我想跟您討論一下...</p>
+                                </div>
+                                <div class="flex items-center space-x-2">
+                                    <span class="w-2 h-2 bg-red-500 rounded-full"></span>
+                                    <span class="material-icons text-gray-400">chevron_right</span>
+                                </div>
+                            </div>
+                            <div class="conversation-item flex items-center p-4 border rounded-lg hover:bg-gray-50 cursor-pointer transition-colors">
+                                <img src="https://via.placeholder.com/50x50" alt="教師頭像" class="w-12 h-12 rounded-full mr-4">
+                                <div class="flex-1">
+                                    <div class="flex items-center justify-between">
+                                        <h3 class="font-medium text-gray-800">陳老師 (英文科)</h3>
+                                        <span class="text-xs text-gray-500">昨天</span>
+                                    </div>
+                                    <p class="text-sm text-gray-600 mt-1">小明的英文發音有明顯進步，建議可以...</p>
+                                </div>
+                                <div class="flex items-center space-x-2">
+                                    <span class="material-icons text-gray-400">chevron_right</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 快速聯絡 -->
+                    <div class="bg-white rounded-lg shadow-md p-6 mt-8">
+                        <h2 class="text-xl font-semibold text-gray-800 mb-4">快速聯絡</h2>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <button class="quick-contact-btn p-4 border rounded-lg hover:bg-blue-50 transition-colors text-left" onclick="quickContact('schedule')">
+                                <div class="flex items-center">
+                                    <span class="material-icons text-blue-600 mr-3">schedule</span>
+                                    <div>
+                                        <h3 class="font-medium text-gray-800">預約面談</h3>
+                                        <p class="text-sm text-gray-600">安排與教師面對面討論</p>
+                                    </div>
+                                </div>
+                            </button>
+                            <button class="quick-contact-btn p-4 border rounded-lg hover:bg-green-50 transition-colors text-left" onclick="quickContact('report')">
+                                <div class="flex items-center">
+                                    <span class="material-icons text-green-600 mr-3">assessment</span>
+                                    <div>
+                                        <h3 class="font-medium text-gray-800">學習報告</h3>
+                                        <p class="text-sm text-gray-600">請求詳細學習報告</p>
+                                    </div>
+                                </div>
+                            </button>
+                            <button class="quick-contact-btn p-4 border rounded-lg hover:bg-purple-50 transition-colors text-left" onclick="quickContact('suggestion')">
+                                <div class="flex items-center">
+                                    <span class="material-icons text-purple-600 mr-3">lightbulb</span>
+                                    <div>
+                                        <h3 class="font-medium text-gray-800">學習建議</h3>
+                                        <p class="text-sm text-gray-600">尋求學習改進建議</p>
+                                    </div>
+                                </div>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- 載入指示器 -->
+    <div id="loadingIndicator" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+        <div class="bg-white rounded-lg p-6 flex items-center space-x-3">
+            <div class="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-600"></div>
+            <span class="text-gray-700">處理中...</span>
+        </div>
+    </div>
+
+    <script src="../js/auth.js"></script>
+    <script src="../js/main.js"></script>
+    <script>
+        // 頁面初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            // 初始化認證
+            const auth = new ParentAuthManager();
+            
+            // 登出按鈕
+            document.getElementById('logoutBtn').addEventListener('click', function() {
+                auth.logout();
+            });
+            
+            // 訊息輸入框事件
+            document.getElementById('messageInput').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    sendMessage();
+                }
+            });
+        });
+
+        function selectContact(contactId) {
+            // 移除所有選中狀態
+            document.querySelectorAll('.contact-item').forEach(item => {
+                item.classList.remove('bg-blue-100', 'border-blue-500');
+                item.classList.add('hover:bg-blue-50');
+            });
+            
+            // 添加選中狀態
+            event.currentTarget.classList.remove('hover:bg-blue-50');
+            event.currentTarget.classList.add('bg-blue-100', 'border-blue-500');
+            
+            // 載入該聯絡人的聊天記錄
+            loadChatHistory(contactId);
+        }
+
+        function loadChatHistory(contactId) {
+            console.log('載入聯絡人 ID:', contactId, '的聊天記錄');
+            // 這裡會載入特定聯絡人的聊天記錄
+        }
+
+        function sendMessage() {
+            const messageInput = document.getElementById('messageInput');
+            const message = messageInput.value.trim();
+            
+            if (message) {
+                // 添加訊息到聊天區域
+                addMessageToChat(message, 'sent');
+                messageInput.value = '';
+                
+                // 模擬回覆
+                setTimeout(() => {
+                    addMessageToChat('收到您的訊息，我會盡快回覆您。', 'received');
+                }, 1000);
+            }
+        }
+
+        function addMessageToChat(message, type) {
+            const chatMessages = document.getElementById('chatMessages');
+            const messageDiv = document.createElement('div');
+            const time = new Date().toLocaleTimeString('zh-TW', { hour: '2-digit', minute: '2-digit' });
+            
+            if (type === 'sent') {
+                messageDiv.innerHTML = `
+                    <div class="flex justify-end">
+                        <div class="flex items-end space-x-2">
+                            <div class="bg-blue-600 text-white rounded-lg px-4 py-2 max-w-xs">
+                                <p class="text-sm">${message}</p>
+                                <p class="text-xs text-blue-100 mt-1">${time}</p>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            } else {
+                messageDiv.innerHTML = `
+                    <div class="flex justify-start">
+                        <div class="flex items-end space-x-2">
+                            <img src="https://via.placeholder.com/32x32" alt="教師頭像" class="w-8 h-8 rounded-full">
+                            <div class="bg-gray-100 rounded-lg px-4 py-2 max-w-xs">
+                                <p class="text-sm text-gray-800">${message}</p>
+                                <p class="text-xs text-gray-500 mt-1">${time}</p>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+            
+            chatMessages.appendChild(messageDiv);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        function showAddContactModal() {
+            showNotification('新增聯絡人功能開發中', 'info');
+        }
+
+        function quickContact(type) {
+            let message = '';
+            switch (type) {
+                case 'schedule':
+                    message = '我想預約面談時間，請問您什麼時候方便？';
+                    break;
+                case 'report':
+                    message = '能否提供詳細的學習報告？';
+                    break;
+                case 'suggestion':
+                    message = '請給我一些學習改進的建議。';
+                    break;
+            }
+            
+            if (message) {
+                addMessageToChat(message, 'sent');
+                setTimeout(() => {
+                    addMessageToChat('好的，我會安排相關事宜並盡快回覆您。', 'received');
+                }, 1000);
+            }
+        }
+    </script>
+</body>
+</html> 

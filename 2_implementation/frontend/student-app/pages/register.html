@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>註冊 - InU Learning【因你而學】</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"/>
+    <link rel="stylesheet" href="../css/main.css">
+    <style>
+        body {
+            font-family: 'Noto Sans TC', sans-serif;
+        }
+    </style>
+</head>
+<body class="bg-gray-100">
+    <div class="flex h-screen bg-white">
+        <!-- 側邊欄 -->
+        <aside class="w-64 bg-blue-800 text-white flex-col hidden lg:flex">
+            <a class="block" href="../index.html">
+                <div class="flex items-center justify-center p-6 hover:bg-blue-700">
+                    <img alt="InU Learning Logo" class="w-24 h-24 rounded-full" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBkUkYI-c0qBm9BcHamuWBs9ebu6mgGni1SlXL6giHvgu2WnHxHaQYkRoAlzI_OZ8yNf6Rn90d73q13vLeMoBfFP0mQHcxlf2YHE9__XhpOUl-OvECBnRad91AKcE4dKkTJtEoAm_alktSTzu_Aw9Fah_2IQ6YeqBALwAqrLNP2oghwOkLSyBMdfpOrW24nKk3dnl3z6piT9-S0cISDfJ5rhAlBYvIzoAhypgUHvJCzxlSG9ag8QMkltK1Hu_rX4jqdQgGuOD2JLzo"/>
+                </div>
+                <div class="px-6 pb-4 hover:bg-blue-700">
+                    <h1 class="text-xl font-bold text-center">InU Learning</h1>
+                    <p class="text-sm text-center">【因你而學】</p>
+                </div>
+            </a>
+            <nav class="flex-1 px-4 py-4 space-y-2">
+                <a class="flex items-center px-4 py-2 text-gray-100 hover:bg-blue-700 rounded-lg" href="../index.html">
+                    <span class="material-icons">school</span>
+                    <span class="ml-3">學生練功專區</span>
+                </a>
+                <a class="flex items-center px-4 py-2 text-gray-100 hover:bg-blue-700 rounded-lg" href="dashboard.html">
+                    <span class="material-icons">dashboard</span>
+                    <span class="ml-3">學習儀表板</span>
+                </a>
+                <a class="flex items-center px-4 py-2 text-gray-100 hover:bg-blue-700 rounded-lg" href="exercise.html">
+                    <span class="material-icons">quiz</span>
+                    <span class="ml-3">開始練習</span>
+                </a>
+                <a class="flex items-center px-4 py-2 text-gray-100 hover:bg-blue-700 rounded-lg" href="history.html">
+                    <span class="material-icons">history</span>
+                    <span class="ml-3">學習歷程</span>
+                </a>
+            </nav>
+        </aside>
+
+        <!-- 主要內容區 -->
+        <div class="flex-1 flex flex-col overflow-hidden">
+            <!-- 頂部導航 -->
+            <header class="flex justify-between items-center p-4 bg-white border-b">
+                <div class="flex items-center flex-1">
+                    <button class="text-gray-500 focus:outline-none lg:hidden">
+                        <span class="material-icons">menu</span>
+                    </button>
+                    <div class="relative text-gray-600 focus-within:text-gray-400 ml-4 flex-1 max-w-md hidden sm:block">
+                        <span class="absolute inset-y-0 left-0 flex items-center pl-2">
+                            <button class="p-1 focus:outline-none" type="submit">
+                                <span class="material-icons">search</span>
+                            </button>
+                        </span>
+                        <input autocomplete="off" class="py-2 text-sm text-gray-700 bg-gray-200 rounded-md pl-10 focus:outline-none focus:bg-white focus:text-gray-900 w-full" name="q" placeholder="搜尋..." type="search"/>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-2">
+                    <a class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors" href="login.html">登入</a>
+                    <a class="bg-gray-200 text-gray-800 px-4 py-2 rounded-lg hover:bg-gray-300 transition-colors" href="register.html">註冊</a>
+                </div>
+            </header>
+
+            <!-- 主要內容 -->
+            <main class="flex-1 overflow-x-hidden overflow-y-auto bg-gray-100">
+                <div class="container mx-auto px-6 py-8">
+                    <div class="max-w-md mx-auto bg-white rounded-lg shadow-md overflow-hidden">
+                        <div class="px-6 py-8">
+                            <div class="flex justify-center mb-6">
+                                <img alt="InU Learning Logo" class="w-20 h-20 rounded-full lg:hidden" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBkUkYI-c0qBm9BcHamuWBs9ebu6mgGni1SlXL6giHvgu2WnHxHaQYkRoAlzI_OZ8yNf6Rn90d73q13vLeMoBfFP0mQHcxlf2YHE9__XhpOUl-OvECBnRad91AKcE4dKkTJtEoAm_alktSTzu_Aw9Fah_2IQ6YeqBALwAqrLNP2oghwOkLSyBMdfpOrW24nKk3dnl3z6piT9-S0cISDfJ5rhAlBYvIzoAhypgUHvJCzxlSG9ag8QMkltK1Hu_rX4jqdQgGuOD2JLzo"/>
+                            </div>
+                            <h2 class="text-2xl font-bold text-center text-blue-800">建立您的 InU Learning 帳號</h2>
+                            <p class="mt-2 text-center text-gray-600">開始您的個人化學習旅程</p>
+                            
+                            <!-- 錯誤訊息顯示區 -->
+                            <div id="errorMessage" class="hidden mt-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded"></div>
+                            
+                            <form id="registerForm" class="mt-8 space-y-6">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700" for="role">您的身份</label>
+                                    <select class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md" id="role" name="role">
+                                        <option value="student">學生</option>
+                                        <option value="parent">家長</option>
+                                        <option value="teacher">老師</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700" for="email">電子郵件</label>
+                                    <input autocomplete="email" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm" id="email" name="email" required="" type="email"/>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700" for="password">密碼</label>
+                                    <input autocomplete="new-password" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm" id="password" name="password" required="" type="password"/>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700" for="confirm-password">確認密碼</label>
+                                    <input autocomplete="new-password" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm" id="confirm-password" name="confirm-password" required="" type="password"/>
+                                </div>
+                                <div class="flex items-center">
+                                    <input class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded" id="terms" name="terms" type="checkbox" required/>
+                                    <label class="ml-2 block text-sm text-gray-900" for="terms">
+                                        我已閱讀並同意<a class="font-medium text-blue-600 hover:text-blue-500" href="#">服務條款</a>
+                                    </label>
+                                </div>
+                                <div>
+                                    <button type="submit" class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                                        <span id="registerButtonText">註冊</span>
+                                        <span id="registerSpinner" class="hidden ml-2">
+                                            <svg class="animate-spin h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                            </svg>
+                                        </span>
+                                    </button>
+                                </div>
+                                <div class="relative">
+                                    <div class="absolute inset-0 flex items-center">
+                                        <div class="w-full border-t border-gray-300"></div>
+                                    </div>
+                                    <div class="relative flex justify-center text-sm">
+                                        <span class="px-2 bg-white text-gray-500">或使用其他方式註冊</span>
+                                    </div>
+                                </div>
+                                <div>
+                                    <a class="w-full inline-flex justify-center py-2 px-4 border border-gray-300 rounded-md shadow-sm bg-white text-sm font-medium text-gray-500 hover:bg-gray-50" href="#">
+                                        <img alt="Google logo" class="w-5 h-5" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBn3GMtPbiYKp07JRG1hAhCltT7oN-f3IoikefY1Uby1psAxL2bnBktNuwsl0283bf8x27y7_lsaaNsV369M95n-GuJwri9nfAmCGUlJArv2Jdn-7C5uNWgOf3YkTD5F8eP0gZKDts6yGUiPkKjpMBqRv11cj4NmdQGlr79IVHnYaEPDqWH5muRBVqTrqtxDIFjgGagJJMjKQHZ3KB9bO3Qtds6_HGJaG41xOt9hqN-JKDpWOB_LdOXfipdSJX5UuQioT7Gd65FCuE"/>
+                                        <span class="ml-2">使用 Google 註冊</span>
+                                    </a>
+                                </div>
+                            </form>
+                            <p class="mt-8 text-center text-sm text-gray-600">
+                                已經有帳號了？
+                                <a class="font-medium text-blue-600 hover:text-blue-500" href="login.html">
+                                    前往登入
+                                </a>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <script src="../js/utils/auth.js"></script>
+    <script src="../js/api/auth.js"></script>
+    <script src="../js/pages/register.js"></script>
+</body>
+</html> 

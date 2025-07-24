@@ -1,0 +1,114 @@
+services:
+  # =============================================================================
+  # 資料庫服務 (測試環境)
+  # =============================================================================
+  
+  postgresql:
+    image: postgres:15-alpine
+    container_name: inulearning_postgresql_test
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-inulearning_test}
+      POSTGRES_USER: ${POSTGRES_USER:-aipe-tester}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-aipe-tester}
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgresql_test_data:/var/lib/postgresql/data
+    networks:
+      - inulearning_test_network
+    restart: unless-stopped
+
+  mongodb:
+    image: mongo:7.0
+    container_name: inulearning_mongodb_test
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_INITDB_ROOT_USERNAME:-aipe-tester}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_INITDB_ROOT_PASSWORD:-aipe-tester}
+      MONGO_INITDB_DATABASE: ${MONGO_INITDB_DATABASE:-inulearning_test}
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_test_data:/data/db
+    networks:
+      - inulearning_test_network
+    restart: unless-stopped
+
+  redis:
+    image: redis:7-alpine
+    container_name: inulearning_redis_test
+    command: redis-server --requirepass ${REDIS_PASSWORD:-redis_password}
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_test_data:/data
+    networks:
+      - inulearning_test_network
+    restart: unless-stopped
+
+  # =============================================================================
+  # 向量資料庫 (測試環境)
+  # =============================================================================
+  
+  milvus:
+    image: milvusdb/milvus:v2.3.4
+    container_name: inulearning_milvus_test
+    environment:
+      ETCD_USE_EMBED: "true"
+      ETCD_DATA_DIR: "/var/lib/milvus/etcd"
+      ETCD_CONFIG_PATH: "/milvus/configs/etcd.yaml"
+      MILVUS_DATA_DIR: "/var/lib/milvus"
+    ports:
+      - "19530:19530"
+      - "9091:9091"
+    volumes:
+      - milvus_test_data:/var/lib/milvus
+    networks:
+      - inulearning_test_network
+    restart: unless-stopped
+
+  # =============================================================================
+  # 對象儲存 (測試環境)
+  # =============================================================================
+  
+  minio:
+    image: minio/minio:latest
+    container_name: inulearning_minio_test
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER:-minio_access_key}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD:-minio_secret_key}
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    volumes:
+      - minio_test_data:/data
+    command: server /data --console-address ":9001"
+    networks:
+      - inulearning_test_network
+    restart: unless-stopped
+
+# =============================================================================
+# 網路配置
+# =============================================================================
+
+networks:
+  inulearning_test_network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.21.0.0/16
+
+# =============================================================================
+# 資料卷配置
+# =============================================================================
+
+volumes:
+  postgresql_test_data:
+    driver: local
+  mongodb_test_data:
+    driver: local
+  redis_test_data:
+    driver: local
+  milvus_test_data:
+    driver: local
+  minio_test_data:
+    driver: local 

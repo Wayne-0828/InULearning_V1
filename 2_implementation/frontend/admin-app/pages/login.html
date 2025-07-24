@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>InULearning - 管理員登入</title>
+    <link rel="stylesheet" href="../../shared/css/components.css">
+    <link rel="stylesheet" href="../../shared/css/responsive.css">
+    <link rel="stylesheet" href="../css/main.css">
+    <link rel="stylesheet" href="../css/login.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body class="login-page">
+    <!-- 背景裝飾 -->
+    <div class="login-background">
+        <div class="background-shapes">
+            <div class="shape shape-1"></div>
+            <div class="shape shape-2"></div>
+            <div class="shape shape-3"></div>
+        </div>
+    </div>
+
+    <!-- 登入表單容器 -->
+    <div class="login-container">
+        <div class="login-card">
+            <!-- Logo 和標題 -->
+            <div class="login-header">
+                <div class="logo">
+                    <i class="fas fa-graduation-cap"></i>
+                </div>
+                <h1>InULearning</h1>
+                <p>管理員控制台</p>
+            </div>
+
+            <!-- 登入表單 -->
+            <form class="login-form" id="login-form">
+                <div class="form-group">
+                    <label for="email" class="form-label">
+                        <i class="fas fa-envelope"></i>
+                        電子郵件
+                    </label>
+                    <input 
+                        type="email" 
+                        id="email" 
+                        name="email" 
+                        class="form-control" 
+                        placeholder="請輸入您的電子郵件"
+                        required
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="password" class="form-label">
+                        <i class="fas fa-lock"></i>
+                        密碼
+                    </label>
+                    <div class="password-input">
+                        <input 
+                            type="password" 
+                            id="password" 
+                            name="password" 
+                            class="form-control" 
+                            placeholder="請輸入您的密碼"
+                            required
+                        >
+                        <button type="button" class="password-toggle" id="password-toggle">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="checkbox-label">
+                        <input type="checkbox" id="remember-me" name="remember-me">
+                        <span class="checkmark"></span>
+                        記住我
+                    </label>
+                </div>
+
+                <button type="submit" class="btn btn-primary login-btn">
+                    <i class="fas fa-sign-in-alt"></i>
+                    登入
+                </button>
+            </form>
+
+            <!-- 其他選項 -->
+            <div class="login-options">
+                <a href="#" class="forgot-password" id="forgot-password">
+                    <i class="fas fa-question-circle"></i>
+                    忘記密碼？
+                </a>
+            </div>
+
+            <!-- 分隔線 -->
+            <div class="divider">
+                <span>或</span>
+            </div>
+
+            <!-- 快速登入選項 -->
+            <div class="quick-login">
+                <p>快速登入（開發環境）</p>
+                <div class="quick-login-buttons">
+                    <button type="button" class="btn btn-outline quick-login-btn" data-email="admin@inulearning.com" data-password="admin123">
+                        <i class="fas fa-user-shield"></i>
+                        管理員
+                    </button>
+                </div>
+            </div>
+
+            <!-- 返回連結 -->
+            <div class="back-link">
+                <a href="../../index.html">
+                    <i class="fas fa-arrow-left"></i>
+                    返回首頁
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- 載入指示器 -->
+    <div class="loading-overlay" id="loading-overlay">
+        <div class="loading-spinner"></div>
+    </div>
+
+    <!-- 腳本 -->
+    <script src="../../shared/js/utils.js"></script>
+    <script src="../../shared/js/api-client.js"></script>
+    <script src="../js/auth.js"></script>
+    <script src="../js/login.js"></script>
+</body>
+</html> 

@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>InULearning - 管理員控制台</title>
+    <link rel="stylesheet" href="../shared/css/components.css">
+    <link rel="stylesheet" href="../shared/css/responsive.css">
+    <link rel="stylesheet" href="css/main.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <!-- 導航欄 -->
+    <nav class="navbar">
+        <div class="navbar-container">
+            <div class="navbar-brand">
+                <i class="fas fa-graduation-cap"></i>
+                <span>InULearning 管理台</span>
+            </div>
+            <div class="navbar-menu">
+                <a href="pages/dashboard.html" class="nav-link active">
+                    <i class="fas fa-tachometer-alt"></i>
+                    <span>儀表板</span>
+                </a>
+                <a href="pages/users.html" class="nav-link">
+                    <i class="fas fa-users"></i>
+                    <span>用戶管理</span>
+                </a>
+                <a href="pages/questions.html" class="nav-link">
+                    <i class="fas fa-question-circle"></i>
+                    <span>題庫管理</span>
+                </a>
+                <a href="pages/system.html" class="nav-link">
+                    <i class="fas fa-cog"></i>
+                    <span>系統設定</span>
+                </a>
+            </div>
+            <div class="navbar-user">
+                <div class="user-dropdown">
+                    <button class="user-dropdown-toggle">
+                        <i class="fas fa-user-circle"></i>
+                        <span id="admin-name">管理員</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </button>
+                    <div class="user-dropdown-menu">
+                        <a href="pages/profile.html" class="dropdown-item">
+                            <i class="fas fa-user"></i>
+                            <span>個人資料</span>
+                        </a>
+                        <div class="dropdown-divider"></div>
+                        <a href="#" class="dropdown-item" id="logout-btn">
+                            <i class="fas fa-sign-out-alt"></i>
+                            <span>登出</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 主要內容區域 -->
+    <main class="main-content">
+        <div class="container">
+            <!-- 歡迎區塊 -->
+            <div class="welcome-section">
+                <h1>歡迎回來，管理員！</h1>
+                <p>今天是 <span id="current-date"></span>，以下是系統概覽</p>
+            </div>
+
+            <!-- 快速統計卡片 -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h3 id="total-users">0</h3>
+                        <p>總用戶數</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-question-circle"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h3 id="total-questions">0</h3>
+                        <p>題目總數</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h3 id="active-sessions">0</h3>
+                        <p>活躍會話</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-server"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h3 id="system-status">正常</h3>
+                        <p>系統狀態</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 快速操作 -->
+            <div class="quick-actions">
+                <h2>快速操作</h2>
+                <div class="actions-grid">
+                    <a href="pages/users.html" class="action-card">
+                        <i class="fas fa-user-plus"></i>
+                        <h3>新增用戶</h3>
+                        <p>建立新的學生、家長或教師帳戶</p>
+                    </a>
+                    <a href="pages/questions.html" class="action-card">
+                        <i class="fas fa-plus-circle"></i>
+                        <h3>新增題目</h3>
+                        <p>手動新增或批量匯入題目</p>
+                    </a>
+                    <a href="pages/system.html" class="action-card">
+                        <i class="fas fa-database"></i>
+                        <h3>資料備份</h3>
+                        <p>執行系統資料備份</p>
+                    </a>
+                    <a href="pages/reports.html" class="action-card">
+                        <i class="fas fa-chart-bar"></i>
+                        <h3>系統報告</h3>
+                        <p>查看詳細的系統使用報告</p>
+                    </a>
+                </div>
+            </div>
+
+            <!-- 最近活動 -->
+            <div class="recent-activity">
+                <h2>最近活動</h2>
+                <div class="activity-list" id="activity-list">
+                    <!-- 活動項目將由 JavaScript 動態載入 -->
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- 載入指示器 -->
+    <div class="loading-overlay" id="loading-overlay">
+        <div class="loading-spinner"></div>
+    </div>
+
+    <!-- 腳本 -->
+    <script src="../shared/js/utils.js"></script>
+    <script src="../shared/js/api-client.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/dashboard.js"></script>
+    <script src="js/main.js"></script>
+</body>
+</html> 

@@ -1,0 +1,48 @@
+# =============================================================================
+# Docker 環境敏感資訊保護
+# =============================================================================
+
+# 環境變數檔案 (包含密碼和 API 金鑰)
+.env
+.env.local
+.env.development
+.env.production
+.env.staging
+
+# Docker 相關檔案
+docker-compose.override.yml
+docker-compose.prod.yml
+
+# 日誌檔案
+*.log
+logs/
+
+# 資料庫備份檔案
+*.sql
+*.dump
+backup/
+
+# 快取檔案
+.cache/
+tmp/
+
+# IDE 設定檔案
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# 系統檔案
+.DS_Store
+Thumbs.db
+
+# 憑證檔案
+*.pem
+*.key
+*.crt
+*.p12
+*.pfx
+
+# 其他敏感檔案
+secrets/
+config/secrets/ 

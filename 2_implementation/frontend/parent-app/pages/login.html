@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>家長登入 - InU Learning【因你而學】</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"/>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* 您可以保留自訂字體設定 */
+        body {
+            font-family: 'Noto Sans TC', sans-serif;
+        }
+    </style>
+</head>
+<body class="bg-gray-100">
+    <div class="flex h-screen bg-white">
+        <aside class="w-64 bg-blue-800 text-white flex-col hidden lg:flex">
+            <a class="block hover:bg-blue-700" href="../index.html">
+                <div class="flex flex-col items-center justify-center p-6">
+                    <img alt="InU Learning Logo" class="w-20 h-20 rounded-full" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBkUkYI-c0qBm9BcHamuWBs9ebu6mgGni1SlXL6giHvgu2WnHxHaQYkRoAlzI_OZ8yNf6Rn90d73q13vLeMoBfFP0mQHcxlf2YHE9__XhpOUl-OvECBnRad91AKcE4dKkTJtEoAm_alktSTzu_Aw9Fah_2IQ6YeqBALwAqrLNP2oghwOkLSyBMdfpOrW24nKk3dnl3z6piT9-S0cISDfJ5rhAlBYvIzoAhypgUHvJCzxlSG9ag8QMkltK1Hu_rX4jqdQgGuOD2JLzo"/>
+                    <div class="pt-4 text-center">
+                        <h1 class="text-xl font-bold">InU Learning</h1>
+                        <p class="text-sm">【因你而學】</p>
+                    </div>
+                </div>
+            </a>
+            <nav class="flex-1 px-4 py-4 space-y-2">
+                <a class="flex items-center px-4 py-2 text-gray-100 hover:bg-blue-700 rounded-lg" href="../index.html">
+                    <span class="material-icons">dashboard</span>
+                    <span class="ml-3">家長控制台</span>
+                </a>
+                <a class="flex items-center px-4 py-2 text-gray-100 hover:bg-blue-700 rounded-lg" href="children.html">
+                    <span class="material-icons">child_care</span>
+                    <span class="ml-3">子女管理</span>
+                </a>
+                <a class="flex items-center px-4 py-2 text-gray-100 hover:bg-blue-700 rounded-lg" href="progress.html">
+                    <span class="material-icons">trending_up</span>
+                    <span class="ml-3">學習進度</span>
+                </a>
+                <a class="flex items-center px-4 py-2 text-gray-100 hover:bg-blue-700 rounded-lg" href="reports.html">
+                    <span class="material-icons">assessment</span>
+                    <span class="ml-3">學習報告</span>
+                </a>
+                <a class="flex items-center px-4 py-2 text-gray-100 hover:bg-blue-700 rounded-lg" href="communication.html">
+                    <span class="material-icons">chat</span>
+                    <span class="ml-3">師生溝通</span>
+                </a>
+            </nav>
+        </aside>
+
+        <div class="flex-1 flex flex-col overflow-hidden">
+            <header class="flex justify-between items-center p-4 bg-white border-b">
+                <div class="flex items-center">
+                    <button class="text-gray-500 focus:outline-none lg:hidden">
+                        <span class="material-icons">menu</span>
+                    </button>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <a class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors" href="login.html">登入</a>
+                    <a class="bg-gray-200 text-gray-800 px-4 py-2 rounded-lg hover:bg-gray-300 transition-colors" href="register.html">註冊</a>
+                </div>
+            </header>
+
+            <main class="flex-1 overflow-y-auto bg-gray-100 flex items-center justify-center">
+                <div class="container px-6 py-8">
+                    <div class="max-w-md w-full mx-auto bg-white rounded-lg shadow-md overflow-hidden">
+                        <div class="px-8 py-10">
+                            <div class="flex justify-center mb-6 lg:hidden">
+                                <img alt="InU Learning Logo" class="w-20 h-20 rounded-full" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBkUkYI-c0qBm9BcHamuWBs9ebu6mgGni1SlXL6giHvgu2WnHxHaQYkRoAlzI_OZ8yNf6Rn90d73q13vLeMoBfFP0mQHcxlf2YHE9__XhpOUl-OvECBnRad91AKcE4dKkTJtEoAm_alktSTzu_Aw9Fah_2IQ6YeqBALwAqrLNP2oghwOkLSyBMdfpOrW24nKk3dnl3z6piT9-S0cISDfJ5rhAlBYvIzoAhypgUHvJCzxlSG9ag8QMkltK1Hu_rX4jqdQgGuOD2JLzo"/>
+                            </div>
+                            <h2 class="text-2xl font-bold text-center text-blue-800">家長登入</h2>
+                            <p class="mt-2 text-center text-gray-600">掌握您孩子的學習狀況</p>
+                            
+                            <form id="loginForm" class="mt-8 space-y-6">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700" for="email">電子郵件</label>
+                                    <input autocomplete="email" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm" id="email" name="email" required type="email" placeholder="請輸入您的電子郵件"/>
+                                </div>
+                                <div>
+                                    <div class="flex items-center justify-between">
+                                        <label class="block text-sm font-medium text-gray-700" for="password">密碼</label>
+                                    </div>
+                                    <input autocomplete="current-password" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm" id="password" name="password" required type="password" placeholder="請輸入您的密碼"/>
+                                    <div class="text-sm text-right">
+                                        <a class="font-medium text-blue-600 hover:text-blue-500" href="#">忘記密碼？</a>
+                                    </div>
+                                </div>
+                                <div class="flex items-center justify-between">
+                                    <div class="flex items-center">
+                                        <input id="rememberMe" name="rememberMe" type="checkbox" class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
+                                        <label for="rememberMe" class="ml-2 block text-sm text-gray-900">記住我</label>
+                                    </div>
+                                </div>
+                                <div>
+                                    <button type="submit" class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                                        <span class="btn-text">登入</span>
+                                        <span class="btn-loading hidden">
+                                            <span class="loading-spinner mr-2"></span>
+                                            登入中...
+                                        </span>
+                                    </button>
+                                </div>
+                                <div class="relative">
+                                    <div class="absolute inset-0 flex items-center"><div class="w-full border-t border-gray-300"></div></div>
+                                    <div class="relative flex justify-center text-sm"><span class="px-2 bg-white text-gray-500">或使用其他方式登入</span></div>
+                                </div>
+                                <div>
+                                    <a class="w-full inline-flex justify-center py-2 px-4 border border-gray-300 rounded-md shadow-sm bg-white text-sm font-medium text-gray-500 hover:bg-gray-50" href="#">
+                                        <img alt="Google logo" class="w-5 h-5" src="https://www.google.com/images/branding/googleg/1x/googleg_standard_color_24dp.png">
+                                        <span class="ml-2">使用 Google 登入</span>
+                                    </a>
+                                </div>
+                            </form>
+
+                            <!-- 快速登入（開發模式） -->
+                            <div class="mt-6 p-4 bg-gray-50 rounded-lg">
+                                <p class="text-sm text-gray-600 mb-3">快速登入（開發模式）</p>
+                                <div class="space-y-2">
+                                    <button type="button" class="w-full text-left px-3 py-2 text-sm bg-white border border-gray-300 rounded-md hover:bg-gray-50 quick-btn" data-email="parent1@example.com" data-password="password123">
+                                        <span class="material-icons text-blue-600 mr-2">person</span>
+                                        家長 1
+                                    </button>
+                                    <button type="button" class="w-full text-left px-3 py-2 text-sm bg-white border border-gray-300 rounded-md hover:bg-gray-50 quick-btn" data-email="parent2@example.com" data-password="password123">
+                                        <span class="material-icons text-blue-600 mr-2">person</span>
+                                        家長 2
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div class="mt-6 text-center text-sm text-gray-600">
+                                <p>還沒有帳號？ <a class="font-medium text-blue-600 hover:text-blue-500" href="#">聯絡學校註冊</a></p>
+                                <p class="mt-2 text-xs text-gray-500">
+                                    <span class="material-icons text-xs mr-1">info</span>
+                                    如有登入問題，請聯絡學校管理員
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- 載入 JavaScript -->
+    <script src="../shared/js/api-client.js"></script>
+    <script src="../shared/js/utils.js"></script>
+    <script src="../js/auth.js"></script>
+    <script src="../js/login.js"></script>
+</body>
+</html> 

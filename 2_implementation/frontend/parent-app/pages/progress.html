@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>學習進度 - InU Learning【因你而學】</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"/>
+    <link rel="stylesheet" href="../css/main.css">
+    <style>
+        body {
+            font-family: 'Noto Sans TC', sans-serif;
+        }
+    </style>
+</head>
+<body class="bg-gray-100">
+    <div class="flex h-screen bg-white">
+        <!-- 側邊欄 -->
+        <aside class="w-64 bg-blue-800 text-white flex flex-col">
+            <a class="block" href="../index.html">
+                <div class="flex items-center justify-center p-6 hover:bg-blue-700">
+                    <img alt="InU Learning Logo" class="w-24 h-24 rounded-full" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBkUkYI-c0qBm9BcHamuWBs9ebu6mgGni1SlXL6giHvgu2WnHxHaQYkRoAlzI_OZ8yNf6Rn90d73q13vLeMoBfFP0mQHcxlf2YHE9__XhpOUl-OvECBnRad91AKcE4dKkTJtEoAm_alktSTzu_Aw9Fah_2IQ6YeqBALwAqrLNP2oghwOkLSyBMdfpOrW24nKk3dnl3z6piT9-S0cISDfJ5rhAlBYvIzoAhypgUHvJCzxlSG9ag8QMkltK1Hu_rX4jqdQgGuOD2JLzo"/>
+                </div>
+                <div class="px-6 pb-4 hover:bg-blue-700">
+                    <h1 class="text-xl font-bold text-center">InU Learning</h1>
+                    <p class="text-sm text-center">【因你而學】</p>
+                </div>
+            </a>
+            <nav class="flex-1 px-4 py-4 space-y-2">
+                <a class="flex items-center px-4 py-2 text-gray-100 hover:bg-blue-700 rounded-lg" href="../index.html">
+                    <span class="material-icons">home</span>
+                    <span class="ml-3">家長儀表板</span>
+                </a>
+                <a class="flex items-center px-4 py-2 text-gray-100 hover:bg-blue-700 rounded-lg" href="children.html">
+                    <span class="material-icons">family_restroom</span>
+                    <span class="ml-3">子女管理</span>
+                </a>
+                <a class="flex items-center px-4 py-2 text-gray-100 bg-blue-700 rounded-lg" href="progress.html">
+                    <span class="material-icons">trending_up</span>
+                    <span class="ml-3">學習進度</span>
+                </a>
+                <a class="flex items-center px-4 py-2 text-gray-100 hover:bg-blue-700 rounded-lg" href="reports.html">
+                    <span class="material-icons">assessment</span>
+                    <span class="ml-3">學習報告</span>
+                </a>
+                <a class="flex items-center px-4 py-2 text-gray-100 hover:bg-blue-700 rounded-lg" href="communication.html">
+                    <span class="material-icons">chat</span>
+                    <span class="ml-3">親師溝通</span>
+                </a>
+                <a class="flex items-center px-4 py-2 text-gray-100 hover:bg-blue-700 rounded-lg" href="profile.html">
+                    <span class="material-icons">person</span>
+                    <span class="ml-3">個人資料</span>
+                </a>
+            </nav>
+            <div class="p-4 border-t border-blue-700">
+                <button id="logoutBtn" class="w-full flex items-center px-4 py-2 text-gray-100 hover:bg-blue-700 rounded-lg">
+                    <span class="material-icons">logout</span>
+                    <span class="ml-3">登出</span>
+                </button>
+            </div>
+        </aside>
+
+        <!-- 主要內容區 -->
+        <div class="flex-1 flex flex-col overflow-hidden">
+            <!-- 頂部導航 -->
+            <header class="flex justify-between items-center p-4 bg-white border-b">
+                <div class="flex items-center flex-1">
+                    <button class="text-gray-500 focus:outline-none lg:hidden">
+                        <span class="material-icons">menu</span>
+                    </button>
+                    <div class="relative text-gray-600 focus-within:text-gray-400 ml-4 flex-1 max-w-md">
+                        <span class="absolute inset-y-0 left-0 flex items-center pl-2">
+                            <button class="p-1 focus:outline-none" type="submit">
+                                <span class="material-icons">search</span>
+                            </button>
+                        </span>
+                        <input autocomplete="off" class="py-2 text-sm text-gray-700 bg-gray-200 rounded-md pl-10 focus:outline-none focus:bg-white focus:text-gray-900 w-full" name="q" placeholder="搜尋..." type="search"/>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <div id="userInfo" class="hidden">
+                        <span class="text-sm text-gray-600">歡迎，</span>
+                        <span id="userName" class="text-sm font-medium text-blue-600"></span>
+                    </div>
+                    <div id="authButtons">
+                        <a class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors" href="login.html">登入</a>
+                        <a class="bg-gray-200 text-gray-800 px-4 py-2 rounded-lg hover:bg-gray-300 transition-colors" href="register.html">註冊</a>
+                    </div>
+                </div>
+            </header>
+
+            <!-- 主要內容 -->
+            <main class="flex-1 overflow-x-hidden overflow-y-auto bg-gray-100">
+                <div class="container mx-auto px-6 py-8">
+                    <!-- 頁面標題 -->
+                    <div class="mb-8">
+                        <h1 class="text-3xl font-bold text-gray-800 mb-2">學習進度</h1>
+                        <p class="text-gray-600">追蹤子女的學習進度與表現</p>
+                    </div>
+
+                    <!-- 子女選擇器 -->
+                    <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+                        <div class="flex items-center justify-between mb-4">
+                            <h2 class="text-xl font-semibold text-gray-800">選擇子女</h2>
+                            <div class="flex space-x-2">
+                                <button class="btn btn-outline btn-sm" onclick="switchChild('all')">全部子女</button>
+                                <button class="btn btn-outline btn-sm" onclick="switchChild('compare')">比較模式</button>
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4" id="childrenSelector">
+                            <div class="child-card p-4 border rounded-lg cursor-pointer hover:bg-blue-50 transition-colors" onclick="selectChild(1)">
+                                <div class="flex items-center">
+                                    <img src="https://via.placeholder.com/50x50" alt="子女頭像" class="w-12 h-12 rounded-full mr-3">
+                                    <div>
+                                        <h3 class="font-medium text-gray-800">張小明</h3>
+                                        <p class="text-sm text-gray-500">三年級</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="child-card p-4 border rounded-lg cursor-pointer hover:bg-blue-50 transition-colors" onclick="selectChild(2)">
+                                <div class="flex items-center">
+                                    <img src="https://via.placeholder.com/50x50" alt="子女頭像" class="w-12 h-12 rounded-full mr-3">
+                                    <div>
+                                        <h3 class="font-medium text-gray-800">張小華</h3>
+                                        <p class="text-sm text-gray-500">一年級</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 進度概覽 -->
+                    <div class="grid grid-cols-1 lg:grid-cols-4 gap-6 mb-8">
+                        <div class="bg-white rounded-lg shadow-md p-6">
+                            <div class="flex items-center">
+                                <div class="p-3 rounded-full bg-blue-100 text-blue-600">
+                                    <span class="material-icons">school</span>
+                                </div>
+                                <div class="ml-4">
+                                    <p class="text-sm font-medium text-gray-600">總學習時數</p>
+                                    <p class="text-2xl font-bold text-gray-900">24.5 小時</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="bg-white rounded-lg shadow-md p-6">
+                            <div class="flex items-center">
+                                <div class="p-3 rounded-full bg-green-100 text-green-600">
+                                    <span class="material-icons">check_circle</span>
+                                </div>
+                                <div class="ml-4">
+                                    <p class="text-sm font-medium text-gray-600">完成任務</p>
+                                    <p class="text-2xl font-bold text-gray-900">156 個</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="bg-white rounded-lg shadow-md p-6">
+                            <div class="flex items-center">
+                                <div class="p-3 rounded-full bg-yellow-100 text-yellow-600">
+                                    <span class="material-icons">star</span>
+                                </div>
+                                <div class="ml-4">
+                                    <p class="text-sm font-medium text-gray-600">平均分數</p>
+                                    <p class="text-2xl font-bold text-gray-900">85.2 分</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="bg-white rounded-lg shadow-md p-6">
+                            <div class="flex items-center">
+                                <div class="p-3 rounded-full bg-purple-100 text-purple-600">
+                                    <span class="material-icons">trending_up</span>
+                                </div>
+                                <div class="ml-4">
+                                    <p class="text-sm font-medium text-gray-600">進步幅度</p>
+                                    <p class="text-2xl font-bold text-gray-900">+12.5%</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 科目進度 -->
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                        <!-- 科目進度圖表 -->
+                        <div class="bg-white rounded-lg shadow-md p-6">
+                            <h2 class="text-xl font-semibold text-gray-800 mb-4">科目進度</h2>
+                            <div class="space-y-4">
+                                <div class="subject-progress">
+                                    <div class="flex justify-between items-center mb-2">
+                                        <span class="text-sm font-medium text-gray-700">數學</span>
+                                        <span class="text-sm text-gray-500">85%</span>
+                                    </div>
+                                    <div class="w-full bg-gray-200 rounded-full h-2">
+                                        <div class="bg-blue-600 h-2 rounded-full" style="width: 85%"></div>
+                                    </div>
+                                </div>
+                                <div class="subject-progress">
+                                    <div class="flex justify-between items-center mb-2">
+                                        <span class="text-sm font-medium text-gray-700">國語</span>
+                                        <span class="text-sm text-gray-500">92%</span>
+                                    </div>
+                                    <div class="w-full bg-gray-200 rounded-full h-2">
+                                        <div class="bg-green-600 h-2 rounded-full" style="width: 92%"></div>
+                                    </div>
+                                </div>
+                                <div class="subject-progress">
+                                    <div class="flex justify-between items-center mb-2">
+                                        <span class="text-sm font-medium text-gray-700">英文</span>
+                                        <span class="text-sm text-gray-500">78%</span>
+                                    </div>
+                                    <div class="w-full bg-gray-200 rounded-full h-2">
+                                        <div class="bg-yellow-600 h-2 rounded-full" style="width: 78%"></div>
+                                    </div>
+                                </div>
+                                <div class="subject-progress">
+                                    <div class="flex justify-between items-center mb-2">
+                                        <span class="text-sm font-medium text-gray-700">自然</span>
+                                        <span class="text-sm text-gray-500">88%</span>
+                                    </div>
+                                    <div class="w-full bg-gray-200 rounded-full h-2">
+                                        <div class="bg-purple-600 h-2 rounded-full" style="width: 88%"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 學習趨勢 -->
+                        <div class="bg-white rounded-lg shadow-md p-6">
+                            <h2 class="text-xl font-semibold text-gray-800 mb-4">學習趨勢</h2>
+                            <div class="space-y-4">
+                                <div class="trend-item flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                                    <div class="flex items-center">
+                                        <span class="material-icons text-green-600 mr-3">trending_up</span>
+                                        <div>
+                                            <p class="text-sm font-medium text-gray-700">數學成績提升</p>
+                                            <p class="text-xs text-gray-500">過去一週</p>
+                                        </div>
+                                    </div>
+                                    <span class="text-sm font-medium text-green-600">+8.5%</span>
+                                </div>
+                                <div class="trend-item flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                                    <div class="flex items-center">
+                                        <span class="material-icons text-blue-600 mr-3">schedule</span>
+                                        <div>
+                                            <p class="text-sm font-medium text-gray-700">學習時間增加</p>
+                                            <p class="text-xs text-gray-500">過去一週</p>
+                                        </div>
+                                    </div>
+                                    <span class="text-sm font-medium text-blue-600">+2.3 小時</span>
+                                </div>
+                                <div class="trend-item flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                                    <div class="flex items-center">
+                                        <span class="material-icons text-yellow-600 mr-3">assignment</span>
+                                        <div>
+                                            <p class="text-sm font-medium text-gray-700">完成任務數</p>
+                                            <p class="text-xs text-gray-500">過去一週</p>
+                                        </div>
+                                    </div>
+                                    <span class="text-sm font-medium text-yellow-600">+15 個</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 最近活動 -->
+                    <div class="bg-white rounded-lg shadow-md p-6 mt-8">
+                        <h2 class="text-xl font-semibold text-gray-800 mb-4">最近學習活動</h2>
+                        <div class="space-y-4">
+                            <div class="activity-item flex items-center p-4 border rounded-lg">
+                                <div class="flex-shrink-0">
+                                    <div class="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
+                                        <span class="material-icons text-blue-600">quiz</span>
+                                    </div>
+                                </div>
+                                <div class="ml-4 flex-1">
+                                    <p class="text-sm font-medium text-gray-800">完成數學練習題</p>
+                                    <p class="text-xs text-gray-500">2024年1月15日 14:30</p>
+                                </div>
+                                <div class="text-right">
+                                    <span class="text-sm font-medium text-green-600">95 分</span>
+                                </div>
+                            </div>
+                            <div class="activity-item flex items-center p-4 border rounded-lg">
+                                <div class="flex-shrink-0">
+                                    <div class="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center">
+                                        <span class="material-icons text-green-600">book</span>
+                                    </div>
+                                </div>
+                                <div class="ml-4 flex-1">
+                                    <p class="text-sm font-medium text-gray-800">閱讀國語課文</p>
+                                    <p class="text-xs text-gray-500">2024年1月15日 13:15</p>
+                                </div>
+                                <div class="text-right">
+                                    <span class="text-sm font-medium text-blue-600">完成</span>
+                                </div>
+                            </div>
+                            <div class="activity-item flex items-center p-4 border rounded-lg">
+                                <div class="flex-shrink-0">
+                                    <div class="w-10 h-10 bg-yellow-100 rounded-full flex items-center justify-center">
+                                        <span class="material-icons text-yellow-600">language</span>
+                                    </div>
+                                </div>
+                                <div class="ml-4 flex-1">
+                                    <p class="text-sm font-medium text-gray-800">英文單字練習</p>
+                                    <p class="text-xs text-gray-500">2024年1月15日 12:00</p>
+                                </div>
+                                <div class="text-right">
+                                    <span class="text-sm font-medium text-yellow-600">88 分</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- 載入指示器 -->
+    <div id="loadingIndicator" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+        <div class="bg-white rounded-lg p-6 flex items-center space-x-3">
+            <div class="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-600"></div>
+            <span class="text-gray-700">處理中...</span>
+        </div>
+    </div>
+
+    <script src="../js/auth.js"></script>
+    <script src="../js/main.js"></script>
+    <script>
+        // 頁面初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            // 初始化認證
+            const auth = new ParentAuthManager();
+            
+            // 登出按鈕
+            document.getElementById('logoutBtn').addEventListener('click', function() {
+                auth.logout();
+            });
+        });
+
+        // 子女選擇功能
+        function selectChild(childId) {
+            // 移除所有選中狀態
+            document.querySelectorAll('.child-card').forEach(card => {
+                card.classList.remove('bg-blue-100', 'border-blue-500');
+                card.classList.add('hover:bg-blue-50');
+            });
+            
+            // 添加選中狀態
+            event.currentTarget.classList.remove('hover:bg-blue-50');
+            event.currentTarget.classList.add('bg-blue-100', 'border-blue-500');
+            
+            // 載入該子女的進度數據
+            loadChildProgress(childId);
+        }
+
+        function switchChild(mode) {
+            if (mode === 'all') {
+                // 顯示所有子女的綜合進度
+                loadAllChildrenProgress();
+            } else if (mode === 'compare') {
+                // 顯示比較模式
+                loadCompareMode();
+            }
+        }
+
+        function loadChildProgress(childId) {
+            // 這裡會載入特定子女的進度數據
+            console.log('載入子女 ID:', childId, '的進度數據');
+        }
+
+        function loadAllChildrenProgress() {
+            // 載入所有子女的綜合進度
+            console.log('載入所有子女的綜合進度');
+        }
+
+        function loadCompareMode() {
+            // 載入比較模式
+            console.log('載入比較模式');
+        }
+    </script>
+</body>
+</html> 

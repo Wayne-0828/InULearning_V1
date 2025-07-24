@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>學習報告 - InU Learning【因你而學】</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"/>
+    <link rel="stylesheet" href="../css/main.css">
+    <style>
+        body {
+            font-family: 'Noto Sans TC', sans-serif;
+        }
+    </style>
+</head>
+<body class="bg-gray-100">
+    <div class="flex h-screen bg-white">
+        <!-- 側邊欄 -->
+        <aside class="w-64 bg-blue-800 text-white flex flex-col">
+            <a class="block" href="../index.html">
+                <div class="flex items-center justify-center p-6 hover:bg-blue-700">
+                    <img alt="InU Learning Logo" class="w-24 h-24 rounded-full" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBkUkYI-c0qBm9BcHamuWBs9ebu6mgGni1SlXL6giHvgu2WnHxHaQYkRoAlzI_OZ8yNf6Rn90d73q13vLeMoBfFP0mQHcxlf2YHE9__XhpOUl-OvECBnRad91AKcE4dKkTJtEoAm_alktSTzu_Aw9Fah_2IQ6YeqBALwAqrLNP2oghwOkLSyBMdfpOrW24nKk3dnl3z6piT9-S0cISDfJ5rhAlBYvIzoAhypgUHvJCzxlSG9ag8QMkltK1Hu_rX4jqdQgGuOD2JLzo"/>
+                </div>
+                <div class="px-6 pb-4 hover:bg-blue-700">
+                    <h1 class="text-xl font-bold text-center">InU Learning</h1>
+                    <p class="text-sm text-center">【因你而學】</p>
+                </div>
+            </a>
+            <nav class="flex-1 px-4 py-4 space-y-2">
+                <a class="flex items-center px-4 py-2 text-gray-100 hover:bg-blue-700 rounded-lg" href="../index.html">
+                    <span class="material-icons">home</span>
+                    <span class="ml-3">家長儀表板</span>
+                </a>
+                <a class="flex items-center px-4 py-2 text-gray-100 hover:bg-blue-700 rounded-lg" href="children.html">
+                    <span class="material-icons">family_restroom</span>
+                    <span class="ml-3">子女管理</span>
+                </a>
+                <a class="flex items-center px-4 py-2 text-gray-100 hover:bg-blue-700 rounded-lg" href="progress.html">
+                    <span class="material-icons">trending_up</span>
+                    <span class="ml-3">學習進度</span>
+                </a>
+                <a class="flex items-center px-4 py-2 text-gray-100 bg-blue-700 rounded-lg" href="reports.html">
+                    <span class="material-icons">assessment</span>
+                    <span class="ml-3">學習報告</span>
+                </a>
+                <a class="flex items-center px-4 py-2 text-gray-100 hover:bg-blue-700 rounded-lg" href="communication.html">
+                    <span class="material-icons">chat</span>
+                    <span class="ml-3">親師溝通</span>
+                </a>
+                <a class="flex items-center px-4 py-2 text-gray-100 hover:bg-blue-700 rounded-lg" href="profile.html">
+                    <span class="material-icons">person</span>
+                    <span class="ml-3">個人資料</span>
+                </a>
+            </nav>
+            <div class="p-4 border-t border-blue-700">
+                <button id="logoutBtn" class="w-full flex items-center px-4 py-2 text-gray-100 hover:bg-blue-700 rounded-lg">
+                    <span class="material-icons">logout</span>
+                    <span class="ml-3">登出</span>
+                </button>
+            </div>
+        </aside>
+
+        <!-- 主要內容區 -->
+        <div class="flex-1 flex flex-col overflow-hidden">
+            <!-- 頂部導航 -->
+            <header class="flex justify-between items-center p-4 bg-white border-b">
+                <div class="flex items-center flex-1">
+                    <button class="text-gray-500 focus:outline-none lg:hidden">
+                        <span class="material-icons">menu</span>
+                    </button>
+                    <div class="relative text-gray-600 focus-within:text-gray-400 ml-4 flex-1 max-w-md">
+                        <span class="absolute inset-y-0 left-0 flex items-center pl-2">
+                            <button class="p-1 focus:outline-none" type="submit">
+                                <span class="material-icons">search</span>
+                            </button>
+                        </span>
+                        <input autocomplete="off" class="py-2 text-sm text-gray-700 bg-gray-200 rounded-md pl-10 focus:outline-none focus:bg-white focus:text-gray-900 w-full" name="q" placeholder="搜尋..." type="search"/>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <div id="userInfo" class="hidden">
+                        <span class="text-sm text-gray-600">歡迎，</span>
+                        <span id="userName" class="text-sm font-medium text-blue-600"></span>
+                    </div>
+                    <div id="authButtons">
+                        <a class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors" href="login.html">登入</a>
+                        <a class="bg-gray-200 text-gray-800 px-4 py-2 rounded-lg hover:bg-gray-300 transition-colors" href="register.html">註冊</a>
+                    </div>
+                </div>
+            </header>
+
+            <!-- 主要內容 -->
+            <main class="flex-1 overflow-x-hidden overflow-y-auto bg-gray-100">
+                <div class="container mx-auto px-6 py-8">
+                    <!-- 頁面標題 -->
+                    <div class="mb-8">
+                        <h1 class="text-3xl font-bold text-gray-800 mb-2">學習報告</h1>
+                        <p class="text-gray-600">查看子女的詳細學習報告與分析</p>
+                    </div>
+
+                    <!-- 報告篩選器 -->
+                    <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+                        <div class="flex flex-wrap items-center justify-between gap-4">
+                            <div class="flex items-center space-x-4">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">選擇子女</label>
+                                    <select id="childSelector" class="form-control">
+                                        <option value="all">全部子女</option>
+                                        <option value="1">張小明 (三年級)</option>
+                                        <option value="2">張小華 (一年級)</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">報告類型</label>
+                                    <select id="reportType" class="form-control">
+                                        <option value="weekly">週報告</option>
+                                        <option value="monthly">月報告</option>
+                                        <option value="semester">學期報告</option>
+                                        <option value="custom">自訂期間</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">科目</label>
+                                    <select id="subjectFilter" class="form-control">
+                                        <option value="all">全部科目</option>
+                                        <option value="math">數學</option>
+                                        <option value="chinese">國語</option>
+                                        <option value="english">英文</option>
+                                        <option value="science">自然</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="flex space-x-2">
+                                <button class="btn btn-outline" onclick="generateReport()">生成報告</button>
+                                <button class="btn" onclick="downloadReport()">下載報告</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 報告概覽 -->
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+                        <div class="bg-white rounded-lg shadow-md p-6">
+                            <div class="flex items-center justify-between mb-4">
+                                <h3 class="text-lg font-semibold text-gray-800">整體表現</h3>
+                                <span class="text-2xl font-bold text-blue-600">85.2</span>
+                            </div>
+                            <div class="space-y-2">
+                                <div class="flex justify-between text-sm">
+                                    <span class="text-gray-600">數學</span>
+                                    <span class="font-medium">88.5</span>
+                                </div>
+                                <div class="flex justify-between text-sm">
+                                    <span class="text-gray-600">國語</span>
+                                    <span class="font-medium">92.1</span>
+                                </div>
+                                <div class="flex justify-between text-sm">
+                                    <span class="text-gray-600">英文</span>
+                                    <span class="font-medium">78.9</span>
+                                </div>
+                                <div class="flex justify-between text-sm">
+                                    <span class="text-gray-600">自然</span>
+                                    <span class="font-medium">81.3</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="bg-white rounded-lg shadow-md p-6">
+                            <div class="flex items-center justify-between mb-4">
+                                <h3 class="text-lg font-semibold text-gray-800">學習時數</h3>
+                                <span class="text-2xl font-bold text-green-600">24.5h</span>
+                            </div>
+                            <div class="space-y-2">
+                                <div class="flex justify-between text-sm">
+                                    <span class="text-gray-600">本週</span>
+                                    <span class="font-medium">8.2h</span>
+                                </div>
+                                <div class="flex justify-between text-sm">
+                                    <span class="text-gray-600">上週</span>
+                                    <span class="font-medium">7.8h</span>
+                                </div>
+                                <div class="flex justify-between text-sm">
+                                    <span class="text-gray-600">平均每日</span>
+                                    <span class="font-medium">1.2h</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="bg-white rounded-lg shadow-md p-6">
+                            <div class="flex items-center justify-between mb-4">
+                                <h3 class="text-lg font-semibold text-gray-800">完成任務</h3>
+                                <span class="text-2xl font-bold text-purple-600">156</span>
+                            </div>
+                            <div class="space-y-2">
+                                <div class="flex justify-between text-sm">
+                                    <span class="text-gray-600">本週</span>
+                                    <span class="font-medium">23</span>
+                                </div>
+                                <div class="flex justify-between text-sm">
+                                    <span class="text-gray-600">完成率</span>
+                                    <span class="font-medium">95.8%</span>
+                                </div>
+                                <div class="flex justify-between text-sm">
+                                    <span class="text-gray-600">平均分數</span>
+                                    <span class="font-medium">87.3</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 詳細報告 -->
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                        <!-- 科目詳細分析 -->
+                        <div class="bg-white rounded-lg shadow-md p-6">
+                            <h2 class="text-xl font-semibold text-gray-800 mb-4">科目詳細分析</h2>
+                            <div class="space-y-4">
+                                <div class="subject-analysis p-4 border rounded-lg">
+                                    <div class="flex items-center justify-between mb-2">
+                                        <h3 class="font-medium text-gray-800">數學</h3>
+                                        <span class="text-lg font-bold text-blue-600">88.5</span>
+                                    </div>
+                                    <div class="w-full bg-gray-200 rounded-full h-2 mb-2">
+                                        <div class="bg-blue-600 h-2 rounded-full" style="width: 88.5%"></div>
+                                    </div>
+                                    <div class="grid grid-cols-2 gap-2 text-xs">
+                                        <div class="flex justify-between">
+                                            <span class="text-gray-600">完成題數</span>
+                                            <span class="font-medium">45</span>
+                                        </div>
+                                        <div class="flex justify-between">
+                                            <span class="text-gray-600">正確率</span>
+                                            <span class="font-medium">88.5%</span>
+                                        </div>
+                                        <div class="flex justify-between">
+                                            <span class="text-gray-600">學習時數</span>
+                                            <span class="font-medium">6.2h</span>
+                                        </div>
+                                        <div class="flex justify-between">
+                                            <span class="text-gray-600">進步幅度</span>
+                                            <span class="font-medium text-green-600">+5.2%</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="subject-analysis p-4 border rounded-lg">
+                                    <div class="flex items-center justify-between mb-2">
+                                        <h3 class="font-medium text-gray-800">國語</h3>
+                                        <span class="text-lg font-bold text-green-600">92.1</span>
+                                    </div>
+                                    <div class="w-full bg-gray-200 rounded-full h-2 mb-2">
+                                        <div class="bg-green-600 h-2 rounded-full" style="width: 92.1%"></div>
+                                    </div>
+                                    <div class="grid grid-cols-2 gap-2 text-xs">
+                                        <div class="flex justify-between">
+                                            <span class="text-gray-600">完成題數</span>
+                                            <span class="font-medium">38</span>
+                                        </div>
+                                        <div class="flex justify-between">
+                                            <span class="text-gray-600">正確率</span>
+                                            <span class="font-medium">92.1%</span>
+                                        </div>
+                                        <div class="flex justify-between">
+                                            <span class="text-gray-600">學習時數</span>
+                                            <span class="font-medium">5.8h</span>
+                                        </div>
+                                        <div class="flex justify-between">
+                                            <span class="text-gray-600">進步幅度</span>
+                                            <span class="font-medium text-green-600">+3.8%</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 學習趨勢圖表 -->
+                        <div class="bg-white rounded-lg shadow-md p-6">
+                            <h2 class="text-xl font-semibold text-gray-800 mb-4">學習趨勢</h2>
+                            <div class="space-y-4">
+                                <div class="trend-chart p-4 bg-gray-50 rounded-lg">
+                                    <h3 class="text-sm font-medium text-gray-700 mb-2">成績趨勢 (過去4週)</h3>
+                                    <div class="flex items-end justify-between h-32">
+                                        <div class="flex flex-col items-center">
+                                            <div class="w-8 bg-blue-600 rounded-t" style="height: 60%"></div>
+                                            <span class="text-xs text-gray-500 mt-1">第1週</span>
+                                        </div>
+                                        <div class="flex flex-col items-center">
+                                            <div class="w-8 bg-blue-600 rounded-t" style="height: 75%"></div>
+                                            <span class="text-xs text-gray-500 mt-1">第2週</span>
+                                        </div>
+                                        <div class="flex flex-col items-center">
+                                            <div class="w-8 bg-blue-600 rounded-t" style="height: 85%"></div>
+                                            <span class="text-xs text-gray-500 mt-1">第3週</span>
+                                        </div>
+                                        <div class="flex flex-col items-center">
+                                            <div class="w-8 bg-blue-600 rounded-t" style="height: 90%"></div>
+                                            <span class="text-xs text-gray-500 mt-1">第4週</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="trend-chart p-4 bg-gray-50 rounded-lg">
+                                    <h3 class="text-sm font-medium text-gray-700 mb-2">學習時數 (過去4週)</h3>
+                                    <div class="flex items-end justify-between h-32">
+                                        <div class="flex flex-col items-center">
+                                            <div class="w-8 bg-green-600 rounded-t" style="height: 50%"></div>
+                                            <span class="text-xs text-gray-500 mt-1">第1週</span>
+                                        </div>
+                                        <div class="flex flex-col items-center">
+                                            <div class="w-8 bg-green-600 rounded-t" style="height: 65%"></div>
+                                            <span class="text-xs text-gray-500 mt-1">第2週</span>
+                                        </div>
+                                        <div class="flex flex-col items-center">
+                                            <div class="w-8 bg-green-600 rounded-t" style="height: 80%"></div>
+                                            <span class="text-xs text-gray-500 mt-1">第3週</span>
+                                        </div>
+                                        <div class="flex flex-col items-center">
+                                            <div class="w-8 bg-green-600 rounded-t" style="height: 95%"></div>
+                                            <span class="text-xs text-gray-500 mt-1">第4週</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 弱點分析 -->
+                    <div class="bg-white rounded-lg shadow-md p-6 mt-8">
+                        <h2 class="text-xl font-semibold text-gray-800 mb-4">弱點分析與建議</h2>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div class="weakness-analysis">
+                                <h3 class="text-lg font-medium text-gray-800 mb-3">需要加強的領域</h3>
+                                <div class="space-y-3">
+                                    <div class="flex items-center p-3 bg-red-50 rounded-lg">
+                                        <span class="material-icons text-red-600 mr-3">warning</span>
+                                        <div>
+                                            <p class="text-sm font-medium text-gray-800">英文單字記憶</p>
+                                            <p class="text-xs text-gray-600">建議增加單字練習頻率</p>
+                                        </div>
+                                    </div>
+                                    <div class="flex items-center p-3 bg-yellow-50 rounded-lg">
+                                        <span class="material-icons text-yellow-600 mr-3">info</span>
+                                        <div>
+                                            <p class="text-sm font-medium text-gray-800">數學應用題</p>
+                                            <p class="text-xs text-gray-600">需要更多實際應用練習</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="improvement-suggestions">
+                                <h3 class="text-lg font-medium text-gray-800 mb-3">改進建議</h3>
+                                <div class="space-y-3">
+                                    <div class="flex items-center p-3 bg-blue-50 rounded-lg">
+                                        <span class="material-icons text-blue-600 mr-3">lightbulb</span>
+                                        <div>
+                                            <p class="text-sm font-medium text-gray-800">每日單字練習</p>
+                                            <p class="text-xs text-gray-600">建議每天練習10個新單字</p>
+                                        </div>
+                                    </div>
+                                    <div class="flex items-center p-3 bg-green-50 rounded-lg">
+                                        <span class="material-icons text-green-600 mr-3">school</span>
+                                        <div>
+                                            <p class="text-sm font-medium text-gray-800">數學解題技巧</p>
+                                            <p class="text-xs text-gray-600">專注於解題步驟的訓練</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- 載入指示器 -->
+    <div id="loadingIndicator" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+        <div class="bg-white rounded-lg p-6 flex items-center space-x-3">
+            <div class="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-600"></div>
+            <span class="text-gray-700">處理中...</span>
+        </div>
+    </div>
+
+    <script src="../js/auth.js"></script>
+    <script src="../js/main.js"></script>
+    <script>
+        // 頁面初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            // 初始化認證
+            const auth = new ParentAuthManager();
+            
+            // 登出按鈕
+            document.getElementById('logoutBtn').addEventListener('click', function() {
+                auth.logout();
+            });
+            
+            // 篩選器變更事件
+            document.getElementById('childSelector').addEventListener('change', function() {
+                loadReportData();
+            });
+            
+            document.getElementById('reportType').addEventListener('change', function() {
+                loadReportData();
+            });
+            
+            document.getElementById('subjectFilter').addEventListener('change', function() {
+                loadReportData();
+            });
+        });
+
+        function generateReport() {
+            // 顯示載入指示器
+            document.getElementById('loadingIndicator').classList.remove('hidden');
+            
+            // 模擬報告生成
+            setTimeout(() => {
+                document.getElementById('loadingIndicator').classList.add('hidden');
+                showNotification('報告已生成', 'success');
+                loadReportData();
+            }, 2000);
+        }
+
+        function downloadReport() {
+            // 模擬下載報告
+            showNotification('報告下載中...', 'info');
+            
+            // 創建下載連結
+            const link = document.createElement('a');
+            link.href = '#';
+            link.download = '學習報告.pdf';
+            link.click();
+            
+            setTimeout(() => {
+                showNotification('報告下載完成', 'success');
+            }, 1500);
+        }
+
+        function loadReportData() {
+            const childId = document.getElementById('childSelector').value;
+            const reportType = document.getElementById('reportType').value;
+            const subject = document.getElementById('subjectFilter').value;
+            
+            console.log('載入報告數據:', { childId, reportType, subject });
+            
+            // 這裡會根據篩選條件載入相應的報告數據
+            // 實際實現時會調用 API
+        }
+    </script>
+</body>
+</html> 

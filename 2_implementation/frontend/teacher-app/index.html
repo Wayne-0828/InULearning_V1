@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>InULearning - 教師控制台</title>
+    <link rel="stylesheet" href="../shared/css/components.css">
+    <link rel="stylesheet" href="../shared/css/responsive.css">
+    <link rel="stylesheet" href="css/main.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <!-- 導航欄 -->
+    <nav class="navbar">
+        <div class="navbar-container">
+            <div class="navbar-brand">
+                <i class="fas fa-chalkboard-teacher"></i>
+                <span>InULearning 教師台</span>
+            </div>
+            <div class="navbar-menu">
+                <a href="pages/dashboard.html" class="nav-link active">
+                    <i class="fas fa-tachometer-alt"></i>
+                    <span>儀表板</span>
+                </a>
+                <a href="pages/classes.html" class="nav-link">
+                    <i class="fas fa-users"></i>
+                    <span>班級管理</span>
+                </a>
+                <a href="pages/students.html" class="nav-link">
+                    <i class="fas fa-user-graduate"></i>
+                    <span>學生分析</span>
+                </a>
+                <a href="pages/questions.html" class="nav-link">
+                    <i class="fas fa-question-circle"></i>
+                    <span>題目管理</span>
+                </a>
+            </div>
+            <div class="navbar-user">
+                <div class="user-dropdown">
+                    <button class="user-dropdown-toggle">
+                        <i class="fas fa-user-circle"></i>
+                        <span id="teacher-name">教師</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </button>
+                    <div class="user-dropdown-menu">
+                        <a href="pages/profile.html" class="dropdown-item">
+                            <i class="fas fa-user"></i>
+                            <span>個人資料</span>
+                        </a>
+                        <div class="dropdown-divider"></div>
+                        <a href="#" class="dropdown-item" id="logout-btn">
+                            <i class="fas fa-sign-out-alt"></i>
+                            <span>登出</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 主要內容區域 -->
+    <main class="main-content">
+        <div class="container">
+            <!-- 歡迎區塊 -->
+            <div class="welcome-section">
+                <h1>歡迎回來，教師！</h1>
+                <p>今天是 <span id="current-date"></span>，以下是您的班級概覽</p>
+            </div>
+
+            <!-- 快速統計卡片 -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h3 id="total-classes">0</h3>
+                        <p>班級總數</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-user-graduate"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h3 id="total-students">0</h3>
+                        <p>學生總數</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h3 id="active-sessions">0</h3>
+                        <p>活躍學習</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-trophy"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h3 id="avg-score">0%</h3>
+                        <p>平均成績</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 快速操作 -->
+            <div class="quick-actions">
+                <h2>快速操作</h2>
+                <div class="actions-grid">
+                    <a href="pages/classes.html" class="action-card">
+                        <i class="fas fa-plus-circle"></i>
+                        <h3>新增班級</h3>
+                        <p>建立新的班級並管理學生</p>
+                    </a>
+                    <a href="pages/students.html" class="action-card">
+                        <i class="fas fa-chart-bar"></i>
+                        <h3>學生分析</h3>
+                        <p>查看學生學習狀況與進步</p>
+                    </a>
+                    <a href="pages/questions.html" class="action-card">
+                        <i class="fas fa-edit"></i>
+                        <h3>題目管理</h3>
+                        <p>新增或編輯練習題目</p>
+                    </a>
+                    <a href="pages/reports.html" class="action-card">
+                        <i class="fas fa-file-alt"></i>
+                        <h3>學習報告</h3>
+                        <p>生成班級學習報告</p>
+                    </a>
+                </div>
+            </div>
+
+            <!-- 最近活動 -->
+            <div class="recent-activity">
+                <h2>最近活動</h2>
+                <div class="activity-list" id="activity-list">
+                    <!-- 活動項目將由 JavaScript 動態載入 -->
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- 載入指示器 -->
+    <div class="loading-overlay" id="loading-overlay">
+        <div class="loading-spinner"></div>
+    </div>
+
+    <!-- 腳本 -->
+    <script src="../shared/js/utils.js"></script>
+    <script src="../shared/js/api-client.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/dashboard.js"></script>
+    <script src="js/main.js"></script>
+</body>
+</html> 

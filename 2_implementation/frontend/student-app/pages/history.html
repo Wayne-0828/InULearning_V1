@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>學習歷程 - InU Learning【因你而學】</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"/>
+    <link rel="stylesheet" href="../css/main.css">
+    <style>
+        body {
+            font-family: 'Noto Sans TC', sans-serif;
+        }
+    </style>
+</head>
+<body class="bg-gray-100">
+    <div class="flex h-screen bg-white">
+        <!-- 側邊欄 -->
+        <aside class="w-64 bg-blue-800 text-white flex flex-col">
+            <a class="block" href="../index.html">
+                <div class="flex items-center justify-center p-6 hover:bg-blue-700">
+                    <img alt="InU Learning Logo" class="w-24 h-24 rounded-full" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBkUkYI-c0qBm9BcHamuWBs9ebu6mgGni1SlXL6giHvgu2WnHxHaQYkRoAlzI_OZ8yNf6Rn90d73q13vLeMoBfFP0mQHcxlf2YHE9__XhpOUl-OvECBnRad91AKcE4dKkTJtEoAm_alktSTzu_Aw9Fah_2IQ6YeqBALwAqrLNP2oghwOkLSyBMdfpOrW24nKk3dnl3z6piT9-S0cISDfJ5rhAlBYvIzoAhypgUHvJCzxlSG9ag8QMkltK1Hu_rX4jqdQgGuOD2JLzo"/>
+                </div>
+                <div class="px-6 pb-4 hover:bg-blue-700">
+                    <h1 class="text-xl font-bold text-center">InU Learning</h1>
+                    <p class="text-sm text-center">【因你而學】</p>
+                </div>
+            </a>
+            <nav class="flex-1 px-4 py-4 space-y-2">
+                <a class="flex items-center px-4 py-2 text-gray-100 hover:bg-blue-700 rounded-lg" href="../index.html">
+                    <span class="material-icons">school</span>
+                    <span class="ml-3">學生練功專區</span>
+                </a>
+                <a class="flex items-center px-4 py-2 text-gray-100 hover:bg-blue-700 rounded-lg" href="dashboard.html">
+                    <span class="material-icons">dashboard</span>
+                    <span class="ml-3">學習儀表板</span>
+                </a>
+                <a class="flex items-center px-4 py-2 text-gray-100 hover:bg-blue-700 rounded-lg" href="exercise.html">
+                    <span class="material-icons">quiz</span>
+                    <span class="ml-3">開始練習</span>
+                </a>
+                <a class="flex items-center px-4 py-2 text-gray-100 bg-blue-700 rounded-lg" href="history.html">
+                    <span class="material-icons">history</span>
+                    <span class="ml-3">學習歷程</span>
+                </a>
+                <a class="flex items-center px-4 py-2 text-gray-100 hover:bg-blue-700 rounded-lg" href="profile.html">
+                    <span class="material-icons">person</span>
+                    <span class="ml-3">個人資料</span>
+                </a>
+            </nav>
+            <div class="p-4 border-t border-blue-700">
+                <button id="logoutBtn" class="w-full flex items-center px-4 py-2 text-gray-100 hover:bg-blue-700 rounded-lg">
+                    <span class="material-icons">logout</span>
+                    <span class="ml-3">登出</span>
+                </button>
+            </div>
+        </aside>
+
+        <!-- 主要內容區 -->
+        <div class="flex-1 flex flex-col overflow-hidden">
+            <!-- 頂部導航 -->
+            <header class="flex justify-between items-center p-4 bg-white border-b">
+                <div class="flex items-center flex-1">
+                    <button class="text-gray-500 focus:outline-none lg:hidden">
+                        <span class="material-icons">menu</span>
+                    </button>
+                    <div class="relative text-gray-600 focus-within:text-gray-400 ml-4 flex-1 max-w-md">
+                        <span class="absolute inset-y-0 left-0 flex items-center pl-2">
+                            <button class="p-1 focus:outline-none" type="submit">
+                                <span class="material-icons">search</span>
+                            </button>
+                        </span>
+                        <input autocomplete="off" class="py-2 text-sm text-gray-700 bg-gray-200 rounded-md pl-10 focus:outline-none focus:bg-white focus:text-gray-900 w-full" name="q" placeholder="搜尋練習記錄..." type="search"/>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <div id="userInfo" class="hidden">
+                        <span class="text-sm text-gray-600">歡迎，</span>
+                        <span id="userName" class="text-sm font-medium text-blue-600"></span>
+                    </div>
+                    <div id="authButtons">
+                        <a class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors" href="login.html">登入</a>
+                        <a class="bg-gray-200 text-gray-800 px-4 py-2 rounded-lg hover:bg-gray-300 transition-colors" href="register.html">註冊</a>
+                    </div>
+                </div>
+            </header>
+
+            <!-- 主要內容 -->
+            <main class="flex-1 overflow-x-hidden overflow-y-auto bg-gray-100">
+                <div class="container mx-auto px-6 py-8">
+                    <!-- 頁面標題 -->
+                    <div class="mb-8">
+                        <h1 class="text-3xl font-bold text-gray-800 mb-2">學習歷程</h1>
+                        <p class="text-gray-600">查看您的所有練習記錄與學習進度</p>
+                    </div>
+
+                    <!-- 篩選器 -->
+                    <div class="bg-white p-6 rounded-lg shadow-md mb-8">
+                        <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">科目</label>
+                                <select id="subjectFilter" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                                    <option value="">全部科目</option>
+                                    <option value="國文">國文</option>
+                                    <option value="英文">英文</option>
+                                    <option value="數學">數學</option>
+                                    <option value="自然">自然</option>
+                                    <option value="地理">地理</option>
+                                    <option value="歷史">歷史</option>
+                                    <option value="公民">公民</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">版本</label>
+                                <select id="editionFilter" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                                    <option value="">全部版本</option>
+                                    <option value="南一">南一</option>
+                                    <option value="翰林">翰林</option>
+                                    <option value="康軒">康軒</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">日期範圍</label>
+                                <select id="dateFilter" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                                    <option value="7">最近7天</option>
+                                    <option value="30">最近30天</option>
+                                    <option value="90">最近3個月</option>
+                                    <option value="365">最近一年</option>
+                                    <option value="all">全部時間</option>
+                                </select>
+                            </div>
+                            <div class="flex items-end">
+                                <button id="applyFilter" class="w-full bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition-colors">
+                                    套用篩選
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 統計摘要 -->
+                    <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+                        <div class="bg-white p-6 rounded-lg shadow-md">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p class="text-sm text-gray-600">總練習次數</p>
+                                    <p id="totalSessions" class="text-2xl font-bold text-blue-600">0</p>
+                                </div>
+                                <div class="bg-blue-100 p-3 rounded-lg">
+                                    <span class="material-icons text-blue-600">assignment</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-white p-6 rounded-lg shadow-md">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p class="text-sm text-gray-600">總題數</p>
+                                    <p id="totalQuestions" class="text-2xl font-bold text-green-600">0</p>
+                                </div>
+                                <div class="bg-green-100 p-3 rounded-lg">
+                                    <span class="material-icons text-green-600">quiz</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-white p-6 rounded-lg shadow-md">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p class="text-sm text-gray-600">平均正確率</p>
+                                    <p id="avgAccuracy" class="text-2xl font-bold text-orange-600">0%</p>
+                                </div>
+                                <div class="bg-orange-100 p-3 rounded-lg">
+                                    <span class="material-icons text-orange-600">trending_up</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-white p-6 rounded-lg shadow-md">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p class="text-sm text-gray-600">總學習時數</p>
+                                    <p id="totalTime" class="text-2xl font-bold text-purple-600">0h</p>
+                                </div>
+                                <div class="bg-purple-100 p-3 rounded-lg">
+                                    <span class="material-icons text-purple-600">schedule</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 練習記錄列表 -->
+                    <div class="bg-white rounded-lg shadow-md overflow-hidden">
+                        <div class="px-6 py-4 border-b border-gray-200">
+                            <h3 class="text-lg font-semibold text-gray-800">練習記錄</h3>
+                        </div>
+                        <div id="sessionsList" class="divide-y divide-gray-200">
+                            <!-- 練習記錄將由 JavaScript 動態生成 -->
+                            <div class="flex items-center justify-center py-12 text-gray-500">
+                                <span class="material-icons mr-2">history</span>
+                                載入練習記錄中...
+                            </div>
+                        </div>
+                        
+                        <!-- 分頁控制 -->
+                        <div id="pagination" class="px-6 py-4 border-t border-gray-200 flex items-center justify-between">
+                            <div class="flex items-center space-x-2">
+                                <button id="prevPage" class="px-3 py-2 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed">
+                                    上一頁
+                                </button>
+                                <span id="pageInfo" class="text-sm text-gray-700">第 1 頁，共 1 頁</span>
+                                <button id="nextPage" class="px-3 py-2 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed">
+                                    下一頁
+                                </button>
+                            </div>
+                            <div class="flex items-center space-x-2">
+                                <span class="text-sm text-gray-700">每頁顯示：</span>
+                                <select id="pageSize" class="px-3 py-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                                    <option value="10">10 筆</option>
+                                    <option value="20">20 筆</option>
+                                    <option value="50">50 筆</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <script src="../js/utils/auth.js"></script>
+    <script src="../js/api/learning.js"></script>
+    <script src="../js/pages/history.js"></script>
+</body>
+</html> 

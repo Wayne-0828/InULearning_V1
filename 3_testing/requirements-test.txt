@@ -1,0 +1,76 @@
+# =============================================================================
+# InULearning_V1 測試依賴套件 - 建議版本 (適用 Python 3.11.13)
+# =============================================================================
+
+# 測試框架
+pytest==7.4.3
+pytest-asyncio==0.21.1
+pytest-cov==4.1.0
+pytest-html==4.1.1
+pytest-xdist==3.3.1
+pytest-mock==3.12.0
+
+# HTTP 測試
+httpx==0.25.2
+requests==2.31.0
+
+# 資料庫測試
+pytest-postgresql==4.1.1           # 修正：PyPI 無 4.1.5
+pytest-mongodb==2.2.0
+redis==3.5.3                       # 與 redis-py-cluster==2.1.3 相容
+psycopg2-binary==2.9.9             # ✅ PostgreSQL 驅動，支援 Python 3.11
+
+# 環境變數
+python-dotenv==1.0.0
+
+# 資料驗證
+pydantic==2.5.0
+jsonschema==4.20.0
+
+# 日誌
+loguru==0.7.2
+
+# 效能測試
+locust==2.17.0
+
+# 時間處理
+freezegun==1.2.2
+
+# 隨機資料生成
+faker==20.1.0
+
+# 測試報告
+allure-pytest==2.13.2
+
+# 並行處理
+asyncio-throttle==1.0.2
+
+# 資料庫 ORM
+sqlalchemy==2.0.23
+alembic==1.13.1
+
+# MongoDB
+pymongo==4.6.0
+motor==3.3.2
+
+# Redis 集群
+redis-py-cluster==2.1.3
+
+# JWT 處理
+PyJWT==2.8.0
+
+# 密碼雜湊
+passlib==1.7.4
+bcrypt==4.1.2
+
+# 日期時間處理
+python-dateutil==2.8.2
+
+# 非同步 HTTP 客戶端
+aiohttp==3.9.1
+
+# 配置管理
+pydantic-settings==2.1.0
+
+# 測試資料工廠
+factory-boy==3.3.0

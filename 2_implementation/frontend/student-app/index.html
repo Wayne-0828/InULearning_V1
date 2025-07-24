@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>學生練功專區 - InU Learning【因你而學】</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"/>
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="../shared/css/components.css">
+    <link rel="stylesheet" href="../shared/css/responsive.css">
+    <style>
+        body {
+            font-family: 'Noto Sans TC', sans-serif;
+        }
+    </style>
+</head>
+<body class="bg-gray-100">
+    <div class="flex h-screen bg-white">
+        <!-- 側邊欄 -->
+        <aside class="w-64 bg-blue-800 text-white flex flex-col">
+            <a class="block" href="index.html">
+                <div class="flex items-center justify-center p-6 hover:bg-blue-700">
+                    <img alt="InU Learning Logo" class="w-24 h-24 rounded-full" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBkUkYI-c0qBm9BcHamuWBs9ebu6mgGni1SlXL6giHvgu2WnHxHaQYkRoAlzI_OZ8yNf6Rn90d73q13vLeMoBfFP0mQHcxlf2YHE9__XhpOUl-OvECBnRad91AKcE4dKkTJtEoAm_alktSTzu_Aw9Fah_2IQ6YeqBALwAqrLNP2oghwOkLSyBMdfpOrW24nKk3dnl3z6piT9-S0cISDfJ5rhAlBYvIzoAhypgUHvJCzxlSG9ag8QMkltK1Hu_rX4jqdQgGuOD2JLzo"/>
+                </div>
+                <div class="px-6 pb-4 hover:bg-blue-700">
+                    <h1 class="text-xl font-bold text-center">InU Learning</h1>
+                    <p class="text-sm text-center">【因你而學】</p>
+                </div>
+            </a>
+            <nav class="flex-1 px-4 py-4 space-y-2">
+                <a class="flex items-center px-4 py-2 text-gray-100 bg-blue-700 rounded-lg" href="index.html">
+                    <span class="material-icons">school</span>
+                    <span class="ml-3">學生練功專區</span>
+                </a>
+                <a class="flex items-center px-4 py-2 text-gray-100 hover:bg-blue-700 rounded-lg" href="pages/dashboard.html">
+                    <span class="material-icons">dashboard</span>
+                    <span class="ml-3">學習儀表板</span>
+                </a>
+                <a class="flex items-center px-4 py-2 text-gray-100 hover:bg-blue-700 rounded-lg" href="pages/exercise.html">
+                    <span class="material-icons">quiz</span>
+                    <span class="ml-3">開始練習</span>
+                </a>
+                <a class="flex items-center px-4 py-2 text-gray-100 hover:bg-blue-700 rounded-lg" href="pages/history.html">
+                    <span class="material-icons">history</span>
+                    <span class="ml-3">學習歷程</span>
+                </a>
+                <a class="flex items-center px-4 py-2 text-gray-100 hover:bg-blue-700 rounded-lg" href="pages/profile.html">
+                    <span class="material-icons">person</span>
+                    <span class="ml-3">個人資料</span>
+                </a>
+            </nav>
+            <div class="p-4 border-t border-blue-700">
+                <button id="logoutBtn" class="w-full flex items-center px-4 py-2 text-gray-100 hover:bg-blue-700 rounded-lg">
+                    <span class="material-icons">logout</span>
+                    <span class="ml-3">登出</span>
+                </button>
+            </div>
+        </aside>
+
+        <!-- 主要內容區 -->
+        <div class="flex-1 flex flex-col overflow-hidden">
+            <!-- 頂部導航 -->
+            <header class="flex justify-between items-center p-4 bg-white border-b">
+                <div class="flex items-center flex-1">
+                    <button class="text-gray-500 focus:outline-none lg:hidden">
+                        <span class="material-icons">menu</span>
+                    </button>
+                    <div class="relative text-gray-600 focus-within:text-gray-400 ml-4 flex-1 max-w-md">
+                        <span class="absolute inset-y-0 left-0 flex items-center pl-2">
+                            <button class="p-1 focus:outline-none" type="submit">
+                                <span class="material-icons">search</span>
+                            </button>
+                        </span>
+                        <input autocomplete="off" class="py-2 text-sm text-gray-700 bg-gray-200 rounded-md pl-10 focus:outline-none focus:bg-white focus:text-gray-900 w-full" name="q" placeholder="搜尋題目或知識點..." type="search"/>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <div id="userInfo" class="hidden">
+                        <span class="text-sm text-gray-600">歡迎，</span>
+                        <span id="userName" class="text-sm font-medium text-blue-600"></span>
+                    </div>
+                    <div id="authButtons">
+                        <a class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors" href="pages/login.html">登入</a>
+                        <a class="bg-gray-200 text-gray-800 px-4 py-2 rounded-lg hover:bg-gray-300 transition-colors" href="pages/register.html">註冊</a>
+                    </div>
+                </div>
+            </header>
+
+            <!-- 主要內容 -->
+            <main class="flex-1 overflow-x-hidden overflow-y-auto bg-gray-100">
+                <div class="container mx-auto px-6 py-8">
+                    <!-- 歡迎區塊 -->
+                    <div class="bg-gradient-to-r from-blue-600 to-blue-800 text-white rounded-lg p-8 mb-8">
+                        <h1 class="text-3xl font-bold mb-4">歡迎來到學生練功專區</h1>
+                        <p class="text-xl mb-6">AI 驅動的個人化學習體驗，讓您的學習更有效率</p>
+                        <div class="flex flex-wrap gap-4">
+                            <button onclick="location.href='pages/exercise.html'" class="bg-white text-blue-600 px-6 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-colors">
+                                <span class="material-icons mr-2">play_arrow</span>
+                                開始練習
+                            </button>
+                            <button onclick="location.href='pages/dashboard.html'" class="bg-blue-500 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-400 transition-colors">
+                                <span class="material-icons mr-2">dashboard</span>
+                                查看進度
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- 快速功能區 -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                        <div class="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow cursor-pointer" onclick="location.href='pages/exercise.html'">
+                            <div class="flex items-center mb-4">
+                                <div class="bg-blue-100 p-3 rounded-lg">
+                                    <span class="material-icons text-blue-600 text-2xl">quiz</span>
+                                </div>
+                            </div>
+                            <h3 class="text-lg font-semibold text-gray-800 mb-2">客製化題庫練習</h3>
+                            <p class="text-gray-600 text-sm">根據您的學習進度與需求，量身打造專屬題庫</p>
+                        </div>
+
+                        <div class="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow cursor-pointer" onclick="location.href='pages/dashboard.html'">
+                            <div class="flex items-center mb-4">
+                                <div class="bg-green-100 p-3 rounded-lg">
+                                    <span class="material-icons text-green-600 text-2xl">analytics</span>
+                                </div>
+                            </div>
+                            <h3 class="text-lg font-semibold text-gray-800 mb-2">弱點分析與筆記</h3>
+                            <p class="text-gray-600 text-sm">即時分析您的作答弱點，並提供個人化重點筆記</p>
+                        </div>
+
+                        <div class="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow cursor-pointer">
+                            <div class="flex items-center mb-4">
+                                <div class="bg-purple-100 p-3 rounded-lg">
+                                    <span class="material-icons text-purple-600 text-2xl">chat</span>
+                                </div>
+                            </div>
+                            <h3 class="text-lg font-semibold text-gray-800 mb-2">AI即時問答</h3>
+                            <p class="text-gray-600 text-sm">24小時AI助教在線，隨時為您解答課業疑惑</p>
+                        </div>
+
+                        <div class="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow cursor-pointer">
+                            <div class="flex items-center mb-4">
+                                <div class="bg-orange-100 p-3 rounded-lg">
+                                    <span class="material-icons text-orange-600 text-2xl">assignment</span>
+                                </div>
+                            </div>
+                            <h3 class="text-lg font-semibold text-gray-800 mb-2">線上大考模擬</h3>
+                            <p class="text-gray-600 text-sm">提供線上大考模擬試題，熟悉考試情境</p>
+                        </div>
+                    </div>
+
+                    <!-- 學習統計區 -->
+                    <div id="learningStats" class="hidden">
+                        <h2 class="text-2xl font-bold text-gray-800 mb-6">您的學習統計</h2>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                            <div class="bg-white p-6 rounded-lg shadow-md">
+                                <div class="flex items-center justify-between">
+                                    <div>
+                                        <p class="text-sm text-gray-600">今日練習題數</p>
+                                        <p id="todayQuestions" class="text-2xl font-bold text-blue-600">0</p>
+                                    </div>
+                                    <div class="bg-blue-100 p-3 rounded-lg">
+                                        <span class="material-icons text-blue-600">today</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="bg-white p-6 rounded-lg shadow-md">
+                                <div class="flex items-center justify-between">
+                                    <div>
+                                        <p class="text-sm text-gray-600">正確率</p>
+                                        <p id="accuracyRate" class="text-2xl font-bold text-green-600">0%</p>
+                                    </div>
+                                    <div class="bg-green-100 p-3 rounded-lg">
+                                        <span class="material-icons text-green-600">trending_up</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="bg-white p-6 rounded-lg shadow-md">
+                                <div class="flex items-center justify-between">
+                                    <div>
+                                        <p class="text-sm text-gray-600">連續學習天數</p>
+                                        <p id="streakDays" class="text-2xl font-bold text-orange-600">0</p>
+                                    </div>
+                                    <div class="bg-orange-100 p-3 rounded-lg">
+                                        <span class="material-icons text-orange-600">local_fire_department</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 推薦練習區 -->
+                    <div id="recommendedExercises" class="hidden">
+                        <h2 class="text-2xl font-bold text-gray-800 mb-6">推薦練習</h2>
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                            <!-- 推薦練習卡片將由 JavaScript 動態生成 -->
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <script src="../shared/js/utils.js"></script>
+    <script src="../shared/js/api-client.js"></script>
+    <script src="js/api/learning.js"></script>
+    <script src="js/main.js"></script>
+</body>
+</html> 

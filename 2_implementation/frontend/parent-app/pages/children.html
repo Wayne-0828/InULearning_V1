@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>子女管理 - InU Learning【因你而學】</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"/>
+    <link rel="stylesheet" href="../shared/css/components.css">
+    <link rel="stylesheet" href="../shared/css/responsive.css">
+    <link rel="stylesheet" href="../css/main.css">
+    <style>
+        body {
+            font-family: 'Noto Sans TC', sans-serif;
+        }
+    </style>
+</head>
+<body class="bg-gray-100">
+    <div class="flex h-screen bg-white">
+        <!-- 側邊欄 -->
+        <aside class="w-64 bg-blue-800 text-white flex flex-col">
+            <a class="block" href="../index.html">
+                <div class="flex items-center justify-center p-6 hover:bg-blue-700">
+                    <img alt="InU Learning Logo" class="w-24 h-24 rounded-full" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBkUkYI-c0qBm9BcHamuWBs9ebu6mgGni1SlXL6giHvgu2WnHxHaQYkRoAlzI_OZ8yNf6Rn90d73q13vLeMoBfFP0mQHcxlf2YHE9__XhpOUl-OvECBnRad91AKcE4dKkTJtEoAm_alktSTzu_Aw9Fah_2IQ6YeqBALwAqrLNP2oghwOkLSyBMdfpOrW24nKk3dnl3z6piT9-S0cISDfJ5rhAlBYvIzoAhypgUHvJCzxlSG9ag8QMkltK1Hu_rX4jqdQgGuOD2JLzo"/>
+                </div>
+                <div class="px-6 pb-4 hover:bg-blue-700">
+                    <h1 class="text-xl font-bold text-center">InU Learning</h1>
+                    <p class="text-sm text-center">【因你而學】</p>
+                </div>
+            </a>
+            <nav class="flex-1 px-4 py-4 space-y-2">
+                <a class="flex items-center px-4 py-2 text-gray-100 hover:bg-blue-700 rounded-lg" href="../index.html">
+                    <span class="material-icons">dashboard</span>
+                    <span class="ml-3">家長控制台</span>
+                </a>
+                <a class="flex items-center px-4 py-2 text-gray-100 bg-blue-700 rounded-lg" href="children.html">
+                    <span class="material-icons">child_care</span>
+                    <span class="ml-3">子女管理</span>
+                </a>
+                <a class="flex items-center px-4 py-2 text-gray-100 hover:bg-blue-700 rounded-lg" href="progress.html">
+                    <span class="material-icons">trending_up</span>
+                    <span class="ml-3">學習進度</span>
+                </a>
+                <a class="flex items-center px-4 py-2 text-gray-100 hover:bg-blue-700 rounded-lg" href="reports.html">
+                    <span class="material-icons">assessment</span>
+                    <span class="ml-3">學習報告</span>
+                </a>
+                <a class="flex items-center px-4 py-2 text-gray-100 hover:bg-blue-700 rounded-lg" href="communication.html">
+                    <span class="material-icons">chat</span>
+                    <span class="ml-3">師生溝通</span>
+                </a>
+                <a class="flex items-center px-4 py-2 text-gray-100 hover:bg-blue-700 rounded-lg" href="profile.html">
+                    <span class="material-icons">person</span>
+                    <span class="ml-3">個人資料</span>
+                </a>
+            </nav>
+            <div class="p-4 border-t border-blue-700">
+                <button id="logoutBtn" class="w-full flex items-center px-4 py-2 text-gray-100 hover:bg-blue-700 rounded-lg">
+                    <span class="material-icons">logout</span>
+                    <span class="ml-3">登出</span>
+                </button>
+            </div>
+        </aside>
+
+        <!-- 主要內容區 -->
+        <div class="flex-1 flex flex-col overflow-hidden">
+            <!-- 頂部導航 -->
+            <header class="flex justify-between items-center p-4 bg-white border-b">
+                <div class="flex items-center flex-1">
+                    <button class="text-gray-500 focus:outline-none lg:hidden">
+                        <span class="material-icons">menu</span>
+                    </button>
+                    <div class="relative text-gray-600 focus-within:text-gray-400 ml-4 flex-1 max-w-md">
+                        <span class="absolute inset-y-0 left-0 flex items-center pl-2">
+                            <button class="p-1 focus:outline-none" type="submit">
+                                <span class="material-icons">search</span>
+                            </button>
+                        </span>
+                        <input autocomplete="off" class="py-2 text-sm text-gray-700 bg-gray-200 rounded-md pl-10 focus:outline-none focus:bg-white focus:text-gray-900 w-full" name="q" placeholder="搜尋子女..." type="search"/>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <div id="userInfo" class="hidden">
+                        <span class="text-sm text-gray-600">歡迎，</span>
+                        <span id="userName" class="text-sm font-medium text-blue-600"></span>
+                    </div>
+                    <div id="authButtons">
+                        <a class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors" href="login.html">登入</a>
+                        <a class="bg-gray-200 text-gray-800 px-4 py-2 rounded-lg hover:bg-gray-300 transition-colors" href="register.html">註冊</a>
+                    </div>
+                </div>
+            </header>
+
+            <!-- 主要內容 -->
+            <main class="flex-1 overflow-x-hidden overflow-y-auto bg-gray-100">
+                <div class="container mx-auto px-6 py-8">
+                    <!-- 頁面標題 -->
+                    <div class="flex justify-between items-center mb-8">
+                        <div>
+                            <h1 class="text-3xl font-bold text-gray-800">子女管理</h1>
+                            <p class="text-gray-600 mt-2">管理您的子女帳號和學習狀況</p>
+                        </div>
+                        <button class="btn btn-primary" id="addChildBtn">
+                            <span class="material-icons mr-2">add</span>
+                            新增子女
+                        </button>
+                    </div>
+
+                    <!-- 子女概覽 -->
+                    <div class="bg-white rounded-lg shadow-md p-6 mb-8">
+                        <div class="flex justify-between items-center mb-6">
+                            <h2 class="text-2xl font-bold text-gray-800">子女概覽</h2>
+                            <div class="flex space-x-4">
+                                <select class="form-control w-40" id="gradeFilter">
+                                    <option value="">所有年級</option>
+                                    <option value="一年級">一年級</option>
+                                    <option value="二年級">二年級</option>
+                                    <option value="三年級">三年級</option>
+                                    <option value="四年級">四年級</option>
+                                    <option value="五年級">五年級</option>
+                                    <option value="六年級">六年級</option>
+                                </select>
+                                <select class="form-control w-40" id="statusFilter">
+                                    <option value="">所有狀態</option>
+                                    <option value="active">學習中</option>
+                                    <option value="inactive">暫停</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="childrenGrid">
+                            <!-- 子女卡片將由 JavaScript 動態生成 -->
+                        </div>
+                    </div>
+
+                    <!-- 子女詳細資訊 -->
+                    <div class="bg-white rounded-lg shadow-md p-6" id="childDetails" style="display: none;">
+                        <div class="flex items-center mb-6">
+                            <button class="btn btn-outline mr-4" id="backToOverview">
+                                <span class="material-icons mr-2">arrow_back</span>
+                                返回概覽
+                            </button>
+                            <h2 class="text-2xl font-bold text-gray-800" id="childName">子女詳細資訊</h2>
+                        </div>
+
+                        <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
+                            <!-- 側邊欄 -->
+                            <div class="lg:col-span-1">
+                                <div class="bg-gray-50 rounded-lg p-6 mb-6">
+                                    <div class="text-center mb-4">
+                                        <img id="childAvatar" src="" alt="子女頭像" class="w-24 h-24 rounded-full mx-auto mb-4">
+                                        <div class="status-indicator" id="childStatus"></div>
+                                        <h3 class="text-lg font-semibold" id="childNameTitle"></h3>
+                                        <p class="text-gray-600" id="childGrade"></p>
+                                        <p class="text-gray-600" id="childClass"></p>
+                                    </div>
+
+                                    <div class="space-y-3">
+                                        <button class="w-full btn btn-outline" data-action="view-progress">
+                                            <span class="material-icons mr-2">trending_up</span>
+                                            查看進度
+                                        </button>
+                                        <button class="w-full btn btn-outline" data-action="view-reports">
+                                            <span class="material-icons mr-2">assessment</span>
+                                            查看報告
+                                        </button>
+                                        <button class="w-full btn btn-outline" data-action="contact-teacher">
+                                            <span class="material-icons mr-2">chat</span>
+                                            聯絡老師
+                                        </button>
+                                        <button class="w-full btn btn-outline" data-action="view-schedule">
+                                            <span class="material-icons mr-2">calendar_today</span>
+                                            查看課表
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- 主要內容 -->
+                            <div class="lg:col-span-3">
+                                <div class="mb-6">
+                                    <div class="flex space-x-1 border-b border-gray-200">
+                                        <button class="tab-btn active px-4 py-2 text-blue-600 border-b-2 border-blue-600" data-tab="overview">
+                                            <span class="material-icons mr-2">info</span>
+                                            基本資訊
+                                        </button>
+                                        <button class="tab-btn px-4 py-2 text-gray-600 hover:text-blue-600" data-tab="courses">
+                                            <span class="material-icons mr-2">school</span>
+                                            課程資訊
+                                        </button>
+                                        <button class="tab-btn px-4 py-2 text-gray-600 hover:text-blue-600" data-tab="assignments">
+                                            <span class="material-icons mr-2">assignment</span>
+                                            作業狀況
+                                        </button>
+                                        <button class="tab-btn px-4 py-2 text-gray-600 hover:text-blue-600" data-tab="activities">
+                                            <span class="material-icons mr-2">history</span>
+                                            學習活動
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <div class="tab-content">
+                                    <!-- 基本資訊標籤頁 -->
+                                    <div class="tab-pane active" id="overview-tab">
+                                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                                            <div class="card">
+                                                <h4 class="card-title">個人資訊</h4>
+                                                <div class="space-y-2">
+                                                    <div class="flex justify-between">
+                                                        <span class="text-gray-600">姓名：</span>
+                                                        <span class="font-medium" id="childFullName"></span>
+                                                    </div>
+                                                    <div class="flex justify-between">
+                                                        <span class="text-gray-600">年級：</span>
+                                                        <span class="font-medium" id="childGradeInfo"></span>
+                                                    </div>
+                                                    <div class="flex justify-between">
+                                                        <span class="text-gray-600">班級：</span>
+                                                        <span class="font-medium" id="childClassInfo"></span>
+                                                    </div>
+                                                    <div class="flex justify-between">
+                                                        <span class="text-gray-600">學號：</span>
+                                                        <span class="font-medium" id="childStudentId"></span>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="card">
+                                                <h4 class="card-title">學習統計</h4>
+                                                <div class="space-y-2">
+                                                    <div class="flex justify-between">
+                                                        <span class="text-gray-600">進行中課程：</span>
+                                                        <span class="font-medium" id="activeCourses"></span>
+                                                    </div>
+                                                    <div class="flex justify-between">
+                                                        <span class="text-gray-600">已完成作業：</span>
+                                                        <span class="font-medium" id="completedAssignments"></span>
+                                                    </div>
+                                                    <div class="flex justify-between">
+                                                        <span class="text-gray-600">平均分數：</span>
+                                                        <span class="font-medium" id="averageScore"></span>
+                                                    </div>
+                                                    <div class="flex justify-between">
+                                                        <span class="text-gray-600">學習時數：</span>
+                                                        <span class="font-medium" id="studyTime"></span>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="card">
+                                                <h4 class="card-title">聯絡資訊</h4>
+                                                <div class="space-y-2">
+                                                    <div class="flex justify-between">
+                                                        <span class="text-gray-600">導師：</span>
+                                                        <span class="font-medium" id="teacherName"></span>
+                                                    </div>
+                                                    <div class="flex justify-between">
+                                                        <span class="text-gray-600">聯絡電話：</span>
+                                                        <span class="font-medium" id="teacherPhone"></span>
+                                                    </div>
+                                                    <div class="flex justify-between">
+                                                        <span class="text-gray-600">電子郵件：</span>
+                                                        <span class="font-medium" id="teacherEmail"></span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- 課程資訊標籤頁 -->
+                                    <div class="tab-pane hidden" id="courses-tab">
+                                        <div id="coursesList">
+                                            <!-- 課程列表將由 JavaScript 動態生成 -->
+                                        </div>
+                                    </div>
+
+                                    <!-- 作業狀況標籤頁 -->
+                                    <div class="tab-pane hidden" id="assignments-tab">
+                                        <div id="assignmentsList">
+                                            <!-- 作業列表將由 JavaScript 動態生成 -->
+                                        </div>
+                                    </div>
+
+                                    <!-- 學習活動標籤頁 -->
+                                    <div class="tab-pane hidden" id="activities-tab">
+                                        <div id="activitiesList">
+                                            <!-- 活動列表將由 JavaScript 動態生成 -->
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- 新增子女模態框 -->
+    <div class="modal" id="addChildModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">新增子女</h3>
+                <button class="modal-close" id="closeAddChildModal">
+                    <span class="material-icons">close</span>
+                </button>
+            </div>
+            <form id="addChildForm" class="modal-body">
+                <div class="form-group">
+                    <label class="form-label" for="childName">子女姓名</label>
+                    <input type="text" class="form-control" id="childName" name="childName" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="childGrade">年級</label>
+                    <select class="form-control" id="childGrade" name="childGrade" required>
+                        <option value="">請選擇年級</option>
+                        <option value="一年級">一年級</option>
+                        <option value="二年級">二年級</option>
+                        <option value="三年級">三年級</option>
+                        <option value="四年級">四年級</option>
+                        <option value="五年級">五年級</option>
+                        <option value="六年級">六年級</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="childClass">班級</label>
+                    <input type="text" class="form-control" id="childClass" name="childClass" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="childStudentId">學號</label>
+                    <input type="text" class="form-control" id="childStudentId" name="childStudentId" required>
+                </div>
+            </form>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" id="cancelAddChild">取消</button>
+                <button type="submit" form="addChildForm" class="btn btn-primary">新增</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Loading Indicator -->
+    <div class="loading-overlay" id="loading-overlay">
+        <div class="loading-spinner"></div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="../shared/js/utils.js"></script>
+    <script src="../shared/js/api-client.js"></script>
+    <script src="../js/auth.js"></script>
+    <script src="../js/main.js"></script>
+    <script src="../js/children.js"></script>
+</body>
+</html> 

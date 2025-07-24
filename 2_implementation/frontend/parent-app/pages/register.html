@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>家長註冊 - InU Learning【因你而學】</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"/>
+    <link rel="stylesheet" href="../css/main.css">
+    <style>
+        body {
+            font-family: 'Noto Sans TC', sans-serif;
+        }
+    </style>
+</head>
+<body class="bg-gray-100">
+    <div class="flex h-screen bg-white">
+        <!-- 側邊欄 -->
+        <aside class="w-64 bg-blue-800 text-white flex flex-col">
+            <a class="block" href="../index.html">
+                <div class="flex items-center justify-center p-6 hover:bg-blue-700">
+                    <img alt="InU Learning Logo" class="w-24 h-24 rounded-full" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBkUkYI-c0qBm9BcHamuWBs9ebu6mgGni1SlXL6giHvgu2WnHxHaQYkRoAlzI_OZ8yNf6Rn90d73q13vLeMoBfFP0mQHcxlf2YHE9__XhpOUl-OvECBnRad91AKcE4dKkTJtEoAm_alktSTzu_Aw9Fah_2IQ6YeqBALwAqrLNP2oghwOkLSyBMdfpOrW24nKk3dnl3z6piT9-S0cISDfJ5rhAlBYvIzoAhypgUHvJCzxlSG9ag8QMkltK1Hu_rX4jqdQgGuOD2JLzo"/>
+                </div>
+                <div class="px-6 pb-4 hover:bg-blue-700">
+                    <h1 class="text-xl font-bold text-center">InU Learning</h1>
+                    <p class="text-sm text-center">【因你而學】</p>
+                </div>
+            </a>
+            <div class="flex-1 px-4 py-4">
+                <div class="text-center">
+                    <h2 class="text-lg font-semibold mb-4">家長註冊</h2>
+                    <p class="text-sm text-gray-300 mb-6">加入我們，一起為孩子的學習成長努力</p>
+                    <div class="space-y-3">
+                        <div class="flex items-center justify-center">
+                            <span class="material-icons text-green-400 mr-2">check_circle</span>
+                            <span class="text-sm">即時學習追蹤</span>
+                        </div>
+                        <div class="flex items-center justify-center">
+                            <span class="material-icons text-green-400 mr-2">check_circle</span>
+                            <span class="text-sm">AI 智能分析</span>
+                        </div>
+                        <div class="flex items-center justify-center">
+                            <span class="material-icons text-green-400 mr-2">check_circle</span>
+                            <span class="text-sm">親師溝通平台</span>
+                        </div>
+                        <div class="flex items-center justify-center">
+                            <span class="material-icons text-green-400 mr-2">check_circle</span>
+                            <span class="text-sm">個人化學習建議</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="p-4 border-t border-blue-700">
+                <a href="login.html" class="w-full flex items-center justify-center px-4 py-2 text-gray-100 hover:bg-blue-700 rounded-lg">
+                    <span class="material-icons mr-2">login</span>
+                    <span>已有帳號？登入</span>
+                </a>
+            </div>
+        </aside>
+
+        <!-- 主要內容區 -->
+        <div class="flex-1 flex flex-col overflow-hidden">
+            <!-- 頂部導航 -->
+            <header class="flex justify-between items-center p-4 bg-white border-b">
+                <div class="flex items-center">
+                    <a href="../index.html" class="text-blue-600 hover:text-blue-700 font-medium">
+                        <span class="material-icons mr-1">arrow_back</span>
+                        返回首頁
+                    </a>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <span class="text-sm text-gray-600">已有帳號？</span>
+                    <a class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors" href="login.html">登入</a>
+                </div>
+            </header>
+
+            <!-- 主要內容 -->
+            <main class="flex-1 overflow-x-hidden overflow-y-auto bg-gray-100">
+                <div class="container mx-auto px-6 py-8">
+                    <div class="max-w-2xl mx-auto">
+                        <!-- 註冊表單 -->
+                        <div class="bg-white rounded-lg shadow-md p-8">
+                            <div class="text-center mb-8">
+                                <h1 class="text-3xl font-bold text-gray-800 mb-2">家長註冊</h1>
+                                <p class="text-gray-600">建立您的帳號，開始追蹤孩子的學習旅程</p>
+                            </div>
+
+                            <form id="registerForm" class="space-y-6">
+                                <!-- 基本資料 -->
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-2">姓名 *</label>
+                                        <input type="text" id="name" name="name" class="form-control" required>
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-2">身分證字號 *</label>
+                                        <input type="text" id="idNumber" name="idNumber" class="form-control" required>
+                                    </div>
+                                </div>
+
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-2">電子郵件 *</label>
+                                        <input type="email" id="email" name="email" class="form-control" required>
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-2">手機號碼 *</label>
+                                        <input type="tel" id="phone" name="phone" class="form-control" required>
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">地址</label>
+                                    <input type="text" id="address" name="address" class="form-control">
+                                </div>
+
+                                <!-- 密碼設定 -->
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-2">密碼 *</label>
+                                        <div class="relative">
+                                            <input type="password" id="password" name="password" class="form-control pr-10" required>
+                                            <button type="button" id="passwordToggle" class="absolute inset-y-0 right-0 pr-3 flex items-center">
+                                                <span class="material-icons text-gray-400">visibility</span>
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-2">確認密碼 *</label>
+                                        <div class="relative">
+                                            <input type="password" id="confirmPassword" name="confirmPassword" class="form-control pr-10" required>
+                                            <button type="button" id="confirmPasswordToggle" class="absolute inset-y-0 right-0 pr-3 flex items-center">
+                                                <span class="material-icons text-gray-400">visibility</span>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- 子女資訊 -->
+                                <div class="border-t pt-6">
+                                    <h3 class="text-lg font-semibold text-gray-800 mb-4">子女資訊</h3>
+                                    <div id="childrenContainer">
+                                        <div class="child-info border rounded-lg p-4 mb-4">
+                                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                                <div>
+                                                    <label class="block text-sm font-medium text-gray-700 mb-2">子女姓名 *</label>
+                                                    <input type="text" name="childName[]" class="form-control" required>
+                                                </div>
+                                                <div>
+                                                    <label class="block text-sm font-medium text-gray-700 mb-2">年級 *</label>
+                                                    <select name="childGrade[]" class="form-control" required>
+                                                        <option value="">請選擇年級</option>
+                                                        <option value="1">一年級</option>
+                                                        <option value="2">二年級</option>
+                                                        <option value="3">三年級</option>
+                                                        <option value="4">四年級</option>
+                                                        <option value="5">五年級</option>
+                                                        <option value="6">六年級</option>
+                                                    </select>
+                                                </div>
+                                                <div>
+                                                    <label class="block text-sm font-medium text-gray-700 mb-2">身分證字號 *</label>
+                                                    <input type="text" name="childIdNumber[]" class="form-control" required>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <button type="button" id="addChildBtn" class="btn btn-outline btn-sm">
+                                        <span class="material-icons mr-1">add</span>
+                                        新增子女
+                                    </button>
+                                </div>
+
+                                <!-- 同意條款 -->
+                                <div class="space-y-4">
+                                    <div class="flex items-start">
+                                        <input type="checkbox" id="agreeTerms" name="agreeTerms" class="mt-1 mr-3" required>
+                                        <label for="agreeTerms" class="text-sm text-gray-700">
+                                            我同意 <a href="#" class="text-blue-600 hover:text-blue-700">服務條款</a> 和 
+                                            <a href="#" class="text-blue-600 hover:text-blue-700">隱私政策</a>
+                                        </label>
+                                    </div>
+                                    <div class="flex items-start">
+                                        <input type="checkbox" id="agreeMarketing" name="agreeMarketing" class="mt-1 mr-3">
+                                        <label for="agreeMarketing" class="text-sm text-gray-700">
+                                            我同意接收學習相關的電子郵件通知
+                                        </label>
+                                    </div>
+                                </div>
+
+                                <!-- 提交按鈕 -->
+                                <div class="flex items-center justify-between">
+                                    <button type="submit" id="registerBtn" class="btn">
+                                        <span class="material-icons mr-2">person_add</span>
+                                        註冊帳號
+                                    </button>
+                                    <a href="login.html" class="text-blue-600 hover:text-blue-700 text-sm">
+                                        已有帳號？立即登入
+                                    </a>
+                                </div>
+                            </form>
+                        </div>
+
+                        <!-- 快速註冊 (開發模式) -->
+                        <div class="bg-blue-50 rounded-lg p-6 mt-6">
+                            <h3 class="text-lg font-semibold text-blue-800 mb-4">快速註冊 (開發模式)</h3>
+                            <p class="text-sm text-blue-700 mb-4">在開發階段，您可以使用以下預設資料快速註冊：</p>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <button class="quick-register-btn p-3 bg-white border border-blue-200 rounded-lg hover:bg-blue-100 transition-colors text-left" onclick="quickRegister('parent1')">
+                                    <div class="font-medium text-blue-800">家長帳號 1</div>
+                                    <div class="text-xs text-blue-600">張小明家長</div>
+                                </button>
+                                <button class="quick-register-btn p-3 bg-white border border-blue-200 rounded-lg hover:bg-blue-100 transition-colors text-left" onclick="quickRegister('parent2')">
+                                    <div class="font-medium text-blue-800">家長帳號 2</div>
+                                    <div class="text-xs text-blue-600">李小華家長</div>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- 載入指示器 -->
+    <div id="loadingIndicator" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+        <div class="bg-white rounded-lg p-6 flex items-center space-x-3">
+            <div class="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-600"></div>
+            <span class="text-gray-700">處理中...</span>
+        </div>
+    </div>
+
+    <script src="../js/auth.js"></script>
+    <script src="../js/main.js"></script>
+    <script>
+        // 頁面初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            setupFormValidation();
+            setupPasswordToggles();
+            setupAddChild();
+        });
+
+        function setupFormValidation() {
+            const form = document.getElementById('registerForm');
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                handleRegister();
+            });
+        }
+
+        function setupPasswordToggles() {
+            // 密碼顯示/隱藏切換
+            document.getElementById('passwordToggle').addEventListener('click', function() {
+                togglePasswordVisibility('password', this);
+            });
+
+            document.getElementById('confirmPasswordToggle').addEventListener('click', function() {
+                togglePasswordVisibility('confirmPassword', this);
+            });
+        }
+
+        function setupAddChild() {
+            document.getElementById('addChildBtn').addEventListener('click', function() {
+                addChildField();
+            });
+        }
+
+        function togglePasswordVisibility(inputId, button) {
+            const input = document.getElementById(inputId);
+            const icon = button.querySelector('.material-icons');
+            
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.textContent = 'visibility_off';
+            } else {
+                input.type = 'password';
+                icon.textContent = 'visibility';
+            }
+        }
+
+        function addChildField() {
+            const container = document.getElementById('childrenContainer');
+            const childCount = container.children.length;
+            
+            const childDiv = document.createElement('div');
+            childDiv.className = 'child-info border rounded-lg p-4 mb-4';
+            childDiv.innerHTML = `
+                <div class="flex justify-between items-center mb-3">
+                    <h4 class="font-medium text-gray-800">子女 ${childCount + 1}</h4>
+                    <button type="button" class="text-red-600 hover:text-red-700" onclick="removeChild(this)">
+                        <span class="material-icons">delete</span>
+                    </button>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">子女姓名 *</label>
+                        <input type="text" name="childName[]" class="form-control" required>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">年級 *</label>
+                        <select name="childGrade[]" class="form-control" required>
+                            <option value="">請選擇年級</option>
+                            <option value="1">一年級</option>
+                            <option value="2">二年級</option>
+                            <option value="3">三年級</option>
+                            <option value="4">四年級</option>
+                            <option value="5">五年級</option>
+                            <option value="6">六年級</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">身分證字號 *</label>
+                        <input type="text" name="childIdNumber[]" class="form-control" required>
+                    </div>
+                </div>
+            `;
+            
+            container.appendChild(childDiv);
+        }
+
+        function removeChild(button) {
+            button.closest('.child-info').remove();
+        }
+
+        async function handleRegister() {
+            // 驗證表單
+            if (!validateForm()) {
+                return;
+            }
+
+            const formData = new FormData(document.getElementById('registerForm'));
+            const data = Object.fromEntries(formData.entries());
+
+            try {
+                // 顯示載入狀態
+                setLoadingState(true);
+                clearErrors();
+
+                // 執行註冊
+                const success = await parentAuth.register(data);
+                
+                if (success) {
+                    showSuccessMessage('註冊成功！正在跳轉到登入頁面...');
+                    setTimeout(() => {
+                        window.location.href = 'login.html';
+                    }, 2000);
+                }
+            } catch (error) {
+                console.error('註冊錯誤:', error);
+                showErrorMessage('註冊失敗，請稍後重試');
+            } finally {
+                setLoadingState(false);
+            }
+        }
+
+        function validateForm() {
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            
+            if (password !== confirmPassword) {
+                showFieldError(document.getElementById('confirmPassword'), '密碼不一致');
+                return false;
+            }
+            
+            if (password.length < 6) {
+                showFieldError(document.getElementById('password'), '密碼至少需要6個字元');
+                return false;
+            }
+            
+            return true;
+        }
+
+        function showFieldError(input, message) {
+            const errorDiv = document.createElement('div');
+            errorDiv.className = 'text-red-600 text-sm mt-1';
+            errorDiv.textContent = message;
+            
+            input.classList.add('border-red-500');
+            input.parentNode.appendChild(errorDiv);
+        }
+
+        function clearFieldError(input) {
+            input.classList.remove('border-red-500');
+            const errorDiv = input.parentNode.querySelector('.text-red-600');
+            if (errorDiv) {
+                errorDiv.remove();
+            }
+        }
+
+        function clearErrors() {
+            document.querySelectorAll('.text-red-600').forEach(error => error.remove());
+            document.querySelectorAll('.border-red-500').forEach(input => input.classList.remove('border-red-500'));
+        }
+
+        function setLoadingState(loading) {
+            const registerBtn = document.getElementById('registerBtn');
+            const loadingIndicator = document.getElementById('loadingIndicator');
+            
+            if (loading) {
+                registerBtn.disabled = true;
+                registerBtn.innerHTML = '<span class="material-icons mr-2">hourglass_empty</span>處理中...';
+                loadingIndicator.classList.remove('hidden');
+            } else {
+                registerBtn.disabled = false;
+                registerBtn.innerHTML = '<span class="material-icons mr-2">person_add</span>註冊帳號';
+                loadingIndicator.classList.add('hidden');
+            }
+        }
+
+        function showSuccessMessage(message) {
+            showNotification(message, 'success');
+        }
+
+        function showErrorMessage(message) {
+            showNotification(message, 'error');
+        }
+
+        function quickRegister(type) {
+            const formData = {
+                'parent1': {
+                    name: '張小明',
+                    idNumber: 'A123456789',
+                    email: 'zhang@example.com',
+                    phone: '0912-345-678',
+                    address: '台北市信義區信義路五段7號',
+                    password: 'password123',
+                    confirmPassword: 'password123',
+                    childName: ['張小明'],
+                    childGrade: ['3'],
+                    childIdNumber: ['B123456789']
+                },
+                'parent2': {
+                    name: '李小華',
+                    idNumber: 'C123456789',
+                    email: 'li@example.com',
+                    phone: '0923-456-789',
+                    address: '台北市大安區忠孝東路四段1號',
+                    password: 'password123',
+                    confirmPassword: 'password123',
+                    childName: ['李小華'],
+                    childGrade: ['1'],
+                    childIdNumber: ['D123456789']
+                }
+            };
+
+            const data = formData[type];
+            if (data) {
+                // 填充表單
+                Object.keys(data).forEach(key => {
+                    const element = document.getElementById(key) || document.querySelector(`[name="${key}"]`);
+                    if (element) {
+                        element.value = data[key];
+                    }
+                });
+
+                // 勾選同意條款
+                document.getElementById('agreeTerms').checked = true;
+                document.getElementById('agreeMarketing').checked = true;
+
+                showNotification('表單已自動填充，請檢查資料後點擊註冊', 'info');
+            }
+        }
+    </script>
+</body>
+</html> 

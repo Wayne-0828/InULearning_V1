@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>練習結果 - InU Learning【因你而學】</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"/>
+    <link rel="stylesheet" href="../css/main.css">
+    <style>
+        body {
+            font-family: 'Noto Sans TC', sans-serif;
+        }
+        .scrollbar-hide::-webkit-scrollbar {
+            display: none;
+        }
+        .scrollbar-hide {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 flex">
+    <!-- 側邊欄 -->
+    <aside class="w-64 h-screen bg-blue-800 text-white flex flex-col fixed">
+        <div class="p-6 text-center">
+            <div class="bg-yellow-400 rounded-full w-20 h-20 flex items-center justify-center mx-auto mb-4">
+                <span class="text-blue-800 font-bold text-lg">InU<br/>Learning</span>
+            </div>
+            <h1 class="text-xl font-bold">InU Learning</h1>
+            <p class="text-sm text-blue-300">【因你而學】</p>
+        </div>
+        <nav class="flex-grow">
+            <ul>
+                <li class="mb-2">
+                    <a class="flex items-center p-4 bg-blue-600 rounded-lg mx-4" href="../index.html">
+                        <span class="material-icons mr-3">school</span>
+                        學生練習專區
+                    </a>
+                </li>
+                <li class="mb-2">
+                    <a class="flex items-center p-4 hover:bg-blue-700 rounded-lg mx-4" href="dashboard.html">
+                        <span class="material-icons mr-3">dashboard</span>
+                        學習儀表板
+                    </a>
+                </li>
+                <li class="mb-2">
+                    <a class="flex items-center p-4 hover:bg-blue-700 rounded-lg mx-4" href="exercise.html">
+                        <span class="material-icons mr-3">quiz</span>
+                        開始練習
+                    </a>
+                </li>
+                <li>
+                    <a class="flex items-center p-4 hover:bg-blue-700 rounded-lg mx-4" href="history.html">
+                        <span class="material-icons mr-3">history</span>
+                        學習歷程
+                    </a>
+                </li>
+            </ul>
+        </nav>
+        <div class="p-4 border-t border-blue-700">
+            <button id="logoutBtn" class="w-full flex items-center px-4 py-2 text-gray-100 hover:bg-blue-700 rounded-lg">
+                <span class="material-icons">logout</span>
+                <span class="ml-3">登出</span>
+            </button>
+        </div>
+    </aside>
+
+    <!-- 主要內容區 -->
+    <div class="ml-64 flex-1 flex flex-col min-h-screen">
+        <!-- 頂部導航 -->
+        <header class="bg-white shadow-sm p-4 flex justify-between items-center w-full sticky top-0 z-10">
+            <div class="flex items-center space-x-4">
+                <div class="text-sm text-gray-600">
+                    <span>練習會話：</span>
+                    <span id="sessionId" class="font-medium"></span>
+                </div>
+            </div>
+            <div class="flex items-center space-x-4">
+                <div id="userInfo" class="hidden">
+                    <span class="text-sm text-gray-600">歡迎，</span>
+                    <span id="userName" class="text-sm font-medium text-blue-600"></span>
+                </div>
+                <div id="authButtons">
+                    <a class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors" href="login.html">登入</a>
+                    <a class="bg-gray-200 text-gray-800 px-4 py-2 rounded-lg hover:bg-gray-300 transition-colors" href="register.html">註冊</a>
+                </div>
+            </div>
+        </header>
+
+        <!-- 主要內容 -->
+        <main class="flex-1 p-8">
+            <!-- 結果摘要 -->
+            <div class="bg-white rounded-2xl shadow-lg p-8 mb-8">
+                <h2 class="text-3xl font-bold text-center mb-6">練習結果</h2>
+                
+                <!-- 成績統計 -->
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+                    <div class="bg-blue-50 p-6 rounded-lg text-center">
+                        <div class="text-3xl font-bold text-blue-600 mb-2" id="totalScore">0</div>
+                        <div class="text-sm text-gray-600">總分</div>
+                    </div>
+                    <div class="bg-green-50 p-6 rounded-lg text-center">
+                        <div class="text-3xl font-bold text-green-600 mb-2" id="correctCount">0</div>
+                        <div class="text-sm text-gray-600">正確題數</div>
+                    </div>
+                    <div class="bg-orange-50 p-6 rounded-lg text-center">
+                        <div class="text-3xl font-bold text-orange-600 mb-2" id="accuracyRate">0%</div>
+                        <div class="text-sm text-gray-600">正確率</div>
+                    </div>
+                    <div class="bg-purple-50 p-6 rounded-lg text-center">
+                        <div class="text-3xl font-bold text-purple-600 mb-2" id="timeSpent">0:00</div>
+                        <div class="text-sm text-gray-600">用時</div>
+                    </div>
+                </div>
+
+                <!-- 操作按鈕 -->
+                <div class="flex justify-center space-x-4 mb-8">
+                    <button onclick="location.href='exercise.html'" class="bg-blue-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-700 flex items-center">
+                        <span class="material-icons mr-2">refresh</span>
+                        再次練習
+                    </button>
+                    <button onclick="location.href='dashboard.html'" class="bg-green-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-green-700 flex items-center">
+                        <span class="material-icons mr-2">dashboard</span>
+                        查看分析
+                    </button>
+                    <button onclick="location.href='history.html'" class="bg-gray-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-gray-700 flex items-center">
+                        <span class="material-icons mr-2">history</span>
+                        學習歷程
+                    </button>
+                </div>
+            </div>
+
+            <!-- 題目導航 -->
+            <div class="bg-white rounded-2xl shadow-lg p-8 mb-8">
+                <h3 class="text-xl font-bold mb-4">題目導航</h3>
+                <div class="relative mb-6">
+                    <div class="overflow-x-auto scrollbar-hide pb-4">
+                        <div id="questionNav" class="flex space-x-2 w-max mx-auto">
+                            <!-- 題目導航將由 JavaScript 動態生成 -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 當前題目詳解 -->
+            <div class="bg-white rounded-2xl shadow-lg p-8">
+                <div class="flex justify-between items-center mb-6">
+                    <h3 class="text-xl font-bold">題目詳解</h3>
+                    <div class="flex space-x-2">
+                        <button id="prevQuestionBtn" class="bg-gray-200 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-300 flex items-center">
+                            <span class="material-icons mr-1">arrow_back</span>
+                            上一題
+                        </button>
+                        <button id="nextQuestionBtn" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 flex items-center">
+                            下一題
+                            <span class="material-icons ml-1">arrow_forward</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- 題目內容 -->
+                <div id="currentQuestionContent" class="bg-gray-100 p-6 rounded-lg mb-6">
+                    <p class="text-lg text-gray-800">載入題目中...</p>
+                </div>
+
+                <!-- 選項與答案 -->
+                <div id="currentOptions" class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                    <!-- 選項將由 JavaScript 動態生成 -->
+                </div>
+
+                <!-- 詳解 -->
+                <div id="explanation" class="bg-green-50 border border-green-200 p-6 rounded-lg mb-6">
+                    <h4 class="text-lg font-semibold text-green-800 mb-2">詳解：</h4>
+                    <p class="text-gray-700">載入詳解中...</p>
+                </div>
+
+                <!-- AI 弱點分析 -->
+                <div id="weaknessAnalysis" class="bg-blue-50 border border-blue-200 p-6 rounded-lg mb-6">
+                    <h4 class="text-lg font-semibold text-blue-800 mb-2">AI 弱點分析：</h4>
+                    <div id="weaknessContent" class="text-gray-700">
+                        <p>載入 AI 分析中...</p>
+                    </div>
+                </div>
+
+                <!-- 學習建議 -->
+                <div id="learningRecommendations" class="bg-purple-50 border border-purple-200 p-6 rounded-lg">
+                    <h4 class="text-lg font-semibold text-purple-800 mb-2">學習建議：</h4>
+                    <div id="recommendationsContent" class="text-gray-700">
+                        <p>載入學習建議中...</p>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="../js/utils/auth.js"></script>
+    <script src="../js/api/learning.js"></script>
+    <script src="../js/api/ai-analysis.js"></script>
+    <script src="../js/pages/result.js"></script>
+</body>
+</html> 
