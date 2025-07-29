@@ -6,8 +6,8 @@
 // 學習相關 API 客戶端
 class LearningAPI {
     constructor() {
-        this.baseURL = 'http://localhost:8003/api/v1/learning';
-        this.questionBankURL = 'http://localhost:8002/api/v1/questions';
+        this.baseURL = '/api/v1/learning';
+        this.questionBankURL = '/api/v1/questions';
     }
 
     // 獲取認證頭
@@ -17,6 +17,63 @@ class LearningAPI {
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${token}`
         };
+    }
+
+    // 檢查題庫數量
+    async checkQuestionBank(conditions) {
+        try {
+            // 暫時使用基本的題目列表 API 來檢查題庫
+            const response = await fetch(`${this.questionBankURL}/?limit=100`, {
+                method: 'GET',
+                headers: this.getAuthHeaders()
+            });
+            
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            
+            const result = await response.json();
+            const count = result.total || 0;
+            
+            return {
+                success: true,
+                data: { count: count }
+            };
+        } catch (error) {
+            console.error('檢查題庫失敗:', error);
+            return {
+                success: false,
+                error: error.message
+            };
+        }
+    }
+
+    // 根據條件獲取題目
+    async getQuestionsByConditions(conditions) {
+        try {
+            // 暫時使用基本的題目列表 API
+            const limit = conditions.questionCount || '10';
+            const response = await fetch(`${this.questionBankURL}/?limit=${limit}`, {
+                method: 'GET',
+                headers: this.getAuthHeaders()
+            });
+            
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            
+            const result = await response.json();
+            return {
+                success: true,
+                data: result.items || []
+            };
+        } catch (error) {
+            console.error('獲取題目失敗:', error);
+            return {
+                success: false,
+                error: error.message
+            };
+        }
     }
 
     // 獲取隨機題目
@@ -124,6 +181,33 @@ class LearningAPI {
             };
         } catch (error) {
             console.error('提交答案失敗:', error);
+            return {
+                success: false,
+                error: error.message
+            };
+        }
+    }
+
+    // 提交完整的練習結果（包含PostgreSQL記錄）
+    async submitExerciseResult(resultData) {
+        try {
+            const response = await fetch(`${this.baseURL}/exercises/complete`, {
+                method: 'POST',
+                headers: this.getAuthHeaders(),
+                body: JSON.stringify(resultData)
+            });
+            
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            
+            const result = await response.json();
+            return {
+                success: true,
+                data: result
+            };
+        } catch (error) {
+            console.error('提交練習結果失敗:', error);
             return {
                 success: false,
                 error: error.message

@@ -41,6 +41,12 @@ class ResultPage {
         
         this.examResults = JSON.parse(resultsData);
         console.log('載入考試結果:', this.examResults);
+
+        // 更新會話ID顯示
+        const sessionIdElement = document.getElementById('sessionId');
+        if (sessionIdElement) {
+            sessionIdElement.textContent = `RESULT-${Date.now()}`;
+        }
     }
 
     /**
@@ -66,8 +72,11 @@ class ResultPage {
         // 顯示總體分數
         this.displayOverallScore();
         
-        // 顯示詳細結果
-        this.displayDetailedResults();
+        // 創建題目導航
+        this.createQuestionNavigation();
+        
+        // 顯示第一題詳解
+        this.displayQuestionDetail(0);
         
         // 顯示時間統計
         this.displayTimeStats();
@@ -77,153 +86,223 @@ class ResultPage {
      * 顯示總體分數
      */
     displayOverallScore() {
-        const scoreElement = document.getElementById('overallScore');
+        const totalScoreElement = document.getElementById('totalScore');
         const correctCountElement = document.getElementById('correctCount');
-        const totalQuestionsElement = document.getElementById('totalQuestions');
-        const wrongCountElement = document.getElementById('wrongCount');
+        const accuracyRateElement = document.getElementById('accuracyRate');
+        const timeSpentElement = document.getElementById('timeSpent');
 
-        if (scoreElement) {
-            scoreElement.textContent = this.examResults.score;
+        if (totalScoreElement) {
+            totalScoreElement.textContent = this.examResults.score || 0;
         }
         
         if (correctCountElement) {
-            correctCountElement.textContent = this.examResults.correctAnswers;
+            correctCountElement.textContent = this.examResults.correctAnswers || 0;
         }
         
-        if (totalQuestionsElement) {
-            totalQuestionsElement.textContent = this.examResults.totalQuestions;
+        if (accuracyRateElement) {
+            const accuracy = this.examResults.accuracy || this.examResults.score || 0;
+            accuracyRateElement.textContent = `${accuracy}%`;
         }
         
-        if (wrongCountElement) {
-            wrongCountElement.textContent = this.examResults.wrongAnswers;
-        }
-
-        // 根據分數設置顏色
-        const scoreCard = document.querySelector('.score-card');
-        if (scoreCard) {
-            if (this.examResults.score >= 80) {
-                scoreCard.classList.add('bg-green-50', 'border-green-200');
-            } else if (this.examResults.score >= 60) {
-                scoreCard.classList.add('bg-yellow-50', 'border-yellow-200');
-            } else {
-                scoreCard.classList.add('bg-red-50', 'border-red-200');
-            }
+        if (timeSpentElement && this.examResults.timeSpent) {
+            const minutes = Math.floor(this.examResults.timeSpent / 60);
+            const seconds = this.examResults.timeSpent % 60;
+            timeSpentElement.textContent = `${minutes}:${seconds.toString().padStart(2, '0')}`;
         }
     }
 
     /**
-     * 顯示詳細結果
+     * 創建題目導航
      */
-    displayDetailedResults() {
-        const detailContainer = document.getElementById('detailResults');
-        if (!detailContainer || !this.examResults.detailedResults) {
+    createQuestionNavigation() {
+        const questionNav = document.getElementById('questionNav');
+        if (!questionNav || !this.examResults.detailedResults) {
             return;
         }
 
-        let html = '';
+        questionNav.innerHTML = '';
+        
         this.examResults.detailedResults.forEach((result, index) => {
-            const statusClass = result.isCorrect ? 'border-green-200 bg-green-50' : 'border-red-200 bg-red-50';
-            const statusIcon = result.isCorrect ? '✅' : '❌';
+            const navButton = document.createElement('button');
+            navButton.className = `w-10 h-10 rounded-full border-2 text-sm font-medium transition-colors ${
+                result.isCorrect 
+                    ? 'bg-green-100 border-green-300 text-green-800 hover:bg-green-200' 
+                    : 'bg-red-100 border-red-300 text-red-800 hover:bg-red-200'
+            }`;
+            navButton.textContent = index + 1;
+            navButton.addEventListener('click', () => this.displayQuestionDetail(index));
             
-            html += `
-                <div class="question-result border-2 ${statusClass} rounded-lg p-4 mb-4">
-                    <div class="flex items-start justify-between mb-3">
-                        <h3 class="font-semibold text-lg">第 ${index + 1} 題 ${statusIcon}</h3>
-                        <span class="text-sm text-gray-500">得分: ${result.isCorrect ? '1' : '0'}/1</span>
-                    </div>
-                    
-                    <div class="question-text mb-4 p-3 bg-white rounded border">
-                        <p class="text-gray-800">${result.questionText}</p>
-                    </div>
-
-                    <div class="options mb-4">
-                        ${result.options.map((option, optIndex) => {
-                            let optionClass = 'bg-white border';
-                            if (optIndex === result.correctAnswer) {
-                                optionClass = 'bg-green-100 border-green-300'; // 正確答案
-                            }
-                            if (optIndex === result.userAnswer && !result.isCorrect) {
-                                optionClass = 'bg-red-100 border-red-300'; // 用戶錯誤答案
-                            }
-                            if (optIndex === result.userAnswer && result.isCorrect) {
-                                optionClass = 'bg-green-100 border-green-300'; // 用戶正確答案
-                            }
-                            
-                            const prefix = String.fromCharCode(65 + optIndex); // A, B, C, D
-                            return `
-                                <div class="option p-2 rounded mb-2 ${optionClass}">
-                                    <span class="font-medium">${prefix}.</span> ${option}
-                                    ${optIndex === result.correctAnswer ? ' <span class="text-green-600">(正確答案)</span>' : ''}
-                                    ${optIndex === result.userAnswer && !result.isCorrect ? ' <span class="text-red-600">(您的選擇)</span>' : ''}
-                                </div>
-                            `;
-                        }).join('')}
-                    </div>
-
-                    <div class="answer-summary mb-3 p-3 bg-gray-50 rounded">
-                        <p><strong>您的答案：</strong> ${result.userAnswerText}</p>
-                        <p><strong>正確答案：</strong> ${result.correctAnswerText}</p>
-                    </div>
-
-                    ${result.explanation ? `
-                        <div class="explanation p-3 bg-blue-50 rounded border-l-4 border-blue-400">
-                            <h4 class="font-medium text-blue-800 mb-2">詳解：</h4>
-                            <p class="text-blue-700">${result.explanation}</p>
-                        </div>
-                    ` : ''}
-                </div>
-            `;
+            questionNav.appendChild(navButton);
         });
+    }
 
-        detailContainer.innerHTML = html;
+    /**
+     * 顯示題目詳解
+     */
+    displayQuestionDetail(index) {
+        if (!this.examResults.detailedResults || index < 0 || index >= this.examResults.detailedResults.length) {
+            return;
+        }
+
+        this.currentDetailIndex = index;
+        const result = this.examResults.detailedResults[index];
+
+        // 更新題目內容
+        const questionContent = document.getElementById('currentQuestionContent');
+        if (questionContent) {
+            questionContent.innerHTML = `
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-xl font-bold">第 ${index + 1} 題</h3>
+                    <span class="px-3 py-1 rounded-full text-sm font-medium ${
+                        result.isCorrect 
+                            ? 'bg-green-100 text-green-800' 
+                            : 'bg-red-100 text-red-800'
+                    }">
+                        ${result.isCorrect ? '✓ 正確' : '✗ 錯誤'}
+                    </span>
+                </div>
+                <p class="text-lg text-gray-800">${result.questionText}</p>
+            `;
+        }
+
+        // 更新選項
+        const optionsContainer = document.getElementById('currentOptions');
+        if (optionsContainer && result.options) {
+            optionsContainer.innerHTML = '';
+            
+            result.options.forEach((option, optionIndex) => {
+                const optionElement = document.createElement('div');
+                let optionClass = 'flex items-center p-4 border rounded-lg mb-3';
+                
+                if (optionIndex === result.correctAnswer) {
+                    optionClass += ' bg-green-50 border-green-300';
+                } else if (optionIndex === result.userAnswer && !result.isCorrect) {
+                    optionClass += ' bg-red-50 border-red-300';
+                } else {
+                    optionClass += ' bg-gray-50 border-gray-200';
+                }
+                
+                optionElement.className = optionClass;
+                
+                const optionLetter = String.fromCharCode(65 + optionIndex);
+                let statusIcon = '';
+                
+                if (optionIndex === result.correctAnswer) {
+                    statusIcon = '<span class="ml-2 text-green-600 font-medium">(正確答案)</span>';
+                } else if (optionIndex === result.userAnswer && !result.isCorrect) {
+                    statusIcon = '<span class="ml-2 text-red-600 font-medium">(您的選擇)</span>';
+                }
+                
+                optionElement.innerHTML = `
+                    <span class="font-medium text-gray-700 mr-3">${optionLetter}.</span>
+                    <span class="flex-1">${option}</span>
+                    ${statusIcon}
+                `;
+                
+                optionsContainer.appendChild(optionElement);
+            });
+        }
+
+        // 更新詳解
+        const explanationElement = document.getElementById('explanation');
+        if (explanationElement) {
+            if (result.explanation && result.explanation !== '暫無解析') {
+                explanationElement.innerHTML = `
+                    <h4 class="text-lg font-semibold text-green-800 mb-2">詳解：</h4>
+                    <p class="text-gray-700">${result.explanation}</p>
+                `;
+                explanationElement.classList.remove('hidden');
+            } else {
+                explanationElement.innerHTML = `
+                    <h4 class="text-lg font-semibold text-green-800 mb-2">詳解：</h4>
+                    <p class="text-gray-700">暫無詳細解析</p>
+                `;
+            }
+        }
+
+        // 更新導航按鈕狀態
+        this.updateNavigationButtons();
+        
+        // 更新題目導航高亮
+        this.updateQuestionNavigation();
+    }
+
+    /**
+     * 更新導航按鈕狀態
+     */
+    updateNavigationButtons() {
+        const prevBtn = document.getElementById('prevQuestionBtn');
+        const nextBtn = document.getElementById('nextQuestionBtn');
+        
+        if (prevBtn) {
+            prevBtn.disabled = this.currentDetailIndex === 0;
+            prevBtn.classList.toggle('opacity-50', this.currentDetailIndex === 0);
+        }
+        
+        if (nextBtn) {
+            const isLast = this.currentDetailIndex === this.examResults.detailedResults.length - 1;
+            nextBtn.disabled = isLast;
+            nextBtn.classList.toggle('opacity-50', isLast);
+        }
+    }
+
+    /**
+     * 更新題目導航高亮
+     */
+    updateQuestionNavigation() {
+        const questionNav = document.getElementById('questionNav');
+        if (!questionNav) return;
+
+        const navButtons = questionNav.querySelectorAll('button');
+        navButtons.forEach((button, index) => {
+            if (index === this.currentDetailIndex) {
+                button.classList.add('ring-2', 'ring-blue-500');
+            } else {
+                button.classList.remove('ring-2', 'ring-blue-500');
+            }
+        });
     }
 
     /**
      * 顯示時間統計
      */
     displayTimeStats() {
-        const timeSpentElement = document.getElementById('timeSpent');
-        if (timeSpentElement && this.examResults.timeSpent) {
-            const minutes = Math.floor(this.examResults.timeSpent / 60);
-            const seconds = this.examResults.timeSpent % 60;
-            timeSpentElement.textContent = `${minutes}分${seconds}秒`;
-        }
-
-        const submittedAtElement = document.getElementById('submittedAt');
-        if (submittedAtElement && this.examResults.submittedAt) {
-            const date = new Date(this.examResults.submittedAt);
-            submittedAtElement.textContent = date.toLocaleString('zh-TW');
-        }
+        // 時間統計已在 displayOverallScore 中處理
     }
 
     /**
      * 綁定事件
      */
     bindEvents() {
-        // 返回練習按鈕
-        const backToExerciseBtn = document.getElementById('backToExercise');
-        if (backToExerciseBtn) {
-            backToExerciseBtn.addEventListener('click', () => {
-                window.location.href = '../pages/exercise.html';
+        // 上一題按鈕
+        const prevBtn = document.getElementById('prevQuestionBtn');
+        if (prevBtn) {
+            prevBtn.addEventListener('click', () => {
+                if (this.currentDetailIndex > 0) {
+                    this.displayQuestionDetail(this.currentDetailIndex - 1);
+                }
             });
         }
 
-        // 重新考試按鈕
-        const retakeExamBtn = document.getElementById('retakeExam');
-        if (retakeExamBtn) {
-            retakeExamBtn.addEventListener('click', () => {
-                // 清除當前結果
-                sessionStorage.removeItem('examResults');
-                // 返回練習頁面
-                window.location.href = '../pages/exercise.html';
+        // 下一題按鈕
+        const nextBtn = document.getElementById('nextQuestionBtn');
+        if (nextBtn) {
+            nextBtn.addEventListener('click', () => {
+                if (this.currentDetailIndex < this.examResults.detailedResults.length - 1) {
+                    this.displayQuestionDetail(this.currentDetailIndex + 1);
+                }
             });
         }
 
-        // 查看歷史按鈕
-        const viewHistoryBtn = document.getElementById('viewHistory');
-        if (viewHistoryBtn) {
-            viewHistoryBtn.addEventListener('click', () => {
-                window.location.href = '../pages/history.html';
+        // 登出按鈕
+        const logoutBtn = document.getElementById('logoutBtn');
+        if (logoutBtn) {
+            logoutBtn.addEventListener('click', () => {
+                if (typeof authManager !== 'undefined' && authManager.logout) {
+                    authManager.logout();
+                } else {
+                    window.location.href = '../index.html';
+                }
             });
         }
     }

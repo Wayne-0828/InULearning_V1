@@ -47,7 +47,30 @@
                 <h2 class="text-2xl font-bold text-gray-800 mb-6">設定練習條件</h2>
                 
                 <!-- 練習條件選擇 -->
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 mb-6">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">年級</label>
+                        <select id="gradeSelect" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                            <option value="">請選擇年級</option>
+                            <option value="7A">七年級上學期</option>
+                            <option value="7B">七年級下學期</option>
+                            <option value="8A">八年級上學期</option>
+                            <option value="8B">八年級下學期</option>
+                            <option value="9A">九年級上學期</option>
+                            <option value="9B">九年級下學期</option>
+                        </select>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">版本</label>
+                        <select id="editionSelect" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                            <option value="">請選擇版本</option>
+                            <option value="南一">南一</option>
+                            <option value="康軒">康軒</option>
+                            <option value="翰林">翰林</option>
+                        </select>
+                    </div>
+                    
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-2">科目</label>
                         <select id="subjectSelect" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500">
@@ -63,33 +86,16 @@
                     </div>
                     
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">年級</label>
-                        <select id="gradeSelect" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500">
-                            <option value="">請選擇年級</option>
-                            <option value="7A">國一</option>
-                            <option value="7B">國二</option>
-                            <option value="7C">國三</option>
-                        </select>
-                    </div>
-                    
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">難度</label>
-                        <select id="difficultySelect" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500">
-                            <option value="">請選擇難度</option>
-                            <option value="easy">簡單</option>
-                            <option value="normal">中等</option>
-                            <option value="hard">困難</option>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">章節</label>
+                        <select id="chapterSelect" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500" disabled>
+                            <option value="">請先選擇年級、版本和科目</option>
                         </select>
                     </div>
                     
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-2">題目數量</label>
-                        <select id="questionCountSelect" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500">
-                            <option value="5">5 題</option>
-                            <option value="10">10 題</option>
-                            <option value="15">15 題</option>
-                            <option value="20">20 題</option>
-                        </select>
+                        <input id="questionCountInput" type="number" min="1" max="50" value="10" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500" placeholder="1-50題">
+                        <div id="questionCountHint" class="text-xs text-gray-500 mt-1">可選擇1-50題</div>
                     </div>
                 </div>
 
@@ -98,8 +104,8 @@
                 </div>
 
                 <div class="text-center">
-                    <button id="loadQuestionsBtn" class="bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-8 rounded-lg transition duration-300 mr-4">
-                        載入題目
+                    <button id="checkQuestionsBtn" class="bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-8 rounded-lg transition duration-300 mr-4">
+                        檢查題庫
                     </button>
                     <button id="startExerciseBtn" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-8 rounded-lg transition duration-300 disabled:opacity-50 disabled:cursor-not-allowed" disabled>
                         開始練習
@@ -114,7 +120,7 @@
             <div class="bg-white rounded-lg shadow-md p-4 mb-6">
                 <div class="flex justify-between items-center mb-2">
                     <span class="text-sm font-medium text-blue-700">練習進度</span>
-                    <span id="progressText" class="text-sm text-gray-500">已完成 0 / 5 題</span>
+                    <span id="progressText" class="text-sm text-gray-500">已完成 0 / 10 題</span>
                 </div>
                 <div class="w-full bg-gray-200 rounded-full h-2.5">
                     <div id="exerciseProgress" class="bg-blue-600 h-2.5 rounded-full transition-all duration-300" style="width: 0%"></div>
@@ -162,6 +168,47 @@
     <!-- JavaScript -->
     <script src="../js/utils/auth.js"></script>
     <script src="../js/api/learning.js"></script>
+    <script>
+        // 認證檢查和初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            const authManager = new AuthManager();
+            
+            // 檢查是否已登入
+            if (!authManager.isLoggedIn()) {
+                console.log('用戶未登入，重定向到登入頁面');
+                window.location.href = '/login.html';
+                return;
+            }
+            
+            // 檢查用戶角色
+            const user = authManager.getUser();
+            if (user && user.role !== 'student') {
+                console.log('用戶角色不符，重定向到登入頁面');
+                window.location.href = '/login.html';
+                return;
+            }
+            
+            // 顯示用戶資訊
+            if (user) {
+                const userNameElement = document.getElementById('userName');
+                if (userNameElement) {
+                    userNameElement.textContent = user.name || user.email || '學生';
+                }
+            }
+            
+            // 登出按鈕事件
+            const logoutBtn = document.getElementById('logoutBtn');
+            if (logoutBtn) {
+                logoutBtn.addEventListener('click', function() {
+                    authManager.logout();
+                    window.location.href = '/login.html';
+                });
+            }
+            
+            // 初始化練習管理器
+            window.exerciseManager = new ExerciseManager();
+        });
+    </script>
     <script src="../js/pages/exercise.js"></script>
 </body>
 </html> 

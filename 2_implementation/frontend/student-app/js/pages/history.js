@@ -171,24 +171,36 @@ class HistoryManager {
         }
 
         sessionsList.innerHTML = this.records.map(record => {
-            const createdAt = new Date(record.created_at);
-            const completedAt = record.completed_at ? new Date(record.completed_at) : null;
+            const createdAt = new Date(record.created_at || record.completed_at);
             
             // 計算用時
-            let duration = '未完成';
-            if (completedAt) {
-                const durationMs = completedAt.getTime() - createdAt.getTime();
-                const minutes = Math.round(durationMs / 1000 / 60);
-                duration = `${minutes} 分鐘`;
+            let duration = '未記錄';
+            if (record.time_spent) {
+                const minutes = Math.floor(record.time_spent / 60);
+                const seconds = record.time_spent % 60;
+                duration = `${minutes}分${seconds}秒`;
             }
 
-            // 計算正確率
+            // 計算正確率和分數
             let accuracy = '未完成';
             let scoreDisplay = '未完成';
-            if (record.total_questions > 0 && record.correct_count !== undefined) {
-                const accuracyPercent = Math.round((record.correct_count / record.total_questions) * 100);
+            if (record.total_questions > 0) {
+                const correctCount = record.correct_answers || record.correct_count || 0;
+                const accuracyPercent = Math.round((correctCount / record.total_questions) * 100);
                 accuracy = `${accuracyPercent}%`;
-                scoreDisplay = `${record.correct_count}/${record.total_questions}`;
+                scoreDisplay = `${correctCount}/${record.total_questions}`;
+            }
+
+            // 構建標籤
+            const tags = [];
+            if (record.grade) {
+                tags.push(`<span class="px-2 py-1 text-xs bg-blue-100 text-blue-600 rounded-full">${this.getGradeDisplayName(record.grade)}</span>`);
+            }
+            if (record.edition) {
+                tags.push(`<span class="px-2 py-1 text-xs bg-green-100 text-green-600 rounded-full">${record.edition}</span>`);
+            }
+            if (record.chapter) {
+                tags.push(`<span class="px-2 py-1 text-xs bg-purple-100 text-purple-600 rounded-full">${this.truncateText(record.chapter, 10)}</span>`);
             }
 
             return `
@@ -202,12 +214,11 @@ class HistoryManager {
                                     </div>
                                 </div>
                                 <div class="flex-1">
-                                    <div class="flex items-center space-x-2">
+                                    <div class="flex items-center space-x-2 mb-1">
                                         <h4 class="text-sm font-medium text-gray-900">
-                                            ${record.subject || '未分類'} - ${record.session_type === 'exercise' ? '練習測驗' : '學習會話'}
+                                            ${record.subject || '未分類'} 練習測驗
                                         </h4>
-                                        ${record.difficulty ? `<span class="px-2 py-1 text-xs rounded-full ${this.getDifficultyColor(record.difficulty)}">${this.getDifficultyDisplayName(record.difficulty)}</span>` : ''}
-                                        ${record.grade ? `<span class="px-2 py-1 text-xs bg-gray-100 text-gray-600 rounded-full">${this.getGradeDisplayName(record.grade)}</span>` : ''}
+                                        ${tags.join('')}
                                     </div>
                                     <div class="mt-1 flex items-center space-x-4 text-sm text-gray-500">
                                         <span class="flex items-center">
@@ -229,11 +240,11 @@ class HistoryManager {
                         <div class="flex items-center space-x-6">
                             <div class="text-right">
                                 <div class="text-sm font-medium text-gray-900">${scoreDisplay}</div>
-                                <div class="text-sm text-gray-500">正確率</div>
+                                <div class="text-sm text-gray-500">正確題數</div>
                             </div>
                             <div class="text-right">
                                 <div class="text-lg font-bold ${this.getAccuracyColor(accuracy)}">${accuracy}</div>
-                                <div class="text-sm text-gray-500">得分</div>
+                                <div class="text-sm text-gray-500">正確率</div>
                             </div>
                             <div class="flex-shrink-0">
                                 <span class="material-icons text-gray-400">chevron_right</span>
@@ -250,10 +261,10 @@ class HistoryManager {
         if (sessionsList) {
             sessionsList.innerHTML = `
                 <div class="flex flex-col items-center justify-center py-12 text-gray-500">
-                    <span class="material-icons text-4xl mb-2">history_edu</span>
-                    <p class="text-lg font-medium">暫無練習記錄</p>
-                    <p class="text-sm mt-1">開始您的第一次練習吧！</p>
-                    <a href="exercise.html" class="mt-4 bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors">
+                    <span class="material-icons text-6xl mb-4">history_edu</span>
+                    <h3 class="text-lg font-medium mb-2">尚無練習記錄</h3>
+                    <p class="text-sm">開始您的第一次練習吧！</p>
+                    <a href="exercise.html" class="mt-4 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors">
                         開始練習
                     </a>
                 </div>
@@ -261,30 +272,102 @@ class HistoryManager {
         }
     }
 
-    viewRecordDetails(recordId) {
-        // 這裡可以實現查看詳細記錄的功能
-        // 暫時使用alert來顯示
-        const record = this.records.find(r => r.id === recordId);
-        if (record) {
-            alert(`練習記錄詳情：\n科目：${record.subject}\n題數：${record.total_questions}\n正確：${record.correct_count}\n時間：${this.formatDate(new Date(record.created_at))}`);
+    getGradeDisplayName(grade) {
+        const gradeMap = {
+            '7A': '七上',
+            '7B': '七下',
+            '8A': '八上',
+            '8B': '八下',
+            '9A': '九上',
+            '9B': '九下'
+        };
+        return gradeMap[grade] || grade;
+    }
+
+    getAccuracyColor(accuracy) {
+        if (accuracy === '未完成') return 'text-gray-500';
+        
+        const percent = parseInt(accuracy);
+        if (percent >= 80) return 'text-green-600';
+        if (percent >= 60) return 'text-yellow-600';
+        return 'text-red-600';
+    }
+
+    truncateText(text, maxLength) {
+        if (!text) return '';
+        if (text.length <= maxLength) return text;
+        return text.substring(0, maxLength) + '...';
+    }
+
+    formatDate(date) {
+        const now = new Date();
+        const diffTime = Math.abs(now - date);
+        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+        
+        if (diffDays === 1) {
+            return '今天';
+        } else if (diffDays === 2) {
+            return '昨天';
+        } else if (diffDays <= 7) {
+            return `${diffDays - 1} 天前`;
+        } else {
+            return date.toLocaleDateString('zh-TW');
         }
+    }
+
+    viewRecordDetails(recordId) {
+        // 查找記錄
+        const record = this.records.find(r => r.id === recordId);
+        if (!record) {
+            console.error('找不到記錄:', recordId);
+            return;
+        }
+
+        // 將記錄資料存儲到 sessionStorage 並跳轉到結果頁面
+        const resultData = {
+            score: record.score || Math.round((record.correct_answers || 0) / (record.total_questions || 1) * 100),
+            accuracy: Math.round((record.correct_answers || 0) / (record.total_questions || 1) * 100),
+            totalQuestions: record.total_questions || 0,
+            correctAnswers: record.correct_answers || record.correct_count || 0,
+            wrongAnswers: (record.total_questions || 0) - (record.correct_answers || record.correct_count || 0),
+            timeSpent: record.time_spent || 0,
+            submittedAt: record.completed_at || record.created_at,
+            sessionData: {
+                grade: record.grade,
+                edition: record.edition,
+                subject: record.subject,
+                chapter: record.chapter
+            },
+            detailedResults: record.detailed_results || [],
+            questions: record.questions || [],
+            userAnswers: record.user_answers || []
+        };
+
+        sessionStorage.setItem('examResults', JSON.stringify(resultData));
+        window.location.href = 'result.html';
     }
 
     updatePagination() {
         const totalPages = Math.ceil(this.totalRecords / this.pageSize);
         
-        const prevPageBtn = document.getElementById('prevPage');
-        const nextPageBtn = document.getElementById('nextPage');
-        const pageInfoEl = document.getElementById('pageInfo');
+        // 更新分頁資訊
+        const pageInfo = document.getElementById('pageInfo');
+        if (pageInfo) {
+            pageInfo.textContent = `第 ${this.currentPage} 頁，共 ${totalPages} 頁`;
+        }
 
-        if (prevPageBtn) {
-            prevPageBtn.disabled = this.currentPage <= 1;
+        // 更新按鈕狀態
+        const prevBtn = document.getElementById('prevPage');
+        const nextBtn = document.getElementById('nextPage');
+        
+        if (prevBtn) {
+            prevBtn.disabled = this.currentPage <= 1;
+            prevBtn.classList.toggle('opacity-50', this.currentPage <= 1);
         }
-        if (nextPageBtn) {
-            nextPageBtn.disabled = this.currentPage >= totalPages;
-        }
-        if (pageInfoEl) {
-            pageInfoEl.textContent = `第 ${this.currentPage} 頁，共 ${Math.max(1, totalPages)} 頁`;
+        
+        if (nextBtn) {
+            nextBtn.disabled = this.currentPage >= totalPages;
+            nextBtn.classList.toggle('opacity-50', this.currentPage >= totalPages);
         }
     }
 
@@ -303,86 +386,36 @@ class HistoryManager {
         }
     }
 
-    getDifficultyDisplayName(difficulty) {
-        const difficultyMap = {
-            'easy': '簡單',
-            'normal': '中等',
-            'hard': '困難'
-        };
-        return difficultyMap[difficulty] || difficulty;
-    }
-
-    getGradeDisplayName(grade) {
-        const gradeMap = {
-            '7A': '國一',
-            '7B': '國二',
-            '7C': '國三'
-        };
-        return gradeMap[grade] || grade;
-    }
-
-    getDifficultyColor(difficulty) {
-        const colorMap = {
-            'easy': 'bg-green-100 text-green-600',
-            'normal': 'bg-yellow-100 text-yellow-600',
-            'hard': 'bg-red-100 text-red-600'
-        };
-        return colorMap[difficulty] || 'bg-gray-100 text-gray-600';
-    }
-
-    getAccuracyColor(accuracy) {
-        if (accuracy === '未完成') return 'text-gray-500';
-        
-        const percent = parseInt(accuracy);
-        if (percent >= 80) return 'text-green-600';
-        if (percent >= 60) return 'text-yellow-600';
-        return 'text-red-600';
-    }
-
-    formatDate(date) {
-        const now = new Date();
-        const diffMs = now.getTime() - date.getTime();
-        const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
-
-        if (diffDays === 0) {
-            return `今天 ${date.toLocaleTimeString('zh-TW', { hour: '2-digit', minute: '2-digit' })}`;
-        } else if (diffDays === 1) {
-            return `昨天 ${date.toLocaleTimeString('zh-TW', { hour: '2-digit', minute: '2-digit' })}`;
-        } else if (diffDays < 7) {
-            return `${diffDays} 天前`;
-        } else {
-            return date.toLocaleDateString('zh-TW', { 
-                year: 'numeric', 
-                month: 'short', 
-                day: 'numeric',
-                hour: '2-digit',
-                minute: '2-digit'
-            });
-        }
-    }
-
     showLoading() {
         const sessionsList = document.getElementById('sessionsList');
         if (sessionsList) {
             sessionsList.innerHTML = `
                 <div class="flex items-center justify-center py-12 text-gray-500">
-                    <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-blue-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                    </svg>
-                    載入練習記錄中...
+                    <span class="material-icons animate-spin mr-2">refresh</span>
+                    載入中...
                 </div>
             `;
         }
     }
 
     hideLoading() {
-        // Loading會被displayRecords或displayEmptyRecords替換
+        // Loading 狀態由 displayRecords 或 displayEmptyRecords 覆蓋
     }
 
     showError(message) {
         console.error(message);
-        // 可以在這裡添加錯誤提示的UI
+        const sessionsList = document.getElementById('sessionsList');
+        if (sessionsList) {
+            sessionsList.innerHTML = `
+                <div class="flex flex-col items-center justify-center py-12 text-red-500">
+                    <span class="material-icons text-6xl mb-4">error</span>
+                    <p>${message}</p>
+                    <button onclick="historyManager.loadLearningRecords()" class="mt-4 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors">
+                        重新載入
+                    </button>
+                </div>
+            `;
+        }
     }
 }
 

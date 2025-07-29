@@ -194,7 +194,8 @@ services:
     networks:
       - inulearning_network
     volumes:
-      - ./files:/var/www/html/files
+      - ./files:/usr/share/nginx/html/files
+      - ./login.html:/usr/share/nginx/html/login.html
 
   # 管理員端前端
   admin-frontend:

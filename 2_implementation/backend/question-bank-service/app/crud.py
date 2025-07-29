@@ -295,17 +295,76 @@ class QuestionCRUD:
         if difficulty:
             query["difficulty"] = difficulty
         if knowledge_points:
-            query["knowledge_point"] = {"$in": knowledge_points}
+            query["knowledge_points"] = {"$in": knowledge_points}
         
         cursor = collection.find(query).limit(limit)
         
         questions = []
         async for question in cursor:
-            question["id"] = str(question["_id"])
-            del question["_id"]
-            questions.append(question)
+            # 字段映射：資料庫字段 -> API 模型字段
+            mapped_question = {
+                "id": str(question["_id"]),
+                "grade": question.get("grade"),
+                "subject": question.get("subject"),
+                "publisher": question.get("publisher"),
+                "chapter": question.get("chapter"),
+                "topic": question.get("topic", ""),
+                "knowledge_point": question.get("knowledge_points", []),  # 映射字段名
+                "difficulty": QuestionCRUD._map_difficulty(question.get("difficulty", "normal")),  # 映射難度值
+                "question": question.get("content", ""),  # 映射字段名
+                "question_type": QuestionCRUD._map_question_type(question.get("question_type", "multiple_choice")),  # 映射題型
+                "options": QuestionCRUD._map_options(question.get("options", [])),  # 映射選項格式
+                "answer": question.get("correct_answer", ""),  # 映射字段名
+                "explanation": question.get("explanation", ""),
+                "created_at": question.get("created_at") or datetime.utcnow(),
+                "updated_at": question.get("updated_at") or datetime.utcnow()
+            }
+            questions.append(mapped_question)
         
         return questions
+    
+    @staticmethod
+    def _map_difficulty(difficulty: str) -> str:
+        """映射難度值"""
+        difficulty_map = {
+            "簡單": "easy",
+            "普通": "normal", 
+            "困難": "hard",
+            "easy": "easy",
+            "normal": "normal",
+            "hard": "hard"
+        }
+        return difficulty_map.get(difficulty, "normal")
+    
+    @staticmethod
+    def _map_question_type(question_type: str) -> str:
+        """映射題型值"""
+        type_map = {
+            "選擇題": "multiple_choice",
+            "填空題": "fill_blank",
+            "簡答題": "short_answer",
+            "問答題": "essay",
+            "multiple_choice": "multiple_choice",
+            "fill_blank": "fill_blank",
+            "short_answer": "short_answer",
+            "essay": "essay"
+        }
+        return type_map.get(question_type, "multiple_choice")
+    
+    @staticmethod
+    def _map_options(options) -> Dict[str, str]:
+        """映射選項格式"""
+        if isinstance(options, dict):
+            return options
+        elif isinstance(options, list):
+            # 將陣列轉換為字典格式 A, B, C, D
+            option_dict = {}
+            labels = ['A', 'B', 'C', 'D', 'E', 'F']
+            for i, option in enumerate(options[:len(labels)]):
+                option_dict[labels[i]] = str(option)
+            return option_dict
+        else:
+            return {}
 
 
 class ChapterCRUD:
