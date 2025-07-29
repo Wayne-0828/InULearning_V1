@@ -1,145 +1,180 @@
 -- InULearning 測試資料初始化腳本
--- 版本: v1.0.0
+-- 版本: v1.2.0 (修正版 - 符合實際資料庫結構)
 -- 作者: AIPE01_group2
 -- 日期: 2024-12-19
+-- 修正: 將UUID改為INTEGER以符合實際資料庫架構，並修正表結構
 
--- 插入測試用戶（學生、家長、教師）
-INSERT INTO users (id, username, email, hashed_password, role, is_active, created_at) VALUES
+-- 插入測試用戶（學生、家長、教師、管理員）
+INSERT INTO users (username, email, hashed_password, role, first_name, last_name, is_active, is_verified, created_at) VALUES
 -- 學生用戶
-('11111111-1111-1111-1111-111111111111', 'student01', 'student01@test.com', '$2b$12$LQv3c1yqBwkHrODDhf7OsudkjhKDaOGd1j3rQ1hCjKk4S.2uQ4z.2', 'student', true, NOW()),
-('11111111-1111-1111-1111-111111111112', 'student02', 'student02@test.com', '$2b$12$LQv3c1yqBwkHrODDhf7OsudkjhKDaOGd1j3rQ1hCjKk4S.2uQ4z.2', 'student', true, NOW()),
-('11111111-1111-1111-1111-111111111113', 'student03', 'student03@test.com', '$2b$12$LQv3c1yqBwkHrODDhf7OsudkjhKDaOGd1j3rQ1hCjKk4S.2uQ4z.2', 'student', true, NOW()),
-('11111111-1111-1111-1111-111111111114', 'student04', 'student04@test.com', '$2b$12$LQv3c1yqBwkHrODDhf7OsudkjhKDaOGd1j3rQ1hCjKk4S.2uQ4z.2', 'student', true, NOW()),
-('11111111-1111-1111-1111-111111111115', 'student05', 'student05@test.com', '$2b$12$LQv3c1yqBwkHrODDhf7OsudkjhKDaOGd1j3rQ1hCjKk4S.2uQ4z.2', 'student', true, NOW()),
+('student01', 'student01@test.com', '$2b$12$80NUNl/aAMIfCCfbqbRc7e0ADOB81Ibbv1LWHNe7FytsweVw5ySNm', 'student', '王小明', '01', true, true, NOW()),
+('student02', 'student02@test.com', '$2b$12$80NUNl/aAMIfCCfbqbRc7e0ADOB81Ibbv1LWHNe7FytsweVw5ySNm', 'student', '李小華', '02', true, true, NOW()),
+('student03', 'student03@test.com', '$2b$12$80NUNl/aAMIfCCfbqbRc7e0ADOB81Ibbv1LWHNe7FytsweVw5ySNm', 'student', '張小美', '03', true, true, NOW()),
+('student04', 'student04@test.com', '$2b$12$80NUNl/aAMIfCCfbqbRc7e0ADOB81Ibbv1LWHNe7FytsweVw5ySNm', 'student', '陳小強', '04', true, true, NOW()),
+('student05', 'student05@test.com', '$2b$12$80NUNl/aAMIfCCfbqbRc7e0ADOB81Ibbv1LWHNe7FytsweVw5ySNm', 'student', '林小雅', '05', true, true, NOW()),
 
 -- 家長用戶
-('22222222-2222-2222-2222-222222222221', 'parent01', 'parent01@test.com', '$2b$12$LQv3c1yqBwkHrODDhf7OsudkjhKDaOGd1j3rQ1hCjKk4S.2uQ4z.2', 'parent', true, NOW()),
-('22222222-2222-2222-2222-222222222222', 'parent02', 'parent02@test.com', '$2b$12$LQv3c1yqBwkHrODDhf7OsudkjhKDaOGd1j3rQ1hCjKk4S.2uQ4z.2', 'parent', true, NOW()),
-('22222222-2222-2222-2222-222222222223', 'parent03', 'parent03@test.com', '$2b$12$LQv3c1yqBwkHrODDhf7OsudkjhKDaOGd1j3rQ1hCjKk4S.2uQ4z.2', 'parent', true, NOW()),
+('parent01', 'parent01@test.com', '$2b$12$80NUNl/aAMIfCCfbqbRc7e0ADOB81Ibbv1LWHNe7FytsweVw5ySNm', 'parent', '王大明', '家長', true, true, NOW()),
+('parent02', 'parent02@test.com', '$2b$12$80NUNl/aAMIfCCfbqbRc7e0ADOB81Ibbv1LWHNe7FytsweVw5ySNm', 'parent', '李大華', '家長', true, true, NOW()),
+('parent03', 'parent03@test.com', '$2b$12$80NUNl/aAMIfCCfbqbRc7e0ADOB81Ibbv1LWHNe7FytsweVw5ySNm', 'parent', '張大美', '家長', true, true, NOW()),
 
 -- 教師用戶
-('33333333-3333-3333-3333-333333333331', 'teacher01', 'teacher01@test.com', '$2b$12$LQv3c1yqBwkHrODDhf7OsudkjhKDaOGd1j3rQ1hCjKk4S.2uQ4z.2', 'teacher', true, NOW()),
-('33333333-3333-3333-3333-333333333332', 'teacher02', 'teacher02@test.com', '$2b$12$LQv3c1yqBwkHrODDhf7OsudkjhKDaOGd1j3rQ1hCjKk4S.2uQ4z.2', 'teacher', true, NOW()),
+('teacher01', 'teacher01@test.com', '$2b$12$80NUNl/aAMIfCCfbqbRc7e0ADOB81Ibbv1LWHNe7FytsweVw5ySNm', 'teacher', '林老師', '教師', true, true, NOW()),
+('teacher02', 'teacher02@test.com', '$2b$12$80NUNl/aAMIfCCfbqbRc7e0ADOB81Ibbv1LWHNe7FytsweVw5ySNm', 'teacher', '陳老師', '教師', true, true, NOW()),
 
 -- 管理員用戶
-('44444444-4444-4444-4444-444444444441', 'admin01', 'admin01@test.com', '$2b$12$LQv3c1yqBwkHrODDhf7OsudkjhKDaOGd1j3rQ1hCjKk4S.2uQ4z.2', 'admin', true, NOW());
+('admin01', 'admin01@test.com', '$2b$12$80NUNl/aAMIfCCfbqbRc7e0ADOB81Ibbv1LWHNe7FytsweVw5ySNm', 'admin', '系統管理員', '管理員', true, true, NOW())
 
--- 插入用戶檔案資料
-INSERT INTO user_profiles (user_id, real_name, grade, school, phone, address, preferences, created_at) VALUES
--- 學生檔案
-('11111111-1111-1111-1111-111111111111', '王小明', '8A', '台北市立中正國中', '0912345001', '台北市中正區', '{"preferred_difficulty": "normal", "study_reminders": true}', NOW()),
-('11111111-1111-1111-1111-111111111112', '李小華', '8A', '台北市立中正國中', '0912345002', '台北市中正區', '{"preferred_difficulty": "normal", "study_reminders": true}', NOW()),
-('11111111-1111-1111-1111-111111111113', '張小美', '8B', '台北市立中正國中', '0912345003', '台北市中正區', '{"preferred_difficulty": "easy", "study_reminders": true}', NOW()),
-('11111111-1111-1111-1111-111111111114', '陳小強', '9A', '台北市立大安國中', '0912345004', '台北市大安區', '{"preferred_difficulty": "hard", "study_reminders": false}', NOW()),
-('11111111-1111-1111-1111-111111111115', '林小雅', '9A', '台北市立大安國中', '0912345005', '台北市大安區', '{"preferred_difficulty": "normal", "study_reminders": true}', NOW()),
+ON CONFLICT (email) DO NOTHING;
 
--- 家長檔案
-('22222222-2222-2222-2222-222222222221', '王大明', NULL, NULL, '0912345101', '台北市中正區', '{"notification_preferences": "email", "dashboard_settings": "detailed"}', NOW()),
-('22222222-2222-2222-2222-222222222222', '李大華', NULL, NULL, '0912345102', '台北市中正區', '{"notification_preferences": "sms", "dashboard_settings": "summary"}', NOW()),
-('22222222-2222-2222-2222-222222222223', '張大美', NULL, NULL, '0912345103', '台北市大安區', '{"notification_preferences": "email", "dashboard_settings": "detailed"}', NOW()),
-
--- 教師檔案
-('33333333-3333-3333-3333-333333333331', '林老師', NULL, '台北市立中正國中', '0912345201', '台北市中正區', '{"class_management_style": "interactive", "grading_preferences": "detailed"}', NOW()),
-('33333333-3333-3333-3333-333333333332', '陳老師', NULL, '台北市立大安國中', '0912345202', '台北市大安區', '{"class_management_style": "traditional", "grading_preferences": "summary"}', NOW()),
-
--- 管理員檔案
-('44444444-4444-4444-4444-444444444441', '系統管理員', NULL, NULL, '0912345301', '台北市信義區', '{"admin_level": "super", "dashboard_access": "full"}', NOW());
-
--- 創建班級資料表
-CREATE TABLE IF NOT EXISTS classes (
-    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    name VARCHAR(100) NOT NULL,
-    grade VARCHAR(10) NOT NULL,
-    school VARCHAR(200) NOT NULL,
-    teacher_id UUID NOT NULL REFERENCES users(id),
-    academic_year VARCHAR(20) NOT NULL DEFAULT '2024-2025',
-    semester VARCHAR(10) NOT NULL DEFAULT '上學期',
-    subject VARCHAR(50) NOT NULL,
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+-- 建立家長學生關聯（使用實際的user id）
+INSERT INTO parent_child_relations (parent_id, child_id, relationship_type, is_active, created_at)
+SELECT 
+    p.id as parent_id,
+    s.id as child_id,
+    'parent' as relationship_type,
+    true as is_active,
+    NOW() as created_at
+FROM users p, users s 
+WHERE 
+    -- 王大明是王小明和李小華的父親
+    (p.email = 'parent01@test.com' AND s.email IN ('student01@test.com', 'student02@test.com')) OR
+    -- 李大華是張小美的母親
+    (p.email = 'parent02@test.com' AND s.email = 'student03@test.com') OR
+    -- 張大美是陳小強和林小雅的母親
+    (p.email = 'parent03@test.com' AND s.email IN ('student04@test.com', 'student05@test.com'))
+AND NOT EXISTS (
+    SELECT 1 FROM parent_child_relations pcr 
+    WHERE pcr.parent_id = p.id AND pcr.child_id = s.id
 );
 
--- 插入班級資料
-INSERT INTO classes (id, name, grade, school, teacher_id, subject) VALUES
-('aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa', '8A班數學', '8A', '台北市立中正國中', '33333333-3333-3333-3333-333333333331', '數學'),
-('bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb', '8B班數學', '8B', '台北市立中正國中', '33333333-3333-3333-3333-333333333331', '數學'),
-('cccccccc-cccc-cccc-cccc-cccccccccccc', '9A班數學', '9A', '台北市立大安國中', '33333333-3333-3333-3333-333333333332', '數學');
+-- 插入範例學習會話資料（使用learning_sessions表的實際結構）
+INSERT INTO learning_sessions (user_id, session_name, subject, grade, chapter, knowledge_points, question_count, status, created_at)
+SELECT 
+    u.id as user_id,
+    '數學基礎練習 - ' || u.first_name as session_name,
+    '數學' as subject,
+    '8年級' as grade,
+    '一元一次方程式' as chapter,
+    ARRAY['方程式求解', '移項運算', '基礎計算'] as knowledge_points,
+    10 as question_count,
+    'completed' as status,
+    NOW() - INTERVAL '1 hour' as created_at
+FROM users u 
+WHERE u.role = 'student' AND u.email LIKE 'student0%@test.com'
+LIMIT 3;
 
--- 創建家長學生關聯表
-CREATE TABLE IF NOT EXISTS parent_student_relationships (
-    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    parent_id UUID NOT NULL REFERENCES users(id),
-    student_id UUID NOT NULL REFERENCES users(id),
-    relationship VARCHAR(20) NOT NULL, -- '父親', '母親', '監護人'
-    verified BOOLEAN DEFAULT false,
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-    UNIQUE(parent_id, student_id)
-);
+-- 插入範例練習記錄（使用exercise_records表）
+INSERT INTO exercise_records (session_id, user_id, question_id, user_answer, correct_answer, is_correct, explanation, time_spent, created_at)
+SELECT 
+    ls.id as session_id,
+    ls.user_id,
+    'q_math_' || ls.user_id || '_' || generate_series as question_id,
+    CASE WHEN random() > 0.3 THEN 'A' ELSE 'B' END as user_answer,
+    'A' as correct_answer,
+    CASE WHEN random() > 0.3 THEN true ELSE false END as is_correct,
+    '這是一道基礎數學題目' as explanation,
+    120 + (random() * 180)::integer as time_spent, -- 120-300秒隨機
+    NOW() - INTERVAL '1 hour' as created_at
+FROM learning_sessions ls
+CROSS JOIN generate_series(1, 5) -- 每個會話生成5個記錄
+WHERE ls.user_id IN (SELECT id FROM users WHERE role = 'student' LIMIT 3);
 
--- 插入家長學生關聯
-INSERT INTO parent_student_relationships (parent_id, student_id, relationship, verified) VALUES
--- 王大明是王小明和李小華的父親
-('22222222-2222-2222-2222-222222222221', '11111111-1111-1111-1111-111111111111', '父親', true),
-('22222222-2222-2222-2222-222222222221', '11111111-1111-1111-1111-111111111112', '父親', true),
--- 李大華是張小美的母親
-('22222222-2222-2222-2222-222222222222', '11111111-1111-1111-1111-111111111113', '母親', true),
--- 張大美是陳小強和林小雅的母親
-('22222222-2222-2222-2222-222222222223', '11111111-1111-1111-1111-111111111114', '母親', true),
-('22222222-2222-2222-2222-222222222223', '11111111-1111-1111-1111-111111111115', '母親', true);
-
--- 創建學生班級關聯表
-CREATE TABLE IF NOT EXISTS student_class_enrollments (
-    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    student_id UUID NOT NULL REFERENCES users(id),
-    class_id UUID NOT NULL REFERENCES classes(id),
-    enrollment_date TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-    status VARCHAR(20) DEFAULT 'active', -- 'active', 'inactive', 'transferred'
-    UNIQUE(student_id, class_id)
-);
-
--- 插入學生班級關聯
-INSERT INTO student_class_enrollments (student_id, class_id) VALUES
--- 8A班學生
-('11111111-1111-1111-1111-111111111111', 'aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa'),
-('11111111-1111-1111-1111-111111111112', 'aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa'),
--- 8B班學生
-('11111111-1111-1111-1111-111111111113', 'bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb'),
--- 9A班學生
-('11111111-1111-1111-1111-111111111114', 'cccccccc-cccc-cccc-cccc-cccccccccccc'),
-('11111111-1111-1111-1111-111111111115', 'cccccccc-cccc-cccc-cccc-cccccccccccc');
-
--- 插入範例學習會話資料
-INSERT INTO learning_sessions (id, user_id, grade, subject, publisher, chapter, question_count, status, overall_score, start_time, end_time, created_at) VALUES
-('dddddddd-dddd-dddd-dddd-dddddddddddd', '11111111-1111-1111-1111-111111111111', '8A', '數學', '南一', '1-1 一元一次方程式', 10, 'completed', 85.0, NOW() - INTERVAL '1 hour', NOW() - INTERVAL '30 minutes', NOW() - INTERVAL '1 hour'),
-('eeeeeeee-eeee-eeee-eeee-eeeeeeeeeeee', '11111111-1111-1111-1111-111111111112', '8A', '數學', '南一', '1-2 一元一次方程式的應用', 8, 'completed', 75.0, NOW() - INTERVAL '2 hours', NOW() - INTERVAL '1.5 hours', NOW() - INTERVAL '2 hours'),
-('ffffffff-ffff-ffff-ffff-ffffffffffff', '11111111-1111-1111-1111-111111111113', '8B', '數學', '翰林', '1-1 一元一次方程式', 5, 'completed', 90.0, NOW() - INTERVAL '3 hours', NOW() - INTERVAL '2.5 hours', NOW() - INTERVAL '3 hours');
-
--- 插入範例學習記錄
-INSERT INTO learning_records (id, session_id, question_id, grade, subject, publisher, chapter, topic, knowledge_points, difficulty, user_answer, correct_answer, is_correct, score, time_spent, created_at) VALUES
--- 王小明的記錄
-('rr111111-1111-1111-1111-111111111111', 'dddddddd-dddd-dddd-dddd-dddddddddddd', 'q_math_8a_001', '8A', '數學', '南一', '1-1 一元一次方程式', '一元一次方程式', ARRAY['方程式求解'], 'normal', 'A', 'A', true, 10.0, 120, NOW() - INTERVAL '1 hour'),
-('rr111111-1111-1111-1111-111111111112', 'dddddddd-dddd-dddd-dddd-dddddddddddd', 'q_math_8a_002', '8A', '數學', '南一', '1-1 一元一次方程式', '一元一次方程式', ARRAY['移項運算'], 'normal', 'B', 'C', false, 0.0, 180, NOW() - INTERVAL '1 hour'),
-
--- 李小華的記錄
-('rr222222-2222-2222-2222-222222222222', 'eeeeeeee-eeee-eeee-eeee-eeeeeeeeeeee', 'q_math_8a_003', '8A', '數學', '南一', '1-2 一元一次方程式的應用', '應用問題', ARRAY['文字題解法'], 'hard', 'A', 'A', true, 10.0, 240, NOW() - INTERVAL '2 hours'),
-('rr222222-2222-2222-2222-222222222223', 'eeeeeeee-eeee-eeee-eeee-eeeeeeeeeeee', 'q_math_8a_004', '8A', '數學', '南一', '1-2 一元一次方程式的應用', '應用問題', ARRAY['速度時間問題'], 'hard', 'C', 'B', false, 0.0, 300, NOW() - INTERVAL '2 hours');
-
--- 插入用戶學習檔案
-INSERT INTO user_learning_profiles (user_id, grade, subject, publisher, current_level, strength_areas, weakness_areas, total_practice_time, total_questions_answered, average_accuracy, last_practice_date, created_at) VALUES
-('11111111-1111-1111-1111-111111111111', '8A', '數學', '南一', 6, ARRAY['基礎運算', '數字計算'], ARRAY['移項運算', '符號處理'], 120, 20, 75.5, NOW()::date - 1, NOW()),
-('11111111-1111-1111-1111-111111111112', '8A', '數學', '南一', 7, ARRAY['邏輯推理', '文字理解'], ARRAY['速度計算', '複雜應用'], 80, 15, 82.3, NOW()::date - 1, NOW()),
-('11111111-1111-1111-1111-111111111113', '8B', '數學', '翰林', 8, ARRAY['基礎運算', '圖形理解'], ARRAY['進階應用'], 45, 8, 90.0, NOW()::date - 1, NOW());
+-- 插入學習進度資料（使用正確的欄位結構）
+INSERT INTO learning_progress (user_id, subject, grade, chapter, knowledge_point, correct_count, total_count, last_practiced_at, created_at)
+SELECT 
+    u.id as user_id,
+    '數學' as subject,
+    '8年級' as grade,
+    '一元一次方程式' as chapter,
+    kp.knowledge_point,
+    CASE 
+        WHEN u.email = 'student01@test.com' THEN 8
+        WHEN u.email = 'student02@test.com' THEN 7
+        WHEN u.email = 'student03@test.com' THEN 9
+        ELSE 6
+    END as correct_count,
+    10 as total_count,
+    NOW() - INTERVAL '30 minutes' as last_practiced_at,
+    NOW() as created_at
+FROM users u 
+CROSS JOIN (
+    VALUES ('方程式求解'), ('移項運算'), ('基礎計算')
+) AS kp(knowledge_point)
+WHERE u.role = 'student' AND u.email LIKE 'student0%@test.com'
+AND NOT EXISTS (
+    SELECT 1 FROM learning_progress lp 
+    WHERE lp.user_id = u.id 
+    AND lp.subject = '數學' 
+    AND lp.grade = '8年級' 
+    AND lp.chapter = '一元一次方程式' 
+    AND lp.knowledge_point = kp.knowledge_point
+)
+LIMIT 9; -- 3個學生 × 3個知識點
 
 -- 顯示插入完成訊息
-SELECT 'InULearning 測試資料初始化完成！' as message,
-       COUNT(*) as total_users 
-FROM users;
+DO $$
+DECLARE
+    user_count integer;
+    student_count integer;
+    parent_count integer;
+    teacher_count integer;
+    admin_count integer;
+    relation_count integer;
+    session_count integer;
+    exercise_count integer;
+    progress_count integer;
+BEGIN
+    SELECT COUNT(*) INTO user_count FROM users;
+    SELECT COUNT(*) INTO student_count FROM users WHERE role = 'student';
+    SELECT COUNT(*) INTO parent_count FROM users WHERE role = 'parent';
+    SELECT COUNT(*) INTO teacher_count FROM users WHERE role = 'teacher';
+    SELECT COUNT(*) INTO admin_count FROM users WHERE role = 'admin';
+    SELECT COUNT(*) INTO relation_count FROM parent_child_relations;
+    SELECT COUNT(*) INTO session_count FROM learning_sessions;
+    SELECT COUNT(*) INTO exercise_count FROM exercise_records;
+    SELECT COUNT(*) INTO progress_count FROM learning_progress;
+    
+    RAISE NOTICE '';
+    RAISE NOTICE '🎉 InULearning 測試資料初始化完成！';
+    RAISE NOTICE '================================================';
+    RAISE NOTICE '📊 資料統計:';
+    RAISE NOTICE '   總用戶數: %', user_count;
+    RAISE NOTICE '   👨‍🎓 學生數: %', student_count;
+    RAISE NOTICE '   👪 家長數: %', parent_count;
+    RAISE NOTICE '   👨‍🏫 教師數: %', teacher_count;
+    RAISE NOTICE '   👨‍💼 管理員數: %', admin_count;
+    RAISE NOTICE '   🔗 家長學生關聯數: %', relation_count;
+    RAISE NOTICE '   📚 學習會話數: %', session_count;
+    RAISE NOTICE '   📝 練習記錄數: %', exercise_count;
+    RAISE NOTICE '   📈 學習進度記錄數: %', progress_count;
+    RAISE NOTICE '';
+END $$;
 
-SELECT '測試帳號資訊:' as info;
-SELECT 'student01@test.com / password123 (學生)' as login_info
-UNION ALL
-SELECT 'parent01@test.com / password123 (家長)'
-UNION ALL  
-SELECT 'teacher01@test.com / password123 (教師)'
-UNION ALL
-SELECT 'admin01@test.com / password123 (管理員)'; 
+-- 顯示測試帳號資訊
+SELECT '=== 🔑 測試帳號資訊 (密碼都是 password123) ===' as "系統資訊";
+
+SELECT 
+    '🎯 ' || email as "帳號",
+    CASE role
+        WHEN 'student' THEN '👨‍🎓 學生'
+        WHEN 'parent' THEN '👪 家長'
+        WHEN 'teacher' THEN '👨‍🏫 教師'
+        WHEN 'admin' THEN '👨‍💼 管理員'
+    END as "角色",
+    COALESCE(first_name || ' ' || last_name, '未設定') as "姓名",
+    CASE role
+        WHEN 'student' THEN '🌐 http://localhost:8080'
+        WHEN 'parent' THEN '🌐 http://localhost:8082'
+        WHEN 'teacher' THEN '🌐 http://localhost:8083'
+        WHEN 'admin' THEN '🌐 http://localhost:8081'
+    END as "前端地址"
+FROM users 
+WHERE email LIKE '%@test.com' AND email NOT LIKE '%teacher@%' AND email NOT LIKE '%student@%'
+ORDER BY 
+    CASE role
+        WHEN 'admin' THEN 1
+        WHEN 'teacher' THEN 2
+        WHEN 'parent' THEN 3
+        WHEN 'student' THEN 4
+    END, email; 

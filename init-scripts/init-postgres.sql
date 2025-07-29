@@ -77,6 +77,17 @@ CREATE TABLE IF NOT EXISTS learning_progress (
     UNIQUE(user_id, subject, grade, chapter, knowledge_point)
 );
 
+-- 建立家長學生關聯表
+CREATE TABLE IF NOT EXISTS parent_child_relations (
+    id SERIAL PRIMARY KEY,
+    parent_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    child_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    relationship_type VARCHAR(50) DEFAULT 'parent',
+    is_active BOOLEAN DEFAULT TRUE,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+
 -- 建立索引
 CREATE INDEX IF NOT EXISTS idx_users_email ON users(email);
 CREATE INDEX IF NOT EXISTS idx_users_username ON users(username);
@@ -86,6 +97,8 @@ CREATE INDEX IF NOT EXISTS idx_learning_sessions_user_id ON learning_sessions(us
 CREATE INDEX IF NOT EXISTS idx_exercise_records_session_id ON exercise_records(session_id);
 CREATE INDEX IF NOT EXISTS idx_exercise_records_user_id ON exercise_records(user_id);
 CREATE INDEX IF NOT EXISTS idx_learning_progress_user_id ON learning_progress(user_id);
+CREATE INDEX IF NOT EXISTS idx_parent_child_relations_parent_id ON parent_child_relations(parent_id);
+CREATE INDEX IF NOT EXISTS idx_parent_child_relations_child_id ON parent_child_relations(child_id);
 
 -- 建立更新時間觸發器函數
 CREATE OR REPLACE FUNCTION update_updated_at_column()
@@ -100,6 +113,7 @@ $$ language 'plpgsql';
 CREATE TRIGGER update_users_updated_at BEFORE UPDATE ON users FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
 CREATE TRIGGER update_learning_sessions_updated_at BEFORE UPDATE ON learning_sessions FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
 CREATE TRIGGER update_learning_progress_updated_at BEFORE UPDATE ON learning_progress FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
+CREATE TRIGGER update_parent_child_relations_updated_at BEFORE UPDATE ON parent_child_relations FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
 
 -- 插入測試數據（可選）
 INSERT INTO users (username, email, hashed_password, role) VALUES 

@@ -303,15 +303,22 @@ initialize_test_data() {
     if docker compose exec -T postgres psql -U aipe-tester -d inulearning -c "SELECT COUNT(*) FROM users;" 2>/dev/null | grep -q "0"; then
         log_info "初始化測試用戶..."
         
-        # 創建測試用戶（如果不存在）
-        docker compose exec -T postgres psql -U aipe-tester -d inulearning -c "
-        INSERT INTO users (username, email, hashed_password, role, first_name, last_name, is_active, is_verified, created_at) VALUES 
-        ('student01', 'student01@test.com', '\$2b\$12\$I7PCkeIs6YA.vxxsMr5ch.BzDX7otv0MvxQw3DrPWmL8WpDa0M7Qm', 'student', '學生', '01', true, true, NOW()),
-        ('teacher01', 'teacher01@test.com', '\$2b\$12\$I7PCkeIs6YA.vxxsMr5ch.BzDX7otv0MvxQw3DrPWmL8WpDa0M7Qm', 'teacher', '教師', '01', true, true, NOW()),
-        ('parent01', 'parent01@test.com', '\$2b\$12\$I7PCkeIs6YA.vxxsMr5ch.BzDX7otv0MvxQw3DrPWmL8WpDa0M7Qm', 'parent', '家長', '01', true, true, NOW()),
-        ('admin01', 'admin01@test.com', '\$2b\$12\$I7PCkeIs6YA.vxxsMr5ch.BzDX7otv0MvxQw3DrPWmL8WpDa0M7Qm', 'admin', '管理員', '01', true, true, NOW())
-        ON CONFLICT (email) DO NOTHING;
-        " 2>/dev/null || log_warning "測試用戶可能已存在"
+        # 執行完整的測試資料初始化腳本
+        if [ -f "init-scripts/init-test-data.sql" ]; then
+            log_info "執行完整的測試資料初始化..."
+            docker compose exec -T postgres psql -U aipe-tester -d inulearning < init-scripts/init-test-data.sql 2>/dev/null || log_warning "測試資料初始化可能部分失敗"
+        else
+            log_warning "測試資料腳本不存在，使用基本用戶創建"
+            # 創建基本測試用戶（如果不存在）
+            docker compose exec -T postgres psql -U aipe-tester -d inulearning -c "
+            INSERT INTO users (username, email, hashed_password, role, first_name, last_name, is_active, is_verified, created_at) VALUES 
+            ('student01', 'student01@test.com', '\$2b\$12\$I7PCkeIs6YA.vxxsMr5ch.BzDX7otv0MvxQw3DrPWmL8WpDa0M7Qm', 'student', '學生', '01', true, true, NOW()),
+            ('teacher01', 'teacher01@test.com', '\$2b\$12\$I7PCkeIs6YA.vxxsMr5ch.BzDX7otv0MvxQw3DrPWmL8WpDa0M7Qm', 'teacher', '教師', '01', true, true, NOW()),
+            ('parent01', 'parent01@test.com', '\$2b\$12\$I7PCkeIs6YA.vxxsMr5ch.BzDX7otv0MvxQw3DrPWmL8WpDa0M7Qm', 'parent', '家長', '01', true, true, NOW()),
+            ('admin01', 'admin01@test.com', '\$2b\$12\$I7PCkeIs6YA.vxxsMr5ch.BzDX7otv0MvxQw3DrPWmL8WpDa0M7Qm', 'admin', '管理員', '01', true, true, NOW())
+            ON CONFLICT (email) DO NOTHING;
+            " 2>/dev/null || log_warning "測試用戶可能已存在"
+        fi
         
         log_success "測試資料初始化完成"
     else
