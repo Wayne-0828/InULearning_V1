@@ -2,12 +2,15 @@
 AI 分析服務客戶端
 
 負責與 AI 分析服務進行通信，進行弱點分析和學習建議
+跳過 Milvus RAG 部分，提供基礎分析功能
 """
 
 import logging
 import httpx
-from typing import Dict, Any, Optional
+from typing import Dict, Any, Optional, List
 from urllib.parse import urljoin
+import json
+from datetime import datetime, timedelta
 
 logger = logging.getLogger(__name__)
 
@@ -111,7 +114,7 @@ class AIAnalysisClient:
         subject: str,
         target_exam: str
     ) -> Dict[str, Any]:
-        """預測考試表現"""
+        """預測學習表現"""
         
         try:
             # 構建請求數據
@@ -139,92 +142,129 @@ class AIAnalysisClient:
     
     async def health_check(self) -> bool:
         """健康檢查"""
-        
         try:
             url = urljoin(self.base_url, "/health")
-            
             async with httpx.AsyncClient(timeout=10.0) as client:
                 response = await client.get(url)
                 return response.status_code == 200
-                
         except Exception as e:
-            logger.error(f"Health check failed: {e}")
+            logger.error(f"AI Analysis Service health check failed: {e}")
             return False
     
     def _generate_basic_analysis(self, analysis_data: Dict[str, Any]) -> Dict[str, Any]:
-        """生成基礎分析結果"""
+        """生成基礎弱點分析（跳過 Milvus RAG）"""
         
-        records = analysis_data.get("records", [])
-        if not records:
-            return {
-                "weak_concepts": [],
-                "knowledge_points_to_strengthen": [],
-                "recommendations": ["建議多練習基礎題目"]
-            }
+        # 從分析數據中提取基本信息
+        results = analysis_data.get("results", [])
+        subject = analysis_data.get("subject", "數學")
         
-        # 計算錯誤率
-        total_questions = len(records)
-        correct_questions = sum(1 for r in records if r.get("is_correct", False))
-        error_rate = (total_questions - correct_questions) / total_questions
+        # 分析錯誤題目
+        incorrect_questions = [r for r in results if not r.get("correct", True)]
         
-        # 基礎分析
+        # 提取弱點概念
         weak_concepts = []
-        knowledge_points = []
-        recommendations = []
+        knowledge_points_to_strengthen = []
         
-        if error_rate > 0.5:
-            weak_concepts = ["基礎概念理解"]
-            knowledge_points = ["基礎知識點"]
-            recommendations = [
-                "建議從基礎概念開始複習",
-                "多做基礎練習題",
-                "尋求老師或同學的幫助"
-            ]
-        elif error_rate > 0.3:
-            weak_concepts = ["部分概念理解"]
-            knowledge_points = ["重點知識點"]
-            recommendations = [
-                "針對錯誤題目進行重點複習",
-                "加強相關概念的練習"
-            ]
-        else:
-            recommendations = ["表現良好，建議繼續保持"]
+        for question in incorrect_questions:
+            # 從題目信息中提取知識點
+            knowledge_points = question.get("knowledge_points", [])
+            if isinstance(knowledge_points, str):
+                try:
+                    knowledge_points = json.loads(knowledge_points)
+                except:
+                    knowledge_points = []
+            
+            weak_concepts.extend(knowledge_points)
+            knowledge_points_to_strengthen.extend(knowledge_points)
+        
+        # 去重
+        weak_concepts = list(set(weak_concepts))
+        knowledge_points_to_strengthen = list(set(knowledge_points_to_strengthen))
+        
+        # 生成基礎建議
+        recommendations = []
+        if weak_concepts:
+            recommendations.append({
+                "type": "similar_question",
+                "question_ids": [],
+                "difficulty": "easy",
+                "reason": f"建議加強 {', '.join(weak_concepts[:3])} 相關練習"
+            })
         
         return {
             "weak_concepts": weak_concepts,
-            "knowledge_points_to_strengthen": knowledge_points,
-            "recommendations": recommendations
+            "knowledge_points_to_strengthen": knowledge_points_to_strengthen,
+            "recommendations": recommendations,
+            "analysis_version": "v1.0-basic"
         }
     
     def _generate_basic_recommendations(self, subject: str) -> Dict[str, Any]:
         """生成基礎學習建議"""
         
-        return {
-            "recommendations": [
-                f"建議多練習{subject}相關題目",
-                "定期複習已學內容",
-                "建立錯題本記錄錯誤題目"
+        subject_recommendations = {
+            "數學": [
+                {
+                    "type": "concept_review",
+                    "topics": ["基礎運算", "方程式求解"],
+                    "difficulty": "easy",
+                    "reason": "建議複習基礎概念"
+                }
             ],
-            "priority_topics": [],
-            "study_plan": "建議每天練習 30 分鐘"
+            "國文": [
+                {
+                    "type": "concept_review", 
+                    "topics": ["文意理解", "字詞運用"],
+                    "difficulty": "easy",
+                    "reason": "建議加強閱讀理解"
+                }
+            ],
+            "英文": [
+                {
+                    "type": "concept_review",
+                    "topics": ["文法", "單字"],
+                    "difficulty": "easy", 
+                    "reason": "建議加強基礎文法"
+                }
+            ]
+        }
+        
+        return {
+            "recommendations": subject_recommendations.get(subject, []),
+            "generated_at": datetime.utcnow().isoformat()
         }
     
     def _generate_basic_trends(self) -> Dict[str, Any]:
         """生成基礎趨勢分析"""
         
+        # 生成模擬趨勢數據
+        end_date = datetime.now()
+        start_date = end_date - timedelta(days=30)
+        
+        trend_data = []
+        current_date = start_date
+        while current_date <= end_date:
+            trend_data.append({
+                "date": current_date.strftime("%Y-%m-%d"),
+                "score": 75.0,
+                "session_count": 1
+            })
+            current_date += timedelta(days=3)
+        
         return {
-            "trend": "stable",
-            "improvement_rate": 0.0,
-            "consistency_score": 0.7,
-            "recommendations": ["建議保持現有學習節奏"]
+            "score_trend": trend_data,
+            "accuracy_trend": trend_data,
+            "concept_mastery_progress": {},
+            "improvement_areas": [],
+            "persistent_weaknesses": [],
+            "learning_velocity_trend": 1.0
         }
     
     def _generate_basic_prediction(self) -> Dict[str, Any]:
-        """生成基礎預測結果"""
+        """生成基礎表現預測"""
         
         return {
-            "predicted_score": 75.0,
-            "confidence": 0.6,
+            "predicted_score": 80.0,
+            "confidence": 0.7,
             "risk_factors": ["基礎概念需要加強"],
-            "recommendations": ["建議加強基礎練習"]
+            "recommendations": ["建議多做基礎練習題"]
         } 

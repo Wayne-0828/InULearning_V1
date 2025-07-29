@@ -5,7 +5,7 @@
 
 class QuestionBankAPI {
     constructor() {
-        this.baseURL = 'http://localhost:8003'; // question-bank-service 的預設端口
+        this.baseURL = '/api/v1'; // 使用相對路徑，經由 Nginx 代理到後端服務
     }
 
     /**
@@ -14,7 +14,7 @@ class QuestionBankAPI {
     async getQuestionsByCriteria(criteria) {
         try {
             const queryParams = new URLSearchParams(criteria).toString();
-            const response = await fetch(`${this.baseURL}/api/v1/questions/criteria/?${queryParams}`, {
+            const response = await fetch(`${this.baseURL}/questions/criteria/?${queryParams}`, {
                 method: 'GET',
                 headers: authManager.getAuthHeaders()
             });
@@ -42,7 +42,7 @@ class QuestionBankAPI {
                 ...criteria
             }).toString();
             
-            const response = await fetch(`${this.baseURL}/api/v1/questions/random/?${queryParams}`, {
+            const response = await fetch(`${this.baseURL}/questions/random/?${queryParams}`, {
                 method: 'GET',
                 headers: authManager.getAuthHeaders()
             });
@@ -65,7 +65,7 @@ class QuestionBankAPI {
      */
     async getQuestion(questionId) {
         try {
-            const response = await fetch(`${this.baseURL}/api/v1/questions/${questionId}`, {
+            const response = await fetch(`${this.baseURL}/questions/${questionId}`, {
                 method: 'GET',
                 headers: authManager.getAuthHeaders()
             });
@@ -89,7 +89,7 @@ class QuestionBankAPI {
     async searchQuestions(searchParams) {
         try {
             const queryParams = new URLSearchParams(searchParams).toString();
-            const response = await fetch(`${this.baseURL}/api/v1/questions/?${queryParams}`, {
+            const response = await fetch(`${this.baseURL}/questions/?${queryParams}`, {
                 method: 'GET',
                 headers: authManager.getAuthHeaders()
             });
@@ -113,7 +113,7 @@ class QuestionBankAPI {
     async getChapters(filters = {}) {
         try {
             const queryParams = new URLSearchParams(filters).toString();
-            const response = await fetch(`${this.baseURL}/api/v1/chapters/?${queryParams}`, {
+            const response = await fetch(`${this.baseURL}/chapters/?${queryParams}`, {
                 method: 'GET',
                 headers: authManager.getAuthHeaders()
             });
@@ -137,7 +137,7 @@ class QuestionBankAPI {
     async getKnowledgePoints(filters = {}) {
         try {
             const queryParams = new URLSearchParams(filters).toString();
-            const response = await fetch(`${this.baseURL}/api/v1/knowledge-points/?${queryParams}`, {
+            const response = await fetch(`${this.baseURL}/knowledge-points/?${queryParams}`, {
                 method: 'GET',
                 headers: authManager.getAuthHeaders()
             });
@@ -160,7 +160,7 @@ class QuestionBankAPI {
      */
     async getQuestionStats() {
         try {
-            const response = await fetch(`${this.baseURL}/api/v1/questions/stats/`, {
+            const response = await fetch(`${this.baseURL}/questions/stats/`, {
                 method: 'GET',
                 headers: authManager.getAuthHeaders()
             });
@@ -183,7 +183,7 @@ class QuestionBankAPI {
      */
     async getSubjects() {
         try {
-            const response = await fetch(`${this.baseURL}/api/v1/subjects/`, {
+            const response = await fetch(`${this.baseURL}/subjects/`, {
                 method: 'GET',
                 headers: authManager.getAuthHeaders()
             });
@@ -206,7 +206,7 @@ class QuestionBankAPI {
      */
     async getEditions() {
         try {
-            const response = await fetch(`${this.baseURL}/api/v1/editions/`, {
+            const response = await fetch(`${this.baseURL}/editions/`, {
                 method: 'GET',
                 headers: authManager.getAuthHeaders()
             });
@@ -229,7 +229,7 @@ class QuestionBankAPI {
      */
     async getGrades() {
         try {
-            const response = await fetch(`${this.baseURL}/api/v1/grades/`, {
+            const response = await fetch(`${this.baseURL}/grades/`, {
                 method: 'GET',
                 headers: authManager.getAuthHeaders()
             });
@@ -252,7 +252,7 @@ class QuestionBankAPI {
      */
     async getQuestionCountByChapter(chapterId) {
         try {
-            const response = await fetch(`${this.baseURL}/api/v1/chapters/${chapterId}/question-count`, {
+            const response = await fetch(`${this.baseURL}/chapters/${chapterId}/question-count`, {
                 method: 'GET',
                 headers: authManager.getAuthHeaders()
             });
@@ -276,7 +276,7 @@ class QuestionBankAPI {
     async getDifficultyDistribution(criteria = {}) {
         try {
             const queryParams = new URLSearchParams(criteria).toString();
-            const response = await fetch(`${this.baseURL}/api/v1/questions/difficulty-distribution/?${queryParams}`, {
+            const response = await fetch(`${this.baseURL}/questions/difficulty-distribution/?${queryParams}`, {
                 method: 'GET',
                 headers: authManager.getAuthHeaders()
             });

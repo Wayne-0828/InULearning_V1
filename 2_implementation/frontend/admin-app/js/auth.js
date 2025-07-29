@@ -41,7 +41,10 @@ class AdminAuthManager {
      * 檢查認證狀態
      */
     async checkAuthStatus() {
-        const token = Utils.getStorageItem('admin_token');
+        // 處理從統一登入頁面傳來的認證資訊
+        this.handleAuthFromURL();
+        
+        const token = Utils.getStorageItem('auth_token');
         
         if (!token) {
             this.redirectToLogin();
@@ -63,6 +66,37 @@ class AdminAuthManager {
             console.error('認證檢查失敗:', error);
             this.clearAuth();
             this.redirectToLogin();
+        }
+    }
+
+    /**
+     * 處理URL參數中的認證資訊
+     */
+    handleAuthFromURL() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const token = urlParams.get('token');
+        const userInfo = urlParams.get('userInfo');
+
+        if (token && userInfo) {
+            console.log('從URL接收到認證資訊');
+            
+            // 儲存到localStorage
+            Utils.setStorageItem('auth_token', token);
+            Utils.setStorageItem('user_info', userInfo);
+            
+            // 解析用戶資訊
+            try {
+                this.currentUser = JSON.parse(userInfo);
+            } catch (e) {
+                console.error('解析用戶資訊失敗:', e);
+            }
+            
+            // 清除URL參數
+            const newURL = window.location.protocol + "//" + window.location.host + window.location.pathname;
+            window.history.replaceState({}, document.title, newURL);
+            
+            // 更新UI
+            this.updateUI();
         }
     }
     
@@ -97,8 +131,8 @@ class AdminAuthManager {
                 const { access_token, user } = response.data;
                 
                 // 儲存 Token 和用戶資訊
-                Utils.setStorageItem('admin_token', access_token);
-                Utils.setStorageItem('admin_user', JSON.stringify(user));
+                Utils.setStorageItem('auth_token', access_token);
+                Utils.setStorageItem('user_info', JSON.stringify(user));
                 
                 this.currentUser = user;
                 this.apiClient.setAuthToken(access_token);
@@ -126,7 +160,7 @@ class AdminAuthManager {
      */
     async logout() {
         try {
-            const token = Utils.getStorageItem('admin_token');
+            const token = Utils.getStorageItem('auth_token');
             if (token) {
                 // 呼叫登出 API
                 await this.apiClient.post('/auth/logout');
@@ -147,8 +181,8 @@ class AdminAuthManager {
      * 清除認證資訊
      */
     clearAuth() {
-        Utils.removeStorageItem('admin_token');
-        Utils.removeStorageItem('admin_user');
+        Utils.removeStorageItem('auth_token');
+        Utils.removeStorageItem('user_info');
         this.currentUser = null;
         this.apiClient.clearAuthToken();
     }
@@ -158,7 +192,7 @@ class AdminAuthManager {
      */
     redirectToLogin() {
         if (window.location.pathname !== '/admin-app/pages/login.html') {
-            window.location.href = 'pages/login.html';
+            window.location.href = 'http://localhost/login.html';
         }
     }
     
@@ -167,7 +201,7 @@ class AdminAuthManager {
      * @returns {boolean}
      */
     isAuthenticated() {
-        return !!Utils.getStorageItem('admin_token') && !!this.currentUser;
+        return !!Utils.getStorageItem('auth_token') && !!this.currentUser;
     }
     
     /**
@@ -183,7 +217,7 @@ class AdminAuthManager {
      * @returns {string|null}
      */
     getToken() {
-        return Utils.getStorageItem('admin_token');
+        return Utils.getStorageItem('auth_token');
     }
 }
 

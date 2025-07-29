@@ -1,0 +1,261 @@
+services:
+  # PostgreSQL 資料庫
+  postgres:
+    image: postgres:15-alpine
+    container_name: inulearning_postgres
+    environment:
+      POSTGRES_DB: inulearning
+      POSTGRES_USER: aipe-tester
+      POSTGRES_PASSWORD: aipe-tester
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./init-scripts/init-postgres.sql:/docker-entrypoint-initdb.d/01-init-postgres.sql
+      - ./init-scripts/init-test-data.sql:/docker-entrypoint-initdb.d/02-init-test-data.sql
+    ports:
+      - "5432:5432"
+    networks:
+      - inulearning_network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U aipe-tester -d inulearning"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # MongoDB 資料庫
+  mongodb:
+    image: mongo:7.0
+    container_name: inulearning_mongodb
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: aipe-tester
+      MONGO_INITDB_ROOT_PASSWORD: aipe-tester
+      MONGO_INITDB_DATABASE: inulearning
+    volumes:
+      - mongodb_data:/data/db
+      - ./init-scripts/init-mongodb.js:/docker-entrypoint-initdb.d/init-mongodb.js
+      - ./init-scripts/init-chapters.js:/docker-entrypoint-initdb.d/init-chapters.js
+      - ./rawdata:/docker-entrypoint-initdb.d/rawdata
+    ports:
+      - "27017:27017"
+    networks:
+      - inulearning_network
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Redis 快取
+  redis:
+    image: redis:7.2-alpine
+    container_name: inulearning_redis
+    command: redis-server --appendonly yes
+    volumes:
+      - redis_data:/data
+    ports:
+      - "6379:6379"
+    networks:
+      - inulearning_network
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # MinIO 物件儲存
+  minio:
+    image: minio/minio:latest
+    container_name: inulearning_minio
+    command: server /data --console-address ":9001"
+    environment:
+      MINIO_ROOT_USER: aipe-tester
+      MINIO_ROOT_PASSWORD: aipe-tester
+    volumes:
+      - minio_data:/data
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    networks:
+      - inulearning_network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # 認證服務
+  auth-service:
+    build:
+      context: ./2_implementation/backend/auth-service
+      dockerfile: Dockerfile
+    container_name: inulearning_auth_service
+    environment:
+      - DATABASE_URL=postgresql://aipe-tester:aipe-tester@postgres:5432/inulearning
+      - REDIS_URL=redis://redis:6379/0
+      - SECRET_KEY=your-secret-key-here-change-in-production
+      - ALGORITHM=HS256
+      - ACCESS_TOKEN_EXPIRE_MINUTES=30
+      - CORS_ORIGINS=["http://localhost:3000","http://localhost:8080","http://localhost:8081","http://localhost:8082"]
+    ports:
+      - "8001:8000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - inulearning_network
+    volumes:
+      - ./logs:/app/logs
+
+  # 題庫服務
+  question-bank-service:
+    build:
+      context: ./2_implementation/backend/question-bank-service
+      dockerfile: Dockerfile
+    container_name: inulearning_question_bank_service
+    environment:
+      - MONGODB_URL=mongodb://aipe-tester:aipe-tester@mongodb:27017/inulearning?authSource=admin
+      - MINIO_ENDPOINT=minio:9000
+      - MINIO_ACCESS_KEY=aipe-tester
+      - MINIO_SECRET_KEY=aipe-tester
+      - MINIO_BUCKET_NAME=question-bank
+      - CORS_ORIGINS=["http://localhost:3000","http://localhost:8080","http://localhost:8081","http://localhost:8082"]
+    ports:
+      - "8002:8000"
+    depends_on:
+      mongodb:
+        condition: service_healthy
+      minio:
+        condition: service_healthy
+    networks:
+      - inulearning_network
+    volumes:
+      - ./logs:/app/logs
+      - ./rawdata:/app/rawdata
+
+  # 學習服務
+  learning-service:
+    build:
+      context: ./2_implementation/backend/learning-service
+      dockerfile: Dockerfile
+    container_name: inulearning_learning_service
+    environment:
+      - DATABASE_URL=postgresql+asyncpg://aipe-tester:aipe-tester@postgres:5432/inulearning
+      - MONGODB_URL=mongodb://aipe-tester:aipe-tester@mongodb:27017/inulearning?authSource=admin
+      - REDIS_URL=redis://redis:6379/0
+      - AUTH_SERVICE_URL=http://auth-service:8000
+      - QUESTION_BANK_SERVICE_URL=http://question-bank-service:8000
+      - CORS_ORIGINS=["http://localhost:3000","http://localhost:8080","http://localhost:8081","http://localhost:8082","http://localhost:8083"]
+    ports:
+      - "8003:8000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      mongodb:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      auth-service:
+        condition: service_started
+      question-bank-service:
+        condition: service_started
+    networks:
+      - inulearning_network
+    volumes:
+      - ./logs:/app/logs
+
+  # Nginx API Gateway
+  nginx:
+    image: nginx:alpine
+    container_name: inulearning_nginx
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+      - ./nginx/conf.d:/etc/nginx/conf.d
+      - ./login.html:/usr/share/nginx/html/login.html
+    depends_on:
+      - auth-service
+      - question-bank-service
+      - learning-service
+    networks:
+      - inulearning_network
+
+   # 學生端前端
+  student-frontend:
+    build:
+      context: ./2_implementation/frontend
+      dockerfile: student-app/Dockerfile
+    container_name: inulearning_student_frontend
+    ports:
+      - "8080:80"
+    environment:
+      - API_BASE_URL=http://localhost/api
+    networks:
+      - inulearning_network
+    volumes:
+      - ./files:/var/www/html/files
+
+  # 管理員端前端
+  admin-frontend:
+    build:
+      context: ./2_implementation/frontend/admin-app
+      dockerfile: Dockerfile
+    container_name: inulearning_admin_frontend
+    ports:
+      - "8081:80"
+    environment:
+      - API_BASE_URL=http://localhost/api
+    networks:
+      - inulearning_network
+    volumes:
+      - ./files:/var/www/html/files
+
+  # 家長端前端
+  parent-frontend:
+    build:
+      context: ./2_implementation/frontend/parent-app
+      dockerfile: Dockerfile
+    container_name: inulearning_parent_frontend
+    ports:
+      - "8082:80"
+    environment:
+      - API_BASE_URL=http://localhost/api
+    networks:
+      - inulearning_network
+    volumes:
+      - ./files:/var/www/html/files
+
+  # 教師端前端
+  teacher-frontend:
+    build:
+      context: ./2_implementation/frontend/teacher-app
+      dockerfile: Dockerfile
+    container_name: inulearning_teacher_frontend
+    ports:
+      - "8083:80"
+    environment:
+      - API_BASE_URL=http://localhost/api
+    networks:
+      - inulearning_network
+    volumes:
+      - ./files:/var/www/html/files
+
+# ... existing code ...
+
+  # 備註：以下服務暫時註釋，後續開發
+  # ai-analysis-service:  # 備註 - Milvus/RAG 後續開發
+  # notification-service: # 備註 - 後續開發
+  # teacher-management-service: # 備註 - 後續開發
+  # parent-dashboard-service: # 備註 - 後續開發
+  # report-service: # 備註 - 後續開發
+
+volumes:
+  postgres_data:
+  mongodb_data:
+  redis_data:
+  minio_data:
+
+networks:
+  inulearning_network:
+    driver: bridge 

@@ -98,6 +98,14 @@
                                     <input autocomplete="email" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm" id="email" name="email" required="" type="email"/>
                                 </div>
                                 <div>
+                                    <label class="block text-sm font-medium text-gray-700" for="first_name">名字</label>
+                                    <input autocomplete="given-name" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm" id="first_name" name="first_name" required="" type="text"/>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700" for="last_name">姓氏</label>
+                                    <input autocomplete="family-name" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm" id="last_name" name="last_name" required="" type="text"/>
+                                </div>
+                                <div>
                                     <label class="block text-sm font-medium text-gray-700" for="password">密碼</label>
                                     <input autocomplete="new-password" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm" id="password" name="password" required="" type="password"/>
                                 </div>
@@ -150,6 +158,9 @@
         </div>
     </div>
 
+    <!-- JavaScript 檔案載入 -->
+    <script src="../../shared/js/utils.js"></script>
+    <script src="../../shared/js/api-client.js"></script>
     <script src="../js/utils/auth.js"></script>
     <script src="../js/api/auth.js"></script>
     <script src="../js/pages/register.js"></script>

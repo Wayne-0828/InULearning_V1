@@ -3,269 +3,192 @@
  * 整合 learning-service 的 API 呼叫
  */
 
+// 學習相關 API 客戶端
 class LearningAPI {
     constructor() {
-        this.baseURL = 'http://localhost:8002'; // learning-service 的預設端口
+        this.baseURL = 'http://localhost:8003/api/v1/learning';
+        this.questionBankURL = 'http://localhost:8002/api/v1/questions';
     }
 
-    /**
-     * 創建練習會話
-     */
-    async createExercise(exerciseData) {
+    // 獲取認證頭
+    getAuthHeaders() {
+        const token = localStorage.getItem('auth_token');
+        return {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        };
+    }
+
+    // 獲取隨機題目
+    async getRandomQuestions(count = 5, filters = {}) {
         try {
-            const response = await fetch(`${this.baseURL}/api/v1/learning/exercises/create`, {
+            const params = new URLSearchParams({
+                count: count,
+                ...filters
+            });
+            
+            const response = await fetch(`${this.questionBankURL}/random?${params}`);
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            
+            const questions = await response.json();
+            return {
+                success: true,
+                data: questions
+            };
+        } catch (error) {
+            console.error('獲取題目失敗:', error);
+            return {
+                success: false,
+                error: error.message
+            };
+        }
+    }
+
+    // 搜索題目
+    async searchQuestions(filters = {}, page = 1, limit = 10) {
+        try {
+            const params = new URLSearchParams({
+                page: page,
+                limit: limit,
+                ...filters
+            });
+            
+            const response = await fetch(`${this.questionBankURL}/search?${params}`);
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            
+            const result = await response.json();
+            return {
+                success: true,
+                data: result
+            };
+        } catch (error) {
+            console.error('搜索題目失敗:', error);
+            return {
+                success: false,
+                error: error.message
+            };
+        }
+    }
+
+    // 創建學習會話
+    async createLearningSession(sessionData) {
+        try {
+            const response = await fetch(`${this.baseURL}/sessions`, {
                 method: 'POST',
-                headers: authManager.getAuthHeaders(),
-                body: JSON.stringify(exerciseData)
+                headers: this.getAuthHeaders(),
+                body: JSON.stringify(sessionData)
             });
-
-            const data = await response.json();
-
+            
             if (!response.ok) {
-                throw new Error(data.detail || '創建練習失敗');
+                throw new Error(`HTTP error! status: ${response.status}`);
             }
-
-            return data;
+            
+            const session = await response.json();
+            return {
+                success: true,
+                data: session
+            };
         } catch (error) {
-            console.error('創建練習錯誤:', error);
-            throw error;
+            console.error('創建學習會話失敗:', error);
+            return {
+                success: false,
+                error: error.message
+            };
         }
     }
 
-    /**
-     * 提交答案
-     */
-    async submitAnswer(sessionId, answers) {
+    // 提交答案並獲取批改結果
+    async submitAnswers(sessionId, answers) {
         try {
-            const response = await fetch(`${this.baseURL}/api/v1/learning/exercises/${sessionId}/submit`, {
+            const response = await fetch(`${this.baseURL}/exercises/submit`, {
                 method: 'POST',
-                headers: authManager.getAuthHeaders(),
-                body: JSON.stringify(answers)
+                headers: this.getAuthHeaders(),
+                body: JSON.stringify({
+                    session_id: sessionId,
+                    answers: answers
+                })
             });
-
-            const data = await response.json();
-
+            
             if (!response.ok) {
-                throw new Error(data.detail || '提交答案失敗');
+                throw new Error(`HTTP error! status: ${response.status}`);
             }
-
-            return data;
+            
+            const result = await response.json();
+            return {
+                success: true,
+                data: result
+            };
         } catch (error) {
-            console.error('提交答案錯誤:', error);
-            throw error;
+            console.error('提交答案失敗:', error);
+            return {
+                success: false,
+                error: error.message
+            };
         }
     }
 
-    /**
-     * 獲取練習會話列表
-     */
-    async getSessions(page = 1, limit = 10) {
+    // 獲取學習記錄
+    async getLearningRecords(filters = {}, page = 1, limit = 10) {
         try {
-            const response = await fetch(`${this.baseURL}/api/v1/learning/sessions/?page=${page}&limit=${limit}`, {
-                method: 'GET',
-                headers: authManager.getAuthHeaders()
+            const params = new URLSearchParams({
+                page: page,
+                limit: limit,
+                ...filters
             });
-
-            const data = await response.json();
-
+            
+            const response = await fetch(`${this.baseURL}/records?${params}`, {
+                headers: this.getAuthHeaders()
+            });
+            
             if (!response.ok) {
-                throw new Error(data.detail || '獲取會話列表失敗');
+                throw new Error(`HTTP error! status: ${response.status}`);
             }
-
-            return data;
+            
+            const records = await response.json();
+            return {
+                success: true,
+                data: records
+            };
         } catch (error) {
-            console.error('獲取會話列表錯誤:', error);
-            throw error;
+            console.error('獲取學習記錄失敗:', error);
+            return {
+                success: false,
+                error: error.message
+            };
         }
     }
 
-    /**
-     * 獲取特定會話詳情
-     */
-    async getSession(sessionId) {
+    // 獲取學習統計
+    async getLearningStatistics(days = 30) {
         try {
-            const response = await fetch(`${this.baseURL}/api/v1/learning/sessions/${sessionId}`, {
-                method: 'GET',
-                headers: authManager.getAuthHeaders()
+            const params = new URLSearchParams({ days: days });
+            
+            const response = await fetch(`${this.baseURL}/statistics?${params}`, {
+                headers: this.getAuthHeaders()
             });
-
-            const data = await response.json();
-
+            
             if (!response.ok) {
-                throw new Error(data.detail || '獲取會話詳情失敗');
+                throw new Error(`HTTP error! status: ${response.status}`);
             }
-
-            return data;
+            
+            const statistics = await response.json();
+            return {
+                success: true,
+                data: statistics
+            };
         } catch (error) {
-            console.error('獲取會話詳情錯誤:', error);
-            throw error;
-        }
-    }
-
-    /**
-     * 獲取學習建議
-     */
-    async getLearningRecommendations() {
-        try {
-            const response = await fetch(`${this.baseURL}/api/v1/learning/recommendations/learning`, {
-                method: 'GET',
-                headers: authManager.getAuthHeaders()
-            });
-
-            const data = await response.json();
-
-            if (!response.ok) {
-                throw new Error(data.detail || '獲取學習建議失敗');
-            }
-
-            return data;
-        } catch (error) {
-            console.error('獲取學習建議錯誤:', error);
-            throw error;
-        }
-    }
-
-    /**
-     * 獲取學習趨勢
-     */
-    async getLearningTrends(userId) {
-        try {
-            const response = await fetch(`${this.baseURL}/api/v1/learning/trends/`, {
-                method: 'GET',
-                headers: authManager.getAuthHeaders()
-            });
-
-            const data = await response.json();
-
-            if (!response.ok) {
-                throw new Error(data.detail || '獲取學習趨勢失敗');
-            }
-
-            return data;
-        } catch (error) {
-            console.error('獲取學習趨勢錯誤:', error);
-            throw error;
-        }
-    }
-
-    /**
-     * 獲取學習統計
-     */
-    async getLearningStats() {
-        try {
-            const response = await fetch(`${this.baseURL}/api/v1/learning/stats/`, {
-                method: 'GET',
-                headers: authManager.getAuthHeaders()
-            });
-
-            const data = await response.json();
-
-            if (!response.ok) {
-                throw new Error(data.detail || '獲取學習統計失敗');
-            }
-
-            return data;
-        } catch (error) {
-            console.error('獲取學習統計錯誤:', error);
-            throw error;
-        }
-    }
-
-    /**
-     * 獲取學習進度
-     */
-    async getLearningProgress() {
-        try {
-            const response = await fetch(`${this.baseURL}/api/v1/learning/progress/`, {
-                method: 'GET',
-                headers: authManager.getAuthHeaders()
-            });
-
-            const data = await response.json();
-
-            if (!response.ok) {
-                throw new Error(data.detail || '獲取學習進度失敗');
-            }
-
-            return data;
-        } catch (error) {
-            console.error('獲取學習進度錯誤:', error);
-            throw error;
-        }
-    }
-
-    /**
-     * 更新學習進度
-     */
-    async updateLearningProgress(progressData) {
-        try {
-            const response = await fetch(`${this.baseURL}/api/v1/learning/progress/`, {
-                method: 'PUT',
-                headers: authManager.getAuthHeaders(),
-                body: JSON.stringify(progressData)
-            });
-
-            const data = await response.json();
-
-            if (!response.ok) {
-                throw new Error(data.detail || '更新學習進度失敗');
-            }
-
-            return data;
-        } catch (error) {
-            console.error('更新學習進度錯誤:', error);
-            throw error;
-        }
-    }
-
-    /**
-     * 獲取練習記錄
-     */
-    async getExerciseRecords(sessionId) {
-        try {
-            const response = await fetch(`${this.baseURL}/api/v1/learning/sessions/${sessionId}/records`, {
-                method: 'GET',
-                headers: authManager.getAuthHeaders()
-            });
-
-            const data = await response.json();
-
-            if (!response.ok) {
-                throw new Error(data.detail || '獲取練習記錄失敗');
-            }
-
-            return data;
-        } catch (error) {
-            console.error('獲取練習記錄錯誤:', error);
-            throw error;
-        }
-    }
-
-    /**
-     * 刪除練習會話
-     */
-    async deleteSession(sessionId) {
-        try {
-            const response = await fetch(`${this.baseURL}/api/v1/learning/sessions/${sessionId}`, {
-                method: 'DELETE',
-                headers: authManager.getAuthHeaders()
-            });
-
-            if (!response.ok) {
-                const data = await response.json();
-                throw new Error(data.detail || '刪除會話失敗');
-            }
-
-            return { success: true };
-        } catch (error) {
-            console.error('刪除會話錯誤:', error);
-            throw error;
+            console.error('獲取學習統計失敗:', error);
+            return {
+                success: false,
+                error: error.message
+            };
         }
     }
 }
 
-// 創建全域學習 API 實例
-const learningAPI = new LearningAPI();
-
-// 導出學習 API
-window.learningAPI = learningAPI; 
+// 創建全局實例
+window.learningAPI = new LearningAPI(); 

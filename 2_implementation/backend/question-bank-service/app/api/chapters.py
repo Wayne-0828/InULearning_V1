@@ -44,4 +44,19 @@ async def get_chapters_by_subject_grade(
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"獲取章節列表失敗: {str(e)}"
+        )
+
+
+@router.get("/all/", response_model=List[ChapterResponse])
+async def get_all_chapters(
+    db: DatabaseManager = Depends(get_database)
+):
+    """獲取所有章節列表"""
+    try:
+        chapters = await ChapterCRUD.get_all_chapters(db)
+        return chapters
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"獲取章節列表失敗: {str(e)}"
         ) 

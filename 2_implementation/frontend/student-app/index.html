@@ -51,7 +51,7 @@
                 </a>
             </nav>
             <div class="p-4 border-t border-blue-700">
-                <button id="logoutBtn" class="w-full flex items-center px-4 py-2 text-gray-100 hover:bg-blue-700 rounded-lg">
+                <button id="logoutBtn" class="w-full flex items-center px-4 py-2 text-gray-100 hover:bg-blue-700 rounded-lg" onclick="authManager.logout()">
                     <span class="material-icons">logout</span>
                     <span class="ml-3">登出</span>
                 </button>
@@ -76,12 +76,15 @@
                     </div>
                 </div>
                 <div class="flex items-center space-x-4">
-                    <div id="userInfo" class="hidden">
+                    <div id="userInfo" class="hidden flex items-center space-x-2">
                         <span class="text-sm text-gray-600">歡迎，</span>
                         <span id="userName" class="text-sm font-medium text-blue-600"></span>
+                        <button id="logoutBtn" class="bg-red-500 text-white px-3 py-1 rounded text-sm hover:bg-red-600 transition-colors" onclick="authManager.logout()">
+                            登出
+                        </button>
                     </div>
                     <div id="authButtons">
-                        <a class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors" href="pages/login.html">登入</a>
+                        <a class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors" href="http://localhost/login.html">登入</a>
                         <a class="bg-gray-200 text-gray-800 px-4 py-2 rounded-lg hover:bg-gray-300 transition-colors" href="pages/register.html">註冊</a>
                     </div>
                 </div>
@@ -128,7 +131,7 @@
                             <p class="text-gray-600 text-sm">即時分析您的作答弱點，並提供個人化重點筆記</p>
                         </div>
 
-                        <div class="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow cursor-pointer">
+                        <div class="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow cursor-pointer" onclick="aiAnalysisAPI.showUnderDevelopmentModal('AI即時問答')">
                             <div class="flex items-center mb-4">
                                 <div class="bg-purple-100 p-3 rounded-lg">
                                     <span class="material-icons text-purple-600 text-2xl">chat</span>
@@ -203,9 +206,22 @@
         </div>
     </div>
 
+    <!-- 錯誤訊息顯示區 -->
+    <div id="errorMessage" class="hidden fixed top-4 right-4 p-4 bg-red-100 border border-red-400 text-red-700 rounded z-50"></div>
+    <div id="successMessage" class="hidden fixed top-4 right-4 p-4 bg-green-100 border border-green-400 text-green-700 rounded z-50"></div>
+
+    <!-- JavaScript 檔案載入 -->
     <script src="../shared/js/utils.js"></script>
     <script src="../shared/js/api-client.js"></script>
+    <script src="js/utils/error-handler.js"></script>
+    <script src="js/utils/auth.js"></script>
+    <script src="js/api/auth.js"></script>
     <script src="js/api/learning.js"></script>
+    <script src="js/api/ai-analysis.js"></script>
+    <script>
+        // 認證管理器已在 auth.js 中初始化
+        // 無需重複定義
+    </script>
     <script src="js/main.js"></script>
 </body>
 </html> 

@@ -22,6 +22,7 @@ class UserRole(str, enum.Enum):
     student = "student"
     parent = "parent"
     teacher = "teacher"
+    admin = "admin"
 
 
 class User(Base):
@@ -50,6 +51,27 @@ class User(Base):
     
     # Relationships
     refresh_tokens = relationship("RefreshToken", back_populates="user", cascade="all, delete-orphan")
+    
+    # 家長關係（作為家長）
+    children = relationship("ParentChildRelation", 
+                          foreign_keys="ParentChildRelation.parent_id",
+                          back_populates="parent",
+                          cascade="all, delete-orphan")
+    
+    # 子女關係（作為學生）
+    parents = relationship("ParentChildRelation", 
+                         foreign_keys="ParentChildRelation.child_id",
+                         back_populates="child")
+    
+    # 教師關係
+    teaching_classes = relationship("TeacherClassRelation", 
+                                  back_populates="teacher",
+                                  cascade="all, delete-orphan")
+    
+    # 學生關係
+    student_classes = relationship("StudentClassRelation", 
+                                 back_populates="student",
+                                 cascade="all, delete-orphan")
     
     def to_dict(self):
         """轉換為字典格式"""
@@ -81,4 +103,136 @@ class RefreshToken(Base):
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     
     # Relationships
-    user = relationship("User", back_populates="refresh_tokens") 
+    user = relationship("User", back_populates="refresh_tokens")
+
+
+class ParentChildRelation(Base):
+    """家長-學生關係表"""
+    __tablename__ = "parent_child_relations"
+    
+    id = Column(Integer, primary_key=True, index=True)
+    parent_id = Column(Integer, ForeignKey("users.id"), nullable=False)
+    child_id = Column(Integer, ForeignKey("users.id"), nullable=False)
+    
+    # 關係狀態
+    is_active = Column(Boolean, default=True)
+    relationship_type = Column(String(50), default="parent")  # parent, guardian, etc.
+    
+    # 時間戳記
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+    updated_at = Column(DateTime(timezone=True), onupdate=func.now())
+    
+    # 關聯
+    parent = relationship("User", foreign_keys=[parent_id], back_populates="children")
+    child = relationship("User", foreign_keys=[child_id], back_populates="parents")
+    
+    def to_dict(self):
+        return {
+            "id": self.id,
+            "parent_id": self.parent_id,
+            "child_id": self.child_id,
+            "is_active": self.is_active,
+            "relationship_type": self.relationship_type,
+            "created_at": self.created_at.isoformat() if self.created_at else None,
+            "updated_at": self.updated_at.isoformat() if self.updated_at else None
+        }
+
+
+class SchoolClass(Base):
+    """班級表"""
+    __tablename__ = "school_classes"
+    
+    id = Column(Integer, primary_key=True, index=True)
+    class_name = Column(String(100), nullable=False)  # 例如：7A班、8B班
+    grade = Column(String(10), nullable=False)  # 7A, 7B, 8A, 8B, 9A, 9B
+    school_year = Column(String(20), nullable=False)  # 例如：2024-2025
+    
+    # 班級狀態
+    is_active = Column(Boolean, default=True)
+    
+    # 時間戳記
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+    updated_at = Column(DateTime(timezone=True), onupdate=func.now())
+    
+    # 關聯
+    teachers = relationship("TeacherClassRelation", back_populates="school_class")
+    students = relationship("StudentClassRelation", back_populates="school_class")
+    
+    def to_dict(self):
+        return {
+            "id": self.id,
+            "class_name": self.class_name,
+            "grade": self.grade,
+            "school_year": self.school_year,
+            "is_active": self.is_active,
+            "created_at": self.created_at.isoformat() if self.created_at else None,
+            "updated_at": self.updated_at.isoformat() if self.updated_at else None
+        }
+
+
+class TeacherClassRelation(Base):
+    """教師-班級關係表"""
+    __tablename__ = "teacher_class_relations"
+    
+    id = Column(Integer, primary_key=True, index=True)
+    teacher_id = Column(Integer, ForeignKey("users.id"), nullable=False)
+    class_id = Column(Integer, ForeignKey("school_classes.id"), nullable=False)
+    
+    # 教學科目
+    subject = Column(String(50), nullable=False)  # 數學、國文、英文等
+    
+    # 關係狀態
+    is_active = Column(Boolean, default=True)
+    
+    # 時間戳記
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+    updated_at = Column(DateTime(timezone=True), onupdate=func.now())
+    
+    # 關聯
+    teacher = relationship("User", back_populates="teaching_classes")
+    school_class = relationship("SchoolClass", back_populates="teachers")
+    
+    def to_dict(self):
+        return {
+            "id": self.id,
+            "teacher_id": self.teacher_id,
+            "class_id": self.class_id,
+            "subject": self.subject,
+            "is_active": self.is_active,
+            "created_at": self.created_at.isoformat() if self.created_at else None,
+            "updated_at": self.updated_at.isoformat() if self.updated_at else None
+        }
+
+
+class StudentClassRelation(Base):
+    """學生-班級關係表"""
+    __tablename__ = "student_class_relations"
+    
+    id = Column(Integer, primary_key=True, index=True)
+    student_id = Column(Integer, ForeignKey("users.id"), nullable=False)
+    class_id = Column(Integer, ForeignKey("school_classes.id"), nullable=False)
+    
+    # 學號
+    student_number = Column(String(20), nullable=True)
+    
+    # 關係狀態
+    is_active = Column(Boolean, default=True)
+    
+    # 時間戳記
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+    updated_at = Column(DateTime(timezone=True), onupdate=func.now())
+    
+    # 關聯
+    student = relationship("User", back_populates="student_classes")
+    school_class = relationship("SchoolClass", back_populates="students")
+    
+    def to_dict(self):
+        return {
+            "id": self.id,
+            "student_id": self.student_id,
+            "class_id": self.class_id,
+            "student_number": self.student_number,
+            "is_active": self.is_active,
+            "created_at": self.created_at.isoformat() if self.created_at else None,
+            "updated_at": self.updated_at.isoformat() if self.updated_at else None
+        } 

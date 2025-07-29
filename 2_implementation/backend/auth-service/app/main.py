@@ -2,7 +2,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from contextlib import asynccontextmanager
 from app.config import settings
-from app.api import auth, users
+from app.api import auth, users, relationships
 from app.database import engine, init_database, check_database_connection
 from app.models import Base
 
@@ -47,6 +47,7 @@ app.add_middleware(
 # Include routers
 app.include_router(auth.router, prefix="/api/v1")
 app.include_router(users.router, prefix="/api/v1")
+app.include_router(relationships.router, prefix="/api/v1")
 
 
 @app.get("/")

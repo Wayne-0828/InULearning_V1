@@ -52,8 +52,9 @@ def init_database():
 def check_database_connection():
     """檢查資料庫連接"""
     try:
+        from sqlalchemy import text
         with engine.connect() as conn:
-            conn.execute("SELECT 1")
+            conn.execute(text("SELECT 1"))
         return True
     except Exception as e:
         print(f"❌ 資料庫連接檢查失敗: {e}")

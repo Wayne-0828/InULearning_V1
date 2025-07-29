@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>認證調試</title>
+</head>
+<body>
+    <h1>認證調試頁面</h1>
+    <div id="debug-info"></div>
+    <button onclick="checkAuth()">檢查認證狀態</button>
+    <button onclick="simulateLogin()">模擬登入</button>
+    <button onclick="clearAuth()">清除認證</button>
+
+    <script>
+        function checkAuth() {
+            const token = localStorage.getItem('auth_token');
+            const userInfo = localStorage.getItem('user_info');
+            
+            const debugDiv = document.getElementById('debug-info');
+            debugDiv.innerHTML = `
+                <h3>當前認證狀態:</h3>
+                <p><strong>Token存在:</strong> ${!!token}</p>
+                <p><strong>Token (前50字):</strong> ${token ? token.substring(0, 50) + '...' : '無'}</p>
+                <p><strong>用戶資訊:</strong> ${userInfo || '無'}</p>
+                <p><strong>解析後的用戶資訊:</strong></p>
+                <pre>${userInfo ? JSON.stringify(JSON.parse(userInfo), null, 2) : '無'}</pre>
+            `;
+        }
+
+        function simulateLogin() {
+            // 模擬一個有效的JWT token和用戶資訊
+            const mockToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIzIiwiZW1haWwiOiJzdHVkZW50MDFAZGV2LmNvbSIsInJvbGUiOiJzdHVkZW50IiwiZXhwIjoxNzUzNjQxMzA4fQ.test';
+            const mockUserInfo = {
+                sub: "3",
+                email: "student01@test.com", 
+                role: "student",
+                exp: 1753641308
+            };
+            
+            localStorage.setItem('auth_token', mockToken);
+            localStorage.setItem('user_info', JSON.stringify(mockUserInfo));
+            
+            alert('模擬登入完成！');
+            checkAuth();
+        }
+
+        function clearAuth() {
+            localStorage.removeItem('auth_token');
+            localStorage.removeItem('user_info');
+            alert('認證已清除！');
+            checkAuth();
+        }
+
+        // 頁面載入時自動檢查
+        window.onload = checkAuth;
+    </script>
+</body>
+</html> 

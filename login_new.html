@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>登入 - InU Learning【因你而學】</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Noto Sans TC', sans-serif;
+        }
+        .role-badge {
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        .role-badge:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        .role-badge.active {
+            background: linear-gradient(135deg, #3B82F6, #1D4ED8);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+        }
+        .quick-login-btn {
+            transition: all 0.2s ease;
+        }
+        .quick-login-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+        }
+    </style>
+</head>
+<body class="bg-gray-100">
+    <div class="flex h-screen bg-white">
+        <!-- 側邊欄 -->
+        <aside class="w-64 bg-blue-800 text-white flex-col hidden lg:flex">
+            <div class="flex items-center justify-center p-6">
+                <img alt="InU Learning Logo" class="w-24 h-24 rounded-full" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBkUkYI-c0qBm9BcHamuWBs9ebu6mgGni1SlXL6giHvgu2WnHxHaQYkRoAlzI_OZ8yNf6Rn90d73q13vLeMoBfFP0mQHcxlf2YHE9__XhpOUl-OvECBnRad91AKcE4dKkTJtEoAm_alktSTzu_Aw9Fah_2IQ6YeqBALwAqrLNP2oghwOkLSyBMdfpOrW24nKk3dnl3z6piT9-S0cISDfJ5rhAlBYvIzoAhypgUHvJCzxlSG9ag8QMkltK1Hu_rX4jqdQgGuOD2JLzo">
+            </div>
+            <div class="px-6 pb-4">
+                <h1 class="text-xl font-bold text-center">InU Learning</h1>
+                <p class="text-sm text-center">【因你而學】</p>
+            </div>
+            
+            <nav class="flex-1 px-4 py-4 space-y-2">
+                <div class="flex items-center px-4 py-2 text-gray-100 rounded-lg">
+                    <span class="material-icons">school</span>
+                    <span class="ml-3">學生練功專區</span>
+                </div>
+                <div class="flex items-center px-4 py-2 text-gray-100 rounded-lg">
+                    <span class="material-icons">family_restroom</span>
+                    <span class="ml-3">家長控制台</span>
+                </div>
+                <div class="flex items-center px-4 py-2 text-gray-100 rounded-lg">
+                    <span class="material-icons">person</span>
+                    <span class="ml-3">教師登入</span>
+                </div>
+                <div class="flex items-center px-4 py-2 text-gray-100 rounded-lg">
+                    <span class="material-icons">admin_panel_settings</span>
+                    <span class="ml-3">管理員專區</span>
+                </div>
+            </nav>
+        </aside>
+
+        <!-- 主內容區 -->
+        <div class="flex-1 flex flex-col overflow-hidden">
+            <!-- 頂部導航 -->
+            <header class="flex justify-between items-center p-4 bg-white border-b">
+                <div class="flex items-center flex-1">
+                    <button class="text-gray-500 focus:outline-none lg:hidden">
+                        <span class="material-icons">menu</span>
+                    </button>
+                    <div class="lg:hidden ml-4">
+                        <h1 class="text-lg font-bold text-blue-800">InU Learning</h1>
+                    </div>
+                </div>
+            </header>
+
+            <!-- 登入表單區 -->
+            <main class="flex-1 overflow-x-hidden overflow-y-auto bg-gray-100">
+                <div class="container mx-auto px-6 py-8">
+                    <div class="max-w-md mx-auto bg-white rounded-lg shadow-md overflow-hidden">
+                        <div class="px-6 py-8">
+                            <!-- Logo (小螢幕顯示) -->
+                            <div class="flex justify-center mb-6">
+                                <img alt="InU Learning Logo" class="w-20 h-20 rounded-full lg:hidden" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBkUkYI-c0qBm9BcHamuWBs9ebu6mgGni1SlXL6giHvgu2WnHxHaQYkRoAlzI_OZ8yNf6Rn90d73q13vLeMoBfFP0mQHcxlf2YHE9__XhpOUl-OvECBnRad91AKcE4dKkTJtEoAm_alktSTzu_Aw9Fah_2IQ6YeqBALwAqrLNP2oghwOkLSyBMdfpOrW24nKk3dnl3z6piT9-S0cISDfJ5rhAlBYvIzoAhypgUHvJCzxlSG9ag8QMkltK1Hu_rX4jqdQgGuOD2JLzo">
+                            </div>
+
+                            <!-- 標題 -->
+                            <h2 class="text-2xl font-bold text-center text-blue-800">登入您的 InU Learning 帳號</h2>
+                            <p class="mt-2 text-center text-gray-600">選擇您的身份並繼續您的個人化學習旅程</p>
+
+                            <!-- 身份選擇 -->
+                            <div class="mt-6 mb-6">
+                                <label class="block text-sm font-medium text-gray-700 mb-3">選擇身份</label>
+                                <div class="grid grid-cols-2 gap-3">
+                                    <button type="button" class="role-badge role-btn active bg-blue-50 border-2 border-blue-200 rounded-lg p-3 text-center transition-all duration-200" data-role="student">
+                                        <span class="material-icons text-blue-600 mb-1">school</span>
+                                        <div class="text-sm font-medium text-blue-800">學生</div>
+                                    </button>
+                                    <button type="button" class="role-badge role-btn bg-green-50 border-2 border-green-200 rounded-lg p-3 text-center transition-all duration-200" data-role="parent">
+                                        <span class="material-icons text-green-600 mb-1">family_restroom</span>
+                                        <div class="text-sm font-medium text-green-800">家長</div>
+                                    </button>
+                                    <button type="button" class="role-badge role-btn bg-purple-50 border-2 border-purple-200 rounded-lg p-3 text-center transition-all duration-200" data-role="teacher">
+                                        <span class="material-icons text-purple-600 mb-1">person</span>
+                                        <div class="text-sm font-medium text-purple-800">教師</div>
+                                    </button>
+                                    <button type="button" class="role-badge role-btn bg-orange-50 border-2 border-orange-200 rounded-lg p-3 text-center transition-all duration-200" data-role="admin">
+                                        <span class="material-icons text-orange-600 mb-1">admin_panel_settings</span>
+                                        <div class="text-sm font-medium text-orange-800">管理員</div>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- 登入表單 -->
+                            <form id="loginForm" class="space-y-6">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700" for="email">電子郵件</label>
+                                    <input autocomplete="email" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm" id="email" name="email" required type="email" placeholder="請輸入您的電子郵件">
+                                </div>
+
+                                <div>
+                                    <div class="flex items-center justify-between">
+                                        <label class="block text-sm font-medium text-gray-700" for="password">密碼</label>
+                                        <div class="text-sm">
+                                            <a class="font-medium text-blue-600 hover:text-blue-500" href="#" onclick="alert('忘記密碼功能開發中...')">忘記密碼？</a>
+                                        </div>
+                                    </div>
+                                    <input autocomplete="current-password" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm" id="password" name="password" required type="password" placeholder="請輸入您的密碼">
+                                </div>
+
+                                <div class="flex items-center justify-between">
+                                    <div class="flex items-center">
+                                        <input class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded" id="rememberMe" name="rememberMe" type="checkbox">
+                                        <label class="ml-2 block text-sm text-gray-900" for="rememberMe">記住我</label>
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <button id="loginBtn" class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors duration-200" type="submit">
+                                        <span id="loginText">登入</span>
+                                        <span id="loadingSpinner" class="hidden ml-2">
+                                            <svg class="animate-spin h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                            </svg>
+                                        </span>
+                                    </button>
+                                </div>
+
+                                <!-- 快速登入按鈕 -->
+                                <div class="space-y-2">
+                                    <div class="text-center text-sm text-gray-500 mb-3">快速登入測試帳號</div>
+                                    <div class="grid grid-cols-2 gap-2">
+                                        <button type="button" class="quick-login-btn bg-blue-100 text-blue-800 px-3 py-2 rounded text-sm hover:bg-blue-200 transition-colors duration-200" data-email="student01@test.com" data-password="password123">學生測試帳號</button>
+                                        <button type="button" class="quick-login-btn bg-green-100 text-green-800 px-3 py-2 rounded text-sm hover:bg-green-200 transition-colors duration-200" data-email="parent01@test.com" data-password="password123">家長測試帳號</button>
+                                        <button type="button" class="quick-login-btn bg-purple-100 text-purple-800 px-3 py-2 rounded text-sm hover:bg-purple-200 transition-colors duration-200" data-email="teacher01@test.com" data-password="password123">教師測試帳號</button>
+                                        <button type="button" class="quick-login-btn bg-orange-100 text-orange-800 px-3 py-2 rounded text-sm hover:bg-orange-200 transition-colors duration-200" data-email="admin01@test.com" data-password="password123">管理員測試帳號</button>
+                                    </div>
+                                </div>
+
+                                <div class="relative">
+                                    <div class="absolute inset-0 flex items-center">
+                                        <div class="w-full border-t border-gray-300"></div>
+                                    </div>
+                                    <div class="relative flex justify-center text-sm">
+                                        <span class="px-2 bg-white text-gray-500">或使用其他方式登入</span>
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <a class="w-full inline-flex justify-center py-2 px-4 border border-gray-300 rounded-md shadow-sm bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 transition-colors duration-200" href="#" onclick="alert('Google 登入功能開發中...')">
+                                        <img alt="Google logo" class="w-5 h-5" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBn3GMtPbiYKp07JRG1hAhCltT7oN-f3IoikefY1Uby1psAxL2bnBktNuwsl0283bf8x27y7_lsaaNsV369M95n-GuJwri9nfAmCGUlJArv2Jdn-7C5uNWgOf3YkTD5F8eP0gZKDts6yGUiPkKjpMBqRv11cj4NmdQGlr79IVHnYaEPDqWH5muRBVqTrqtxDIFjgGagJJMjKQHZ3KB9bO3Qtds6_HGJaG41xOt9hqN-JKDpWOB_LdOXfipdSJX5UuQioT7Gd65FCuE">
+                                        <span class="ml-2">使用 Google 登入</span>
+                                    </a>
+                                </div>
+                            </form>
+
+                            <!-- 錯誤和成功訊息 -->
+                            <div id="errorMessage" class="hidden mt-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded-md text-sm"></div>
+                            <div id="successMessage" class="hidden mt-4 p-3 bg-green-100 border border-green-400 text-green-700 rounded-md text-sm"></div>
+
+                            <p class="mt-8 text-center text-sm text-gray-600">
+                                還沒有帳號嗎？
+                                <a class="font-medium text-blue-600 hover:text-blue-500" href="#" onclick="alert('註冊功能開發中...')">前往註冊</a>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <script>
+        class UnifiedLogin {
+            constructor() {
+                this.selectedRole = 'student';
+                this.initializeElements();
+                this.bindEvents();
+            }
+
+            initializeElements() {
+                this.loginForm = document.getElementById('loginForm');
+                this.emailInput = document.getElementById('email');
+                this.passwordInput = document.getElementById('password');
+                this.loginBtn = document.getElementById('loginBtn');
+                this.loginText = document.getElementById('loginText');
+                this.loadingSpinner = document.getElementById('loadingSpinner');
+                this.roleButtons = document.querySelectorAll('.role-btn');
+                this.quickLoginButtons = document.querySelectorAll('.quick-login-btn');
+                this.errorMessage = document.getElementById('errorMessage');
+                this.successMessage = document.getElementById('successMessage');
+            }
+
+            bindEvents() {
+                // 表單提交
+                this.loginForm.addEventListener('submit', (e) => this.handleLogin(e));
+
+                // 身份選擇
+                this.roleButtons.forEach(btn => {
+                    btn.addEventListener('click', () => this.selectRole(btn.dataset.role));
+                });
+
+                // 快速登入
+                this.quickLoginButtons.forEach(btn => {
+                    btn.addEventListener('click', () => this.quickLogin(btn));
+                });
+            }
+
+            selectRole(role) {
+                this.selectedRole = role;
+                
+                // 更新按鈕樣式
+                this.roleButtons.forEach(btn => {
+                    btn.classList.remove('active');
+                    if (btn.dataset.role === role) {
+                        btn.classList.add('active');
+                    }
+                });
+
+                console.log('選擇身份:', role);
+            }
+
+            async handleLogin(e) {
+                e.preventDefault();
+                
+                const email = this.emailInput.value.trim();
+                const password = this.passwordInput.value;
+
+                if (!email || !password) {
+                    this.showError('請輸入電子郵件和密碼');
+                    return;
+                }
+
+                try {
+                    this.setLoading(true);
+                    this.hideMessages();
+
+                    // 調用登入 API
+                    const response = await this.callLoginAPI(email, password);
+                    
+                    // 解析 JWT token 獲取用戶資訊
+                    const userInfo = this.parseJWT(response.access_token);
+                    
+                    // 儲存認證資訊
+                    localStorage.setItem('auth_token', response.access_token);
+                    localStorage.setItem('user_info', JSON.stringify(userInfo));
+
+                    this.showSuccess('登入成功！正在跳轉...');
+                    
+                    // 根據用戶角色跳轉
+                    setTimeout(() => {
+                        this.redirectByRole(userInfo.role);
+                    }, 1000);
+
+                } catch (error) {
+                    console.error('登入錯誤:', error);
+                    this.showError(error.message || '登入失敗，請檢查您的帳號密碼');
+                } finally {
+                    this.setLoading(false);
+                }
+            }
+
+            async callLoginAPI(email, password) {
+                const response = await fetch('/api/v1/auth/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        email: email,
+                        password: password
+                    })
+                });
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(data.detail || data.message || '登入失敗');
+                }
+
+                return data;
+            }
+
+            parseJWT(token) {
+                try {
+                    // JWT 的格式是: header.payload.signature
+                    const parts = token.split('.');
+                    if (parts.length !== 3) {
+                        throw new Error('Invalid JWT format');
+                    }
+
+                    // 解析 payload (第二部分)
+                    const payload = parts[1];
+                    
+                    // Base64 解碼
+                    const decoded = atob(payload.replace(/-/g, '+').replace(/_/g, '/'));
+                    
+                    // 解析 JSON
+                    const userInfo = JSON.parse(decoded);
+                    
+                    console.log('解析的用戶資訊:', userInfo);
+                    return userInfo;
+                } catch (error) {
+                    console.error('JWT 解析錯誤:', error);
+                    throw new Error('無法解析用戶資訊');
+                }
+            }
+
+            redirectByRole(role) {
+                const roleRedirectMap = {
+                    'student': 'http://localhost:8080',     // 學生前端
+                    'parent': 'http://localhost:8082',      // 家長前端  
+                    'teacher': 'http://localhost:8083',     // 教師前端
+                    'admin': 'http://localhost:8081',       // 管理員前端
+                    'manager': 'http://localhost:8081'      // 管理員前端 (別名)
+                };
+
+                const targetURL = roleRedirectMap[role];
+
+                if (targetURL) {
+                    console.log('跳轉到:', targetURL);
+                    window.location.href = targetURL;
+                } else {
+                    console.error('未知的用戶角色:', role);
+                    this.showError('未知的用戶角色，請聯繫系統管理員');
+                }
+            }
+
+            quickLogin(button) {
+                const email = button.dataset.email;
+                const password = button.dataset.password;
+                
+                this.emailInput.value = email;
+                this.passwordInput.value = password;
+                
+                // 自動提交表單
+                this.handleLogin(new Event('submit'));
+            }
+
+            setLoading(loading) {
+                this.loginBtn.disabled = loading;
+                if (loading) {
+                    this.loginText.classList.add('hidden');
+                    this.loadingSpinner.classList.remove('hidden');
+                } else {
+                    this.loginText.classList.remove('hidden');
+                    this.loadingSpinner.classList.add('hidden');
+                }
+            }
+
+            showError(message) {
+                this.hideMessages();
+                this.errorMessage.textContent = message;
+                this.errorMessage.classList.remove('hidden');
+                
+                // 5秒後自動隱藏
+                setTimeout(() => this.hideMessages(), 5000);
+            }
+
+            showSuccess(message) {
+                this.hideMessages();
+                this.successMessage.textContent = message;
+                this.successMessage.classList.remove('hidden');
+            }
+
+            hideMessages() {
+                this.errorMessage.classList.add('hidden');
+                this.successMessage.classList.add('hidden');
+            }
+        }
+
+        // 初始化統一登入系統
+        document.addEventListener('DOMContentLoaded', () => {
+            new UnifiedLogin();
+        });
+    </script>
+</body>
+</html> 

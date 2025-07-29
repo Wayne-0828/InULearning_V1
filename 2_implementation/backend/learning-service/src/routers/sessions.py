@@ -5,11 +5,13 @@
 """
 
 import logging
+import uuid
 from typing import List, Optional
 from datetime import datetime, timedelta
 from fastapi import APIRouter, Depends, HTTPException, status, Query
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, and_, desc
+from pydantic import BaseModel
 
 from ..models.schemas import SessionList, SessionDetail, LearningHistory
 from ..models.learning_session import LearningSession, LearningRecord
@@ -19,6 +21,73 @@ from ..utils.auth import get_current_user
 logger = logging.getLogger(__name__)
 
 router = APIRouter(prefix="/sessions", tags=["sessions"])
+
+# Pydantic 模型
+class SessionCreateRequest(BaseModel):
+    session_type: str
+    question_count: int
+    subject: str
+    grade: Optional[str] = None
+    chapter: Optional[str] = None
+
+class SessionCreateResponse(BaseModel):
+    id: str
+    session_type: str
+    question_count: int
+    subject: str
+    status: str
+    created_at: datetime
+
+
+@router.post("/", response_model=SessionCreateResponse, status_code=201)
+async def create_session(
+    request: SessionCreateRequest,
+    current_user = Depends(get_current_user),
+    db_session: AsyncSession = Depends(get_db_session)
+):
+    """創建新的學習會話"""
+    
+    try:
+        # 創建新的學習會話
+        session_id = str(uuid.uuid4())
+        now = datetime.utcnow()
+        
+        new_session = LearningSession(
+            id=session_id,
+            user_id=current_user.user_id,
+            session_type=request.session_type,
+            subject=request.subject,
+            grade=request.grade,
+            chapter=request.chapter,
+            question_count=request.question_count,
+            status="active",
+            start_time=now,
+            created_at=now,
+            updated_at=now
+        )
+        
+        db_session.add(new_session)
+        await db_session.commit()
+        await db_session.refresh(new_session)
+        
+        logger.info(f"Created session {session_id} for user {current_user.user_id}")
+        
+        return SessionCreateResponse(
+            id=new_session.id,
+            session_type=new_session.session_type,
+            question_count=new_session.question_count,
+            subject=new_session.subject,
+            status=new_session.status,
+            created_at=new_session.created_at
+        )
+        
+    except Exception as e:
+        logger.error(f"Failed to create session: {e}")
+        await db_session.rollback()
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="創建學習會話失敗"
+        )
 
 
 @router.get("/", response_model=List[SessionList])

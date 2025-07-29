@@ -46,10 +46,10 @@ try:
 except ImportError as e:
     logger.warning(f"⚠️ 無法導入 shared 資料庫配置，使用本地配置: {e}")
     
-    # 資料庫配置
+    # 資料庫配置 - 使用 Docker 環境變數
     DATABASE_URL = os.getenv(
         "DATABASE_URL", 
-        "postgresql+asyncpg://postgres:password@localhost:5432/inulearning"
+        "postgresql+asyncpg://aipe-tester:aipe-tester@postgres:5432/inulearning"
     )
 
     # 創建異步引擎
@@ -70,17 +70,17 @@ except ImportError as e:
         expire_on_commit=False
     )
     
-    # 本地 MongoDB 配置
+    # 本地 MongoDB 配置 - 使用 Docker 環境變數
     from motor.motor_asyncio import AsyncIOMotorClient
-    mongodb_url = os.getenv("MONGODB_URL", "mongodb://localhost:27017")
+    mongodb_url = os.getenv("MONGODB_URL", "mongodb://aipe-tester:aipe-tester@mongodb:27017/inulearning?authSource=admin")
     mongodb_database_name = os.getenv("MONGODB_DATABASE", "inulearning")
     
     mongodb_client = AsyncIOMotorClient(mongodb_url)
     mongodb_database = mongodb_client[mongodb_database_name]
     
-    # 本地 Redis 配置
+    # 本地 Redis 配置 - 使用 Docker 環境變數
     import redis.asyncio as redis
-    redis_url = os.getenv("REDIS_URL", "redis://localhost:6379")
+    redis_url = os.getenv("REDIS_URL", "redis://redis:6379/0")
     redis_client = redis.from_url(redis_url)
 
 
@@ -110,16 +110,16 @@ async def get_redis_connection():
 async def init_database():
     """初始化資料庫"""
     try:
-        # 創建 PostgreSQL 表
+        # 檢查 PostgreSQL 連接
         async with engine.begin() as conn:
             await conn.run_sync(Base.metadata.create_all)
-        logger.info("✅ PostgreSQL 資料庫表創建成功")
+        logger.info("✅ PostgreSQL 資料庫初始化完成")
         
-        # 測試 MongoDB 連接
+        # 檢查 MongoDB 連接
         await mongodb_client.admin.command('ping')
-        logger.info("✅ MongoDB 連接成功")
+        logger.info("✅ MongoDB 資料庫連接成功")
         
-        # 測試 Redis 連接
+        # 檢查 Redis 連接
         await redis_client.ping()
         logger.info("✅ Redis 連接成功")
         
@@ -140,7 +140,7 @@ async def close_database():
 
 
 async def check_database_connection() -> bool:
-    """檢查資料庫連接"""
+    """檢查資料庫連接狀態"""
     try:
         # 檢查 PostgreSQL
         async with engine.begin() as conn:

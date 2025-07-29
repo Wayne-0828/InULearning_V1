@@ -5,28 +5,34 @@
 
 class AuthAPI {
     constructor() {
-        this.baseURL = 'http://localhost:8001'; // auth-service 的預設端口
+        this.baseURL = '/api/v1'; // 使用相對路徑，經由 Nginx 代理到後端服務
     }
 
     /**
      * 用戶註冊
      */
     async register(userData) {
+        // 強制組裝正確 schema
+        const payload = {
+            email: userData.email,
+            username: userData.username,
+            password: userData.password,
+            role: userData.role,
+            first_name: userData.first_name,
+            last_name: userData.last_name
+        };
         try {
             const response = await fetch(`${this.baseURL}/auth/register`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify(userData)
+                body: JSON.stringify(payload)
             });
-
             const data = await response.json();
-
             if (!response.ok) {
-                throw new Error(data.detail || '註冊失敗');
+                throw new Error(data.detail || data.message || '註冊失敗');
             }
-
             return data;
         } catch (error) {
             console.error('註冊錯誤:', error);
@@ -49,13 +55,10 @@ class AuthAPI {
                     password: password
                 })
             });
-
             const data = await response.json();
-
             if (!response.ok) {
-                throw new Error(data.detail || '登入失敗');
+                throw new Error(data.detail || data.message || '登入失敗');
             }
-
             return data;
         } catch (error) {
             console.error('登入錯誤:', error);
@@ -137,7 +140,7 @@ class AuthAPI {
     }
 
     /**
-     * 登出
+     * 用戶登出
      */
     async logout() {
         try {
@@ -149,10 +152,12 @@ class AuthAPI {
             if (!response.ok) {
                 console.warn('登出 API 呼叫失敗，但本地登出仍會執行');
             }
+
+            // 無論 API 是否成功，都清除本地狀態
+            authManager.logout();
         } catch (error) {
             console.error('登出錯誤:', error);
-        } finally {
-            // 無論 API 是否成功，都執行本地登出
+            // 即使 API 失敗，也要清除本地狀態
             authManager.logout();
         }
     }
@@ -173,7 +178,7 @@ class AuthAPI {
             const data = await response.json();
 
             if (!response.ok) {
-                throw new Error(data.detail || '密碼重置請求失敗');
+                throw new Error(data.detail || '忘記密碼請求失敗');
             }
 
             return data;
@@ -207,7 +212,7 @@ class AuthAPI {
 
             return data;
         } catch (error) {
-            console.error('重置密碼錯誤:', error);
+            console.error('密碼重置錯誤:', error);
             throw error;
         }
     }
@@ -236,7 +241,7 @@ class AuthAPI {
     }
 }
 
-// 創建全域認證 API 實例
+// 創建全域 API 實例
 const authAPI = new AuthAPI();
 
 // 導出認證 API

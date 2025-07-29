@@ -16,7 +16,7 @@ class QuestionBankClient:
     """題庫服務客戶端"""
     
     def __init__(self):
-        self.base_url = "http://localhost:8001"  # 題庫服務地址
+        self.base_url = "http://localhost:8002"  # 題庫服務地址（已修正端口）
         self.timeout = 30.0
     
     async def get_questions_by_criteria(
@@ -56,7 +56,8 @@ class QuestionBankClient:
                 response.raise_for_status()
                 
                 data = response.json()
-                return data.get("questions", [])
+                # 題庫API返回的是items字段，需要正確映射
+                return data.get("items", [])
                 
         except httpx.HTTPStatusError as e:
             logger.error(f"HTTP error when getting questions: {e}")
@@ -116,8 +117,8 @@ class QuestionBankClient:
                 response = await client.get(url, params=params)
                 response.raise_for_status()
                 
-                data = response.json()
-                return data.get("questions", [])
+                # 隨機出題API直接返回數組
+                return response.json()
                 
         except httpx.HTTPStatusError as e:
             logger.error(f"HTTP error when getting random questions: {e}")

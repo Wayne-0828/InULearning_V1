@@ -9,8 +9,7 @@ import logging
 from typing import Optional
 from fastapi import Depends, HTTPException, status
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
-import jwt
-from jwt.exceptions import PyJWTError
+from jose import jwt, JWTError
 
 logger = logging.getLogger(__name__)
 
@@ -48,7 +47,7 @@ async def verify_token(credentials: HTTPAuthorizationCredentials = Depends(secur
         
         return User(user_id=user_id, username=email, role=role)
         
-    except PyJWTError as e:
+    except JWTError as e:
         logger.warning(f"JWT decode error: {e}")
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,

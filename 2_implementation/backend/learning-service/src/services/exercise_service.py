@@ -89,7 +89,7 @@ class ExerciseService:
             for question in questions:
                 record = LearningRecord(
                     session_id=session_id,
-                    question_id=question["question_id"],
+                    question_id=question["id"],  # 修正字段名
                     grade=question["grade"],
                     subject=question["subject"],
                     publisher=question["publisher"],
@@ -111,12 +111,11 @@ class ExerciseService:
                 "session_id": session_id,
                 "questions": questions,
                 "estimated_time": estimated_time,
-                "created_at": session.created_at
+                "created_at": session.start_time
             }
             
         except Exception as e:
             logger.error(f"Failed to create exercise: {e}")
-            await db_session.rollback()
             raise
     
     async def submit_answers(
@@ -128,32 +127,28 @@ class ExerciseService:
         """提交答案並獲得批改結果"""
         
         try:
-            # 1. 獲取學習會話
+            # 1. 獲取會話和學習記錄
             session = await self._get_session(session_id, db_session)
             if not session:
-                raise ValueError("學習會話不存在")
+                raise ValueError("會話不存在")
             
             if session.status != "active":
                 raise ValueError("會話已結束，無法提交答案")
             
-            # 2. 獲取學習記錄
-            learning_records = await self._get_learning_records(session_id, db_session)
+            records = await self._get_learning_records(session_id, db_session)
             
-            # 3. 批改答案
+            # 2. 批改答案
             results = []
             total_score = Decimal('0')
             correct_count = 0
             
             for answer in answers:
-                record = next(
-                    (r for r in learning_records if r.question_id == answer.question_id), 
-                    None
-                )
-                
+                # 找到對應的學習記錄
+                record = next((r for r in records if r.question_id == answer.question_id), None)
                 if not record:
                     continue
                 
-                # 檢查答案
+                # 判斷是否正確
                 is_correct = answer.user_answer == record.correct_answer
                 score = Decimal('10') if is_correct else Decimal('0')
                 
@@ -169,8 +164,6 @@ class ExerciseService:
                 
                 # 生成詳解
                 explanation = await self._generate_explanation(record, is_correct)
-                
-                # 生成反饋
                 feedback = self._generate_feedback(is_correct)
                 
                 results.append(QuestionResult(
@@ -181,39 +174,30 @@ class ExerciseService:
                     explanation=explanation
                 ))
             
-            # 4. 計算總分
-            overall_score = (total_score / len(answers)) if answers else Decimal('0')
-            accuracy_rate = (correct_count / len(answers)) * 100 if answers else 0
-            
-            # 5. 更新會話狀態
+            # 3. 更新會話狀態
             session.status = "completed"
-            session.overall_score = overall_score
             session.end_time = datetime.utcnow()
+            session.overall_score = total_score
             session.time_spent = sum(a.time_spent or 0 for a in answers)
             
-            # 6. AI 弱點分析
-            weakness_analysis = None
-            if len(answers) > 0:
-                weakness_analysis = await self._analyze_weaknesses(
-                    session, learning_records, db_session
-                )
-            
-            # 7. 更新學習檔案
-            await self._update_user_profile(session, overall_score, accuracy_rate, db_session)
-            
-            # 8. 保存變更
             await db_session.commit()
+            
+            # 4. 生成弱點分析（跳過 AI 分析）
+            weakness_analysis = await self._analyze_weaknesses(session, records, db_session)
+            
+            # 5. 更新用戶檔案
+            accuracy_rate = correct_count / len(answers) if answers else 0
+            await self._update_user_profile(session, total_score, accuracy_rate, db_session)
             
             return SubmissionResult(
                 session_id=session_id,
-                overall_score=overall_score,
+                overall_score=total_score,
                 results=results,
                 weakness_analysis=weakness_analysis
             )
             
         except Exception as e:
             logger.error(f"Failed to submit answers: {e}")
-            await db_session.rollback()
             raise
     
     async def _get_user_learning_profile(
@@ -223,22 +207,31 @@ class ExerciseService:
         db_session: AsyncSession
     ) -> Optional[Dict[str, Any]]:
         """獲取用戶學習檔案"""
-        # TODO: 實現用戶學習檔案查詢
-        return None
+        
+        try:
+            # 這裡可以實現獲取用戶學習檔案的邏輯
+            # 暫時返回 None，表示沒有學習檔案
+            return None
+        except Exception as e:
+            logger.error(f"Failed to get user profile: {e}")
+            return None
     
     async def _adjust_difficulty(
         self, 
         questions: List[Dict[str, Any]], 
         user_profile: Dict[str, Any]
     ) -> List[Dict[str, Any]]:
-        """AI 難度調整"""
-        # TODO: 實現 AI 難度調整邏輯
+        """調整題目難度"""
+        
+        # 這裡可以實現基於用戶檔案的難度調整邏輯
+        # 暫時返回原題目
         return questions
     
     def _calculate_estimated_time(self, questions: List[Dict[str, Any]]) -> int:
-        """計算預估時間（分鐘）"""
-        # 每題平均 2 分鐘
-        return len(questions) * 2
+        """計算預估時間"""
+        
+        # 每題預估 3 分鐘
+        return len(questions) * 3
     
     async def _get_session(
         self, 
@@ -246,10 +239,15 @@ class ExerciseService:
         db_session: AsyncSession
     ) -> Optional[LearningSession]:
         """獲取學習會話"""
-        result = await db_session.execute(
-            select(LearningSession).where(LearningSession.id == session_id)
-        )
-        return result.scalar_one_or_none()
+        
+        try:
+            result = await db_session.execute(
+                select(LearningSession).where(LearningSession.id == session_id)
+            )
+            return result.scalar_one_or_none()
+        except Exception as e:
+            logger.error(f"Failed to get session: {e}")
+            return None
     
     async def _get_learning_records(
         self, 
@@ -257,10 +255,15 @@ class ExerciseService:
         db_session: AsyncSession
     ) -> List[LearningRecord]:
         """獲取學習記錄"""
-        result = await db_session.execute(
-            select(LearningRecord).where(LearningRecord.session_id == session_id)
-        )
-        return result.scalars().all()
+        
+        try:
+            result = await db_session.execute(
+                select(LearningRecord).where(LearningRecord.session_id == session_id)
+            )
+            return result.scalars().all()
+        except Exception as e:
+            logger.error(f"Failed to get learning records: {e}")
+            return []
     
     async def _generate_explanation(
         self, 
@@ -268,14 +271,24 @@ class ExerciseService:
         is_correct: bool
     ) -> str:
         """生成題目詳解"""
-        # TODO: 實現詳解生成邏輯
-        if is_correct:
-            return f"答案正確！這題考查的是 {record.topic or '相關概念'}。"
+        
+        # 這裡可以實現詳細的題目詳解生成邏輯
+        # 暫時返回基礎詳解
+        subject = record.subject
+        chapter = record.chapter
+        
+        if subject == "數學":
+            return f"這是一道{chapter}的題目。正確答案是 {record.correct_answer}。請仔細檢查解題步驟，確保理解相關概念。"
+        elif subject == "國文":
+            return f"這是一道{chapter}的題目。正確答案是 {record.correct_answer}。請注意文意理解和字詞運用。"
+        elif subject == "英文":
+            return f"這是一道{chapter}的題目。正確答案是 {record.correct_answer}。請注意文法規則和單字用法。"
         else:
-            return f"答案錯誤。正確答案是 {record.correct_answer}。這題考查的是 {record.topic or '相關概念'}。"
+            return f"這是一道{chapter}的題目。正確答案是 {record.correct_answer}。請仔細閱讀題目要求。"
     
     def _generate_feedback(self, is_correct: bool) -> str:
         """生成反饋"""
+        
         if is_correct:
             return "答案正確！解題步驟清楚。"
         else:
@@ -287,35 +300,42 @@ class ExerciseService:
         records: List[LearningRecord], 
         db_session: AsyncSession
     ) -> Optional[WeaknessAnalysis]:
-        """AI 弱點分析"""
+        """分析學習弱點（跳過 AI 分析）"""
+        
         try:
-            # 準備分析數據
-            analysis_data = {
-                "session_id": str(session.id),
-                "user_id": str(session.user_id),
-                "grade": session.grade,
-                "subject": session.subject,
-                "publisher": session.publisher,
-                "overall_score": float(session.overall_score),
-                "records": [
-                    {
-                        "question_id": r.question_id,
-                        "topic": r.topic,
-                        "knowledge_points": json.loads(r.knowledge_points) if r.knowledge_points else [],
-                        "is_correct": r.is_correct,
-                        "time_spent": r.time_spent
-                    }
-                    for r in records
-                ]
-            }
+            # 分析錯誤題目
+            incorrect_records = [r for r in records if not r.is_correct]
             
-            # 調用 AI 分析服務
-            analysis_result = await self.ai_analysis_client.analyze_weaknesses(analysis_data)
+            # 提取弱點概念
+            weak_concepts = []
+            knowledge_points_to_strengthen = []
+            
+            for record in incorrect_records:
+                try:
+                    knowledge_points = json.loads(record.knowledge_points) if record.knowledge_points else []
+                    weak_concepts.extend(knowledge_points)
+                    knowledge_points_to_strengthen.extend(knowledge_points)
+                except:
+                    pass
+            
+            # 去重
+            weak_concepts = list(set(weak_concepts))
+            knowledge_points_to_strengthen = list(set(knowledge_points_to_strengthen))
+            
+            # 生成基礎建議
+            recommendations = []
+            if weak_concepts:
+                recommendations.append({
+                    "type": "similar_question",
+                    "question_ids": [],
+                    "difficulty": "easy",
+                    "reason": f"建議加強 {', '.join(weak_concepts[:3])} 相關練習"
+                })
             
             return WeaknessAnalysis(
-                weak_concepts=analysis_result.get("weak_concepts", []),
-                knowledge_points_to_strengthen=analysis_result.get("knowledge_points_to_strengthen", []),
-                recommendations=analysis_result.get("recommendations", [])
+                weak_concepts=weak_concepts,
+                knowledge_points_to_strengthen=knowledge_points_to_strengthen,
+                recommendations=recommendations
             )
             
         except Exception as e:
@@ -330,5 +350,10 @@ class ExerciseService:
         db_session: AsyncSession
     ):
         """更新用戶學習檔案"""
-        # TODO: 實現用戶學習檔案更新邏輯
-        pass 
+        
+        try:
+            # 這裡可以實現更新用戶學習檔案的邏輯
+            # 暫時跳過，避免複雜性
+            pass
+        except Exception as e:
+            logger.error(f"Failed to update user profile: {e}") 

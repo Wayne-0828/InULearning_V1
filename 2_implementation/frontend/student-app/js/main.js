@@ -12,8 +12,40 @@ class MainApp {
      * 初始化應用
      */
     init() {
+        // 處理從統一登入頁面傳來的認證資訊
+        this.handleAuthFromURL();
+        
         this.bindEvents();
-        this.loadDashboardData();
+        // 延遲載入儀表板資料，確保認證狀態已初始化
+        setTimeout(() => {
+            this.loadDashboardData();
+        }, 100);
+    }
+
+    /**
+     * 處理URL參數中的認證資訊
+     */
+    handleAuthFromURL() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const token = urlParams.get('token');
+        const userInfo = urlParams.get('userInfo');
+
+        if (token && userInfo) {
+            console.log('從URL接收到認證資訊');
+            
+            // 儲存到localStorage
+            localStorage.setItem('auth_token', token);
+            localStorage.setItem('user_info', userInfo);
+            
+            // 清除URL參數
+            const newURL = window.location.protocol + "//" + window.location.host + window.location.pathname;
+            window.history.replaceState({}, document.title, newURL);
+            
+            // 更新認證狀態
+            if (typeof authManager !== 'undefined') {
+                authManager.updateAuthUI();
+            }
+        }
     }
 
     /**

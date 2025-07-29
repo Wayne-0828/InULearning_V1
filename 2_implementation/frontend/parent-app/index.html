@@ -80,12 +80,15 @@
                     </div>
                 </div>
                 <div class="flex items-center space-x-4">
-                    <div id="userInfo" class="hidden">
+                    <div id="userInfo" class="hidden flex items-center space-x-2">
                         <span class="text-sm text-gray-600">歡迎，</span>
                         <span id="userName" class="text-sm font-medium text-blue-600"></span>
+                        <button id="logoutBtn" class="bg-red-500 text-white px-3 py-1 rounded text-sm hover:bg-red-600 transition-colors" onclick="parentAuth.logout()">
+                            登出
+                        </button>
                     </div>
                     <div id="authButtons">
-                        <a class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors" href="pages/login.html">登入</a>
+                        <a class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors" href="http://localhost/login.html">登入</a>
                         <a class="bg-gray-200 text-gray-800 px-4 py-2 rounded-lg hover:bg-gray-300 transition-colors" href="pages/register.html">註冊</a>
                     </div>
                 </div>

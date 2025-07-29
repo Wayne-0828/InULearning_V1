@@ -24,7 +24,7 @@ from fastapi.responses import JSONResponse
 from fastapi.exceptions import RequestValidationError
 from starlette.exceptions import HTTPException as StarletteHTTPException
 
-from .routers import exercises, sessions, recommendations, trends
+from .routers import exercises, sessions, recommendations, trends, records
 from .utils.logging_config import setup_logging
 from .utils.auth import get_current_user
 from .utils.exceptions import (
@@ -235,6 +235,13 @@ app.include_router(
     trends.router,
     prefix="/api/v1/learning",
     tags=["學習趨勢"],
+    dependencies=[Depends(get_current_user)]
+)
+
+app.include_router(
+    records.router,
+    prefix="/api/v1/learning",
+    tags=["學習記錄"],
     dependencies=[Depends(get_current_user)]
 )
 

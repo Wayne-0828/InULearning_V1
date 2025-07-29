@@ -5,8 +5,8 @@
 
 class AuthManager {
     constructor() {
-        this.tokenKey = 'inulearning_token';
-        this.userKey = 'inulearning_user';
+        this.tokenKey = 'auth_token';
+        this.userKey = 'user_info';
         this.baseURL = 'http://localhost:8001'; // auth-service 的預設端口
     }
 
@@ -14,19 +14,7 @@ class AuthManager {
      * 檢查用戶是否已登入
      */
     isLoggedIn() {
-        const token = this.getToken();
-        if (!token) return false;
-        
-        // 檢查 token 是否過期
-        try {
-            const payload = this.parseToken(token);
-            const currentTime = Date.now() / 1000;
-            return payload.exp > currentTime;
-        } catch (error) {
-            console.error('Token 解析錯誤:', error);
-            this.logout();
-            return false;
-        }
+        return !!this.getToken();
     }
 
     /**
@@ -54,15 +42,18 @@ class AuthManager {
      * 獲取用戶資訊
      */
     getUser() {
-        const userStr = localStorage.getItem(this.userKey);
-        return userStr ? JSON.parse(userStr) : null;
+        try {
+            return JSON.parse(localStorage.getItem(this.userKey));
+        } catch {
+            return null;
+        }
     }
 
     /**
      * 設置用戶資訊
      */
     setUser(user) {
-        localStorage.setItem(this.userKey, JSON.stringify(user));
+        localStorage.setItem('user_info', JSON.stringify(user));
     }
 
     /**
@@ -88,9 +79,10 @@ class AuthManager {
      * 登出
      */
     logout() {
-        this.removeToken();
-        this.removeUser();
-        window.location.href = '/pages/login.html';
+        localStorage.removeItem('auth_token');
+        localStorage.removeItem('user_info');
+        this.updateAuthUI();
+        window.location.href = 'http://localhost/login.html';
     }
 
     /**
@@ -104,39 +96,14 @@ class AuthManager {
 
         if (this.isLoggedIn()) {
             const user = this.getUser();
-            
-            // 顯示用戶資訊
-            if (userInfo) {
-                userInfo.classList.remove('hidden');
-                if (userName) {
-                    userName.textContent = user?.name || user?.email || '用戶';
-                }
-            }
-            
-            // 隱藏登入按鈕
-            if (authButtons) {
-                authButtons.classList.add('hidden');
-            }
-            
-            // 顯示登出按鈕
-            if (logoutBtn) {
-                logoutBtn.classList.remove('hidden');
-            }
+            if (userInfo) userInfo.classList.remove('hidden');
+            if (userName) userName.textContent = user?.email || '用戶';
+            if (authButtons) authButtons.classList.add('hidden');
+            if (logoutBtn) logoutBtn.classList.remove('hidden');
         } else {
-            // 隱藏用戶資訊
-            if (userInfo) {
-                userInfo.classList.add('hidden');
-            }
-            
-            // 顯示登入按鈕
-            if (authButtons) {
-                authButtons.classList.remove('hidden');
-            }
-            
-            // 隱藏登出按鈕
-            if (logoutBtn) {
-                logoutBtn.classList.add('hidden');
-            }
+            if (userInfo) userInfo.classList.add('hidden');
+            if (authButtons) authButtons.classList.remove('hidden');
+            if (logoutBtn) logoutBtn.classList.add('hidden');
         }
     }
 
@@ -145,10 +112,7 @@ class AuthManager {
      */
     getAuthHeaders() {
         const token = this.getToken();
-        return {
-            'Authorization': `Bearer ${token}`,
-            'Content-Type': 'application/json'
-        };
+        return token ? { 'Authorization': `Bearer ${token}` } : {};
     }
 
     /**
