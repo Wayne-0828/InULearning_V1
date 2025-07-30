@@ -221,12 +221,15 @@ jspm_packages/
 *.sqlite
 *.sqlite3
 
-# AI Models
-models/
+# AI Models - 只忽略根目錄下的 models 文件夾
+/models/
 *.pkl
 *.joblib
 *.h5
 *.pb
+*.onnx
+*.pt
+*.pth
 
 # MinIO
 minio_data/
