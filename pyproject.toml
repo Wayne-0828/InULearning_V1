@@ -15,7 +15,7 @@ pydantic-settings = "2.1.0"
 sqlalchemy = "2.0.23"
 alembic = "1.13.0"
 psycopg2-binary = "2.9.9"
-pymongo = "4.6.0"
+pymongo = "^4.9"
 redis = "5.0.2"
 celery = "5.3.4"
 kombu = "5.3.4"
@@ -43,6 +43,8 @@ coverage = "7.3.2"
 python-dotenv = "1.0.0"
 click = "8.1.7"
 rich = "13.7.0"
+motor = "^3.7.1"
+aiofiles = "^24.1.0"
 
 
 [build-system]

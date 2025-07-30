@@ -222,7 +222,7 @@ jspm_packages/
 *.sqlite3
 
 # AI Models - 只忽略根目錄下的 models 文件夾
-/models/
+
 *.pkl
 *.joblib
 *.h5

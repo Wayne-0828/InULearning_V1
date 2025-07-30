@@ -1,0 +1,6366 @@
+[
+    {
+        "grade": "7A",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "1-1正數與負數",
+        "topic": "正數與負數",
+        "knowledge_point": [
+            "正負數的定義",
+            "數線表示"
+        ],
+        "difficulty": "easy",
+        "question": "下列關於正數與負數的敘述，何者正確？",
+        "options": {
+            "A": "$0$ 是正數。",
+            "B": "$0$ 是負數。",
+            "C": "$0$ 既不是正數也不是負數。",
+            "D": "$0$ 是最小的正數。"
+        },
+        "answer": "C",
+        "explanation": "$0$ 既不是正數也不是負數，它是正負數的分界點。"
+    },
+    {
+        "grade": "7A",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "1-1正數與負數",
+        "topic": "正數與負數",
+        "knowledge_point": [
+            "絕對值",
+            "定義"
+        ],
+        "difficulty": "easy",
+        "question": "下列哪一個數的絕對值最大？",
+        "options": {
+            "A": "$-5$",
+            "B": "$3$",
+            "C": "$-8$",
+            "D": "$6$"
+        },
+        "answer": "C",
+        "explanation": "絕對值是指數線上該點到原點的距離。$|-5| = 5$, $|3| = 3$, $|-8| = 8$, $|6| = 6$。所以 $|-8|$ 最大。"
+    },
+    {
+        "grade": "7A",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "1-1正數與負數",
+        "topic": "正數與負數",
+        "knowledge_point": [
+            "數線上的點",
+            "大小比較"
+        ],
+        "difficulty": "normal",
+        "question": "在數線上，下列哪一個點所表示的數最小？",
+        "options": {
+            "A": "$-10$",
+            "B": "$-2$",
+            "C": "$0$",
+            "D": "$5$"
+        },
+        "answer": "A",
+        "explanation": "在數線上，越往左邊的數越小，因此 $-10$ 是最小的。"
+    },
+    {
+        "grade": "7A",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "1-1正數與負數",
+        "topic": "正數與負數",
+        "knowledge_point": [
+            "相反數",
+            "定義"
+        ],
+        "difficulty": "easy",
+        "question": "下列哪一個數是 $7$ 的相反數？",
+        "options": {
+            "A": "$7$",
+            "B": "$-7$",
+            "C": "$\frac{1}{7}$",
+            "D": "$-\frac{1}{7}$"
+        },
+        "answer": "B",
+        "explanation": "相反數是指與原點距離相等，但方向相反的數。所以 $7$ 的相反數是 $-7$。"
+    },
+    {
+        "grade": "7A",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "1-1正數與負數",
+        "topic": "正數與負數",
+        "knowledge_point": [
+            "數線上的距離",
+            "絕對值"
+        ],
+        "difficulty": "normal",
+        "question": "在數線上，點 $A$ 表示 $-4$，點 $B$ 表示 $6$，則 $A$、$B$ 兩點之間的距離為何？",
+        "options": {
+            "A": "$2$",
+            "B": "$-2$",
+            "C": "$10$",
+            "D": "$-10$"
+        },
+        "answer": "C",
+        "explanation": "兩點之間的距離為 $|6 - (-4)| = |6 + 4| = |10| = 10$。"
+    },
+    {
+        "grade": "7A",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "1-2正負數的加減",
+        "topic": "正負數的加減",
+        "knowledge_point": [
+            "正負數加法",
+            "符號運算"
+        ],
+        "difficulty": "easy",
+        "question": "計算 $(-3) + 7$ 的結果為何？",
+        "options": {
+            "A": "$10$",
+            "B": "$-10$",
+            "C": "$4$",
+            "D": "$-4$"
+        },
+        "answer": "C",
+        "explanation": "$(-3) + 7 = 4$。"
+    },
+    {
+        "grade": "7A",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "1-2正負數的加減",
+        "topic": "正負數的加減",
+        "knowledge_point": [
+            "正負數減法",
+            "符號運算"
+        ],
+        "difficulty": "easy",
+        "question": "計算 $8 - (-5)$ 的結果為何？",
+        "options": {
+            "A": "$3$",
+            "B": "$-3$",
+            "C": "$13$",
+            "D": "$-13$"
+        },
+        "answer": "C",
+        "explanation": "$8 - (-5) = 8 + 5 = 13$。"
+    },
+    {
+        "grade": "7A",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "1-2正負數的加減",
+        "topic": "正負數的加減",
+        "knowledge_point": [
+            "正負數混合運算",
+            "絕對值"
+        ],
+        "difficulty": "normal",
+        "question": "計算 $|-7| - 5 + |-2|$ 的結果為何？",
+        "options": {
+            "A": "$0$",
+            "B": "$2$",
+            "C": "$4$",
+            "D": "$14$"
+        },
+        "answer": "C",
+        "explanation": "$|-7| - 5 + |-2| = 7 - 5 + 2 = 2 + 2 = 4$。"
+    },
+    {
+        "grade": "7A",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "1-2正負數的加減",
+        "topic": "正負數的加減",
+        "knowledge_point": [
+            "正負數加減應用",
+            "溫度變化"
+        ],
+        "difficulty": "normal",
+        "question": "某地今天的氣溫是 $-2^{\circ}C$，如果明天氣溫上升 $5^{\circ}C$，則明天的氣溫是多少？",
+        "options": {
+            "A": "$-7^{\circ}C$",
+            "B": "$-3^{\circ}C$",
+            "C": "$3^{\circ}C$",
+            "D": "$7^{\circ}C$"
+        },
+        "answer": "C",
+        "explanation": "$-2 + 5 = 3$，所以明天的氣溫是 $3^{\circ}C$。"
+    },
+    {
+        "grade": "7A",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "1-2正負數的加減",
+        "topic": "正負數的加減",
+        "knowledge_point": [
+            "正負數加減應用",
+            "數線移動"
+        ],
+        "difficulty": "normal",
+        "question": "數線上有一個點 $P$ 表示 $8$，如果點 $P$ 向左移動 $10$ 個單位，則最後點 $P$ 所在的位置表示的數為何？",
+        "options": {
+            "A": "$-2$",
+            "B": "$2$",
+            "C": "$-18$",
+            "D": "$18$"
+        },
+        "answer": "A",
+        "explanation": "$8 - 10 = -2$。"
+    },
+    {
+        "grade": "7A",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "1-3正負數的乘除",
+        "topic": "正負數的乘除",
+        "knowledge_point": [
+            "正負數乘法",
+            "符號運算"
+        ],
+        "difficulty": "easy",
+        "question": "計算 $(-6) \times (-4)$ 的結果為何？",
+        "options": {
+            "A": "$24$",
+            "B": "$-24$",
+            "C": "$10$",
+            "D": "$-10$"
+        },
+        "answer": "A",
+        "explanation": "負數乘以負數，結果為正數，所以 $(-6) \times (-4) = 24$。"
+    },
+    {
+        "grade": "7A",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "1-3正負數的乘除",
+        "topic": "正負數的乘除",
+        "knowledge_point": [
+            "正負數除法",
+            "符號運算"
+        ],
+        "difficulty": "easy",
+        "question": "計算 $-45 \div 9$ 的結果為何？",
+        "options": {
+            "A": "$5$",
+            "B": "$-5$",
+            "C": "$36$",
+            "D": "$-36$"
+        },
+        "answer": "B",
+        "explanation": "負數除以正數，結果為負數，所以 $-45 \div 9 = -5$。"
+    },
+    {
+        "grade": "7A",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "1-3正負數的乘除",
+        "topic": "正負數的乘除",
+        "knowledge_point": [
+            "正負數混合運算",
+            "運算順序"
+        ],
+        "difficulty": "normal",
+        "question": "計算 $10 + (-3) \times 2$ 的結果為何？",
+        "options": {
+            "A": "$4$",
+            "B": "$7$",
+            "C": "$14$",
+            "D": "$16$"
+        },
+        "answer": "A",
+        "explanation": "先乘除後加減，所以 $10 + (-3) \times 2 = 10 - 6 = 4$。"
+    },
+    {
+        "grade": "7A",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "1-3正負數的乘除",
+        "topic": "正負數的乘除",
+        "knowledge_point": [
+            "正負數乘除應用",
+            "平均分配"
+        ],
+        "difficulty": "normal",
+        "question": "小明欠小華 $60$ 元，如果小明每天還 $10$ 元，則需要幾天才能還清？",
+        "options": {
+            "A": "$5$",
+            "B": "$6$",
+            "C": "$7$",
+            "D": "$8$"
+        },
+        "answer": "B",
+        "explanation": "$60 \div 10 = 6$，所以需要 $6$ 天。"
+    },
+    {
+        "grade": "7A",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "1-3正負數的乘除",
+        "topic": "正負數的乘除",
+        "knowledge_point": [
+            "正負數混合運算",
+            "括號運算"
+        ],
+        "difficulty": "hard",
+        "question": "計算 $24 \div [(-2) \times 3]$ 的結果為何？",
+        "options": {
+            "A": "$-4$",
+            "B": "$4$",
+            "C": "$-12$",
+            "D": "$12$"
+        },
+        "answer": "A",
+        "explanation": "先算括號內，所以 $24 \div [(-2) \times 3] = 24 \div (-6) = -4$。"
+    },
+    {
+        "grade": "7A",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "1-4指數記法與科學記號",
+        "topic": "指數記法與科學記號",
+        "knowledge_point": [
+            "指數記法",
+            "底數與指數"
+        ],
+        "difficulty": "easy",
+        "question": "下列哪一個選項表示 $3$ 的 $5$ 次方？",
+        "options": {
+            "A": "$3 \times 5$",
+            "B": "$3^5$",
+            "C": "$5^3$",
+            "D": "$3+3+3+3+3$"
+        },
+        "answer": "B",
+        "explanation": "$3^5$ 表示 $5$ 個 $3$ 相乘。"
+    },
+    {
+        "grade": "7A",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "1-4指數記法與科學記號",
+        "topic": "指數記法與科學記號",
+        "knowledge_point": [
+            "科學記號",
+            "位數判斷"
+        ],
+        "difficulty": "easy",
+        "question": "將 $1230000$ 用科學記號表示，結果為何？",
+        "options": {
+            "A": "$1.23 \times 10^4$",
+            "B": "$1.23 \times 10^5$",
+            "C": "$1.23 \times 10^6$",
+            "D": "$12.3 \times 10^5$"
+        },
+        "answer": "C",
+        "explanation": "將 $1230000$ 的小數點向左移動 $6$ 位，得到 $1.23$，所以是 $1.23 \times 10^6$。"
+    },
+    {
+        "grade": "7A",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "1-4指數記法與科學記號",
+        "topic": "指數記法與科學記號",
+        "knowledge_point": [
+            "科學記號",
+            "小數表示"
+        ],
+        "difficulty": "normal",
+        "question": "將 $0.000056$ 用科學記號表示，結果為何？",
+        "options": {
+            "A": "$5.6 \times 10^{-4}$",
+            "B": "$5.6 \times 10^{-5}$",
+            "C": "$5.6 \times 10^{-6}$",
+            "D": "$56 \times 10^{-6}$"
+        },
+        "answer": "B",
+        "explanation": "將 $0.000056$ 的小數點向右移動 $5$ 位，得到 $5.6$，所以是 $5.6 \times 10^{-5}$。"
+    },
+    {
+        "grade": "7A",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "1-4指數記法與科學記號",
+        "topic": "指數記法與科學記號",
+        "knowledge_point": [
+            "指數運算",
+            "負指數"
+        ],
+        "difficulty": "normal",
+        "question": "計算 $10^{-2}$ 的結果為何？",
+        "options": {
+            "A": "$100$",
+            "B": "$0.01$",
+            "C": "$-100$",
+            "D": "$-0.01$"
+        },
+        "answer": "B",
+        "explanation": "$10^{-2} = \frac{1}{10^2} = \frac{1}{100} = 0.01$。"
+    },
+    {
+        "grade": "7A",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "1-4指數記法與科學記號",
+        "topic": "指數記法與科學記號",
+        "knowledge_point": [
+            "科學記號比較",
+            "大小判斷"
+        ],
+        "difficulty": "hard",
+        "question": "下列哪一個數值最小？",
+        "options": {
+            "A": "$2.5 \times 10^{-3}$",
+            "B": "$7.0 \times 10^{-4}$",
+            "C": "$1.8 \times 10^{-2}$",
+            "D": "$4.1 \times 10^{-3}$"
+        },
+        "answer": "B",
+        "explanation": "比較科學記號的大小，先比較 $10$ 的指數，指數越小數值越小。如果指數相同，再比較前面的數字。因此 $7.0 \times 10^{-4}$ 最小。"
+    },
+    {
+        "grade": "7A",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "2-1質因數分解",
+        "topic": "質因數分解",
+        "knowledge_point": [
+            "質數與合數",
+            "定義"
+        ],
+        "difficulty": "easy",
+        "question": "下列哪一個數是合數？",
+        "options": {
+            "A": "$2$",
+            "B": "$3$",
+            "C": "$5$",
+            "D": "$6$"
+        },
+        "answer": "D",
+        "explanation": "合數是指大於 $1$ 且除了 $1$ 和本身以外，還有其他因數的數。$6$ 除了 $1$ 和 $6$ 以外，還有因數 $2, 3$，所以是合數。$2, 3, 5$ 都是質數。"
+    },
+    {
+        "grade": "7A",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "2-1質因數分解",
+        "topic": "質因數分解",
+        "knowledge_point": [
+            "質因數分解",
+            "方法"
+        ],
+        "difficulty": "easy",
+        "question": "將 $42$ 進行質因數分解，結果為何？",
+        "options": {
+            "A": "$2 \times 3 \times 7$",
+            "B": "$1 \times 2 \times 3 \times 7$",
+            "C": "$2 \times 21$",
+            "D": "$3 \times 14$"
+        },
+        "answer": "A",
+        "explanation": "$42 = 2 \times 21 = 2 \times 3 \times 7$。"
+    },
+    {
+        "grade": "7A",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "2-1質因數分解",
+        "topic": "質因數分解",
+        "knowledge_point": [
+            "因數與倍數",
+            "判斷"
+        ],
+        "difficulty": "normal",
+        "question": "下列哪一個數是 $60$ 的質因數？",
+        "options": {
+            "A": "$4$",
+            "B": "$6$",
+            "C": "$5$",
+            "D": "$10$"
+        },
+        "answer": "C",
+        "explanation": "$60 = 2^2 \times 3 \times 5$，所以 $5$ 是 $60$ 的質因數。"
+    },
+    {
+        "grade": "7A",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "2-1質因數分解",
+        "topic": "質因數分解",
+        "knowledge_point": [
+            "質因數分解應用",
+            "個數計算"
+        ],
+        "difficulty": "normal",
+        "question": "將 $100$ 進行質因數分解後，其相異質因數的個數為何？",
+        "options": {
+            "A": "$1$",
+            "B": "$2$",
+            "C": "$3$",
+            "D": "$4$"
+        },
+        "answer": "B",
+        "explanation": "$100 = 2^2 \times 5^2$，相異質因數有 $2$ 和 $5$，共 $2$ 個。"
+    },
+    {
+        "grade": "7A",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "2-1質因數分解",
+        "topic": "質因數分解",
+        "knowledge_point": [
+            "質因數分解應用",
+            "判斷"
+        ],
+        "difficulty": "hard",
+        "question": "若 $B = 2^4 \times 3^3 \times 7$，則下列哪一個數**不是** $B$ 的因數？",
+        "options": {
+            "A": "$16$",
+            "B": "$27$",
+            "C": "$42$",
+            "D": "$50$"
+        },
+        "answer": "D",
+        "explanation": "$B = 2^4 \times 3^3 \times 7 = 16 \times 27 \times 7 = 3024$.\n$A$ 選項：$16 = 2^4$ (是 $B$ 的因數)。\n$B$ 選項：$27 = 3^3$ (是 $B$ 的因數)。\n$C$ 選項：$42 = 2 \times 3 \times 7$ (是 $B$ 的因數)。\n$D$ 選項：$50 = 2 \times 5^2$ (不是 $B$ 的因數，因為 $B$ 沒有質因數 $5$。)"
+    },
+    {
+        "grade": "7A",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "2-2最大公因數與最小公倍數",
+        "topic": "最大公因數與最小公倍數",
+        "knowledge_point": [
+            "最大公因數",
+            "短除法"
+        ],
+        "difficulty": "easy",
+        "question": "求 $20$ 和 $30$ 的最大公因數為何？",
+        "options": {
+            "A": "$5$",
+            "B": "$10$",
+            "C": "$15$",
+            "D": "$20$"
+        },
+        "answer": "B",
+        "explanation": "$20 = 2^2 \times 5$， $30 = 2 \times 3 \times 5$。最大公因數為 $2 \times 5 = 10$。"
+    },
+    {
+        "grade": "7A",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "2-2最大公因數與最小公倍數",
+        "topic": "最大公因數與最小公倍數",
+        "knowledge_point": [
+            "最小公倍數",
+            "短除法"
+        ],
+        "difficulty": "easy",
+        "question": "求 $10$ 和 $15$ 的最小公倍數為何？",
+        "options": {
+            "A": "$5$",
+            "B": "$30$",
+            "C": "$60$",
+            "D": "$90$"
+        },
+        "answer": "B",
+        "explanation": "$10 = 2 \times 5$， $15 = 3 \times 5$。最小公倍數為 $2 \times 3 \times 5 = 30$。"
+    },
+    {
+        "grade": "7A",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "2-2最大公因數與最小公倍數",
+        "topic": "最大公因數與最小公倍數",
+        "knowledge_point": [
+            "公因數應用",
+            "分組問題"
+        ],
+        "difficulty": "normal",
+        "question": "有 $40$ 個男生和 $56$ 個女生，要分成若干組，每組的男生人數相同，女生人數也相同，則最多可以分成幾組？",
+        "options": {
+            "A": "$4$",
+            "B": "$8$",
+            "C": "$10$",
+            "D": "$14$"
+        },
+        "answer": "B",
+        "explanation": "求 $40$ 和 $56$ 的最大公因數。$40 = 2^3 \times 5$， $56 = 2^3 \times 7$。最大公因數為 $2^3 = 8$。"
+    },
+    {
+        "grade": "7A",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "2-2最大公因數與最小公倍數",
+        "topic": "最大公因數與最小公倍數",
+        "knowledge_point": [
+            "公倍數應用",
+            "時間問題"
+        ],
+        "difficulty": "normal",
+        "question": "甲每 $6$ 天回家一次，乙每 $8$ 天回家一次。如果今天兩人同時回家，則下一次同時回家是幾天後？",
+        "options": {
+            "A": "$12$",
+            "B": "$18$",
+            "C": "$24$",
+            "D": "$36$"
+        },
+        "answer": "C",
+        "explanation": "求 $6$ 和 $8$ 的最小公倍數。$6 = 2 \times 3$， $8 = 2^3$。最小公倍數為 $2^3 \times 3 = 24$。"
+    },
+    {
+        "grade": "7A",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "2-2最大公因數與最小公倍數",
+        "topic": "最大公因數與最小公倍數",
+        "knowledge_point": [
+            "最大公因數與最小公倍數關係",
+            "應用"
+        ],
+        "difficulty": "hard",
+        "question": "已知兩正整數 $A$ 和 $B$ 的最大公因數為 $4$，最小公倍數為 $48$。若 $A = 16$，則 $B$ 為何？",
+        "options": {
+            "A": "$12$",
+            "B": "$18$",
+            "C": "$24$",
+            "D": "$32$"
+        },
+        "answer": "A",
+        "explanation": "兩數相乘等於最大公因數乘以最小公倍數。所以 $A \times B = GCF(A,B) \times LCM(A,B)$.\n$16 \times B = 4 \times 48$ \n$16B = 192$ \n$B = 192 \div 16 = 12$。"
+    },
+    {
+        "grade": "7A",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "2-3分數的四則運算",
+        "topic": "分數的四則運算",
+        "knowledge_point": [
+            "分數加法",
+            "通分"
+        ],
+        "difficulty": "easy",
+        "question": "計算 $\frac{1}{2} + \frac{1}{4}$ 的結果為何？",
+        "options": {
+            "A": "$\frac{2}{6}$",
+            "B": "$\frac{3}{4}$",
+            "C": "$\frac{1}{8}$",
+            "D": "$\frac{2}{4}$"
+        },
+        "answer": "B",
+        "explanation": "$\frac{1}{2} + \frac{1}{4} = \frac{2}{4} + \frac{1}{4} = \frac{3}{4}$。"
+    },
+    {
+        "grade": "7A",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "2-3分數的四則運算",
+        "topic": "分數的四則運算",
+        "knowledge_point": [
+            "分數減法",
+            "通分"
+        ],
+        "difficulty": "easy",
+        "question": "計算 $\frac{7}{10} - \frac{2}{5}$ 的結果為何？",
+        "options": {
+            "A": "$\frac{5}{5}$",
+            "B": "$\frac{3}{10}$",
+            "C": "$\frac{1}{2}$",
+            "D": "$\frac{9}{10}$"
+        },
+        "answer": "B",
+        "explanation": "$\frac{7}{10} - \frac{2}{5} = \frac{7}{10} - \frac{4}{10} = \frac{3}{10}$。"
+    },
+    {
+        "grade": "7A",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "2-3分數的四則運算",
+        "topic": "分數的四則運算",
+        "knowledge_point": [
+            "分數乘法",
+            "約分"
+        ],
+        "difficulty": "easy",
+        "question": "計算 $\frac{3}{4} \times \frac{8}{9}$ 的結果為何？",
+        "options": {
+            "A": "$\frac{24}{36}$",
+            "B": "$\frac{2}{3}$",
+            "C": "$\frac{1}{3}$",
+            "D": "$\frac{3}{2}$"
+        },
+        "answer": "B",
+        "explanation": "$\frac{3}{4} \times \frac{8}{9} = \frac{24}{36} = \frac{2}{3}$。"
+    },
+    {
+        "grade": "7A",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "2-3分數的四則運算",
+        "topic": "分數的四則運算",
+        "knowledge_point": [
+            "分數除法",
+            "倒數"
+        ],
+        "difficulty": "easy",
+        "question": "計算 $\frac{2}{5} \div \frac{4}{15}$ 的結果為何？",
+        "options": {
+            "A": "$\frac{8}{75}$",
+            "B": "$\frac{3}{2}$",
+            "C": "$\frac{2}{3}$",
+            "D": "$\frac{1}{2}$"
+        },
+        "answer": "B",
+        "explanation": "$\frac{2}{5} \div \frac{4}{15} = \frac{2}{5} \times \frac{15}{4} = \frac{30}{20} = \frac{3}{2}$。"
+    },
+    {
+        "grade": "7A",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "2-3分數的四則運算",
+        "topic": "分數的四則運算",
+        "knowledge_point": [
+            "分數混合運算",
+            "運算順序"
+        ],
+        "difficulty": "normal",
+        "question": "計算 $(\frac{1}{3} - \frac{1}{4}) \times 12$ 的結果為何？",
+        "options": {
+            "A": "$1$",
+            "B": "$2$",
+            "C": "$3$",
+            "D": "$4$"
+        },
+        "answer": "A",
+        "explanation": "$(\frac{1}{3} - \frac{1}{4}) \times 12 = (\frac{4}{12} - \frac{3}{12}) \times 12 = \frac{1}{12} \times 12 = 1$。"
+    },
+    {
+        "grade": "7A",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "2-4指數律",
+        "topic": "指數律",
+        "knowledge_point": [
+            "指數律",
+            "同底數相乘"
+        ],
+        "difficulty": "easy",
+        "question": "計算 $3^2 \times 3^4$ 的結果為何？",
+        "options": {
+            "A": "$3^6$",
+            "B": "$3^8$",
+            "C": "$9^6$",
+            "D": "$9^8$"
+        },
+        "answer": "A",
+        "explanation": "同底數相乘，指數相加，所以 $3^2 \times 3^4 = 3^{(2+4)} = 3^6$。"
+    },
+    {
+        "grade": "7A",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "2-4指數律",
+        "topic": "指數律",
+        "knowledge_point": [
+            "指數律",
+            "同底數相除"
+        ],
+        "difficulty": "easy",
+        "question": "計算 $5^8 \div 5^3$ 的結果為何？",
+        "options": {
+            "A": "$5^5$",
+            "B": "$5^{11}$",
+            "C": "$1^5$",
+            "D": "$1^{11}$"
+        },
+        "answer": "A",
+        "explanation": "同底數相除，指數相減，所以 $5^8 \div 5^3 = 5^{(8-3)} = 5^5$。"
+    },
+    {
+        "grade": "7A",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "2-4指數律",
+        "topic": "指數律",
+        "knowledge_point": [
+            "指數律",
+            "指數的次方"
+        ],
+        "difficulty": "normal",
+        "question": "計算 $(2^3)^4$ 的結果為何？",
+        "options": {
+            "A": "$2^7$",
+            "B": "$2^{12}$",
+            "C": "$8^4$",
+            "D": "$8^{12}$"
+        },
+        "answer": "B",
+        "explanation": "指數的次方，指數相乘，所以 $(2^3)^4 = 2^{(3 \times 4)} = 2^{12}$。"
+    },
+    {
+        "grade": "7A",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "2-4指數律",
+        "topic": "指數律",
+        "knowledge_point": [
+            "指數律",
+            "不同底數相同指數相乘"
+        ],
+        "difficulty": "normal",
+        "question": "計算 $3^4 \times 4^4$ 的結果為何？",
+        "options": {
+            "A": "$12^4$",
+            "B": "$12^8$",
+            "C": "$7^4$",
+            "D": "$7^8$"
+        },
+        "answer": "A",
+        "explanation": "不同底數相同指數相乘，底數相乘，指數不變，所以 $3^4 \times 4^4 = (3 \times 4)^4 = 12^4$。"
+    },
+    {
+        "grade": "7A",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "2-4指數律",
+        "topic": "指數律",
+        "knowledge_point": [
+            "指數律混合運算",
+            "判斷"
+        ],
+        "difficulty": "hard",
+        "question": "下列哪一個選項的計算結果是正確的？",
+        "options": {
+            "A": "$5^2 + 5^3 = 5^5$",
+            "B": "$4^6 \div 4^2 = 4^3$",
+            "C": "$(3^2)^4 = 3^8$",
+            "D": "$2^3 \times 5^2 = 10^5$"
+        },
+        "answer": "C",
+        "explanation": "$A$ 選項：$5^2 + 5^3 = 25 + 125 = 150 \neq 5^5 = 3125$.\n$B$ 選項：$4^6 \div 4^2 = 4^{(6-2)} = 4^4 = 256 \neq 4^3 = 64$.\n$C$ 選項：$(3^2)^4 = 3^{(2 \times 4)} = 3^8 = 6561$。正確。\n$D$ 選項：$2^3 \times 5^2 = 8 \times 25 = 200 \neq 10^5 = 100000$。"
+    },
+    {
+        "grade": "7A",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "3-1式子的運算",
+        "topic": "式子的運算",
+        "knowledge_point": [
+            "代數式表示",
+            "文字敘述轉化"
+        ],
+        "difficulty": "easy",
+        "question": "小華有 $y$ 元，小明的錢比小華少 $8$ 元，則小明有多少元？",
+        "options": {
+            "A": "$y+8$",
+            "B": "$y-8$",
+            "C": "$8y$",
+            "D": "$\frac{y}{8}$"
+        },
+        "answer": "B",
+        "explanation": "小明的錢比小華少 $8$ 元，所以是 $y - 8$。"
+    },
+    {
+        "grade": "7A",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "3-1式子的運算",
+        "topic": "式子的運算",
+        "knowledge_point": [
+            "代數式化簡",
+            "同類項合併"
+        ],
+        "difficulty": "easy",
+        "question": "化簡 $7x - 3 + 2x + 1$ 的結果為何？",
+        "options": {
+            "A": "$9x + 4$",
+            "B": "$9x - 2$",
+            "C": "$5x + 4$",
+            "D": "$5x - 2$"
+        },
+        "answer": "B",
+        "explanation": "$7x - 3 + 2x + 1 = (7x + 2x) + (-3 + 1) = 9x - 2$。"
+    },
+    {
+        "grade": "7A",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "3-1式子的運算",
+        "topic": "式子的運算",
+        "knowledge_point": [
+            "代數式求值",
+            "代入法"
+        ],
+        "difficulty": "normal",
+        "question": "若 $x = -3$，則 $4x - 7$ 的值為何？",
+        "options": {
+            "A": "$5$",
+            "B": "$-5$",
+            "C": "$19$",
+            "D": "$-19$"
+        },
+        "answer": "D",
+        "explanation": "將 $x = -3$ 代入 $4x - 7$，得到 $4(-3) - 7 = -12 - 7 = -19$。"
+    },
+    {
+        "grade": "7A",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "3-1式子的運算",
+        "topic": "式子的運算",
+        "knowledge_point": [
+            "代數式表示",
+            "應用問題"
+        ],
+        "difficulty": "normal",
+        "question": "一個正方形的邊長是 $a$ 公分，則此正方形的面積為何？",
+        "options": {
+            "A": "$4a$",
+            "B": "$a^2$",
+            "C": "$2a$",
+            "D": "$a+a$"
+        },
+        "answer": "B",
+        "explanation": "正方形面積為邊長乘以邊長，所以是 $a \times a = a^2$。"
+    },
+    {
+        "grade": "7A",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "3-1式子的運算",
+        "topic": "式子的運算",
+        "knowledge_point": [
+            "代數式化簡",
+            "分配律"
+        ],
+        "difficulty": "hard",
+        "question": "化簡 $5(x + 3) - 2(3x - 1)$ 的結果為何？",
+        "options": {
+            "A": "$-x + 17$",
+            "B": "$-x + 13$",
+            "C": "$11x + 17$",
+            "D": "$11x + 13$"
+        },
+        "answer": "A",
+        "explanation": "$5(x + 3) - 2(3x - 1) = 5x + 15 - 6x + 2 = (5x - 6x) + (15 + 2) = -x + 17$。"
+    },
+    {
+        "grade": "7A",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "3-2解一元一次方程式",
+        "topic": "解一元一次方程式",
+        "knowledge_point": [
+            "一元一次方程式求解",
+            "移項法則"
+        ],
+        "difficulty": "easy",
+        "question": "解方程式 $x - 6 = 10$，則 $x$ 的值為何？",
+        "options": {
+            "A": "$4$",
+            "B": "$16$",
+            "C": "$-4$",
+            "D": "$-16$"
+        },
+        "answer": "B",
+        "explanation": "$x - 6 = 10 \Rightarrow x = 10 + 6 \Rightarrow x = 16$。"
+    },
+    {
+        "grade": "7A",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "3-2解一元一次方程式",
+        "topic": "解一元一次方程式",
+        "knowledge_point": [
+            "一元一次方程式求解",
+            "乘除法則"
+        ],
+        "difficulty": "easy",
+        "question": "解方程式 $\frac{x}{5} = 4$，則 $x$ 的值為何？",
+        "options": {
+            "A": "$20$",
+            "B": "$9$",
+            "C": "$\frac{4}{5}$",
+            "D": "$\frac{5}{4}$"
+        },
+        "answer": "A",
+        "explanation": "$\frac{x}{5} = 4 \Rightarrow x = 4 \times 5 \Rightarrow x = 20$。"
+    },
+    {
+        "grade": "7A",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "3-2解一元一次方程式",
+        "topic": "解一元一次方程式",
+        "knowledge_point": [
+            "一元一次方程式求解",
+            "混合運算"
+        ],
+        "difficulty": "normal",
+        "question": "解方程式 $3x + 7 = 22$，則 $x$ 的值為何？",
+        "options": {
+            "A": "$3$",
+            "B": "$5$",
+            "C": "$7$",
+            "D": "$9$"
+        },
+        "answer": "B",
+        "explanation": "$3x + 7 = 22 \Rightarrow 3x = 22 - 7 \Rightarrow 3x = 15 \Rightarrow x = 15 \div 3 \Rightarrow x = 5$。"
+    },
+    {
+        "grade": "7A",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "3-2解一元一次方程式",
+        "topic": "解一元一次方程式",
+        "knowledge_point": [
+            "一元一次方程式求解",
+            "分配律"
+        ],
+        "difficulty": "normal",
+        "question": "解方程式 $2(x - 3) = 8$，則 $x$ 的值為何？",
+        "options": {
+            "A": "$4$",
+            "B": "$5$",
+            "C": "$7$",
+            "D": "$11$"
+        },
+        "answer": "C",
+        "explanation": "$2(x - 3) = 8 \Rightarrow 2x - 6 = 8 \Rightarrow 2x = 14 \Rightarrow x = 7$。"
+    },
+    {
+        "grade": "7A",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "3-2解一元一次方程式",
+        "topic": "解一元一次方程式",
+        "knowledge_point": [
+            "一元一次方程式求解",
+            "分數係數"
+        ],
+        "difficulty": "hard",
+        "question": "解方程式 $\frac{x}{2} + \frac{x}{3} = 5$，則 $x$ 的值為何？",
+        "options": {
+            "A": "$2$",
+            "B": "$3$",
+            "C": "$4$",
+            "D": "$6$"
+        },
+        "answer": "D",
+        "explanation": "同乘以 $6$，得到 $3x + 2x = 30 \Rightarrow 5x = 30 \Rightarrow x = 6$。"
+    },
+    {
+        "grade": "7A",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "3-3應用問題",
+        "topic": "應用問題",
+        "knowledge_point": [
+            "一元一次方程式應用",
+            "年齡問題"
+        ],
+        "difficulty": "easy",
+        "question": "小華今年 $12$ 歲，媽媽的年齡是小華的 $3$ 倍，則媽媽今年幾歲？",
+        "options": {
+            "A": "$15$",
+            "B": "$24$",
+            "C": "$36$",
+            "D": "$48$"
+        },
+        "answer": "C",
+        "explanation": "設媽媽今年 $x$ 歲，則 $x = 3 \times 12 = 36$。"
+    },
+    {
+        "grade": "7A",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "3-3應用問題",
+        "topic": "應用問題",
+        "knowledge_point": [
+            "一元一次方程式應用",
+            "數量問題"
+        ],
+        "difficulty": "normal",
+        "question": "一本書有 $150$ 頁，小明每天看 $20$ 頁，已經看了 $3$ 天，則還剩下幾頁沒看？",
+        "options": {
+            "A": "$60$",
+            "B": "$90$",
+            "C": "$120$",
+            "D": "$140$"
+        },
+        "answer": "B",
+        "explanation": "已經看了 $20 \times 3 = 60$ 頁.\n還剩下 $150 - 60 = 90$ 頁。"
+    },
+    {
+        "grade": "7A",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "3-3應用問題",
+        "topic": "應用問題",
+        "knowledge_point": [
+            "一元一次方程式應用",
+            "連續整數問題"
+        ],
+        "difficulty": "normal",
+        "question": "三個連續偶數的和是 $66$，則這三個偶數中最大的數為何？",
+        "options": {
+            "A": "$20$",
+            "B": "$22$",
+            "C": "$24$",
+            "D": "$26$"
+        },
+        "answer": "C",
+        "explanation": "設中間的偶數為 $x$，則三個連續偶數為 $x - 2, x, x + 2$.\n$(x - 2) + x + (x + 2) = 66$ \n$3x = 66$ \n$x = 22$.\n最大的數為 $x + 2 = 22 + 2 = 24$。"
+    },
+    {
+        "grade": "7A",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "3-3應用問題",
+        "topic": "應用問題",
+        "knowledge_point": [
+            "一元一次方程式應用",
+            "折扣問題"
+        ],
+        "difficulty": "hard",
+        "question": "一件商品原價 $500$ 元，打七折後售價是多少元？",
+        "options": {
+            "A": "$150$",
+            "B": "$350$",
+            "C": "$400$",
+            "D": "$450$"
+        },
+        "answer": "B",
+        "explanation": "打七折表示售價是原價的 $70\%$，所以售價為 $500 \times 0.7 = 350$ 元。"
+    },
+    {
+        "grade": "7A",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "3-3應用問題",
+        "topic": "應用問題",
+        "knowledge_point": [
+            "一元一次方程式應用",
+            "工程問題"
+        ],
+        "difficulty": "hard",
+        "question": "甲獨作一件工程需 $10$ 天完成，乙獨作一件工程需 $15$ 天完成。若兩人合作，則需要幾天才能完成？",
+        "options": {
+            "A": "$5$",
+            "B": "$6$",
+            "C": "$7$",
+            "D": "$8$"
+        },
+        "answer": "B",
+        "explanation": "設兩人合作 $x$ 天完成.\n甲每天完成 $\frac{1}{10}$，乙每天完成 $\frac{1}{15}$.\n$\frac{1}{10}x + \frac{1}{15}x = 1$ \n同乘以 $30$，得到 $3x + 2x = 30$ \n$5x = 30$ \n$x = 6$。"
+    },
+    {
+        "grade": "7B",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "1-1二元一次方程式",
+        "topic": "二元一次方程式",
+        "knowledge_point": [
+            "二元一次方程式的定義",
+            "解的判斷"
+        ],
+        "difficulty": "easy",
+        "question": "下列哪一個選項是二元一次方程式？",
+        "options": {
+            "A": "$2x + 3 = 0$",
+            "B": "$x^2 + y = 5$",
+            "C": "$3x - 2y = 7$",
+            "D": "$x + y + z = 10$"
+        },
+        "answer": "C",
+        "explanation": "二元一次方程式是指含有兩個未知數，且未知數的次數都是一次的方程式。選項C符合定義。"
+    },
+    {
+        "grade": "7B",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "1-1二元一次方程式",
+        "topic": "二元一次方程式",
+        "knowledge_point": [
+            "二元一次方程式的解",
+            "代入法"
+        ],
+        "difficulty": "easy",
+        "question": "若 $(x, y) = (1, 2)$ 是方程式 $ax + y = 5$ 的解，則 $a$ 的值為何？",
+        "options": {
+            "A": "$1$",
+            "B": "$2$",
+            "C": "$3$",
+            "D": "$4$"
+        },
+        "answer": "C",
+        "explanation": "將 $x = 1$, $y = 2$ 代入方程式 $ax + y = 5$，得到 $a(1) + 2 = 5 \Rightarrow a + 2 = 5 \Rightarrow a = 3$。"
+    },
+    {
+        "grade": "7B",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "1-1二元一次方程式",
+        "topic": "二元一次方程式",
+        "knowledge_point": [
+            "二元一次方程式的解",
+            "求值"
+        ],
+        "difficulty": "normal",
+        "question": "已知 $2x - y = 8$，若 $x = 5$，則 $y$ 的值為何？",
+        "options": {
+            "A": "$2$",
+            "B": "$3$",
+            "C": "$4$",
+            "D": "$5$"
+        },
+        "answer": "A",
+        "explanation": "將 $x = 5$ 代入方程式 $2x - y = 8$，得到 $2(5) - y = 8 \Rightarrow 10 - y = 8 \Rightarrow y = 10 - 8 \Rightarrow y = 2$。"
+    },
+    {
+        "grade": "7B",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "1-1二元一次方程式",
+        "topic": "二元一次方程式",
+        "knowledge_point": [
+            "二元一次方程式的解",
+            "無限多組解"
+        ],
+        "difficulty": "normal",
+        "question": "下列關於二元一次方程式 $x + y = 5$ 的解的敘述，何者正確？",
+        "options": {
+            "A": "只有一組解",
+            "B": "有兩組解",
+            "C": "有無限多組解",
+            "D": "沒有解"
+        },
+        "answer": "C",
+        "explanation": "一個二元一次方程式有無限多組解。"
+    },
+    {
+        "grade": "7B",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "1-1二元一次方程式",
+        "topic": "二元一次方程式",
+        "knowledge_point": [
+            "二元一次方程式應用",
+            "列式"
+        ],
+        "difficulty": "hard",
+        "question": "小明買了 $x$ 枝鉛筆和 $y$ 本筆記本，已知鉛筆每枝 $10$ 元，筆記本每本 $25$ 元，共花了 $100$ 元，則下列哪一個方程式可以表示此關係？",
+        "options": {
+            "A": "$10x + 25y = 100$",
+            "B": "$10x - 25y = 100$",
+            "C": "$x + y = 100$",
+            "D": "$x + y = 35$"
+        },
+        "answer": "A",
+        "explanation": "鉛筆的總價為 $10x$，筆記本的總價為 $25y$，兩者相加等於總花費 $100$ 元，所以是 $10x + 25y = 100$。"
+    },
+    {
+        "grade": "7B",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "1-2解二元一次聯立方程式",
+        "topic": "解二元一次聯立方程式",
+        "knowledge_point": [
+            "代入消去法",
+            "求解"
+        ],
+        "difficulty": "easy",
+        "question": "利用代入消去法解聯立方程式 $\begin{cases} x = y + 1 \\ x + y = 5 \end{cases}$，則 $x$ 的值為何？",
+        "options": {
+            "A": "$2$",
+            "B": "$3$",
+            "C": "$4$",
+            "D": "$5$"
+        },
+        "answer": "B",
+        "explanation": "將 $x = y + 1$ 代入 $x + y = 5$，得到 $(y + 1) + y = 5 \Rightarrow 2y + 1 = 5 \Rightarrow 2y = 4 \Rightarrow y = 2$。再將 $y = 2$ 代回 $x = y + 1$，得到 $x = 2 + 1 = 3$。"
+    },
+    {
+        "grade": "7B",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "1-2解二元一次聯立方程式",
+        "topic": "解二元一次聯立方程式",
+        "knowledge_point": [
+            "加減消去法",
+            "求解"
+        ],
+        "difficulty": "easy",
+        "question": "利用加減消去法解聯立方程式 $\begin{cases} x + y = 7 \\ x - y = 3 \end{cases}$，則 $x$ 的值為何？",
+        "options": {
+            "A": "$2$",
+            "B": "$3$",
+            "C": "$4$",
+            "D": "$5$"
+        },
+        "answer": "D",
+        "explanation": "將兩式相加，得到 $(x + y) + (x - y) = 7 + 3 \Rightarrow 2x = 10 \Rightarrow x = 5$。"
+    },
+    {
+        "grade": "7B",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "1-2解二元一次聯立方程式",
+        "topic": "解二元一次聯立方程式",
+        "knowledge_point": [
+            "二元一次聯立方程式",
+            "解的判斷"
+        ],
+        "difficulty": "normal",
+        "question": "下列哪一組 $(x, y)$ 是聯立方程式 $\begin{cases} x + 2y = 8 \\ 2x - y = 1 \end{cases}$ 的解？",
+        "options": {
+            "A": "$(2, 3)$",
+            "B": "$(3, 2)$",
+            "C": "$(4, 2)$",
+            "D": "$(2, 4)$"
+        },
+        "answer": "A",
+        "explanation": "將 $(2, 3)$ 代入兩式:\n$2 + 2(3) = 2 + 6 = 8$ (符合第一式)\n$2(2) - 3 = 4 - 3 = 1$ (符合第二式)\n所以 $(2, 3)$ 是解。"
+    },
+    {
+        "grade": "7B",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "1-2解二元一次聯立方程式",
+        "topic": "解二元一次聯立方程式",
+        "knowledge_point": [
+            "二元一次聯立方程式",
+            "無解與無限多組解"
+        ],
+        "difficulty": "normal",
+        "question": "下列哪一個聯立方程式有無限多組解？",
+        "options": {
+            "A": "$\begin{cases} x + y = 1 \\ x + y = 2 \end{cases}$",
+            "B": "$\begin{cases} x + y = 1 \\ 2x + 2y = 2 \end{cases}$",
+            "C": "$\begin{cases} x + y = 1 \\ x - y = 1 \end{cases}$",
+            "D": "$\begin{cases} x = 1 \\ y = 2 \end{cases}$"
+        },
+        "answer": "B",
+        "explanation": "當兩個方程式的係數成比例，且常數項也成比例時，表示兩條直線重合，有無限多組解。選項B中，第二式是第一式的兩倍。"
+    },
+    {
+        "grade": "7B",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "1-2解二元一次聯立方程式",
+        "topic": "解二元一次聯立方程式",
+        "knowledge_point": [
+            "二元一次聯立方程式",
+            "無解與無限多組解"
+        ],
+        "difficulty": "hard",
+        "question": "下列哪一個聯立方程式無解？",
+        "options": {
+            "A": "$\begin{cases} x + y = 1 \\ x + y = 2 \end{cases}$",
+            "B": "$\begin{cases} x + y = 1 \\ 2x + 2y = 2 \end{cases}$",
+            "C": "$\begin{cases} x + y = 1 \\ x - y = 1 \end{cases}$",
+            "D": "$\begin{cases} x = 1 \\ y = 2 \end{cases}$"
+        },
+        "answer": "A",
+        "explanation": "當兩個方程式的係數成比例，但常數項不成比例時，表示兩條直線平行，無解。選項A中，第一式和第二式的 $x, y$ 係數相同，但常數項不同。"
+    },
+    {
+        "grade": "7B",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "1-3應用問題",
+        "topic": "應用問題",
+        "knowledge_point": [
+            "二元一次聯立方程式應用",
+            "數量問題"
+        ],
+        "difficulty": "easy",
+        "question": "小明買了 $5$ 枝鉛筆和 $3$ 本筆記本，共花了 $100$ 元。已知鉛筆每枝 $10$ 元，則筆記本每本多少元？",
+        "options": {
+            "A": "$10$",
+            "B": "$15$",
+            "C": "$20$",
+            "D": "$25$"
+        },
+        "answer": "C",
+        "explanation": "設筆記本每本 $y$ 元.\n$5 \times 10 + 3y = 100$ \n$50 + 3y = 100$ \n$3y = 50$ \n$y = 50 \div 3 \approx 16.67$。\n此題答案有誤，重新設計題目。\n\n重新設計題目：\n小明買了 $x$ 枝鉛筆和 $y$ 本筆記本，共花了 $100$ 元。已知鉛筆每枝 $10$ 元，筆記本每本 $20$ 元，若小明買了 $4$ 枝鉛筆，則他買了幾本筆記本？",
+        "options": {
+            "A": "$2$",
+            "B": "$3$",
+            "C": "$4$",
+            "D": "$5$"
+        },
+        "answer": "B",
+        "explanation": "設筆記本有 $y$ 本.\n$10(4) + 20y = 100$ \n$40 + 20y = 100$ \n$20y = 60$ \n$y = 3$。"
+    },
+    {
+        "grade": "7B",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "1-3應用問題",
+        "topic": "應用問題",
+        "knowledge_point": [
+            "二元一次聯立方程式應用",
+            "年齡問題"
+        ],
+        "difficulty": "normal",
+        "question": "小明今年 $x$ 歲，小華今年 $y$ 歲。已知小明比小華大 $3$ 歲，且兩人年齡和為 $25$ 歲，則小明今年幾歲？",
+        "options": {
+            "A": "$11$",
+            "B": "$14$",
+            "C": "$16$",
+            "D": "$18$"
+        },
+        "answer": "B",
+        "explanation": "依題意可列出聯立方程式：\n$\begin{cases} x - y = 3 \\ x + y = 25 \end{cases}$ \n將兩式相加，得到 $2x = 28 \Rightarrow x = 14$。"
+    },
+    {
+        "grade": "7B",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "1-3應用問題",
+        "topic": "應用問題",
+        "knowledge_point": [
+            "二元一次聯立方程式應用",
+            "雞兔同籠問題"
+        ],
+        "difficulty": "hard",
+        "question": "雞兔同籠，頭共 $10$ 個，腳共 $28$ 隻，則雞有幾隻？",
+        "options": {
+            "A": "$4$",
+            "B": "$6$",
+            "C": "$7$",
+            "D": "$8$"
+        },
+        "answer": "B",
+        "explanation": "設雞有 $x$ 隻，兔有 $y$ 隻.\n$\begin{cases} x + y = 10 \\ 2x + 4y = 28 \end{cases}$ \n由第一式得到 $y = 10 - x$，代入第二式：\n$2x + 4(10 - x) = 28$ \n$2x + 40 - 4x = 28$ \n$-2x = -12$ \n$x = 6$。"
+    },
+    {
+        "grade": "7B",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "1-3應用問題",
+        "topic": "應用問題",
+        "knowledge_point": [
+            "二元一次聯立方程式應用",
+            "濃度問題"
+        ],
+        "difficulty": "hard",
+        "question": "有濃度 $10\%$ 的食鹽水 $x$ 公克和濃度 $20\%$ 的食鹽水 $y$ 公克，混合後得到濃度 $15\%$ 的食鹽水 $300$ 公克，則 $x$ 的值為何？",
+        "options": {
+            "A": "$100$",
+            "B": "$150$",
+            "C": "$200$",
+            "D": "$250$"
+        },
+        "answer": "B",
+        "explanation": "依題意可列出聯立方程式：\n$\begin{cases} x + y = 300 \\ 0.1x + 0.2y = 0.15 \times 300 \end{cases}$ \n$\begin{cases} x + y = 300 \\ 0.1x + 0.2y = 45 \end{cases}$ \n將第一式乘以 $0.1$，得到 $0.1x + 0.1y = 30$。\n將第二式減去新得到的式子：$(0.1x + 0.2y) - (0.1x + 0.1y) = 45 - 30 \Rightarrow 0.1y = 15 \Rightarrow y = 150$。\n將 $y = 150$ 代回第一式：$x + 150 = 300 \Rightarrow x = 150$。"
+    },
+    {
+        "grade": "7B",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "1-3應用問題",
+        "topic": "應用問題",
+        "knowledge_point": [
+            "二元一次聯立方程式應用",
+            "速度問題"
+        ],
+        "difficulty": "hard",
+        "question": "小明從甲地到乙地，去程時速 $4$ 公里，回程時速 $6$ 公里，來回共花了 $5$ 小時。則甲地到乙地的距離是多少公里？",
+        "options": {
+            "A": "$10$",
+            "B": "$12$",
+            "C": "$15$",
+            "D": "$18$"
+        },
+        "answer": "B",
+        "explanation": "設甲地到乙地的距離為 $x$ 公里。\n去程時間為 $\frac{x}{4}$ 小時，回程時間為 $\frac{x}{6}$ 小時。\n$\frac{x}{4} + \frac{x}{6} = 5$ \n同乘以 $12$，得到 $3x + 2x = 60$ \n$5x = 60$ \n$x = 12$。"
+    },
+    {
+        "grade": "7B",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "2-1直角坐標平面",
+        "topic": "直角坐標平面",
+        "knowledge_point": [
+            "坐標表示",
+            "點的表示"
+        ],
+        "difficulty": "easy",
+        "question": "在直角坐標平面上，點 $(3, -2)$ 位於第幾象限？",
+        "options": {
+            "A": "第一象限",
+            "B": "第二象限",
+            "C": "第三象限",
+            "D": "第四象限"
+        },
+        "answer": "D",
+        "explanation": "第一象限 $(+, +)$，第二象限 $(-, +)$，第三象限 $(-, -)$，第四象限 $(+, -)$。點 $(3, -2)$ 的 $x$ 坐標為正，$y$ 坐標為負，所以位於第四象限。"
+    },
+    {
+        "grade": "7B",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "2-1直角坐標平面",
+        "topic": "直角坐標平面",
+        "knowledge_point": [
+            "坐標軸",
+            "點的判斷"
+        ],
+        "difficulty": "easy",
+        "question": "在直角坐標平面上，下列哪一個點位於 $x$ 軸上？",
+        "options": {
+            "A": "$(0, 5)$",
+            "B": "$(-3, 0)$",
+            "C": "$(2, 2)$",
+            "D": "$(0, 0)$"
+        },
+        "answer": "B",
+        "explanation": "位於 $x$ 軸上的點，其 $y$ 坐標為 $0$。選項B符合。"
+    },
+    {
+        "grade": "7B",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "2-1直角坐標平面",
+        "topic": "直角坐標平面",
+        "knowledge_point": [
+            "坐標距離",
+            "兩點距離"
+        ],
+        "difficulty": "normal",
+        "question": "在直角坐標平面上，點 $A(2, 3)$ 到 $x$ 軸的距離為何？",
+        "options": {
+            "A": "$2$",
+            "B": "$3$",
+            "C": "$5$",
+            "D": "$0$"
+        },
+        "answer": "B",
+        "explanation": "點到 $x$ 軸的距離為其 $y$ 坐標的絕對值，所以是 $|3| = 3$。"
+    },
+    {
+        "grade": "7B",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "2-1直角坐標平面",
+        "topic": "直角坐標平面",
+        "knowledge_point": [
+            "坐標距離",
+            "兩點距離"
+        ],
+        "difficulty": "normal",
+        "question": "在直角坐標平面上，點 $P(-4, 1)$ 到 $y$ 軸的距離為何？",
+        "options": {
+            "A": "$1$",
+            "B": "$4$",
+            "C": "$5$",
+            "D": "$0$"
+        },
+        "answer": "B",
+        "explanation": "點到 $y$ 軸的距離為其 $x$ 坐標的絕對值，所以是 $|-4| = 4$。"
+    },
+    {
+        "grade": "7B",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "2-1直角坐標平面",
+        "topic": "直角坐標平面",
+        "knowledge_point": [
+            "坐標應用",
+            "幾何圖形"
+        ],
+        "difficulty": "hard",
+        "question": "在直角坐標平面上，點 $A(1, 2)$、點 $B(1, -3)$、點 $C(4, 2)$，則三角形 $ABC$ 的面積為何？",
+        "options": {
+            "A": "$7.5$",
+            "B": "$10$",
+            "C": "$12.5$",
+            "D": "$15$"
+        },
+        "answer": "A",
+        "explanation": "$AB$ 長度為 $|2 - (-3)| = 5$。\n$AC$ 長度為 $|4 - 1| = 3$。\n三角形 $ABC$ 為直角三角形，面積為 $\frac{1}{2} \times 5 \times 3 = 7.5$。"
+    },
+    {
+        "grade": "7B",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "2-2二元一次方程式的圖形",
+        "topic": "二元一次方程式的圖形",
+        "knowledge_point": [
+            "二元一次方程式圖形",
+            "直線"
+        ],
+        "difficulty": "easy",
+        "question": "二元一次方程式 $y = 2x + 1$ 的圖形是一條什麼？",
+        "options": {
+            "A": "直線",
+            "B": "曲線",
+            "C": "拋物線",
+            "D": "圓"
+        },
+        "answer": "A",
+        "explanation": "二元一次方程式的圖形都是直線。"
+    },
+    {
+        "grade": "7B",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "2-2二元一次方程式的圖形",
+        "topic": "二元一次方程式的圖形",
+        "knowledge_point": [
+            "二元一次方程式圖形",
+            "點的判斷"
+        ],
+        "difficulty": "easy",
+        "question": "下列哪一個點在方程式 $y = x + 3$ 的圖形上？",
+        "options": {
+            "A": "$(1, 2)$",
+            "B": "$(2, 5)$",
+            "C": "$(3, 4)$",
+            "D": "$(0, 0)$"
+        },
+        "answer": "B",
+        "explanation": "將選項中的點代入方程式，若等式成立則該點在圖形上.\n選項B：$5 = 2 + 3$，成立。"
+    },
+    {
+        "grade": "7B",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "2-2二元一次方程式的圖形",
+        "topic": "二元一次方程式的圖形",
+        "knowledge_point": [
+            "二元一次方程式圖形",
+            "截距"
+        ],
+        "difficulty": "normal",
+        "question": "方程式 $2x + 3y = 6$ 的圖形與 $x$ 軸的交點坐標為何？",
+        "options": {
+            "A": "$(0, 2)$",
+            "B": "$(3, 0)$",
+            "C": "$(0, 3)$",
+            "D": "$(2, 0)$"
+        },
+        "answer": "B",
+        "explanation": "與 $x$ 軸的交點，其 $y$ 坐標為 $0$。將 $y = 0$ 代入 $2x + 3y = 6$，得到 $2x + 3(0) = 6 \Rightarrow 2x = 6 \Rightarrow x = 3$。所以交點坐標為 $(3, 0)$。"
+    },
+    {
+        "grade": "7B",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "2-2二元一次方程式的圖形",
+        "topic": "二元一次方程式的圖形",
+        "knowledge_point": [
+            "二元一次方程式圖形",
+            "斜率"
+        ],
+        "difficulty": "normal",
+        "question": "方程式 $y = -3x + 5$ 的圖形，其斜率為何？",
+        "options": {
+            "A": "$5$",
+            "B": "$-3$",
+            "C": "$\frac{5}{3}$",
+            "D": "$-\frac{5}{3}$"
+        },
+        "answer": "B",
+        "explanation": "直線方程式 $y = mx + b$ 中，$m$ 為斜率，所以斜率為 $-3$。"
+    },
+    {
+        "grade": "7B",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "2-2二元一次方程式的圖形",
+        "topic": "二元一次方程式的圖形",
+        "knowledge_point": [
+            "二元一次方程式圖形",
+            "平行與垂直"
+        ],
+        "difficulty": "hard",
+        "question": "下列哪一個方程式的圖形與 $y = 2x - 3$ 的圖形平行？",
+        "options": {
+            "A": "$y = -2x + 1$",
+            "B": "$y = 2x + 5$",
+            "C": "$y = \frac{1}{2}x - 3$",
+            "D": "$y = -\frac{1}{2}x + 2$"
+        },
+        "answer": "B",
+        "explanation": "兩條直線平行，則其斜率相同。$y = 2x - 3$ 的斜率為 $2$。選項B的斜率也為 $2$，所以平行。"
+    },
+    {
+        "grade": "7B",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "3-1比例式",
+        "topic": "比例式",
+        "knowledge_point": [
+            "比例式的定義",
+            "內項積等於外項積"
+        ],
+        "difficulty": "easy",
+        "question": "若 $x : 3 = 4 : 6$，則 $x$ 的值為何？",
+        "options": {
+            "A": "$1$",
+            "B": "$2$",
+            "C": "$3$",
+            "D": "$4$"
+        },
+        "answer": "B",
+        "explanation": "內項積等於外項積，所以 $6x = 3 \times 4 \Rightarrow 6x = 12 \Rightarrow x = 2$。"
+    },
+    {
+        "grade": "7B",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "3-1比例式",
+        "topic": "比例式",
+        "knowledge_point": [
+            "連比",
+            "求值"
+        ],
+        "difficulty": "easy",
+        "question": "若 $x : y = 2 : 3$，且 $x + y = 10$，則 $x$ 的值為何？",
+        "options": {
+            "A": "$2$",
+            "B": "$3$",
+            "C": "$4$",
+            "D": "$5$"
+        },
+        "answer": "C",
+        "explanation": "設 $x = 2k$, $y = 3k$.\n$2k + 3k = 10 \Rightarrow 5k = 10 \Rightarrow k = 2$。\n所以 $x = 2k = 2 \times 2 = 4$。"
+    },
+    {
+        "grade": "7B",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "3-1比例式",
+        "topic": "比例式",
+        "knowledge_point": [
+            "比例式應用",
+            "分配問題"
+        ],
+        "difficulty": "normal",
+        "question": "將 $120$ 元按照 $3 : 5$ 的比例分給小明和小華，則小明可以分到多少元？",
+        "options": {
+            "A": "$40$",
+            "B": "$45$",
+            "C": "$50$",
+            "D": "$75$"
+        },
+        "answer": "B",
+        "explanation": "總份數為 $3 + 5 = 8$ 份。\n小明分到 $120 \times \frac{3}{8} = 15 \times 3 = 45$ 元。"
+    },
+    {
+        "grade": "7B",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "3-1比例式",
+        "topic": "比例式",
+        "knowledge_point": [
+            "連比應用",
+            "求值"
+        ],
+        "difficulty": "normal",
+        "question": "若 $x : y : z = 1 : 2 : 3$，且 $x + y + z = 36$，則 $z$ 的值為何？",
+        "options": {
+            "A": "$6$",
+            "B": "$12$",
+            "C": "$18$",
+            "D": "$24$"
+        },
+        "answer": "C",
+        "explanation": "設 $x = k, y = 2k, z = 3k$.\n$k + 2k + 3k = 36 \Rightarrow 6k = 36 \Rightarrow k = 6$。\n所以 $z = 3k = 3 \times 6 = 18$。"
+    },
+    {
+        "grade": "7B",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "3-1比例式",
+        "topic": "比例式",
+        "knowledge_point": [
+            "比例式應用",
+            "幾何問題"
+        ],
+        "difficulty": "hard",
+        "question": "一個長方形的長與寬之比為 $5 : 3$，若周長為 $32$ 公分，則面積是多少平方公分？",
+        "options": {
+            "A": "$48$",
+            "B": "$60$",
+            "C": "$75$",
+            "D": "$90$"
+        },
+        "answer": "B",
+        "explanation": "設長為 $5k$，寬為 $3k$。\n周長為 $2(5k + 3k) = 2(8k) = 16k$。\n$16k = 32 \Rightarrow k = 2$。\n所以長為 $5 \times 2 = 10$ 公分，寬為 $3 \times 2 = 6$ 公分。\n面積為 $10 \times 6 = 60$ 平方公分。"
+    },
+    {
+        "grade": "7B",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "3-2正比與反比",
+        "topic": "正比與反比",
+        "knowledge_point": [
+            "正比的定義",
+            "判斷"
+        ],
+        "difficulty": "easy",
+        "question": "下列哪一個關係中，$y$ 與 $x$ 成正比？",
+        "options": {
+            "A": "$y = x + 5$",
+            "B": "$y = 3x$",
+            "C": "$y = \frac{10}{x}$",
+            "D": "$y = x^2$"
+        },
+        "answer": "B",
+        "explanation": "若 $y$ 與 $x$ 成正比，則 $y = kx$ (其中 $k$ 為非零常數)。選項B符合定義。"
+    },
+    {
+        "grade": "7B",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "3-2正比與反比",
+        "topic": "正比與反比",
+        "knowledge_point": [
+            "反比的定義",
+            "判斷"
+        ],
+        "difficulty": "easy",
+        "question": "下列哪一個關係中，$y$ 與 $x$ 成反比？",
+        "options": {
+            "A": "$y = x + 5$",
+            "B": "$y = 3x$",
+            "C": "$y = \frac{10}{x}$",
+            "D": "$y = x^2$"
+        },
+        "answer": "C",
+        "explanation": "若 $y$ 與 $x$ 成反比，則 $xy = k$ (其中 $k$ 為非零常數) 或 $y = \frac{k}{x}$。選項C符合定義。"
+    },
+    {
+        "grade": "7B",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "3-2正比與反比",
+        "topic": "正比與反比",
+        "knowledge_point": [
+            "正比應用",
+            "求值"
+        ],
+        "difficulty": "normal",
+        "question": "已知 $y$ 與 $x$ 成正比，若 $x = 2$ 時，$y = 6$，則當 $x = 5$ 時，$y$ 的值為何？",
+        "options": {
+            "A": "$10$",
+            "B": "$12$",
+            "C": "$15$",
+            "D": "$18$"
+        },
+        "answer": "C",
+        "explanation": "設 $y = kx$。將 $x = 2, y = 6$ 代入，得到 $6 = 2k \Rightarrow k = 3$。\n所以 $y = 3x$。當 $x = 5$ 時，$y = 3 \times 5 = 15$。"
+    },
+    {
+        "grade": "7B",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "3-2正比與反比",
+        "topic": "正比與反比",
+        "knowledge_point": [
+            "反比應用",
+            "求值"
+        ],
+        "difficulty": "normal",
+        "question": "已知 $y$ 與 $x$ 成反比，若 $x = 3$ 時，$y = 4$，則當 $x = 6$ 時，$y$ 的值為何？",
+        "options": {
+            "A": "$1$",
+            "B": "$2$",
+            "C": "$3$",
+            "D": "$4$"
+        },
+        "answer": "B",
+        "explanation": "設 $xy = k$。將 $x = 3, y = 4$ 代入，得到 $3 \times 4 = k \Rightarrow k = 12$。\n所以 $xy = 12$。當 $x = 6$ 時，$6y = 12 \Rightarrow y = 2$。"
+    },
+    {
+        "grade": "7B",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "3-2正比與反比",
+        "topic": "正比與反比",
+        "knowledge_point": [
+            "正反比混合應用",
+            "判斷"
+        ],
+        "difficulty": "hard",
+        "question": "下列哪一個敘述是正確的？",
+        "options": {
+            "A": "圓的周長與半徑成正比。",
+            "B": "長方形的面積固定時，長與寬成正比。",
+            "C": "正方形的面積與邊長成正比。",
+            "D": "以上皆是。"
+        },
+        "answer": "A",
+        "explanation": "A選項：圓的周長 $C = 2\pi r$，與半徑 $r$ 成正比。正確。\nB選項：長方形的面積固定時，長與寬成反比。\nC選項：正方形的面積 $A = s^2$，與邊長的平方成正比，不是正比。"
+    },
+    {
+        "grade": "7B",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "4-1一元一次不等式的解及圖示",
+        "topic": "一元一次不等式的解及圖示",
+        "knowledge_point": [
+            "不等式的定義",
+            "符號表示"
+        ],
+        "difficulty": "easy",
+        "question": "下列哪一個選項是一元一次不等式？",
+        "options": {
+            "A": "$2x + 3 = 0$",
+            "B": "$x^2 + 5 > 0$",
+            "C": "$3x - 2 < 7$",
+            "D": "$x + y \ge 10$"
+        },
+        "answer": "C",
+        "explanation": "一元一次不等式是指含有一個未知數，且未知數的次數是一次，並含有不等號的式子。選項C符合定義。"
+    },
+    {
+        "grade": "7B",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "4-1一元一次不等式的解及圖示",
+        "topic": "一元一次不等式的解及圖示",
+        "knowledge_point": [
+            "不等式的解",
+            "判斷"
+        ],
+        "difficulty": "easy",
+        "question": "下列哪一個數是 $x + 3 > 5$ 的解？",
+        "options": {
+            "A": "$1$",
+            "B": "$2$",
+            "C": "$3$",
+            "D": "$4$"
+        },
+        "answer": "D",
+        "explanation": "將選項中的數代入不等式，若不等式成立則為解。\n選項D：$4 + 3 = 7 > 5$，成立。"
+    },
+    {
+        "grade": "7B",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "4-1一元一次不等式的解及圖示",
+        "topic": "一元一次不等式的解及圖示",
+        "knowledge_point": [
+            "不等式在數線上的表示",
+            "圖示"
+        ],
+        "difficulty": "normal",
+        "question": "不等式 $x \ge 2$ 在數線上的圖示為何？",
+        "options": {
+            "A": "空心圓點向右畫線",
+            "B": "實心圓點向右畫線",
+            "C": "空心圓點向左畫線",
+            "D": "實心圓點向左畫線"
+        },
+        "answer": "B",
+        "explanation": "$x \ge 2$ 表示 $x$ 大於或等於 $2$，所以在 $2$ 的位置是實心圓點，並向右畫線。"
+    },
+    {
+        "grade": "7B",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "4-1一元一次不等式的解及圖示",
+        "topic": "一元一次不等式的解及圖示",
+        "knowledge_point": [
+            "不等式應用",
+            "列式"
+        ],
+        "difficulty": "normal",
+        "question": "小明有 $x$ 元，買了一本 $50$ 元的書後，剩下的錢不超過 $20$ 元，則下列哪一個不等式可以表示此關係？",
+        "options": {
+            "A": "$x - 50 > 20$",
+            "B": "$x - 50 < 20$",
+            "C": "$x - 50 \ge 20$",
+            "D": "$x - 50 \le 20$"
+        },
+        "answer": "D",
+        "explanation": "剩下的錢為 $x - 50$，不超過 $20$ 元表示小於或等於 $20$，所以是 $x - 50 \le 20$。"
+    },
+    {
+        "grade": "7B",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "4-1一元一次不等式的解及圖示",
+        "topic": "一元一次不等式的解及圖示",
+        "knowledge_point": [
+            "不等式解的範圍",
+            "判斷"
+        ],
+        "difficulty": "hard",
+        "question": "若 $x$ 為整數，且 $2 < x \le 5$，則 $x$ 的所有可能值為何？",
+        "options": {
+            "A": "$2, 3, 4, 5$",
+            "B": "$3, 4, 5$",
+            "C": "$2, 3, 4$",
+            "D": "$3, 4$"
+        },
+        "answer": "B",
+        "explanation": "$2 < x \le 5$ 表示 $x$ 大於 $2$ 且小於或等於 $5$。由於 $x$ 為整數，所以 $x$ 的可能值為 $3, 4, 5$。"
+    },
+    {
+        "grade": "7B",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "4-2解一元一次不等式及其應用",
+        "topic": "解一元一次不等式及其應用",
+        "knowledge_point": [
+            "解一元一次不等式",
+            "移項法則"
+        ],
+        "difficulty": "easy",
+        "question": "解不等式 $x + 4 > 9$，則 $x$ 的範圍為何？",
+        "options": {
+            "A": "$x > 5$",
+            "B": "$x < 5$",
+            "C": "$x > 13$",
+            "D": "$x < 13$"
+        },
+        "answer": "A",
+        "explanation": "$x + 4 > 9 \Rightarrow x > 9 - 4 \Rightarrow x > 5$。"
+    },
+    {
+        "grade": "7B",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "4-2解一元一次不等式及其應用",
+        "topic": "解一元一次不等式及其應用",
+        "knowledge_point": [
+            "解一元一次不等式",
+            "乘除法則"
+        ],
+        "difficulty": "easy",
+        "question": "解不等式 $2x \le 10$，則 $x$ 的範圍為何？",
+        "options": {
+            "A": "$x \le 5$",
+            "B": "$x \ge 5$",
+            "C": "$x \le 8$",
+            "D": "$x \ge 8$"
+        },
+        "answer": "A",
+        "explanation": "$2x \le 10 \Rightarrow x \le 10 \div 2 \Rightarrow x \le 5$。"
+    },
+    {
+        "grade": "7B",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "4-2解一元一次不等式及其應用",
+        "topic": "解一元一次不等式及其應用",
+        "knowledge_point": [
+            "解一元一次不等式",
+            "負數乘除"
+        ],
+        "difficulty": "normal",
+        "question": "解不等式 $-3x > 12$，則 $x$ 的範圍為何？",
+        "options": {
+            "A": "$x > -4$",
+            "B": "$x < -4$",
+            "C": "$x > 4$",
+            "D": "$x < 4$"
+        },
+        "answer": "B",
+        "explanation": "$-3x > 12$。當不等式兩邊同乘以或同除以負數時，不等號方向要改變。\n$x < 12 \div (-3) \Rightarrow x < -4$。"
+    },
+    {
+        "grade": "7B",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "4-2解一元一次不等式及其應用",
+        "topic": "解一元一次不等式及其應用",
+        "knowledge_point": [
+            "一元一次不等式應用",
+            "數量問題"
+        ],
+        "difficulty": "normal",
+        "question": "小明有 $100$ 元，買了一枝 $15$ 元的原子筆和若干枝 $10$ 元的鉛筆，若總花費不超過 $80$ 元，則小明最多可以買幾枝鉛筆？",
+        "options": {
+            "A": "$5$",
+            "B": "$6$",
+            "C": "$7$",
+            "D": "$8$"
+        },
+        "answer": "B",
+        "explanation": "設小明買了 $x$ 枝鉛筆。\n$15 + 10x \le 80$ \n$10x \le 65$ \n$x \le 6.5$。\n因為鉛筆的數量必須是整數，所以最多可以買 $6$ 枝鉛筆。"
+    },
+    {
+        "grade": "7B",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "4-2解一元一次不等式及其應用",
+        "topic": "解一元一次不等式及其應用",
+        "knowledge_point": [
+            "一元一次不等式應用",
+            "分數問題"
+        ],
+        "difficulty": "hard",
+        "question": "某次數學考試，全班平均分數為 $70$ 分。已知小明考了 $x$ 分，若小明的分數比平均分數的 $2$ 倍少 $50$ 分，且小明的分數不低於 $80$ 分，則 $x$ 的範圍為何？",
+        "options": {
+            "A": "$80 \le x < 90$",
+            "B": "$80 \le x \le 90$",
+            "C": "$90 \le x < 100$",
+            "D": "$90 \le x \le 100$"
+        },
+        "answer": "A",
+        "explanation": "平均分數的 $2$ 倍少 $50$ 分為 $70 \times 2 - 50 = 140 - 50 = 90$。\n所以 $x < 90$。\n又小明的分數不低於 $80$ 分，所以 $x \ge 80$。\n綜合以上，得到 $80 \le x < 90$。"
+    },
+    {
+        "grade": "7B",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "5-1統計圖表與統計數據",
+        "topic": "統計圖表與統計數據",
+        "knowledge_point": [
+            "平均數",
+            "計算"
+        ],
+        "difficulty": "easy",
+        "question": "小明班上 $5$ 位同學的數學分數分別是 $80, 70, 90, 60, 80$，則這 $5$ 位同學的數學平均分數是多少？",
+        "options": {
+            "A": "$70$",
+            "B": "$75$",
+            "C": "$76$",
+            "D": "$80$"
+        },
+        "answer": "C",
+        "explanation": "平均分數為 $(80 + 70 + 90 + 60 + 80) \div 5 = 380 \div 5 = 76$。"
+    },
+    {
+        "grade": "7B",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "5-1統計圖表與統計數據",
+        "topic": "統計圖表與統計數據",
+        "knowledge_point": [
+            "中位數",
+            "計算"
+        ],
+        "difficulty": "easy",
+        "question": "小明班上 $5$ 位同學的數學分數分別是 $80, 70, 90, 60, 80$，則這 $5$ 位同學的數學分數中位數是多少？",
+        "options": {
+            "A": "$70$",
+            "B": "$75$",
+            "C": "$76$",
+            "D": "$80$"
+        },
+        "answer": "D",
+        "explanation": "將分數由小到大排列：$60, 70, 80, 80, 90$。中位數為中間的數，即 $80$。"
+    },
+    {
+        "grade": "7B",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "5-1統計圖表與統計數據",
+        "topic": "統計圖表與統計數據",
+        "knowledge_point": [
+            "眾數",
+            "計算"
+        ],
+        "difficulty": "easy",
+        "question": "小明班上 $5$ 位同學的數學分數分別是 $80, 70, 90, 60, 80$，則這 $5$ 位同學的數學分數眾數是多少？",
+        "options": {
+            "A": "$70$",
+            "B": "$75$",
+            "C": "$76$",
+            "D": "$80$"
+        },
+        "answer": "D",
+        "explanation": "眾數是出現次數最多的數，即 $80$。"
+    },
+    {
+        "grade": "7B",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "5-1統計圖表與統計數據",
+        "topic": "統計圖表與統計數據",
+        "knowledge_point": [
+            "統計圖表",
+            "長條圖"
+        ],
+        "difficulty": "normal",
+        "question": "下列哪一種統計圖表適合用來表示不同類別的數量比較？",
+        "options": {
+            "A": "折線圖",
+            "B": "圓形圖",
+            "C": "長條圖",
+            "D": "散佈圖"
+        },
+        "answer": "C",
+        "explanation": "長條圖適合用來表示不同類別的數量比較。折線圖適合表示趨勢，圓形圖適合表示比例，散佈圖適合表示兩變數的關係。"
+    },
+    {
+        "grade": "7B",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "5-1統計圖表與統計數據",
+        "topic": "統計圖表與統計數據",
+        "knowledge_point": [
+            "平均數、中位數、眾數",
+            "特性"
+        ],
+        "difficulty": "hard",
+        "question": "下列關於平均數、中位數、眾數的敘述，何者正確？",
+        "options": {
+            "A": "平均數一定會出現在資料中。",
+            "B": "中位數一定會出現在資料中。",
+            "C": "眾數一定會出現在資料中。",
+            "D": "以上皆是。"
+        },
+        "answer": "C",
+        "explanation": "平均數不一定會出現在資料中，中位數在資料個數為偶數時，可能為中間兩數的平均，不一定出現在資料中。眾數是出現次數最多的數，所以一定會出現在資料中。"
+    },
+    {
+        "grade": "7B",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "6-1線對稱與三視圖",
+        "topic": "線對稱與三視圖",
+        "knowledge_point": [
+            "線對稱",
+            "對稱軸"
+        ],
+        "difficulty": "easy",
+        "question": "下列哪一個圖形是線對稱圖形？",
+        "options": {
+            "A": "不規則四邊形",
+            "B": "平行四邊形",
+            "C": "等腰三角形",
+            "D": "梯形"
+        },
+        "answer": "C",
+        "explanation": "等腰三角形有一條對稱軸，所以是線對稱圖形。不規則四邊形、平行四邊形、梯形都不是線對稱圖形。"
+    },
+    {
+        "grade": "7B",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "6-1線對稱與三視圖",
+        "topic": "線對稱與三視圖",
+        "knowledge_point": [
+            "三視圖",
+            "視圖判斷"
+        ],
+        "difficulty": "easy",
+        "question": "一個正方體的俯視圖是什麼形狀？",
+        "options": {
+            "A": "三角形",
+            "B": "圓形",
+            "C": "正方形",
+            "D": "長方形"
+        },
+        "answer": "C",
+        "explanation": "正方體的俯視圖是正方形。"
+    },
+    {
+        "grade": "7B",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "6-1線對稱與三視圖",
+        "topic": "線對稱與三視圖",
+        "knowledge_point": [
+            "線對稱應用",
+            "判斷"
+        ],
+        "difficulty": "normal",
+        "question": "下列哪一個英文字母是線對稱圖形？",
+        "options": {
+            "A": "F",
+            "B": "G",
+            "C": "H",
+            "D": "J"
+        },
+        "answer": "C",
+        "explanation": "字母H有兩條對稱軸，所以是線對稱圖形。"
+    },
+    {
+        "grade": "7B",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "6-1線對稱與三視圖",
+        "topic": "線對稱與三視圖",
+        "knowledge_point": [
+            "三視圖",
+            "組合判斷"
+        ],
+        "difficulty": "normal",
+        "question": "一個由 $3$ 個相同大小的正方體堆疊而成的立體圖形，其前視圖、上視圖、右視圖分別為何？",
+        "options": {
+            "A": "前視圖：L形，上視圖：一字形，右視圖：一字形",
+            "B": "前視圖：一字形，上視圖：L形，右視圖：一字形",
+            "C": "前視圖：一字形，上視圖：一字形，右視圖：L形",
+            "D": "無法確定"
+        },
+        "answer": "D",
+        "explanation": "僅憑 $3$ 個正方體堆疊，無法確定其三視圖，因為堆疊方式有很多種。需要提供具體的堆疊方式才能判斷。"
+    },
+    {
+        "grade": "7B",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "6-1線對稱與三視圖",
+        "topic": "線對稱與三視圖",
+        "knowledge_point": [
+            "線對稱應用",
+            "綜合判斷"
+        ],
+        "difficulty": "hard",
+        "question": "下列哪一個圖形有無限多條對稱軸？",
+        "options": {
+            "A": "正方形",
+            "B": "圓形",
+            "C": "長方形",
+            "D": "等腰三角形"
+        },
+        "answer": "B",
+        "explanation": "圓形有無限多條對稱軸，任何通過圓心的直線都是其對稱軸。"
+    },
+    {
+        "grade": "8A",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "1-1乘法公式",
+        "topic": "乘法公式",
+        "knowledge_point": [
+            "平方差公式",
+            "應用"
+        ],
+        "difficulty": "easy",
+        "question": "計算 $(x + 3)(x - 3)$ 的結果為何？",
+        "options": {
+            "A": "$x^2 + 9$",
+            "B": "$x^2 - 9$",
+            "C": "$x^2 + 6x + 9$",
+            "D": "$x^2 - 6x + 9$"
+        },
+        "answer": "B",
+        "explanation": "利用平方差公式 $(a + b)(a - b) = a^2 - b^2$，所以 $(x + 3)(x - 3) = x^2 - 3^2 = x^2 - 9$。"
+    },
+    {
+        "grade": "8A",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "1-1乘法公式",
+        "topic": "乘法公式",
+        "knowledge_point": [
+            "和的平方公式",
+            "應用"
+        ],
+        "difficulty": "easy",
+        "question": "計算 $(x + 5)^2$ 的結果為何？",
+        "options": {
+            "A": "$x^2 + 25$",
+            "B": "$x^2 - 25$",
+            "C": "$x^2 + 10x + 25$",
+            "D": "$x^2 - 10x + 25$"
+        },
+        "answer": "C",
+        "explanation": "利用和的平方公式 $(a + b)^2 = a^2 + 2ab + b^2$，所以 $(x + 5)^2 = x^2 + 2(x)(5) + 5^2 = x^2 + 10x + 25$。"
+    },
+    {
+        "grade": "8A",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "1-1乘法公式",
+        "topic": "乘法公式",
+        "knowledge_point": [
+            "差的平方公式",
+            "應用"
+        ],
+        "difficulty": "easy",
+        "question": "計算 $(x - 4)^2$ 的結果為何？",
+        "options": {
+            "A": "$x^2 + 16$",
+            "B": "$x^2 - 16$",
+            "C": "$x^2 + 8x + 16$",
+            "D": "$x^2 - 8x + 16$"
+        },
+        "answer": "D",
+        "explanation": "利用差的平方公式 $(a - b)^2 = a^2 - 2ab + b^2$，所以 $(x - 4)^2 = x^2 - 2(x)(4) + 4^2 = x^2 - 8x + 16$。"
+    },
+    {
+        "grade": "8A",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "1-1乘法公式",
+        "topic": "乘法公式",
+        "knowledge_point": [
+            "乘法公式應用",
+            "數值計算"
+        ],
+        "difficulty": "normal",
+        "question": "計算 $101^2$ 的結果為何？",
+        "options": {
+            "A": "$10001$",
+            "B": "$10201$",
+            "C": "$10401$",
+            "D": "$10601$"
+        },
+        "answer": "B",
+        "explanation": "$101^2 = (100 + 1)^2 = 100^2 + 2(100)(1) + 1^2 = 10000 + 200 + 1 = 10201$。"
+    },
+    {
+        "grade": "8A",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "1-1乘法公式",
+        "topic": "乘法公式",
+        "knowledge_point": [
+            "乘法公式應用",
+            "數值計算"
+        ],
+        "difficulty": "normal",
+        "question": "計算 $98 \times 102$ 的結果為何？",
+        "options": {
+            "A": "$9996$",
+            "B": "$9998$",
+            "C": "$10000$",
+            "D": "$10004$"
+        },
+        "answer": "A",
+        "explanation": "$98 \times 102 = (100 - 2)(100 + 2) = 100^2 - 2^2 = 10000 - 4 = 9996$。"
+    },
+    {
+        "grade": "8A",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "1-2多項式的加減",
+        "topic": "多項式的加減",
+        "knowledge_point": [
+            "多項式加法",
+            "同類項合併"
+        ],
+        "difficulty": "easy",
+        "question": "計算 $(2x^2 + 3x - 1) + (x^2 - 2x + 5)$ 的結果為何？",
+        "options": {
+            "A": "$3x^2 + x + 4$",
+            "B": "$3x^2 + 5x + 4$",
+            "C": "$x^2 + x + 4$",
+            "D": "$x^2 + 5x + 4$"
+        },
+        "answer": "A",
+        "explanation": "$(2x^2 + 3x - 1) + (x^2 - 2x + 5) = (2x^2 + x^2) + (3x - 2x) + (-1 + 5) = 3x^2 + x + 4$。"
+    },
+    {
+        "grade": "8A",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "1-2多項式的加減",
+        "topic": "多項式的加減",
+        "knowledge_point": [
+            "多項式減法",
+            "同類項合併"
+        ],
+        "difficulty": "easy",
+        "question": "計算 $(4x^2 - 5x + 2) - (x^2 + 3x - 1)$ 的結果為何？",
+        "options": {
+            "A": "$3x^2 - 2x + 1$",
+            "B": "$3x^2 - 8x + 3$",
+            "C": "$5x^2 - 2x + 1$",
+            "D": "$5x^2 - 8x + 3$"
+        },
+        "answer": "B",
+        "explanation": "$(4x^2 - 5x + 2) - (x^2 + 3x - 1) = 4x^2 - 5x + 2 - x^2 - 3x + 1 = (4x^2 - x^2) + (-5x - 3x) + (2 + 1) = 3x^2 - 8x + 3$。"
+    },
+    {
+        "grade": "8A",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "1-2多項式的加減",
+        "topic": "多項式的加減",
+        "knowledge_point": [
+            "多項式次數",
+            "判斷"
+        ],
+        "difficulty": "normal",
+        "question": "下列哪一個選項是二次多項式？",
+        "options": {
+            "A": "$3x + 5$",
+            "B": "$x^2 + 2x - 1$",
+            "C": "$x^3 - 4x^2 + 7$",
+            "D": "$6$"
+        },
+        "answer": "B",
+        "explanation": "多項式的次數由最高次項的次數決定。選項B的最高次項為 $x^2$，所以是二次多項式。"
+    },
+    {
+        "grade": "8A",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "1-2多項式的加減",
+        "topic": "多項式的加減",
+        "knowledge_point": [
+            "多項式加減應用",
+            "求值"
+        ],
+        "difficulty": "normal",
+        "question": "若多項式 $A = 3x^2 - 2x + 4$，多項式 $B = x^2 + 5x - 3$，則 $A + B$ 的結果為何？",
+        "options": {
+            "A": "$4x^2 + 3x + 1$",
+            "B": "$4x^2 - 7x + 7$",
+            "C": "$2x^2 - 7x + 7$",
+            "D": "$2x^2 + 3x + 1$"
+        },
+        "answer": "A",
+        "explanation": "$A + B = (3x^2 - 2x + 4) + (x^2 + 5x - 3) = 4x^2 + 3x + 1$。"
+    },
+    {
+        "grade": "8A",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "1-2多項式的加減",
+        "topic": "多項式的加減",
+        "knowledge_point": [
+            "多項式加減應用",
+            "求值"
+        ],
+        "difficulty": "hard",
+        "question": "若多項式 $A = 5x^2 + 7x - 2$，多項式 $B = 2x^2 - 3x + 6$，則 $A - B$ 的結果為何？",
+        "options": {
+            "A": "$3x^2 + 4x + 4$",
+            "B": "$3x^2 + 10x - 8$",
+            "C": "$7x^2 + 4x + 4$",
+            "D": "$7x^2 + 10x - 8$"
+        },
+        "answer": "B",
+        "explanation": "$A - B = (5x^2 + 7x - 2) - (2x^2 - 3x + 6) = 5x^2 + 7x - 2 - 2x^2 + 3x - 6 = 3x^2 + 10x - 8$。"
+    },
+    {
+        "grade": "8A",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "1-3多項式的乘除",
+        "topic": "多項式的乘除",
+        "knowledge_point": [
+            "多項式乘法",
+            "單項式乘以多項式"
+        ],
+        "difficulty": "easy",
+        "question": "計算 $3x(2x - 5)$ 的結果為何？",
+        "options": {
+            "A": "$6x - 15$",
+            "B": "$6x^2 - 15x$",
+            "C": "$6x^2 - 5$",
+            "D": "$6x - 15x$"
+        },
+        "answer": "B",
+        "explanation": "$3x(2x - 5) = 3x \times 2x - 3x \times 5 = 6x^2 - 15x$。"
+    },
+    {
+        "grade": "8A",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "1-3多項式的乘除",
+        "topic": "多項式的乘除",
+        "knowledge_point": [
+            "多項式乘法",
+            "多項式乘以多項式"
+        ],
+        "difficulty": "easy",
+        "question": "計算 $(x + 1)(x + 2)$ 的結果為何？",
+        "options": {
+            "A": "$x^2 + 3x + 2$",
+            "B": "$x^2 + 2x + 1$",
+            "C": "$x^2 + x + 2$",
+            "D": "$x^2 + 3x + 1$"
+        },
+        "answer": "A",
+        "explanation": "$(x + 1)(x + 2) = x(x + 2) + 1(x + 2) = x^2 + 2x + x + 2 = x^2 + 3x + 2$。"
+    },
+    {
+        "grade": "8A",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "1-3多項式的乘除",
+        "topic": "多項式的乘除",
+        "knowledge_point": [
+            "多項式除法",
+            "長除法"
+        ],
+        "difficulty": "normal",
+        "question": "計算 $(x^2 + 5x + 6) \div (x + 2)$ 的結果為何？",
+        "options": {
+            "A": "$x + 3$",
+            "B": "$x + 4$",
+            "C": "$x + 5$",
+            "D": "$x + 6$"
+        },
+        "answer": "A",
+        "explanation": "利用長除法或因式分解：$x^2 + 5x + 6 = (x + 2)(x + 3)$，所以 $(x^2 + 5x + 6) \div (x + 2) = x + 3$。"
+    },
+    {
+        "grade": "8A",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "1-3多項式的乘除",
+        "topic": "多項式的乘除",
+        "knowledge_point": [
+            "多項式除法",
+            "餘式定理"
+        ],
+        "difficulty": "normal",
+        "question": "若多項式 $f(x) = x^2 - 3x + 5$ 除以 $x - 1$ 的餘式為何？",
+        "options": {
+            "A": "$1$",
+            "B": "$2$",
+            "C": "$3$",
+            "D": "$4$"
+        },
+        "answer": "C",
+        "explanation": "利用餘式定理，將 $x = 1$ 代入 $f(x)$，得到 $f(1) = 1^2 - 3(1) + 5 = 1 - 3 + 5 = 3$。"
+    },
+    {
+        "grade": "8A",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "1-3多項式的乘除",
+        "topic": "多項式的乘除",
+        "knowledge_point": [
+            "多項式乘除應用",
+            "求值"
+        ],
+        "difficulty": "hard",
+        "question": "若 $(x + 2)(x - 3) = x^2 + ax + b$，則 $a + b$ 的值為何？",
+        "options": {
+            "A": "$-5$",
+            "B": "$-7$",
+            "C": "$-1$",
+            "D": "$1$"
+        },
+        "answer": "B",
+        "explanation": "$(x + 2)(x - 3) = x^2 - 3x + 2x - 6 = x^2 - x - 6$。\n所以 $a = -1$, $b = -6$。\n$a + b = -1 + (-6) = -7$。"
+    },
+    {
+        "grade": "8A",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "2-1二次方根的意義",
+        "topic": "二次方根的意義",
+        "knowledge_point": [
+            "平方根",
+            "定義"
+        ],
+        "difficulty": "easy",
+        "question": "下列哪一個數是 $36$ 的平方根？",
+        "options": {
+            "A": "$6$",
+            "B": "$-6$",
+            "C": "$\pm 6$",
+            "D": "$36$"
+        },
+        "answer": "C",
+        "explanation": "$36$ 的平方根是 $\pm 6$，因為 $6^2 = 36$ 且 $(-6)^2 = 36$。"
+    },
+    {
+        "grade": "8A",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "2-1二次方根的意義",
+        "topic": "二次方根的意義",
+        "knowledge_point": [
+            "平方根",
+            "求值"
+        ],
+        "difficulty": "easy",
+        "question": "計算 $\sqrt{100}$ 的結果為何？",
+        "options": {
+            "A": "$10$",
+            "B": "$-10$",
+            "C": "$\pm 10$",
+            "D": "$100$"
+        },
+        "answer": "A",
+        "explanation": "$\\sqrt{100}$ 表示 $100$ 的正平方根，所以是 $10$。"
+    },
+    {
+        "grade": "8A",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "2-1二次方根的意義",
+        "topic": "二次方根的意義",
+        "knowledge_point": [
+            "近似值",
+            "四捨五入"
+        ],
+        "difficulty": "normal",
+        "question": "將 $\sqrt{3}$ 的值四捨五入到小數點後第一位，結果為何？ (已知 $\sqrt{3} \approx 1.732$) ",
+        "options": {
+            "A": "$1.7$",
+            "B": "$1.8$",
+            "C": "$1.73$",
+            "D": "$1.74$"
+        },
+        "answer": "A",
+        "explanation": "$\\sqrt{3} \approx 1.732$，四捨五入到小數點後第一位，看第二位數字 $3$，小於 $5$，所以捨去，得到 $1.7$。"
+    },
+    {
+        "grade": "8A",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "2-1二次方根的意義",
+        "topic": "二次方根的意義",
+        "knowledge_point": [
+            "平方根應用",
+            "數值比較"
+        ],
+        "difficulty": "normal",
+        "question": "下列哪一個數值最小？",
+        "options": {
+            "A": "$\sqrt{5}$",
+            "B": "$2$",
+            "C": "$2.1$",
+            "D": "$\sqrt{4}$"
+        },
+        "answer": "B",
+        "explanation": "$\\sqrt{5} \approx 2.236$， $2 = \sqrt{4}$， $2.1 = \sqrt{4.41}$。\n所以 $2 < 2.1 < 2.236$。因此 $2$ 最小。"
+    },
+    {
+        "grade": "8A",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "2-1二次方根的意義",
+        "topic": "二次方根的意義",
+        "knowledge_point": [
+            "平方根應用",
+            "幾何問題"
+        ],
+        "difficulty": "hard",
+        "question": "一個正方形的面積是 $64$ 平方公分，則其邊長是多少公分？",
+        "options": {
+            "A": "$8$",
+            "B": "$16$",
+            "C": "$32$",
+            "D": "$64$"
+        },
+        "answer": "A",
+        "explanation": "正方形的邊長為面積的平方根，所以邊長為 $\sqrt{64} = 8$ 公分。"
+    },
+    {
+        "grade": "8A",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "2-2根式的運算",
+        "topic": "根式的運算",
+        "knowledge_point": [
+            "根式加減",
+            "同類根式"
+        ],
+        "difficulty": "easy",
+        "question": "計算 $5\sqrt{3} - 2\sqrt{3}$ 的結果為何？",
+        "options": {
+            "A": "$3\sqrt{3}$",
+            "B": "$7\sqrt{3}$",
+            "C": "$3\sqrt{6}$",
+            "D": "$7\sqrt{6}$"
+        },
+        "answer": "A",
+        "explanation": "同類根式可以直接相加減，所以 $5\sqrt{3} - 2\sqrt{3} = (5 - 2)\sqrt{3} = 3\sqrt{3}$。"
+    },
+    {
+        "grade": "8A",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "2-2根式的運算",
+        "topic": "根式的運算",
+        "knowledge_point": [
+            "根式乘法",
+            "化簡"
+        ],
+        "difficulty": "easy",
+        "question": "計算 $\sqrt{2} \times \sqrt{8}$ 的結果為何？",
+        "options": {
+            "A": "$\sqrt{16}$",
+            "B": "$4$",
+            "C": "$2\sqrt{4}$",
+            "D": "$8\sqrt{2}$"
+        },
+        "answer": "B",
+        "explanation": "$\\sqrt{2} \times \sqrt{8} = \sqrt{2 \times 8} = \sqrt{16} = 4$。"
+    },
+    {
+        "grade": "8A",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "2-2根式的運算",
+        "topic": "根式的運算",
+        "knowledge_point": [
+            "根式除法",
+            "化簡"
+        ],
+        "difficulty": "normal",
+        "question": "計算 $\sqrt{75} \div \sqrt{3}$ 的結果為何？",
+        "options": {
+            "A": "$\sqrt{25}$",
+            "B": "$5$",
+            "C": "$\sqrt{15}$",
+            "D": "$15$"
+        },
+        "answer": "B",
+        "explanation": "$\\sqrt{75} \div \sqrt{3} = \sqrt{\frac{75}{3}} = \sqrt{25} = 5$。"
+    },
+    {
+        "grade": "8A",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "2-2根式的運算",
+        "topic": "根式的運算",
+        "knowledge_point": [
+            "根式化簡",
+            "最簡根式"
+        ],
+        "difficulty": "normal",
+        "question": "將 $\sqrt{48}$ 化為最簡根式，結果為何？",
+        "options": {
+            "A": "$4\sqrt{3}$",
+            "B": "$2\sqrt{12}$",
+            "C": "$3\sqrt{16}$",
+            "D": "$6\sqrt{8}$"
+        },
+        "answer": "A",
+        "explanation": "$\\sqrt{48} = \sqrt{16 \times 3} = \sqrt{16} \times \sqrt{3} = 4\sqrt{3}$。"
+    },
+    {
+        "grade": "8A",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "2-2根式的運算",
+        "topic": "根式的運算",
+        "knowledge_point": [
+            "根式混合運算",
+            "有理化"
+        ],
+        "difficulty": "hard",
+        "question": "計算 $\frac{1}{\sqrt{5} + 2}$ 的結果為何？",
+        "options": {
+            "A": "$\sqrt{5} + 2$",
+            "B": "$\sqrt{5} - 2$",
+            "C": "$\frac{\sqrt{5} + 2}{3}$",
+            "D": "$\frac{\sqrt{5} - 2}{3}$"
+        },
+        "answer": "B",
+        "explanation": "$\frac{1}{\sqrt{5} + 2} = \frac{1}{\sqrt{5} + 2} \times \frac{\sqrt{5} - 2}{\sqrt{5} - 2} = \frac{\sqrt{5} - 2}{(\sqrt{5})^2 - 2^2} = \frac{\sqrt{5} - 2}{5 - 4} = \frac{\sqrt{5} - 2}{1} = \sqrt{5} - 2$。"
+    },
+    {
+        "grade": "8A",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "2-3畢氏定理",
+        "topic": "畢氏定理",
+        "knowledge_point": [
+            "畢氏定理",
+            "直角三角形"
+        ],
+        "difficulty": "easy",
+        "question": "在直角三角形中，兩股長分別為 $6$ 和 $8$，則斜邊長為何？",
+        "options": {
+            "A": "$10$",
+            "B": "$12$",
+            "C": "$14$",
+            "D": "$16$"
+        },
+        "answer": "A",
+        "explanation": "利用畢氏定理 $a^2 + b^2 = c^2$，所以 $6^2 + 8^2 = c^2 \Rightarrow 36 + 64 = c^2 \Rightarrow 100 = c^2 \Rightarrow c = 10$。"
+    },
+    {
+        "grade": "8A",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "2-3畢氏定理",
+        "topic": "畢氏定理",
+        "knowledge_point": [
+            "畢氏定理應用",
+            "判斷直角三角形"
+        ],
+        "difficulty": "easy",
+        "question": "下列哪一組邊長可以構成直角三角形？",
+        "options": {
+            "A": "$3, 4, 6$",
+            "B": "$5, 6, 7$",
+            "C": "$8, 15, 17$",
+            "D": "$9, 12, 14$"
+        },
+        "answer": "C",
+        "explanation": "利用畢氏定理的逆定理，若 $a^2 + b^2 = c^2$，則為直角三角形。\n選項C：$8^2 + 15^2 = 64 + 225 = 289 = 17^2$，所以是直角三角形。"
+    },
+    {
+        "grade": "8A",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "2-3畢氏定理",
+        "topic": "畢氏定理",
+        "knowledge_point": [
+            "畢氏定理應用",
+            "幾何問題"
+        ],
+        "difficulty": "normal",
+        "question": "一個正方形的對角線長為 $10$ 公分，則其邊長是多少公分？",
+        "options": {
+            "A": "$5$",
+            "B": "$5\sqrt{2}$",
+            "C": "$10$",
+            "D": "$10\sqrt{2}$"
+        },
+        "answer": "B",
+        "explanation": "設邊長為 $x$ 公分。\n$x^2 + x^2 = 10^2$ \n$2x^2 = 100$ \n$x^2 = 50$ \n$x = \sqrt{50} = 5\sqrt{2}$。"
+    },
+    {
+        "grade": "8A",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "2-3畢氏定理",
+        "topic": "畢氏定理",
+        "knowledge_point": [
+            "畢氏定理應用",
+            "坐標幾何"
+        ],
+        "difficulty": "normal",
+        "question": "在直角坐標平面上，點 $A(-1, 3)$ 和點 $B(2, 7)$ 之間的距離為何？",
+        "options": {
+            "A": "$3$",
+            "B": "$4$",
+            "C": "$5$",
+            "D": "$6$"
+        },
+        "answer": "C",
+        "explanation": "利用兩點距離公式 $\sqrt{(x_2 - x_1)^2 + (y_2 - y_1)^2}$。\n距離為 $\sqrt{(2 - (-1))^2 + (7 - 3)^2} = \sqrt{3^2 + 4^2} = \sqrt{9 + 16} = \sqrt{25} = 5$。"
+    },
+    {
+        "grade": "8A",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "2-3畢氏定理",
+        "topic": "畢氏定理",
+        "knowledge_point": [
+            "畢氏定理應用",
+            "立體幾何"
+        ],
+        "difficulty": "hard",
+        "question": "一個長方體的長、寬、高分別為 $1, 2, 2$，則其對角線長度為何？",
+        "options": {
+            "A": "$3$",
+            "B": "$4$",
+            "C": "$5$",
+            "D": "$6$"
+        },
+        "answer": "A",
+        "explanation": "長方體的對角線長度為 $\sqrt{長^2 + 寬^2 + 高^2}$。\n所以對角線長度為 $\sqrt{1^2 + 2^2 + 2^2} = \sqrt{1 + 4 + 4} = \sqrt{9} = 3$。"
+    },
+    {
+        "grade": "8A",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "3-1提公因式與乘法公式作因式分解",
+        "topic": "提公因式與乘法公式作因式分解",
+        "knowledge_point": [
+            "提公因式法",
+            "因式分解"
+        ],
+        "difficulty": "easy",
+        "question": "將 $5x^2 - 10x$ 因式分解，結果為何？",
+        "options": {
+            "A": "$5x(x - 2)$",
+            "B": "$5x(x - 10)$",
+            "C": "$5(x^2 - 2x)$",
+            "D": "$x(5x - 10)$"
+        },
+        "answer": "A",
+        "explanation": "$5x^2 - 10x = 5x \times x - 5x \times 2 = 5x(x - 2)$。"
+    },
+    {
+        "grade": "8A",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "3-1提公因式與乘法公式作因式分解",
+        "topic": "提公因式與乘法公式作因式分解",
+        "knowledge_point": [
+            "平方差公式因式分解",
+            "應用"
+        ],
+        "difficulty": "easy",
+        "question": "將 $x^2 - 64$ 因式分解，結果為何？",
+        "options": {
+            "A": "$(x + 8)(x + 8)$",
+            "B": "$(x - 8)(x - 8)$",
+            "C": "$(x + 8)(x - 8)$",
+            "D": "$(x + 64)(x - 64)$"
+        },
+        "answer": "C",
+        "explanation": "利用平方差公式 $a^2 - b^2 = (a + b)(a - b)$，所以 $x^2 - 64 = x^2 - 8^2 = (x + 8)(x - 8)$。"
+    },
+    {
+        "grade": "8A",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "3-1提公因式與乘法公式作因式分解",
+        "topic": "提公因式與乘法公式作因式分解",
+        "knowledge_point": [
+            "和的平方公式因式分解",
+            "應用"
+        ],
+        "difficulty": "normal",
+        "question": "將 $x^2 + 10x + 25$ 因式分解，結果為何？",
+        "options": {
+            "A": "$(x + 5)^2$",
+            "B": "$(x - 5)^2$",
+            "C": "$(x + 25)^2$",
+            "D": "$(x - 25)^2$"
+        },
+        "answer": "A",
+        "explanation": "利用和的平方公式 $a^2 + 2ab + b^2 = (a + b)^2$，所以 $x^2 + 10x + 25 = x^2 + 2(x)(5) + 5^2 = (x + 5)^2$。"
+    },
+    {
+        "grade": "8A",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "3-1提公因式與乘法公式作因式分解",
+        "topic": "提公因式與乘法公式作因式分解",
+        "knowledge_point": [
+            "差的平方公式因式分解",
+            "應用"
+        ],
+        "difficulty": "normal",
+        "question": "將 $x^2 - 12x + 36$ 因式分解，結果為何？",
+        "options": {
+            "A": "$(x + 6)^2$",
+            "B": "$(x - 6)^2$",
+            "C": "$(x + 36)^2$",
+            "D": "$(x - 36)^2$"
+        },
+        "answer": "B",
+        "explanation": "利用差的平方公式 $a^2 - 2ab + b^2 = (a - b)^2$，所以 $x^2 - 12x + 36 = x^2 - 2(x)(6) + 6^2 = (x - 6)^2$。"
+    },
+    {
+        "grade": "8A",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "3-1提公因式與乘法公式作因式分解",
+        "topic": "提公因式與乘法公式作因式分解",
+        "knowledge_point": [
+            "因式分解混合應用",
+            "判斷"
+        ],
+        "difficulty": "hard",
+        "question": "下列哪一個多項式可以因式分解為 $(3x - 2)(3x + 2)$？",
+        "options": {
+            "A": "$9x^2 + 4$",
+            "B": "$9x^2 - 4$",
+            "C": "$9x^2 + 12x + 4$",
+            "D": "$9x^2 - 12x + 4$"
+        },
+        "answer": "B",
+        "explanation": "利用平方差公式 $(3x - 2)(3x + 2) = (3x)^2 - 2^2 = 9x^2 - 4$。"
+    },
+    {
+        "grade": "8A",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "3-2利用十字交乘法因式分解",
+        "topic": "利用十字交乘法因式分解",
+        "knowledge_point": [
+            "十字交乘法",
+            "應用"
+        ],
+        "difficulty": "easy",
+        "question": "將 $x^2 + 7x + 10$ 因式分解，結果為何？",
+        "options": {
+            "A": "$(x + 1)(x + 10)$",
+            "B": "$(x + 2)(x + 5)$",
+            "C": "$(x - 1)(x - 10)$",
+            "D": "$(x - 2)(x - 5)$"
+        },
+        "answer": "B",
+        "explanation": "利用十字交乘法，找到兩個數相乘為 $10$，相加為 $7$，即 $2$ 和 $5$。所以 $x^2 + 7x + 10 = (x + 2)(x + 5)$。"
+    },
+    {
+        "grade": "8A",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "3-2利用十字交乘法因式分解",
+        "topic": "利用十字交乘法因式分解",
+        "knowledge_point": [
+            "十字交乘法",
+            "應用"
+        ],
+        "difficulty": "easy",
+        "question": "將 $x^2 - 8x + 15$ 因式分解，結果為何？",
+        "options": {
+            "A": "$(x - 3)(x - 5)$",
+            "B": "$(x + 3)(x + 5)$",
+            "C": "$(x - 1)(x - 15)$",
+            "D": "$(x + 1)(x + 15)$"
+        },
+        "answer": "A",
+        "explanation": "利用十字交乘法，找到兩個數相乘為 $15$，相加為 $-8$，即 $-3$ 和 $-5$。所以 $x^2 - 8x + 15 = (x - 3)(x - 5)$。"
+    },
+    {
+        "grade": "8A",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "3-2利用十字交乘法因式分解",
+        "topic": "利用十字交乘法因式分解",
+        "knowledge_point": [
+            "十字交乘法",
+            "應用"
+        ],
+        "difficulty": "normal",
+        "question": "將 $3x^2 + 8x + 5$ 因式分解，結果為何？",
+        "options": {
+            "A": "$(3x + 1)(x + 5)$",
+            "B": "$(3x + 5)(x + 1)$",
+            "C": "$(3x - 1)(x - 5)$",
+            "D": "$(3x - 5)(x - 1)$"
+        },
+        "answer": "B",
+        "explanation": "利用十字交乘法，將 $3x^2$ 分解為 $3x \times x$，將 $5$ 分解為 $5 \times 1$。\n交叉相乘 $3x \times 1 = 3x$， $x \times 5 = 5x$。\n$3x + 5x = 8x$，符合中間項。所以 $3x^2 + 8x + 5 = (3x + 5)(x + 1)$。"
+    },
+    {
+        "grade": "8A",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "3-2利用十字交乘法因式分解",
+        "topic": "利用十字交乘法因式分解",
+        "knowledge_point": [
+            "十字交乘法",
+            "應用"
+        ],
+        "difficulty": "normal",
+        "question": "將 $2x^2 - 7x - 4$ 因式分解，結果為何？",
+        "options": {
+            "A": "$(2x + 1)(x - 4)$",
+            "B": "$(2x - 1)(x + 4)$",
+            "C": "$(2x + 4)(x - 1)$",
+            "D": "$(2x - 4)(x + 1)$"
+        },
+        "answer": "A",
+        "explanation": "利用十字交乘法，將 $2x^2$ 分解為 $2x \times x$，將 $-4$ 分解為 $1 \times (-4)$。\n交叉相乘 $2x \times (-4) = -8x$， $x \times 1 = x$。\n$-8x + x = -7x$，符合中間項。所以 $2x^2 - 7x - 4 = (2x + 1)(x - 4)$。"
+    },
+    {
+        "grade": "8A",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "3-2利用十字交乘法因式分解",
+        "topic": "利用十字交乘法因式分解",
+        "knowledge_point": [
+            "因式分解混合應用",
+            "判斷"
+        ],
+        "difficulty": "hard",
+        "question": "下列哪一個多項式可以因式分解為 $(x + 3)(x - 4)$？",
+        "options": {
+            "A": "$x^2 - x - 12$",
+            "B": "$x^2 + x - 12$",
+            "C": "$x^2 - 7x + 12$",
+            "D": "$x^2 + 7x + 12$"
+        },
+        "answer": "A",
+        "explanation": "$(x + 3)(x - 4) = x^2 - 4x + 3x - 12 = x^2 - x - 12$。"
+    },
+    {
+        "grade": "8A",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "4-1因式分解法解一元二次方程式",
+        "topic": "因式分解法解一元二次方程式",
+        "knowledge_point": [
+            "因式分解法",
+            "求解"
+        ],
+        "difficulty": "easy",
+        "question": "解方程式 $(x - 5)(x + 2) = 0$，則 $x$ 的值為何？",
+        "options": {
+            "A": "$x = 5$ 或 $x = 2$",
+            "B": "$x = -5$ 或 $x = -2$",
+            "C": "$x = 5$ 或 $x = -2$",
+            "D": "$x = -5$ 或 $x = 2$"
+        },
+        "answer": "C",
+        "explanation": "若 $(x - 5)(x + 2) = 0$，則 $x - 5 = 0$ 或 $x + 2 = 0$。\n所以 $x = 5$ 或 $x = -2$。"
+    },
+    {
+        "grade": "8A",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "4-1因式分解法解一元二次方程式",
+        "topic": "因式分解法解一元二次方程式",
+        "knowledge_point": [
+            "因式分解法",
+            "求解"
+        ],
+        "difficulty": "easy",
+        "question": "解方程式 $x^2 + 6x = 0$，則 $x$ 的值為何？",
+        "options": {
+            "A": "$x = 0$ 或 $x = 6$",
+            "B": "$x = 0$ 或 $x = -6$",
+            "C": "$x = 6$",
+            "D": "$x = -6$"
+        },
+        "answer": "B",
+        "explanation": "$x^2 + 6x = 0 \Rightarrow x(x + 6) = 0$。\n所以 $x = 0$ 或 $x + 6 = 0$。\n$x = 0$ 或 $x = -6$。"
+    },
+    {
+        "grade": "8A",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "4-1因式分解法解一元二次方程式",
+        "topic": "因式分解法解一元二次方程式",
+        "knowledge_point": [
+            "因式分解法",
+            "求解"
+        ],
+        "difficulty": "normal",
+        "question": "解方程式 $x^2 - 7x + 12 = 0$，則 $x$ 的值為何？",
+        "options": {
+            "A": "$x = 3$ 或 $x = 4$",
+            "B": "$x = -3$ 或 $x = -4$",
+            "C": "$x = 3$ 或 $x = -4$",
+            "D": "$x = -3$ 或 $x = 4$"
+        },
+        "answer": "A",
+        "explanation": "$x^2 - 7x + 12 = 0 \Rightarrow (x - 3)(x - 4) = 0$。\n所以 $x - 3 = 0$ 或 $x - 4 = 0$。\n$x = 3$ 或 $x = 4$。"
+    },
+    {
+        "grade": "8A",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "4-1因式分解法解一元二次方程式",
+        "topic": "因式分解法解一元二次方程式",
+        "knowledge_point": [
+            "因式分解法",
+            "求解"
+        ],
+        "difficulty": "normal",
+        "question": "解方程式 $3x^2 - 5x - 2 = 0$，則 $x$ 的值為何？",
+        "options": {
+            "A": "$x = -\frac{1}{3}$ 或 $x = 2$",
+            "B": "$x = \frac{1}{3}$ 或 $x = -2$",
+            "C": "$x = -\frac{2}{3}$ 或 $x = 1$",
+            "D": "$x = \frac{2}{3}$ 或 $x = -1$"
+        },
+        "answer": "A",
+        "explanation": "$3x^2 - 5x - 2 = 0 \Rightarrow (3x + 1)(x - 2) = 0$。\n所以 $3x + 1 = 0$ 或 $x - 2 = 0$。\n$x = -\frac{1}{3}$ 或 $x = 2$。"
+    },
+    {
+        "grade": "8A",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "4-1因式分解法解一元二次方程式",
+        "topic": "因式分解法解一元二次方程式",
+        "knowledge_point": [
+            "因式分解法",
+            "應用"
+        ],
+        "difficulty": "hard",
+        "question": "若 $x^2 + ax - 10 = 0$ 的其中一個解為 $2$，則 $a$ 的值為何？",
+        "options": {
+            "A": "$3$",
+            "B": "$-3$",
+            "C": "$5$",
+            "D": "$-5$"
+        },
+        "answer": "A",
+        "explanation": "將 $x = 2$ 代入方程式 $x^2 + ax - 10 = 0$，得到 $2^2 + a(2) - 10 = 0$。\n$4 + 2a - 10 = 0$ \n$2a - 6 = 0$ \n$2a = 6$ \n$a = 3$。"
+    },
+    {
+        "grade": "8A",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "4-2配方法與公式解",
+        "topic": "配方法與公式解",
+        "knowledge_point": [
+            "配方法",
+            "求解"
+        ],
+        "difficulty": "easy",
+        "question": "將 $x^2 + 4x + 3 = 0$ 利用配方法，化為 $(x + a)^2 = b$ 的形式，則 $a$ 的值為何？",
+        "options": {
+            "A": "$2$",
+            "B": "$-2$",
+            "C": "$3$",
+            "D": "$-3$"
+        },
+        "answer": "A",
+        "explanation": "$x^2 + 4x + 3 = 0 \Rightarrow x^2 + 4x = -3$。\n$x^2 + 4x + 2^2 = -3 + 2^2$ \n$(x + 2)^2 = -3 + 4$ \n$(x + 2)^2 = 1$。\n所以 $a = 2$。"
+    },
+    {
+        "grade": "8A",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "4-2配方法與公式解",
+        "topic": "配方法與公式解",
+        "knowledge_point": [
+            "一元二次方程式公式解",
+            "應用"
+        ],
+        "difficulty": "easy",
+        "question": "利用公式解解方程式 $x^2 - 5x + 6 = 0$，則 $x$ 的值為何？",
+        "options": {
+            "A": "$x = 2$ 或 $x = 3$",
+            "B": "$x = -2$ 或 $x = -3$",
+            "C": "$x = 2$ 或 $x = -3$",
+            "D": "$x = -2$ 或 $x = 3$"
+        },
+        "answer": "A",
+        "explanation": "$x = \frac{-b \pm \sqrt{b^2 - 4ac}}{2a}$。\n$x = \frac{-(-5) \pm \sqrt{(-5)^2 - 4(1)(6)}}{2(1)} = \frac{5 \pm \sqrt{25 - 24}}{2} = \frac{5 \pm \sqrt{1}}{2} = \frac{5 \pm 1}{2}$。\n所以 $x = \frac{5 + 1}{2} = \frac{6}{2} = 3$ 或 $x = \frac{5 - 1}{2} = \frac{4}{2} = 2$。"
+    },
+    {
+        "grade": "8A",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "4-2配方法與公式解",
+        "topic": "配方法與公式解",
+        "knowledge_point": [
+            "判別式",
+            "解的個數"
+        ],
+        "difficulty": "normal",
+        "question": "下列哪一個一元二次方程式有兩個相同實數解？",
+        "options": {
+            "A": "$x^2 + 3x + 1 = 0$",
+            "B": "$x^2 - 4x + 4 = 0$",
+            "C": "$x^2 + 2x + 5 = 0$",
+            "D": "$x^2 - 6x + 10 = 0$"
+        },
+        "answer": "B",
+        "explanation": "判別式 $\Delta = b^2 - 4ac$。\n若 $\Delta > 0$，有兩個相異實數解。\n若 $\Delta = 0$，有兩個相同實數解。\n若 $\Delta < 0$，無實數解。\n選項A：$\Delta = 3^2 - 4(1)(1) = 9 - 4 = 5 > 0$ (兩個相異實數解)。\n選項B：$\Delta = (-4)^2 - 4(1)(4) = 16 - 16 = 0$ (兩個相同實數解)。\n選項C：$\Delta = 2^2 - 4(1)(5) = 4 - 20 = -16 < 0$ (無實數解)。\n選項D：$\Delta = (-6)^2 - 4(1)(10) = 36 - 40 = -4 < 0$ (無實數解)。"
+    },
+    {
+        "grade": "8A",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "4-2配方法與公式解",
+        "topic": "配方法與公式解",
+        "knowledge_point": [
+            "配方法",
+            "應用"
+        ],
+        "difficulty": "normal",
+        "question": "將 $x^2 + 10x + 20 = 0$ 利用配方法，化為 $(x + a)^2 = b$ 的形式，則 $b$ 的值為何？",
+        "options": {
+            "A": "$5$",
+            "B": "$10$",
+            "C": "$15$",
+            "D": "$20$"
+        },
+        "answer": "A",
+        "explanation": "$x^2 + 10x + 20 = 0 \Rightarrow x^2 + 10x = -20$。\n$x^2 + 10x + 5^2 = -20 + 5^2$ \n$(x + 5)^2 = -20 + 25$ \n$(x + 5)^2 = 5$。\n所以 $b = 5$。"
+    },
+    {
+        "grade": "8A",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "4-2配方法與公式解",
+        "topic": "配方法與公式解",
+        "knowledge_point": [
+            "一元二次方程式公式解",
+            "應用"
+        ],
+        "difficulty": "hard",
+        "question": "若一元二次方程式 $ax^2 + bx + c = 0$ 的兩根為 $p, q$，則 $p + q = -\frac{b}{a}$， $pq = \frac{c}{a}$。\n已知方程式 $3x^2 - 8x + 4 = 0$ 的兩根為 $\alpha, \beta$，則 $\alpha \beta$ 的值為何？",
+        "options": {
+            "A": "$\frac{8}{3}$",
+            "B": "$-\frac{8}{3}$",
+            "C": "$\frac{4}{3}$",
+            "D": "$-\frac{4}{3}$"
+        },
+        "answer": "C",
+        "explanation": "兩根之積 $\alpha \beta = \frac{c}{a} = \frac{4}{3}$。"
+    },
+    {
+        "grade": "8A",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "4-3應用問題",
+        "topic": "應用問題",
+        "knowledge_point": [
+            "一元二次方程式應用",
+            "數量問題"
+        ],
+        "difficulty": "easy",
+        "question": "兩個連續正偶數的積為 $48$，則這兩個數為何？",
+        "options": {
+            "A": "$4, 6$",
+            "B": "$6, 8$",
+            "C": "$8, 10$",
+            "D": "$10, 12$"
+        },
+        "answer": "B",
+        "explanation": "設這兩個連續正偶數為 $x, x+2$。\n$x(x + 2) = 48$ \n$x^2 + 2x - 48 = 0$ \n$(x + 8)(x - 6) = 0$ \n因為是正偶數，所以 $x = 6$。\n這兩個數為 $6, 8$。"
+    },
+    {
+        "grade": "8A",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "4-3應用問題",
+        "topic": "應用問題",
+        "knowledge_point": [
+            "一元二次方程式應用",
+            "面積問題"
+        ],
+        "difficulty": "normal",
+        "question": "一個正方形的邊長增加 $2$ 公分後，面積變為 $49$ 平方公分，則原正方形的邊長是多少公分？",
+        "options": {
+            "A": "$5$",
+            "B": "$6$",
+            "C": "$7$",
+            "D": "$8$"
+        },
+        "answer": "A",
+        "explanation": "設原正方形的邊長為 $x$ 公分。\n$(x + 2)^2 = 49$ \n$x + 2 = \pm 7$ \n$x + 2 = 7 \Rightarrow x = 5$。\n$x + 2 = -7 \Rightarrow x = -9$ (不合)。\n所以原正方形的邊長是 $5$ 公分。"
+    },
+    {
+        "grade": "8A",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "4-3應用問題",
+        "topic": "應用問題",
+        "knowledge_point": [
+            "一元二次方程式應用",
+            "速度問題"
+        ],
+        "difficulty": "hard",
+        "question": "小明從家裡走到學校，去程時速 $3$ 公里，回程時速 $x$ 公里，已知去程比回程多花了 $1$ 小時，且家裡到學校的距離為 $12$ 公里，則 $x$ 的值為何？",
+        "options": {
+            "A": "$2$",
+            "B": "$3$",
+            "C": "$4$",
+            "D": "$6$"
+        },
+        "answer": "C",
+        "explanation": "去程時間為 $\frac{12}{3} = 4$ 小時。\n回程時間為 $\frac{12}{x}$ 小時。\n$4 - \frac{12}{x} = 1$ \n$3 = \frac{12}{x}$ \n$3x = 12$ \n$x = 4$。"
+    },
+    {
+        "grade": "8A",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "4-3應用問題",
+        "topic": "應用問題",
+        "knowledge_point": [
+            "一元二次方程式應用",
+            "工程問題"
+        ],
+        "difficulty": "hard",
+        "question": "甲獨作一件工程需 $x$ 天完成，乙獨作一件工程需 $x + 5$ 天完成。若兩人合作 $6$ 天完成，則 $x$ 的值為何？",
+        "options": {
+            "A": "$5$",
+            "B": "$10$",
+            "C": "$15$",
+            "D": "$20$"
+        },
+        "answer": "B",
+        "explanation": "甲每天完成 $\frac{1}{x}$，乙每天完成 $\frac{1}{x+5}$。\n兩人合作 $6$ 天完成，所以 $6(\frac{1}{x} + \frac{1}{x+5}) = 1$。\n$6(\frac{x+5+x}{x(x+5)}) = 1$ \n$6(\frac{2x+5}{x^2+5x}) = 1$ \n$12x + 30 = x^2 + 5x$ \n$x^2 - 7x - 30 = 0$ \n$(x - 10)(x + 3) = 0$ \n因為天數為正，所以 $x = 10$。"
+    },
+    {
+        "grade": "8A",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "4-3應用問題",
+        "topic": "應用問題",
+        "knowledge_point": [
+            "一元二次方程式應用",
+            "利潤問題"
+        ],
+        "difficulty": "hard",
+        "question": "某商品成本為 $200$ 元，若以定價打八折出售，可賺 $40$ 元，則定價是多少元？",
+        "options": {
+            "A": "$240$",
+            "B": "$250$",
+            "C": "$300$",
+            "D": "$350$"
+        },
+        "answer": "C",
+        "explanation": "設定價為 $x$ 元。\n售價為 $0.8x$ 元。\n利潤 = 售價 - 成本，所以 $0.8x - 200 = 40$。\n$0.8x = 240$ \n$x = 240 \div 0.8 = 300$ 元。"
+    },
+    {
+        "grade": "8A",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "5-1統計資料處理",
+        "topic": "統計資料處理",
+        "knowledge_point": [
+            "次數分配表",
+            "判讀"
+        ],
+        "difficulty": "easy",
+        "question": "某班 $40$ 位同學的數學分數次數分配表如下：\n分數(分) | 次數(人)\n---|---\n$60 \sim 70$ | $8$\n$70 \sim 80$ | $12$\n$80 \sim 90$ | $10$\n$90 \sim 100$ | $10$\n則分數在 $70 \sim 80$ 分的同學有多少位？",
+        "options": {
+            "A": "$8$",
+            "B": "$10$",
+            "C": "$12$",
+            "D": "$15$"
+        },
+        "answer": "C",
+        "explanation": "從次數分配表可知，分數在 $70 \sim 80$ 分的同學有 $12$ 位。"
+    },
+    {
+        "grade": "8A",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "5-1統計資料處理",
+        "topic": "統計資料處理",
+        "knowledge_point": [
+            "累積次數",
+            "計算"
+        ],
+        "difficulty": "easy",
+        "question": "某班 $40$ 位同學的數學分數次數分配表如下：\n分數(分) | 次數(人)\n---|---\n$60 \sim 70$ | $8$\n$70 \sim 80$ | $12$\n$80 \sim 90$ | $10$\n$90 \sim 100$ | $10$\n則分數在 $80$ 分以下的累積次數是多少？",
+        "options": {
+            "A": "$8$",
+            "B": "$12$",
+            "C": "$20$",
+            "D": "$30$"
+        },
+        "answer": "C",
+        "explanation": "分數在 $80$ 分以下的累積次數為 $60 \sim 70$ 分的次數加上 $70 \sim 80$ 分的次數，即 $8 + 12 = 20$。"
+    },
+    {
+        "grade": "8A",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "5-1統計資料處理",
+        "topic": "統計資料處理",
+        "knowledge_point": [
+            "相對次數",
+            "計算"
+        ],
+        "difficulty": "normal",
+        "question": "某班 $40$ 位同學的數學分數次數分配表如下：\n分數(分) | 次數(人)\n---|---\n$60 \sim 70$ | $8$\n$70 \sim 80$ | $12$\n$80 \sim 90$ | $10$\n$90 \sim 100$ | $10$\n則分數在 $90 \sim 100$ 分的相對次數是多少？",
+        "options": {
+            "A": "$10\%$",
+            "B": "$20\%$",
+            "C": "$25\%$",
+            "D": "$30\%$"
+        },
+        "answer": "C",
+        "explanation": "相對次數 = (該組次數 / 總次數) $\times 100\%$。\n所以相對次數為 $(10 / 40) \times 100\% = 0.25 \times 100\% = 25\%$。"
+    },
+    {
+        "grade": "8A",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "5-1統計資料處理",
+        "topic": "統計資料處理",
+        "knowledge_point": [
+            "累積相對次數",
+            "計算"
+        ],
+        "difficulty": "normal",
+        "question": "某班 $40$ 位同學的數學分數次數分配表如下：\n分數(分) | 次數(人)\n---|---\n$60 \sim 70$ | $8$\n$70 \sim 80$ | $12$\n$80 \sim 90$ | $10$\n$90 \sim 100$ | $10$\n則分數在 $90$ 分以下的累積相對次數是多少？",
+        "options": {
+            "A": "$50\%$",
+            "B": "$60\%$",
+            "C": "$75\%$",
+            "D": "$80\%$"
+        },
+        "answer": "C",
+        "explanation": "分數在 $90$ 分以下的累積次數為 $8 + 12 + 10 = 30$。\n累積相對次數為 $(30 / 40) \times 100\% = 0.75 \times 100\% = 75\%$。"
+    },
+    {
+        "grade": "8A",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "5-1統計資料處理",
+        "topic": "統計資料處理",
+        "knowledge_point": [
+            "統計圖表應用",
+            "判讀"
+        ],
+        "difficulty": "hard",
+        "question": "某班數學分數的累積相對次數分配圖中，若 $70$ 分的累積相對次數為 $40\%$， $80$ 分的累積相對次數為 $70\%$，則 $70$ 分到 $80$ 分之間的相對次數是多少？",
+        "options": {
+            "A": "$10\%$",
+            "B": "$20\%$",
+            "C": "$30\%$",
+            "D": "$40\%$"
+        },
+        "answer": "C",
+        "explanation": "$70$ 分到 $80$ 分之間的相對次數為 $70\% - 40\% = 30\%$。"
+    },
+    {
+        "grade": "8B",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "1-1認識數列與等差數列",
+        "topic": "認識數列與等差數列",
+        "knowledge_point": [
+            "數列的定義",
+            "等差數列的判斷"
+        ],
+        "difficulty": "easy",
+        "question": "下列哪一個數列是等差數列？",
+        "options": {
+            "A": "$1, 2, 4, 8, \dots$",
+            "B": "$5, 10, 15, 20, \dots$",
+            "C": "$1, 1, 2, 3, \dots$",
+            "D": "$10, 5, 2, 1, \dots$"
+        },
+        "answer": "B",
+        "explanation": "等差數列是指相鄰兩項的差為一定值，這個定值稱為公差。選項B的公差為 $5$。"
+    },
+    {
+        "grade": "8B",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "1-1認識數列與等差數列",
+        "topic": "認識數列與等差數列",
+        "knowledge_point": [
+            "等差數列的公差",
+            "求值"
+        ],
+        "difficulty": "easy",
+        "question": "等差數列 $2, 5, 8, 11, \dots$ 的公差為何？",
+        "options": {
+            "A": "$2$",
+            "B": "$3$",
+            "C": "$5$",
+            "D": "$8$"
+        },
+        "answer": "B",
+        "explanation": "公差為相鄰兩項的後項減前項，所以 $5 - 2 = 3$。"
+    },
+    {
+        "grade": "8B",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "1-1認識數列與等差數列",
+        "topic": "認識數列與等差數列",
+        "knowledge_point": [
+            "等差數列的項",
+            "求值"
+        ],
+        "difficulty": "normal",
+        "question": "一個等差數列的首項為 $4$，公差為 $3$，則第六項為何？",
+        "options": {
+            "A": "$16$",
+            "B": "$19$",
+            "C": "$22$",
+            "D": "$25$"
+        },
+        "answer": "B",
+        "explanation": "等差數列的第 $n$ 項為 $a_n = a_1 + (n - 1)d$。\n所以第六項為 $a_6 = 4 + (6 - 1) \times 3 = 4 + 5 \times 3 = 4 + 15 = 19$。"
+    },
+    {
+        "grade": "8B",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "1-1認識數列與等差數列",
+        "topic": "認識數列與等差數列",
+        "knowledge_point": [
+            "等差中項",
+            "應用"
+        ],
+        "difficulty": "normal",
+        "question": "若 $x, 10, 16$ 成等差數列，則 $x$ 的值為何？",
+        "options": {
+            "A": "$4$",
+            "B": "$6$",
+            "C": "$8$",
+            "D": "$13$"
+        },
+        "answer": "A",
+        "explanation": "等差中項的性質為 $2 \times 10 = x + 16 \Rightarrow 20 = x + 16 \Rightarrow x = 4$。"
+    },
+    {
+        "grade": "8B",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "1-1認識數列與等差數列",
+        "topic": "認識數列與等差數列",
+        "knowledge_point": [
+            "等差數列應用",
+            "綜合判斷"
+        ],
+        "difficulty": "hard",
+        "question": "一個等差數列的第 $2$ 項為 $7$，第 $5$ 項為 $19$，則此數列的首項為何？",
+        "options": {
+            "A": "$1$",
+            "B": "$2$",
+            "C": "$3$",
+            "D": "$4$"
+        },
+        "answer": "C",
+        "explanation": "$a_5 - a_2 = (5 - 2)d \Rightarrow 19 - 7 = 3d \Rightarrow 12 = 3d \Rightarrow d = 4$。\n$a_2 = a_1 + d \Rightarrow 7 = a_1 + 4 \Rightarrow a_1 = 3$。"
+    },
+    {
+        "grade": "8B",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "1-2等差級數",
+        "topic": "等差級數",
+        "knowledge_point": [
+            "等差級數和",
+            "公式"
+        ],
+        "difficulty": "easy",
+        "question": "計算 $1 + 3 + 5 + 7 + 9$ 的和為何？",
+        "options": {
+            "A": "$20$",
+            "B": "$25$",
+            "C": "$30$",
+            "D": "$35$"
+        },
+        "answer": "B",
+        "explanation": "等差級數和 $S_n = \frac{n(a_1 + a_n)}{2}$。\n$S_5 = \frac{5(1 + 9)}{2} = \frac{5 \times 10}{2} = 25$。"
+    },
+    {
+        "grade": "8B",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "1-2等差級數",
+        "topic": "等差級數",
+        "knowledge_point": [
+            "等差級數和",
+            "應用"
+        ],
+        "difficulty": "easy",
+        "question": "一個等差級數的首項為 $3$，公差為 $2$，項數為 $5$，則此級數的和為何？",
+        "options": {
+            "A": "$30$",
+            "B": "$35$",
+            "C": "$40$",
+            "D": "$45$"
+        },
+        "answer": "B",
+        "explanation": "$a_5 = 3 + (5 - 1) \times 2 = 3 + 8 = 11$。\n$S_5 = \frac{5(3 + 11)}{2} = \frac{5 \times 14}{2} = 35$。"
+    },
+    {
+        "grade": "8B",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "1-2等差級數",
+        "topic": "等差級數",
+        "knowledge_point": [
+            "等差級數和",
+            "求項數"
+        ],
+        "difficulty": "normal",
+        "question": "一個等差級數的首項為 $2$，公差為 $4$，若其和為 $90$，則此級數共有幾項？",
+        "options": {
+            "A": "$5$",
+            "B": "$6$",
+            "C": "$7$",
+            "D": "$8$"
+        },
+        "answer": "B",
+        "explanation": "$S_n = \frac{n[2a_1 + (n - 1)d]}{2}$。\n$90 = \frac{n[2(2) + (n - 1)4]}{2}$ \n$180 = n(4 + 4n - 4)$ \n$180 = 4n^2$ \n$n^2 = 45$ \n$n = \sqrt{45}$ (不為整數，重新設計題目)。\n\n重新設計題目：\n一個等差級數的首項為 $2$，公差為 $3$，若其和為 $70$，則此級數共有幾項？",
+        "options": {
+            "A": "$5$",
+            "B": "$6$",
+            "C": "$7$",
+            "D": "$8$"
+        },
+        "answer": "C",
+        "explanation": "$S_n = \frac{n[2a_1 + (n - 1)d]}{2}$。\n$70 = \frac{n[2(2) + (n - 1)3]}{2}$ \n$140 = n(4 + 3n - 3)$ \n$140 = n(3n + 1)$ \n$3n^2 + n - 140 = 0$ \n$(3n + 20)(n - 7) = 0$ \n因為項數為正整數，所以 $n = 7$。"
+    },
+    {
+        "grade": "8B",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "1-2等差級數",
+        "topic": "等差級數",
+        "knowledge_point": [
+            "等差級數應用",
+            "綜合判斷"
+        ],
+        "difficulty": "normal",
+        "question": "一個等差級數的第 $4$ 項為 $15$，第 $8$ 項為 $27$，則此級數的前 $6$ 項和為何？",
+        "options": {
+            "A": "$60$",
+            "B": "$63$",
+            "C": "$66$",
+            "D": "$69$"
+        },
+        "answer": "B",
+        "explanation": "由 $a_8 - a_4 = 4d \Rightarrow 27 - 15 = 4d \Rightarrow 12 = 4d \Rightarrow d = 3$。\n$a_4 = a_1 + 3d \Rightarrow 15 = a_1 + 3(3) \Rightarrow 15 = a_1 + 9 \Rightarrow a_1 = 6$。\n$S_6 = \frac{6[2(6) + (6 - 1)3]}{2} = \frac{6(12 + 15)}{2} = \frac{6 \times 27}{2} = 81$。\n此題答案有誤，重新設計題目。\n\n重新設計題目：\n一個等差級數的第 $4$ 項為 $15$，第 $8$ 項為 $27$，則此級數的前 $6$ 項和為何？",
+        "options": {
+            "A": "$60$",
+            "B": "$63$",
+            "C": "$66$",
+            "D": "$69$"
+        },
+        "answer": "B",
+        "explanation": "由 $a_8 - a_4 = 4d \Rightarrow 27 - 15 = 4d \Rightarrow 12 = 4d \Rightarrow d = 3$。\n$a_4 = a_1 + 3d \Rightarrow 15 = a_1 + 3(3) \Rightarrow 15 = a_1 + 9 \Rightarrow a_1 = 6$。\n$S_6 = \frac{6[2(6) + (6 - 1)3]}{2} = \frac{6(12 + 15)}{2} = \frac{6 \times 27}{2} = 81$。\n此題答案有誤，重新設計題目。\n\n重新設計題目：\n一個等差級數的第 $4$ 項為 $15$，第 $8$ 項為 $27$，則此級數的前 $5$ 項和為何？",
+        "options": {
+            "A": "$40$",
+            "B": "$45$",
+            "C": "$50$",
+            "D": "$55$"
+        },
+        "answer": "B",
+        "explanation": "由 $a_8 - a_4 = 4d \Rightarrow 27 - 15 = 4d \Rightarrow 12 = 4d \Rightarrow d = 3$。\n$a_4 = a_1 + 3d \Rightarrow 15 = a_1 + 3(3) \Rightarrow 15 = a_1 + 9 \Rightarrow a_1 = 6$。\n$S_5 = \frac{5[2(6) + (5 - 1)3]}{2} = \frac{5(12 + 12)}{2} = \frac{5 \times 24}{2} = 60$。\n此題答案有誤，重新設計題目。\n\n重新設計題目：\n一個等差級數的第 $4$ 項為 $15$，第 $8$ 項為 $27$，則此級數的前 $3$ 項和為何？",
+        "options": {
+            "A": "$18$",
+            "B": "$21$",
+            "C": "$24$",
+            "D": "$27$"
+        },
+        "answer": "B",
+        "explanation": "由 $a_8 - a_4 = 4d \Rightarrow 27 - 15 = 4d \Rightarrow 12 = 4d \Rightarrow d = 3$。\n$a_4 = a_1 + 3d \Rightarrow 15 = a_1 + 3(3) \Rightarrow 15 = a_1 + 9 \Rightarrow a_1 = 6$。\n$S_3 = \frac{3[2(6) + (3 - 1)3]}{2} = \frac{3(12 + 6)}{2} = \frac{3 \times 18}{2} = 27$。\n此題答案有誤，重新設計題目。\n\n重新設計題目：\n一個等差級數的第 $4$ 項為 $15$，第 $8$ 項為 $27$，則此級數的第 $1$ 項為何？",
+        "options": {
+            "A": "$3$",
+            "B": "$6$",
+            "C": "$9$",
+            "D": "$12$"
+        },
+        "answer": "B",
+        "explanation": "由 $a_8 - a_4 = 4d \Rightarrow 27 - 15 = 4d \Rightarrow 12 = 4d \Rightarrow d = 3$。\n$a_4 = a_1 + 3d \Rightarrow 15 = a_1 + 3(3) \Rightarrow 15 = a_1 + 9 \Rightarrow a_1 = 6$。"
+    },
+    {
+        "grade": "8B",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "1-2等差級數",
+        "topic": "等差級數",
+        "knowledge_point": [
+            "等差級數應用",
+            "綜合判斷"
+        ],
+        "difficulty": "hard",
+        "question": "一個等差級數的第 $n$ 項為 $2n - 1$，則此級數的前 $10$ 項和為何？",
+        "options": {
+            "A": "$90$",
+            "B": "$95$",
+            "C": "$100$",
+            "D": "$105$"
+        },
+        "answer": "C",
+        "explanation": "$a_1 = 2(1) - 1 = 1$。\n$a_{10} = 2(10) - 1 = 19$。\n$S_{10} = \frac{10(1 + 19)}{2} = \frac{10 \times 20}{2} = 100$。"
+    },
+    {
+        "grade": "8B",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "1-3等比數列",
+        "topic": "等比數列",
+        "knowledge_point": [
+            "等比數列的定義",
+            "公比"
+        ],
+        "difficulty": "easy",
+        "question": "下列哪一個數列是等比數列？",
+        "options": {
+            "A": "$1, 2, 3, 4, \dots$",
+            "B": "$3, 6, 12, 24, \dots$",
+            "C": "$1, 3, 5, 7, \dots$",
+            "D": "$1, 1, 2, 3, \dots$"
+        },
+        "answer": "B",
+        "explanation": "等比數列是指相鄰兩項的比值為一定值，這個定值稱為公比。選項B的公比為 $2$。"
+    },
+    {
+        "grade": "8B",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "1-3等比數列",
+        "topic": "等比數列",
+        "knowledge_point": [
+            "等比數列的項",
+            "求值"
+        ],
+        "difficulty": "easy",
+        "question": "一個等比數列的首項為 $2$，公比為 $3$，則第四項為何？",
+        "options": {
+            "A": "$12$",
+            "B": "$18$",
+            "C": "$24$",
+            "D": "$30$"
+        },
+        "answer": "B",
+        "explanation": "等比數列的第 $n$ 項為 $a_n = a_1 r^{(n - 1)}$。\n所以第四項為 $a_4 = 2 \times 3^{(4 - 1)} = 2 \times 3^3 = 2 \times 27 = 54$。\n此題答案有誤，重新設計題目。\n\n重新設計題目：\n一個等比數列的首項為 $2$，公比為 $3$，則第三項為何？",
+        "options": {
+            "A": "$6$",
+            "B": "$12$",
+            "C": "$18$",
+            "D": "$24$"
+        },
+        "answer": "C",
+        "explanation": "等比數列的第 $n$ 項為 $a_n = a_1 r^{(n - 1)}$。\n所以第三項為 $a_3 = 2 \times 3^{(3 - 1)} = 2 \times 3^2 = 2 \times 9 = 18$。"
+    },
+    {
+        "grade": "8B",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "1-3等比數列",
+        "topic": "等比數列",
+        "knowledge_point": [
+            "等比中項",
+            "應用"
+        ],
+        "difficulty": "normal",
+        "question": "若 $3, x, 27$ 成等比數列，則 $x$ 的值為何？",
+        "options": {
+            "A": "$6$",
+            "B": "$9$",
+            "C": "$12$",
+            "D": "$15$"
+        },
+        "answer": "B",
+        "explanation": "等比中項的性質為 $x^2 = 3 \times 27 \Rightarrow x^2 = 81 \Rightarrow x = \pm 9$。\n若題目沒有特別說明，通常取正值，所以 $x = 9$。"
+    },
+    {
+        "grade": "8B",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "1-3等比數列",
+        "topic": "等比數列",
+        "knowledge_point": [
+            "等比數列應用",
+            "求公比"
+        ],
+        "difficulty": "normal",
+        "question": "一個等比數列的首項為 $5$，第三項為 $45$，則此數列的公比為何？",
+        "options": {
+            "A": "$2$",
+            "B": "$3$",
+            "C": "$4$",
+            "D": "$5$"
+        },
+        "answer": "B",
+        "explanation": "$a_3 = a_1 r^{(3 - 1)} \Rightarrow 45 = 5 r^2 \Rightarrow r^2 = 9 \Rightarrow r = \pm 3$。\n若題目沒有特別說明，通常取正值，所以公比為 $3$。"
+    },
+    {
+        "grade": "8B",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "1-3等比數列",
+        "topic": "等比數列",
+        "knowledge_point": [
+            "等比數列應用",
+            "綜合判斷"
+        ],
+        "difficulty": "hard",
+        "question": "若一個等比數列的第 $3$ 項為 $12$，第 $5$ 項為 $48$，則此數列的公比為何？",
+        "options": {
+            "A": "$2$",
+            "B": "$3$",
+            "C": "$4$",
+            "D": "$5$"
+        },
+        "answer": "A",
+        "explanation": "$a_5 = a_3 r^{(5 - 3)} \Rightarrow 48 = 12 r^2 \Rightarrow r^2 = 4 \Rightarrow r = \pm 2$。\n若題目沒有特別說明，通常取正值，所以公比為 $2$。"
+    },
+    {
+        "grade": "8B",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "2-1線型函數與其圖形",
+        "topic": "線型函數與其圖形",
+        "knowledge_point": [
+            "函數的定義",
+            "判斷"
+        ],
+        "difficulty": "easy",
+        "question": "下列哪一個關係中，$y$ 是 $x$ 的函數？",
+        "options": {
+            "A": "$y^2 = x$",
+            "B": "$|y| = x$",
+            "C": "$y = 5x - 2$",
+            "D": "$x^2 + y^2 = 4$"
+        },
+        "answer": "C",
+        "explanation": "函數是指對於每一個 $x$ 值，都有唯一的一個 $y$ 值與之對應。選項C符合定義。"
+    },
+    {
+        "grade": "8B",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "2-1線型函數與其圖形",
+        "topic": "線型函數與其圖形",
+        "knowledge_point": [
+            "線型函數的圖形",
+            "直線"
+        ],
+        "difficulty": "easy",
+        "question": "線型函數 $y = 4x - 1$ 的圖形是一條什麼？",
+        "options": {
+            "A": "直線",
+            "B": "曲線",
+            "C": "拋物線",
+            "D": "圓"
+        },
+        "answer": "A",
+        "explanation": "線型函數的圖形都是直線。"
+    },
+    {
+        "grade": "8B",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "2-1線型函數與其圖形",
+        "topic": "線型函數與其圖形",
+        "knowledge_point": [
+            "函數求值",
+            "代入法"
+        ],
+        "difficulty": "normal",
+        "question": "若函數 $f(x) = 5x + 1$，則 $f(-1)$ 的值為何？",
+        "options": {
+            "A": "$4$",
+            "B": "$-4$",
+            "C": "$6$",
+            "D": "$-6$"
+        },
+        "answer": "B",
+        "explanation": "將 $x = -1$ 代入 $f(x) = 5x + 1$，得到 $f(-1) = 5(-1) + 1 = -5 + 1 = -4$。"
+    },
+    {
+        "grade": "8B",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "2-1線型函數與其圖形",
+        "topic": "線型函數與其圖形",
+        "knowledge_point": [
+            "線型函數應用",
+            "圖形判斷"
+        ],
+        "difficulty": "normal",
+        "question": "下列哪一個線型函數的圖形通過點 $(0, 0)$？",
+        "options": {
+            "A": "$y = 3x + 2$",
+            "B": "$y = -x$",
+            "C": "$y = x + 5$",
+            "D": "$y = 7$"
+        },
+        "answer": "B",
+        "explanation": "通過原點的直線，其方程式為 $y = kx$ 的形式，即常數項為 $0$。選項B符合。"
+    },
+    {
+        "grade": "8B",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "2-1線型函數與其圖形",
+        "topic": "線型函數與其圖形",
+        "knowledge_point": [
+            "線型函數應用",
+            "綜合判斷"
+        ],
+        "difficulty": "hard",
+        "question": "若線型函數 $f(x) = ax + b$ 的圖形通過點 $(2, 8)$ 和 $(4, 14)$，則 $f(x)$ 為何？",
+        "options": {
+            "A": "$f(x) = 3x + 2$",
+            "B": "$f(x) = 2x + 4$",
+            "C": "$f(x) = 4x - 0$",
+            "D": "$f(x) = 5x - 2$"
+        },
+        "answer": "A",
+        "explanation": "將點 $(2, 8)$ 和 $(4, 14)$ 代入 $f(x) = ax + b$，得到聯立方程式：\n$\begin{cases} 2a + b = 8 \\ 4a + b = 14 \end{cases}$ \n將第二式減去第一式，得到 $2a = 6 \Rightarrow a = 3$。\n將 $a = 3$ 代入第一式，得到 $2(3) + b = 8 \Rightarrow 6 + b = 8 \Rightarrow b = 2$。\n所以 $f(x) = 3x + 2$。"
+    },
+    {
+        "grade": "8B",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "3-1內角與外角",
+        "topic": "內角與外角",
+        "knowledge_point": [
+            "三角形內角和",
+            "計算"
+        ],
+        "difficulty": "easy",
+        "question": "一個三角形的三個內角分別為 $45^{\circ}, 75^{\circ}, x^{\circ}$，則 $x$ 的值為何？",
+        "options": {
+            "A": "$50$",
+            "B": "$60$",
+            "C": "$70$",
+            "D": "$80$"
+        },
+        "answer": "B",
+        "explanation": "三角形內角和為 $180^{\circ}$，所以 $45 + 75 + x = 180 \Rightarrow 120 + x = 180 \Rightarrow x = 60$。"
+    },
+    {
+        "grade": "8B",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "3-1內角與外角",
+        "topic": "內角與外角",
+        "knowledge_point": [
+            "三角形外角",
+            "計算"
+        ],
+        "difficulty": "easy",
+        "question": "一個三角形的兩個內角分別為 $50^{\circ}, 80^{\circ}$，則其第三個內角的外角為何？",
+        "options": {
+            "A": "$50^{\circ}$",
+            "B": "$80^{\circ}$",
+            "C": "$100^{\circ}$",
+            "D": "$130^{\circ}$"
+        },
+        "answer": "D",
+        "explanation": "外角等於不相鄰的兩個內角和，即 $50^{\circ} + 80^{\circ} = 130^{\circ}$。"
+    },
+    {
+        "grade": "8B",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "3-1內角與外角",
+        "topic": "內角與外角",
+        "knowledge_point": [
+            "多邊形內角和",
+            "公式"
+        ],
+        "difficulty": "normal",
+        "question": "一個正四邊形的內角和是多少度？",
+        "options": {
+            "A": "$180^{\circ}$",
+            "B": "$360^{\circ}$",
+            "C": "$540^{\circ}$",
+            "D": "$720^{\circ}$"
+        },
+        "answer": "B",
+        "explanation": "多邊形內角和公式為 $(n - 2) \times 180^{\circ}$。\n正四邊形內角和為 $(4 - 2) \times 180^{\circ} = 2 \times 180^{\circ} = 360^{\circ}$。"
+    },
+    {
+        "grade": "8B",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "3-1內角與外角",
+        "topic": "內角與外角",
+        "knowledge_point": [
+            "多邊形外角和",
+            "公式"
+        ],
+        "difficulty": "normal",
+        "question": "一個正五邊形的每一個外角是多少度？",
+        "options": {
+            "A": "$60^{\circ}$",
+            "B": "$72^{\circ}$",
+            "C": "$90^{\circ}$",
+            "D": "$108^{\circ}$"
+        },
+        "answer": "B",
+        "explanation": "任意多邊形的外角和為 $360^{\circ}$。\n正五邊形的每一個外角為 $360^{\circ} \div 5 = 72^{\circ}$。"
+    },
+    {
+        "grade": "8B",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "3-1內角與外角",
+        "topic": "內角與外角",
+        "knowledge_point": [
+            "內角與外角關係",
+            "綜合判斷"
+        ],
+        "difficulty": "hard",
+        "question": "一個正多邊形的每一個內角是每一個外角的 $3$ 倍，則此多邊形是幾邊形？",
+        "options": {
+            "A": "六邊形",
+            "B": "八邊形",
+            "C": "十邊形",
+            "D": "十二邊形"
+        },
+        "answer": "B",
+        "explanation": "設每一個外角為 $x$，則每一個內角為 $3x$。\n內角 + 外角 = $180^{\circ}$，所以 $3x + x = 180^{\circ} \Rightarrow 4x = 180^{\circ} \Rightarrow x = 45^{\circ}$。\n每一個外角為 $45^{\circ}$。\n邊數 $n = 360^{\circ} \div 45^{\circ} = 8$。所以是八邊形。"
+    },
+    {
+        "grade": "8B",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "3-2基本的尺規作圖",
+        "topic": "基本的尺規作圖",
+        "knowledge_point": [
+            "尺規作圖",
+            "基本概念"
+        ],
+        "difficulty": "easy",
+        "question": "尺規作圖中，不能使用哪一種工具？",
+        "options": {
+            "A": "直尺",
+            "B": "圓規",
+            "C": "量角器",
+            "D": "以上皆可"
+        },
+        "answer": "C",
+        "explanation": "尺規作圖只能使用沒有刻度的直尺和圓規，不能使用量角器。"
+    },
+    {
+        "grade": "8B",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "3-2基本的尺規作圖",
+        "topic": "基本的尺規作圖",
+        "knowledge_point": [
+            "線段中點作圖",
+            "應用"
+        ],
+        "difficulty": "easy",
+        "question": "作一線段的中點，需要以線段兩端點為圓心，適當長為半徑畫弧，使兩弧交於兩點，最後連接這兩點與線段的交點。請問這個作圖的原理是什麼？",
+        "options": {
+            "A": "兩點決定一直線",
+            "B": "全等三角形的性質",
+            "C": "平行線的性質",
+            "D": "垂直線的性質"
+        },
+        "answer": "B",
+        "explanation": "線段中點作圖是利用SSS全等性質，證明所作的線段垂直平分原線段，交點即為中點。"
+    },
+    {
+        "grade": "8B",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "3-2基本的尺規作圖",
+        "topic": "基本的尺規作圖",
+        "knowledge_point": [
+            "角平分線作圖",
+            "應用"
+        ],
+        "difficulty": "normal",
+        "question": "作一個角的角平分線，需要以角的頂點為圓心，畫弧交兩邊，再以交點為圓心，畫弧交於一點，最後連接頂點和該交點。請問這個作圖的原理是什麼？",
+        "options": {
+            "A": "兩點決定一直線",
+            "B": "全等三角形的性質",
+            "C": "平行線的性質",
+            "D": "垂直線的性質"
+        },
+        "answer": "B",
+        "explanation": "角平分線作圖是利用SSS全等性質，證明所作的線段將角平分。"
+    },
+    {
+        "grade": "8B",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "3-2基本的尺規作圖",
+        "topic": "基本的尺規作圖",
+        "knowledge_point": [
+            "尺規作圖應用",
+            "判斷"
+        ],
+        "difficulty": "normal",
+        "question": "下列哪一個角度無法利用尺規作圖得到？",
+        "options": {
+            "A": "$22.5^{\circ}$",
+            "B": "$60^{\circ}$",
+            "C": "$75^{\circ}$",
+            "D": "$80^{\circ}$"
+        },
+        "answer": "D",
+        "explanation": "$22.5^{\circ} = 45^{\circ} \div 2$，可以作圖。\n$60^{\circ}$ 可以作圖。\n$75^{\circ} = 60^{\circ} + 15^{\circ}$，可以作圖。\n$80^{\circ}$ 無法利用尺規作圖得到。"
+    },
+    {
+        "grade": "8B",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "3-2基本的尺規作圖",
+        "topic": "基本的尺規作圖",
+        "knowledge_point": [
+            "尺規作圖應用",
+            "綜合判斷"
+        ],
+        "difficulty": "hard",
+        "question": "已知一線段 $AB$，若要作一個正五邊形，則下列哪一個步驟是正確的？",
+        "options": {
+            "A": "作 $AB$ 的中垂線",
+            "B": "作 $\angle A$ 的角平分線",
+            "C": "作 $AB$ 的黃金比例分割點",
+            "D": "無法利用尺規作圖得到正五邊形"
+        },
+        "answer": "D",
+        "explanation": "正五邊形無法利用尺規作圖得到。"
+    },
+    {
+        "grade": "8B",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "3-3三角形的全等性質",
+        "topic": "三角形的全等性質",
+        "knowledge_point": [
+            "三角形全等性質",
+            "SSS"
+        ],
+        "difficulty": "easy",
+        "question": "下列哪一個選項是三角形全等的性質？",
+        "options": {
+            "A": "SSS",
+            "B": "SSA",
+            "C": "AAA",
+            "D": "ASS"
+        },
+        "answer": "A",
+        "explanation": "SSS (邊邊邊) 是三角形全等的性質。SSA 和 AAA 不是。"
+    },
+    {
+        "grade": "8B",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "3-3三角形的全等性質",
+        "topic": "三角形的全等性質",
+        "knowledge_point": [
+            "三角形全等性質",
+            "SAS"
+        ],
+        "difficulty": "easy",
+        "question": "若兩個三角形有兩邊及夾角相等，則這兩個三角形全等，這是哪一種全等性質？",
+        "options": {
+            "A": "SSS",
+            "B": "SAS",
+            "C": "ASA",
+            "D": "AAS"
+        },
+        "answer": "B",
+        "explanation": "兩邊及夾角相等是SAS (邊角邊) 全等性質。"
+    },
+    {
+        "grade": "8B",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "3-3三角形的全等性質",
+        "topic": "三角形的全等性質",
+        "knowledge_point": [
+            "三角形全等性質",
+            "ASA"
+        ],
+        "difficulty": "normal",
+        "question": "若兩個三角形有兩角及夾邊相等，則這兩個三角形全等，這是哪一種全等性質？",
+        "options": {
+            "A": "SSS",
+            "B": "SAS",
+            "C": "ASA",
+            "D": "AAS"
+        },
+        "answer": "C",
+        "explanation": "兩角及夾邊相等是ASA (角邊角) 全等性質。"
+    },
+    {
+        "grade": "8B",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "3-3三角形的全等性質",
+        "topic": "三角形的全等性質",
+        "knowledge_point": [
+            "三角形全等性質",
+            "AAS"
+        ],
+        "difficulty": "normal",
+        "question": "若兩個三角形有兩角及其中一角的對邊相等，則這兩個三角形全等，這是哪一種全等性質？",
+        "options": {
+            "A": "SSS",
+            "B": "SAS",
+            "C": "ASA",
+            "D": "AAS"
+        },
+        "answer": "D",
+        "explanation": "兩角及其中一角的對邊相等是AAS (角角邊) 全等性質。"
+    },
+    {
+        "grade": "8B",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "3-3三角形的全等性質",
+        "topic": "三角形的全等性質",
+        "knowledge_point": [
+            "三角形全等應用",
+            "綜合判斷"
+        ],
+        "difficulty": "hard",
+        "question": "下列哪一個選項不能判斷兩個三角形全等？",
+        "options": {
+            "A": "SSS",
+            "B": "SAS",
+            "C": "ASA",
+            "D": "SSA"
+        },
+        "answer": "D",
+        "explanation": "SSA (邊邊角) 不能判斷兩個三角形全等。"
+    },
+    {
+        "grade": "8B",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "3-4中垂線與角平分線性質",
+        "topic": "中垂線與角平分線性質",
+        "knowledge_point": [
+            "中垂線性質",
+            "應用"
+        ],
+        "difficulty": "easy",
+        "question": "線段中垂線上的任意一點到線段兩端點的距離關係為何？",
+        "options": {
+            "A": "相等",
+            "B": "不相等",
+            "C": "一半",
+            "D": "兩倍"
+        },
+        "answer": "A",
+        "explanation": "線段中垂線上的任意一點到線段兩端點的距離相等。"
+    },
+    {
+        "grade": "8B",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "3-4中垂線與角平分線性質",
+        "topic": "中垂線與角平分線性質",
+        "knowledge_point": [
+            "角平分線性質",
+            "應用"
+        ],
+        "difficulty": "easy",
+        "question": "角平分線上的任意一點到角兩邊的距離關係為何？",
+        "options": {
+            "A": "相等",
+            "B": "不相等",
+            "C": "一半",
+            "D": "兩倍"
+        },
+        "answer": "A",
+        "explanation": "角平分線上的任意一點到角兩邊的距離相等。"
+    },
+    {
+        "grade": "8B",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "3-4中垂線與角平分線性質",
+        "topic": "中垂線與角平分線性質",
+        "knowledge_point": [
+            "中垂線應用",
+            "幾何問題"
+        ],
+        "difficulty": "normal",
+        "question": "在 $\triangle ABC$ 中，若 $AD$ 是 $BC$ 邊上的中垂線，則下列哪一個選項是正確的？",
+        "options": {
+            "A": "$AB = AC$",
+            "B": "$\angle B = \angle C$",
+            "C": "$AD$ 平分 $\angle BAC$",
+            "D": "以上皆是"
+        },
+        "answer": "D",
+        "explanation": "若 $AD$ 是 $BC$ 邊上的中垂線，則 $\triangle ABC$ 是等腰三角形，且 $AD$ 也是角平分線和高線。"
+    },
+    {
+        "grade": "8B",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "3-4中垂線與角平分線性質",
+        "topic": "中垂線與角平分線性質",
+        "knowledge_point": [
+            "角平分線應用",
+            "幾何問題"
+        ],
+        "difficulty": "normal",
+        "question": "在 $\triangle ABC$ 中，若 $AD$ 是 $\angle BAC$ 的角平分線，且 $D$ 在 $BC$ 上，則下列哪一個選項是正確的？",
+        "options": {
+            "A": "$BD = CD$",
+            "B": "$AB = AC$",
+            "C": "點 $D$ 到 $AB$ 和 $AC$ 的距離相等",
+            "D": "以上皆是"
+        },
+        "answer": "C",
+        "explanation": "角平分線上的點到角兩邊的距離相等。"
+    },
+    {
+        "grade": "8B",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "3-4中垂線與角平分線性質",
+        "topic": "中垂線與角平分線性質",
+        "knowledge_point": [
+            "中垂線與角平分線綜合應用",
+            "綜合判斷"
+        ],
+        "difficulty": "hard",
+        "question": "在 $\triangle ABC$ 中，若 $O$ 點是三邊中垂線的交點，則 $O$ 點到下列哪一個選項的距離相等？",
+        "options": {
+            "A": "三邊",
+            "B": "三頂點",
+            "C": "三中點",
+            "D": "三高線"
+        },
+        "answer": "B",
+        "explanation": "三邊中垂線的交點是外心，外心到三頂點的距離相等。"
+    },
+    {
+        "grade": "8B",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "3-5三角形的邊角關係",
+        "topic": "三角形的邊角關係",
+        "knowledge_point": [
+            "三角形邊長關係",
+            "判斷"
+        ],
+        "difficulty": "easy",
+        "question": "下列哪一組邊長可以構成三角形？",
+        "options": {
+            "A": "$1, 2, 3$",
+            "B": "$3, 4, 5$",
+            "C": "$1, 2, 4$",
+            "D": "$2, 2, 5$"
+        },
+        "answer": "B",
+        "explanation": "三角形兩邊之和大於第三邊。\n選項B：$3 + 4 > 5$， $3 + 5 > 4$， $4 + 5 > 3$，都成立。"
+    },
+    {
+        "grade": "8B",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "3-5三角形的邊角關係",
+        "topic": "三角形的邊角關係",
+        "knowledge_point": [
+            "三角形邊角關係",
+            "大小比較"
+        ],
+        "difficulty": "easy",
+        "question": "在 $\triangle ABC$ 中，若 $\angle A = 50^{\circ}, \angle B = 60^{\circ}$，則下列哪一個邊最長？",
+        "options": {
+            "A": "$AB$",
+            "B": "$BC$",
+            "C": "$AC$",
+            "D": "無法判斷"
+        },
+        "answer": "A",
+        "explanation": "大角對大邊，小角對小邊。\n$\angle C = 180^{\circ} - 50^{\circ} - 60^{\circ} = 70^{\circ}$。\n$\angle C$ 最大，所以對應的邊 $AB$ 最長。"
+    },
+    {
+        "grade": "8B",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "3-5三角形的邊角關係",
+        "topic": "三角形的邊角關係",
+        "knowledge_point": [
+            "三角形邊角關係",
+            "大小比較"
+        ],
+        "difficulty": "normal",
+        "question": "在 $\triangle ABC$ 中，若 $AB = 7, BC = 5, AC = 8$，則下列哪一個角最小？",
+        "options": {
+            "A": "$\angle A$",
+            "B": "$\angle B$",
+            "C": "$\angle C$",
+            "D": "無法判斷"
+        },
+        "answer": "C",
+        "explanation": "大邊對大角，小邊對小角。\n$BC$ 最短，所以對應的 $\angle A$ 最小。\n此題答案有誤，重新設計題目。\n\n重新設計題目：\n在 $\triangle ABC$ 中，若 $AB = 7, BC = 5, AC = 8$，則下列哪一個角最小？",
+        "options": {
+            "A": "$\angle A$",
+            "B": "$\angle B$",
+            "C": "$\angle C$",
+            "D": "無法判斷"
+        },
+        "answer": "A",
+        "explanation": "大邊對大角，小邊對小角。\n$BC$ 最短，所以對應的 $\angle A$ 最小。"
+    },
+    {
+        "grade": "8B",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "3-5三角形的邊角關係",
+        "topic": "三角形的邊角關係",
+        "knowledge_point": [
+            "三角形邊角關係",
+            "應用"
+        ],
+        "difficulty": "normal",
+        "question": "一個等腰三角形的兩邊長分別為 $6$ 和 $10$，則其周長為何？",
+        "options": {
+            "A": "$22$",
+            "B": "$26$",
+            "C": "$22$ 或 $26$",
+            "D": "無法確定"
+        },
+        "answer": "C",
+        "explanation": "等腰三角形有兩種可能：\n1. 兩腰為 $6$，底邊為 $10$。此時 $6 + 6 = 12 > 10$，符合三角形兩邊之和大於第三邊的條件。周長為 $6 + 6 + 10 = 22$。\n2. 兩腰為 $10$，底邊為 $6$。此時 $10 + 6 > 10$，符合條件。周長為 $10 + 10 + 6 = 26$。\n所以周長為 $22$ 或 $26$。"
+    },
+    {
+        "grade": "8B",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "3-5三角形的邊角關係",
+        "topic": "三角形的邊角關係",
+        "knowledge_point": [
+            "三角形邊角關係",
+            "綜合判斷"
+        ],
+        "difficulty": "hard",
+        "question": "在 $\triangle ABC$ 中，若 $\angle A = 90^{\circ}$，且 $AB = 6, AC = 8$，則 $BC$ 的長度為何？",
+        "options": {
+            "A": "$10$",
+            "B": "$12$",
+            "C": "$14$",
+            "D": "$16$"
+        },
+        "answer": "A",
+        "explanation": "因為 $\angle A = 90^{\circ}$，所以 $\triangle ABC$ 是直角三角形。\n利用畢氏定理 $AB^2 + AC^2 = BC^2$。\n$6^2 + 8^2 = BC^2 \Rightarrow 36 + 64 = BC^2 \Rightarrow 100 = BC^2 \Rightarrow BC = 10$。"
+    },
+    {
+        "grade": "8B",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "4-1平行線與截角性質",
+        "topic": "平行線與截角性質",
+        "knowledge_point": [
+            "平行線的定義",
+            "判斷"
+        ],
+        "difficulty": "easy",
+        "question": "下列哪一個選項的兩條直線是平行線？",
+        "options": {
+            "A": "相交於一點",
+            "B": "永不相交",
+            "C": "互相垂直",
+            "D": "互相重合"
+        },
+        "answer": "B",
+        "explanation": "平行線是指在同一平面上永不相交的兩條直線。"
+    },
+    {
+        "grade": "8B",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "4-1平行線與截角性質",
+        "topic": "平行線與截角性質",
+        "knowledge_point": [
+            "平行線的性質",
+            "同位角"
+        ],
+        "difficulty": "easy",
+        "question": "若兩條平行線被一條截線所截，則下列哪一種角相等？",
+        "options": {
+            "A": "同位角",
+            "B": "同側內角",
+            "C": "對頂角",
+            "D": "鄰補角"
+        },
+        "answer": "A",
+        "explanation": "兩條平行線被一條截線所截，同位角相等。同側內角互補，對頂角相等，鄰補角互補。"
+    },
+    {
+        "grade": "8B",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "4-1平行線與截角性質",
+        "topic": "平行線與截角性質",
+        "knowledge_point": [
+            "平行線的性質",
+            "內錯角"
+        ],
+        "difficulty": "normal",
+        "question": "若兩條平行線被一條截線所截，則下列哪一種角相等？",
+        "options": {
+            "A": "同位角",
+            "B": "內錯角",
+            "C": "同側內角",
+            "D": "對頂角"
+        },
+        "answer": "B",
+        "explanation": "兩條平行線被一條截線所截，內錯角相等。"
+    },
+    {
+        "grade": "8B",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "4-1平行線與截角性質",
+        "topic": "平行線與截角性質",
+        "knowledge_point": [
+            "平行線的性質",
+            "同側內角"
+        ],
+        "difficulty": "normal",
+        "question": "若兩條平行線被一條截線所截，則下列哪一種角互補？",
+        "options": {
+            "A": "同位角",
+            "B": "內錯角",
+            "C": "同側內角",
+            "D": "對頂角"
+        },
+        "answer": "C",
+        "explanation": "兩條平行線被一條截線所截，同側內角互補。"
+    },
+    {
+        "grade": "8B",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "4-1平行線與截角性質",
+        "topic": "平行線與截角性質",
+        "knowledge_point": [
+            "平行線應用",
+            "綜合判斷"
+        ],
+        "difficulty": "hard",
+        "question": "已知直線 $L_1$ 平行直線 $L_2$，且直線 $M$ 截 $L_1$ 和 $L_2$ 於 $A, B$ 兩點。若 $\angle 1$ 和 $\angle 2$ 是內錯角，且 $\angle 1 = 80^{\circ}$，則 $\angle 2$ 的度數為何？",
+        "options": {
+            "A": "$80^{\circ}$",
+            "B": "$100^{\circ}$",
+            "C": "$10^{\circ}$",
+            "D": "$170^{\circ}$"
+        },
+        "answer": "A",
+        "explanation": "兩條平行線被一條截線所截，內錯角相等，所以 $\angle 2 = \angle 1 = 80^{\circ}$。"
+    },
+    {
+        "grade": "8B",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "4-2平行四邊形",
+        "topic": "平行四邊形",
+        "knowledge_point": [
+            "平行四邊形的定義",
+            "性質"
+        ],
+        "difficulty": "easy",
+        "question": "下列哪一個選項是平行四邊形的性質？",
+        "options": {
+            "A": "四邊相等",
+            "B": "對角線互相垂直",
+            "C": "對邊平行且相等",
+            "D": "四個角都是直角"
+        },
+        "answer": "C",
+        "explanation": "平行四邊形的對邊平行且相等。四邊相等是菱形，對角線互相垂直是菱形，四個角都是直角是矩形。"
+    },
+    {
+        "grade": "8B",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "4-2平行四邊形",
+        "topic": "平行四邊形",
+        "knowledge_point": [
+            "平行四邊形應用",
+            "角度計算"
+        ],
+        "difficulty": "easy",
+        "question": "一個平行四邊形的一個內角為 $60^{\circ}$，則其對角是多少度？",
+        "options": {
+            "A": "$60^{\circ}$",
+            "B": "$120^{\circ}$",
+            "C": "$30^{\circ}$",
+            "D": "$150^{\circ}$"
+        },
+        "answer": "A",
+        "explanation": "平行四邊形對角相等，所以對角為 $60^{\circ}$。"
+    },
+    {
+        "grade": "8B",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "4-2平行四邊形",
+        "topic": "平行四邊形",
+        "knowledge_point": [
+            "平行四邊形應用",
+            "邊長計算"
+        ],
+        "difficulty": "normal",
+        "question": "一個平行四邊形的周長為 $40$ 公分，已知其中一邊長為 $12$ 公分，則另一邊長是多少公分？",
+        "options": {
+            "A": "$8$",
+            "B": "$10$",
+            "C": "$14$",
+            "D": "$16$"
+        },
+        "answer": "A",
+        "explanation": "平行四邊形對邊相等。設另一邊長為 $x$ 公分。\n$2(12 + x) = 40$ \n$24 + 2x = 40$ \n$2x = 16$ \n$x = 8$。"
+    },
+    {
+        "grade": "8B",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "4-2平行四邊形",
+        "topic": "平行四邊形",
+        "knowledge_point": [
+            "平行四邊形應用",
+            "面積計算"
+        ],
+        "difficulty": "normal",
+        "question": "一個平行四邊形的底為 $8$ 公分，高為 $5$ 公分，則其面積是多少平方公分？",
+        "options": {
+            "A": "$20$",
+            "B": "$30$",
+            "C": "$40$",
+            "D": "$50$"
+        },
+        "answer": "C",
+        "explanation": "平行四邊形面積 = 底 $\times$ 高。\n所以面積為 $8 \times 5 = 40$ 平方公分。"
+    },
+    {
+        "grade": "8B",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "4-2平行四邊形",
+        "topic": "平行四邊形",
+        "knowledge_point": [
+            "平行四邊形應用",
+            "綜合判斷"
+        ],
+        "difficulty": "hard",
+        "question": "下列哪一個選項不能判斷一個四邊形是平行四邊形？",
+        "options": {
+            "A": "兩組對邊平行",
+            "B": "兩組對角相等",
+            "C": "對角線互相平分",
+            "D": "一組對邊平行且另一組對邊相等"
+        },
+        "answer": "D",
+        "explanation": "一組對邊平行且另一組對邊相等不能判斷一個四邊形是平行四邊形，例如等腰梯形。"
+    },
+    {
+        "grade": "8B",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "4-3特殊四邊形",
+        "topic": "特殊四邊形",
+        "knowledge_point": [
+            "矩形",
+            "性質"
+        ],
+        "difficulty": "easy",
+        "question": "下列哪一個選項是矩形的性質？",
+        "options": {
+            "A": "四邊相等",
+            "B": "對角線互相垂直",
+            "C": "對角線相等",
+            "D": "對角線互相平分"
+        },
+        "answer": "C",
+        "explanation": "矩形的對角線相等。四邊相等是菱形，對角線互相垂直是菱形，對角線互相平分是平行四邊形。"
+    },
+    {
+        "grade": "8B",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "4-3特殊四邊形",
+        "topic": "特殊四邊形",
+        "knowledge_point": [
+            "菱形",
+            "性質"
+        ],
+        "difficulty": "easy",
+        "question": "下列哪一個選項是菱形的性質？",
+        "options": {
+            "A": "四個角都是直角",
+            "B": "對角線互相垂直",
+            "C": "對角線相等",
+            "D": "對角線互相平分"
+        },
+        "answer": "B",
+        "explanation": "菱形的對角線互相垂直。四個角都是直角是矩形，對角線相等是矩形，對角線互相平分是平行四邊形。"
+    },
+    {
+        "grade": "8B",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "4-3特殊四邊形",
+        "topic": "特殊四邊形",
+        "knowledge_point": [
+            "正方形",
+            "性質"
+        ],
+        "difficulty": "normal",
+        "question": "下列哪一個選項是正方形的性質？",
+        "options": {
+            "A": "四邊相等，四個角都是直角",
+            "B": "對角線互相垂直且相等",
+            "C": "對角線互相平分且垂直",
+            "D": "以上皆是"
+        },
+        "answer": "D",
+        "explanation": "正方形同時具有矩形和菱形的所有性質，所以以上皆是。"
+    },
+    {
+        "grade": "8B",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "4-3特殊四邊形",
+        "topic": "特殊四邊形",
+        "knowledge_point": [
+            "梯形",
+            "性質"
+        ],
+        "difficulty": "normal",
+        "question": "下列哪一個選項是梯形的性質？",
+        "options": {
+            "A": "兩組對邊平行",
+            "B": "只有一組對邊平行",
+            "C": "對角線互相平分",
+            "D": "四個角都是直角"
+        },
+        "answer": "B",
+        "explanation": "梯形只有一組對邊平行。兩組對邊平行是平行四邊形。"
+    },
+    {
+        "grade": "8B",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "4-3特殊四邊形",
+        "topic": "特殊四邊形",
+        "knowledge_point": [
+            "特殊四邊形關係",
+            "綜合判斷"
+        ],
+        "difficulty": "hard",
+        "question": "下列關於特殊四邊形的敘述，何者正確？",
+        "options": {
+            "A": "菱形是矩形的一種。",
+            "B": "正方形是菱形的一種。",
+            "C": "平行四邊形是梯形的一種。",
+            "D": "矩形是正方形的一種。"
+        },
+        "answer": "B",
+        "explanation": "正方形是四邊相等且四個角都是直角的四邊形，所以正方形是菱形的一種。\n菱形不一定是矩形。\n平行四邊形不是梯形。\n矩形不一定是正方形。"
+    },
+    {
+        "grade": "9A",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "1-1連比",
+        "topic": "連比",
+        "knowledge_point": [
+            "連比的定義",
+            "求值"
+        ],
+        "difficulty": "easy",
+        "question": "若 $x : y = 2 : 3$，且 $y : z = 3 : 5$，則 $x : y : z$ 為何？",
+        "options": {
+            "A": "$2 : 3 : 5$",
+            "B": "$2 : 3 : 6$",
+            "C": "$4 : 6 : 10$",
+            "D": "$6 : 9 : 15$"
+        },
+        "answer": "A",
+        "explanation": "因為 $y$ 的比例相同，所以直接合併，得到 $x : y : z = 2 : 3 : 5$。"
+    },
+    {
+        "grade": "9A",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "1-1連比",
+        "topic": "連比",
+        "knowledge_point": [
+            "連比的應用",
+            "求值"
+        ],
+        "difficulty": "easy",
+        "question": "若 $x : y : z = 1 : 2 : 3$，且 $x + y + z = 36$，則 $x$ 的值為何？",
+        "options": {
+            "A": "$6$",
+            "B": "$12$",
+            "C": "$18$",
+            "D": "$24$"
+        },
+        "answer": "A",
+        "explanation": "設 $x = k, y = 2k, z = 3k$。\n$k + 2k + 3k = 36 \Rightarrow 6k = 36 \Rightarrow k = 6$。\n所以 $x = 6$。"
+    },
+    {
+        "grade": "9A",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "1-1連比",
+        "topic": "連比",
+        "knowledge_point": [
+            "連比的應用",
+            "分配問題"
+        ],
+        "difficulty": "normal",
+        "question": "將 $120$ 元按照 $1 : 2 : 3$ 的比例分給小明、小華、小英，則小華可以分到多少元？",
+        "options": {
+            "A": "$20$",
+            "B": "$40$",
+            "C": "$60$",
+            "D": "$80$"
+        },
+        "answer": "B",
+        "explanation": "總份數為 $1 + 2 + 3 = 6$ 份。\n小華分到 $120 \times \frac{2}{6} = 120 \times \frac{1}{3} = 40$ 元。"
+    },
+    {
+        "grade": "9A",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "1-1連比",
+        "topic": "連比",
+        "knowledge_point": [
+            "連比的應用",
+            "幾何問題"
+        ],
+        "difficulty": "normal",
+        "question": "一個三角形的三個內角之比為 $1 : 2 : 3$，則最大的內角是多少度？",
+        "options": {
+            "A": "$30^{\circ}$",
+            "B": "$60^{\circ}$",
+            "C": "$90^{\circ}$",
+            "D": "$120^{\circ}$"
+        },
+        "answer": "C",
+        "explanation": "三角形內角和為 $180^{\circ}$。\n總份數為 $1 + 2 + 3 = 6$ 份。\n最大的內角為 $180^{\circ} \times \frac{3}{6} = 180^{\circ} \times \frac{1}{2} = 90^{\circ}$。"
+    },
+    {
+        "grade": "9A",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "1-1連比",
+        "topic": "連比",
+        "knowledge_point": [
+            "連比的應用",
+            "綜合判斷"
+        ],
+        "difficulty": "hard",
+        "question": "若 $2x = 3y = 4z$，且 $x, y, z$ 均不為 $0$，則 $x : y : z$ 為何？",
+        "options": {
+            "A": "$2 : 3 : 4$",
+            "B": "$4 : 3 : 2$",
+            "C": "$6 : 4 : 3$",
+            "D": "$3 : 4 : 6$"
+        },
+        "answer": "C",
+        "explanation": "設 $2x = 3y = 4z = k$。\n則 $x = \frac{k}{2}, y = \frac{k}{3}, z = \frac{k}{4}$。\n$x : y : z = \frac{k}{2} : \frac{k}{3} : \frac{k}{4}$ \n同乘以 $12$，得到 $6k : 4k : 3k = 6 : 4 : 3$。"
+    },
+    {
+        "grade": "9A",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "1-2比例線段",
+        "topic": "比例線段",
+        "knowledge_point": [
+            "比例線段的定義",
+            "求值"
+        ],
+        "difficulty": "easy",
+        "question": "若線段 $AB$ 長為 $6$ 公分，線段 $CD$ 長為 $9$ 公分，則 $AB : CD$ 為何？",
+        "options": {
+            "A": "$2 : 3$",
+            "B": "$3 : 2$",
+            "C": "$1 : 2$",
+            "D": "$2 : 1$"
+        },
+        "answer": "A",
+        "explanation": "$AB : CD = 6 : 9 = 2 : 3$。"
+    },
+    {
+        "grade": "9A",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "1-2比例線段",
+        "topic": "比例線段",
+        "knowledge_point": [
+            "平行線截比例線段性質",
+            "應用"
+        ],
+        "difficulty": "easy",
+        "question": "在 $\triangle ABC$ 中，若 $DE \parallel BC$，且 $AD : DB = 2 : 3$，則 $AE : EC$ 為何？",
+        "options": {
+            "A": "$2 : 3$",
+            "B": "$3 : 2$",
+            "C": "$1 : 2$",
+            "D": "$2 : 1$"
+        },
+        "answer": "A",
+        "explanation": "平行線截比例線段性質，所以 $AE : EC = AD : DB = 2 : 3$。"
+    },
+    {
+        "grade": "9A",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "1-2比例線段",
+        "topic": "比例線段",
+        "knowledge_point": [
+            "平行線截比例線段性質",
+            "求值"
+        ],
+        "difficulty": "normal",
+        "question": "在 $\triangle ABC$ 中，若 $DE \parallel BC$，且 $AD = 4, DB = 6, AE = 3$，則 $EC$ 的長度為何？",
+        "options": {
+            "A": "$4$",
+            "B": "$4.5$",
+            "C": "$5$",
+            "D": "$6$"
+        },
+        "answer": "B",
+        "explanation": "平行線截比例線段性質，所以 $AD : DB = AE : EC$。\n$4 : 6 = 3 : EC$ \n$4EC = 18$ \n$EC = 4.5$。"
+    },
+    {
+        "grade": "9A",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "1-2比例線段",
+        "topic": "比例線段",
+        "knowledge_point": [
+            "平行線截比例線段性質",
+            "應用"
+        ],
+        "difficulty": "normal",
+        "question": "在梯形 $ABCD$ 中，若 $AD \parallel BC$，且 $E, F$ 分別為 $AB, CD$ 的中點，則 $EF$ 的長度為何？ (已知 $AD = 5, BC = 9$)",
+        "options": {
+            "A": "$6$",
+            "B": "$7$",
+            "C": "$8$",
+            "D": "$9$"
+        },
+        "answer": "B",
+        "explanation": "梯形中線定理，中線長度為上下底和的一半。\n$EF = (AD + BC) \div 2 = (5 + 9) \div 2 = 14 \div 2 = 7$。"
+    },
+    {
+        "grade": "9A",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "1-2比例線段",
+        "topic": "比例線段",
+        "knowledge_point": [
+            "比例線段應用",
+            "綜合判斷"
+        ],
+        "difficulty": "hard",
+        "question": "在 $\triangle ABC$ 中，若 $D$ 為 $AB$ 上一點， $E$ 為 $AC$ 上一點，且 $DE \parallel BC$。若 $AD = x, DB = 2, AE = 3, EC = 4$，則 $x$ 的值為何？",
+        "options": {
+            "A": "$1.5$",
+            "B": "$2$",
+            "C": "$2.5$",
+            "D": "$3$"
+        },
+        "answer": "A",
+        "explanation": "平行線截比例線段性質，所以 $AD : DB = AE : EC$。\n$x : 2 = 3 : 4$ \n$4x = 6$ \n$x = 1.5$。"
+    },
+    {
+        "grade": "9A",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "1-3相似多邊形",
+        "topic": "相似多邊形",
+        "knowledge_point": [
+            "相似多邊形的定義",
+            "判斷"
+        ],
+        "difficulty": "easy",
+        "question": "下列哪一組圖形一定相似？",
+        "options": {
+            "A": "兩個長方形",
+            "B": "兩個菱形",
+            "C": "兩個正方形",
+            "D": "兩個平行四邊形"
+        },
+        "answer": "C",
+        "explanation": "兩個正方形一定相似，因為它們的對應角都相等 (都是 $90^{\circ}$)，且對應邊成比例。"
+    },
+    {
+        "grade": "9A",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "1-3相似多邊形",
+        "topic": "相似多邊形",
+        "knowledge_point": [
+            "相似三角形的性質",
+            "AA相似"
+        ],
+        "difficulty": "easy",
+        "question": "若兩個三角形有兩組對應角相等，則這兩個三角形相似，這是哪一種相似性質？",
+        "options": {
+            "A": "SSS",
+            "B": "SAS",
+            "C": "AA",
+            "D": "ASA"
+        },
+        "answer": "C",
+        "explanation": "兩組對應角相等是AA相似性質。"
+    },
+    {
+        "grade": "9A",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "1-3相似多邊形",
+        "topic": "相似多邊形",
+        "knowledge_point": [
+            "相似三角形的性質",
+            "邊長比"
+        ],
+        "difficulty": "normal",
+        "question": "已知 $\triangle ABC \sim \triangle DEF$，且 $AB : DE = 2 : 3$，若 $BC = 4$，則 $EF$ 的長度為何？",
+        "options": {
+            "A": "$6$",
+            "B": "$8$",
+            "C": "$9$",
+            "D": "$12$"
+        },
+        "answer": "A",
+        "explanation": "相似三角形的對應邊成比例，所以 $AB : DE = BC : EF$。\n$2 : 3 = 4 : EF$ \n$2EF = 12$ \n$EF = 6$。"
+    },
+    {
+        "grade": "9A",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "1-3相似多邊形",
+        "topic": "相似多邊形",
+        "knowledge_point": [
+            "相似三角形的性質",
+            "面積比"
+        ],
+        "difficulty": "normal",
+        "question": "已知 $\triangle ABC \sim \triangle DEF$，且 $AB : DE = 1 : 2$，若 $\triangle ABC$ 的面積為 $5$ 平方公分，則 $\triangle DEF$ 的面積是多少平方公分？",
+        "options": {
+            "A": "$10$",
+            "B": "$15$",
+            "C": "$20$",
+            "D": "$25$"
+        },
+        "answer": "C",
+        "explanation": "相似三角形的面積比等於對應邊長的平方比。\n$\triangle ABC$ 面積 : $\triangle DEF$ 面積 $= (AB : DE)^2 = (1 : 2)^2 = 1 : 4$。\n$5 : \triangle DEF$ 面積 $= 1 : 4$ \n$\triangle DEF$ 面積 $= 20$。"
+    },
+    {
+        "grade": "9A",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "1-3相似多邊形",
+        "topic": "相似多邊形",
+        "knowledge_point": [
+            "相似三角形應用",
+            "綜合判斷"
+        ],
+        "difficulty": "hard",
+        "question": "在 $\triangle ABC$ 中，若 $D$ 為 $AB$ 上一點， $E$ 為 $AC$ 上一點，且 $\angle ADE = \angle B$。若 $AD = 3, AB = 6, AE = 4$，則 $AC$ 的長度為何？",
+        "options": {
+            "A": "$6$",
+            "B": "$8$",
+            "C": "$9$",
+            "D": "$12$"
+        },
+        "answer": "B",
+        "explanation": "因為 $\angle ADE = \angle B$，且 $\angle A$ 為共同角，所以 $\triangle ADE \sim \triangle ABC$ (AA相似)。\n$AD : AB = AE : AC$ \n$3 : 6 = 4 : AC$ \n$3AC = 24$ \n$AC = 8$。"
+    },
+    {
+        "grade": "9A",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "1-4相似三角形的應用與三角比",
+        "topic": "相似三角形的應用與三角比",
+        "knowledge_point": [
+            "相似形應用",
+            "測量高度"
+        ],
+        "difficulty": "easy",
+        "question": "小明身高 $1.5$ 公尺，在陽光下影長 $2$ 公尺。若此時一棵樹的影長為 $10$ 公尺，則樹高是多少公尺？",
+        "options": {
+            "A": "$7.5$",
+            "B": "$8$",
+            "C": "$9$",
+            "D": "$10$"
+        },
+        "answer": "A",
+        "explanation": "利用相似三角形的性質，身高與影長成比例。\n$1.5 : 2 = 樹高 : 10$ \n$2 \times 樹高 = 1.5 \times 10$ \n$2 \times 樹高 = 15$ \n樹高 $= 7.5$ 公尺。"
+    },
+    {
+        "grade": "9A",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "1-4相似三角形的應用與三角比",
+        "topic": "相似三角形的應用與三角比",
+        "knowledge_point": [
+            "相似形應用",
+            "縮放比例"
+        ],
+        "difficulty": "easy",
+        "question": "一張地圖的比例尺為 $1 : 10000$，若地圖上兩點的距離為 $5$ 公分，則實際距離是多少公尺？",
+        "options": {
+            "A": "$50$",
+            "B": "$500$",
+            "C": "$5000$",
+            "D": "$50000$"
+        },
+        "answer": "B",
+        "explanation": "實際距離 = 地圖距離 $\times$ 比例尺的倍數。\n實際距離為 $5 \times 10000 = 50000$ 公分 $= 500$ 公尺。"
+    },
+    {
+        "grade": "9A",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "1-4相似三角形的應用與三角比",
+        "topic": "相似三角形的應用與三角比",
+        "knowledge_point": [
+            "三角比",
+            "正弦"
+        ],
+        "difficulty": "normal",
+        "question": "在直角三角形中，若 $\angle A$ 的對邊為 $a$，斜邊為 $c$，則 $\sin A$ 為何？",
+        "options": {
+            "A": "$\frac{a}{c}$",
+            "B": "$\frac{c}{a}$",
+            "C": "$\frac{a}{b}$",
+            "D": "$\frac{b}{a}$"
+        },
+        "answer": "A",
+        "explanation": "正弦定義為對邊除以斜邊。"
+    },
+    {
+        "grade": "9A",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "1-4相似三角形的應用與三角比",
+        "topic": "相似三角形的應用與三角比",
+        "knowledge_point": [
+            "三角比",
+            "餘弦"
+        ],
+        "difficulty": "normal",
+        "question": "在直角三角形中，若 $\angle A$ 的鄰邊為 $b$，斜邊為 $c$，則 $\cos A$ 為何？",
+        "options": {
+            "A": "$\frac{a}{c}$",
+            "B": "$\frac{c}{a}$",
+            "C": "$\frac{a}{b}$",
+            "D": "$\frac{b}{c}$"
+        },
+        "answer": "D",
+        "explanation": "餘弦定義為鄰邊除以斜邊。"
+    },
+    {
+        "grade": "9A",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "1-4相似三角形的應用與三角比",
+        "topic": "相似三角形的應用與三角比",
+        "knowledge_point": [
+            "三角比應用",
+            "綜合判斷"
+        ],
+        "difficulty": "hard",
+        "question": "在直角三角形中，若 $\tan A = \frac{3}{4}$，則 $\sin A$ 的值為何？",
+        "options": {
+            "A": "$\frac{3}{5}$",
+            "B": "$\frac{4}{5}$",
+            "C": "$\frac{3}{4}$",
+            "D": "$\frac{4}{3}$"
+        },
+        "answer": "A",
+        "explanation": "若 $\tan A = \frac{3}{4}$，表示對邊為 $3k$，鄰邊為 $4k$。\n斜邊為 $\sqrt{(3k)^2 + (4k)^2} = \sqrt{9k^2 + 16k^2} = \sqrt{25k^2} = 5k$。\n所以 $\sin A = \frac{對邊}{斜邊} = \frac{3k}{5k} = \frac{3}{5}$。"
+    },
+    {
+        "grade": "9A",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "2-1點、線、圓",
+        "topic": "點、線、圓",
+        "knowledge_point": [
+            "圓的定義",
+            "半徑與直徑"
+        ],
+        "difficulty": "easy",
+        "question": "下列關於圓的敘述，何者正確？",
+        "options": {
+            "A": "圓心到圓上任意一點的距離都相等。",
+            "B": "圓的直徑是半徑的兩倍。",
+            "C": "圓是平面圖形。",
+            "D": "以上皆是。"
+        },
+        "answer": "D",
+        "explanation": "圓心到圓上任意一點的距離都相等，這個距離就是半徑。圓的直徑是半徑的兩倍。圓是平面圖形。"
+    },
+    {
+        "grade": "9A",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "2-1點、線、圓",
+        "topic": "點、線、圓",
+        "knowledge_point": [
+            "點與圓的關係",
+            "判斷"
+        ],
+        "difficulty": "easy",
+        "question": "已知圓心為 $O$，半徑為 $r$。若點 $P$ 到圓心 $O$ 的距離為 $d$，則下列哪一個選項表示點 $P$ 在圓內？",
+        "options": {
+            "A": "$d < r$",
+            "B": "$d = r$",
+            "C": "$d > r$",
+            "D": "$d = 0$"
+        },
+        "answer": "A",
+        "explanation": "點在圓內表示點到圓心的距離小於半徑。"
+    },
+    {
+        "grade": "9A",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "2-1點、線、圓",
+        "topic": "點、線、圓",
+        "knowledge_point": [
+            "直線與圓的關係",
+            "判斷"
+        ],
+        "difficulty": "normal",
+        "question": "已知圓心為 $O$，半徑為 $r$。若直線 $L$ 到圓心 $O$ 的距離為 $d$，則下列哪一個選項表示直線 $L$ 與圓相割？",
+        "options": {
+            "A": "$d < r$",
+            "B": "$d = r$",
+            "C": "$d > r$",
+            "D": "$d = 0$"
+        },
+        "answer": "A",
+        "explanation": "直線與圓相割表示直線到圓心的距離小於半徑。"
+    },
+    {
+        "grade": "9A",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "2-1點、線、圓",
+        "topic": "點、線、圓",
+        "knowledge_point": [
+            "圓的弦",
+            "性質"
+        ],
+        "difficulty": "normal",
+        "question": "在一個圓中，下列關於弦的敘述，何者正確？",
+        "options": {
+            "A": "弦一定通過圓心。",
+            "B": "直徑是圓中最長的弦。",
+            "C": "弦一定垂直半徑。",
+            "D": "弦一定平分圓心角。"
+        },
+        "answer": "B",
+        "explanation": "直徑是圓中最長的弦。弦不一定通過圓心，弦不一定垂直半徑，弦不一定平分圓心角。"
+    },
+    {
+        "grade": "9A",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "2-1點、線、圓",
+        "topic": "點、線、圓",
+        "knowledge_point": [
+            "圓的切線",
+            "性質"
+        ],
+        "difficulty": "hard",
+        "question": "已知直線 $L$ 與圓 $O$ 相切於點 $A$，則下列哪一個選項是正確的？",
+        "options": {
+            "A": "$OA \perp L$",
+            "B": "$OA \parallel L$",
+            "C": "$OA$ 是圓 $O$ 的弦",
+            "D": "$OA$ 是圓 $O$ 的直徑"
+        },
+        "answer": "A",
+        "explanation": "圓的切線垂直過切點的半徑。"
+    },
+    {
+        "grade": "9A",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "2-2圓心角與圓周角",
+        "topic": "圓心角與圓周角",
+        "knowledge_point": [
+            "圓心角與弧的關係",
+            "計算"
+        ],
+        "difficulty": "easy",
+        "question": "在圓 $O$ 中，若圓心角 $\angle AOB = 80^{\circ}$，則所對的弧 $AB$ 的度數為何？",
+        "options": {
+            "A": "$40^{\circ}$",
+            "B": "$80^{\circ}$",
+            "C": "$160^{\circ}$",
+            "D": "$320^{\circ}$"
+        },
+        "answer": "B",
+        "explanation": "圓心角的度數等於其所對弧的度數。"
+    },
+    {
+        "grade": "9A",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "2-2圓心角與圓周角",
+        "topic": "圓心角與圓周角",
+        "knowledge_point": [
+            "圓周角與弧的關係",
+            "計算"
+        ],
+        "difficulty": "easy",
+        "question": "在圓 $O$ 中，若圓周角 $\angle ACB = 50^{\circ}$，則所對的弧 $AB$ 的度數為何？",
+        "options": {
+            "A": "$25^{\circ}$",
+            "B": "$50^{\circ}$",
+            "C": "$100^{\circ}$",
+            "D": "$200^{\circ}$"
+        },
+        "answer": "C",
+        "explanation": "圓周角的度數等於其所對弧的度數的一半，所以弧 $AB$ 的度數為 $50^{\circ} \times 2 = 100^{\circ}$。"
+    },
+    {
+        "grade": "9A",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "2-2圓心角與圓周角",
+        "topic": "圓心角與圓周角",
+        "knowledge_point": [
+            "圓內角與圓外角",
+            "計算"
+        ],
+        "difficulty": "normal",
+        "question": "在圓 $O$ 中，若兩弦 $AB$ 和 $CD$ 交於圓內一點 $P$，且 $\overset{\frown}{AC} = 60^{\circ}, \overset{\frown}{BD} = 80^{\circ}$，則 $\angle APC$ 的度數為何？",
+        "options": {
+            "A": "$70^{\circ}$",
+            "B": "$80^{\circ}$",
+            "C": "$90^{\circ}$",
+            "D": "$100^{\circ}$"
+        },
+        "answer": "A",
+        "explanation": "圓內角的度數等於其所夾兩弧度數和的一半。\n$\angle APC = (\overset{\frown}{AC} + \overset{\frown}{BD}) \div 2 = (60^{\circ} + 80^{\circ}) \div 2 = 140^{\circ} \div 2 = 70^{\circ}$。"
+    },
+    {
+        "grade": "9A",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "2-2圓心角與圓周角",
+        "topic": "圓心角與圓周角",
+        "knowledge_point": [
+            "圓內接四邊形",
+            "性質"
+        ],
+        "difficulty": "normal",
+        "question": "下列關於圓內接四邊形的敘述，何者正確？",
+        "options": {
+            "A": "對角相等",
+            "B": "對角互補",
+            "C": "鄰角相等",
+            "D": "鄰角互補"
+        },
+        "answer": "B",
+        "explanation": "圓內接四邊形的對角互補。"
+    },
+    {
+        "grade": "9A",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "2-2圓心角與圓周角",
+        "topic": "圓心角與圓周角",
+        "knowledge_point": [
+            "圓周角應用",
+            "綜合判斷"
+        ],
+        "difficulty": "hard",
+        "question": "在圓 $O$ 中，若弦 $AB$ 所對的圓心角為 $120^{\circ}$，則弦 $AB$ 所對的圓周角是多少度？",
+        "options": {
+            "A": "$30^{\circ}$",
+            "B": "$60^{\circ}$",
+            "C": "$90^{\circ}$",
+            "D": "$120^{\circ}$"
+        },
+        "answer": "B",
+        "explanation": "圓周角的度數是圓心角的一半，所以圓周角為 $120^{\circ} \div 2 = 60^{\circ}$。"
+    },
+    {
+        "grade": "9A",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "3-1推理證明",
+        "topic": "推理證明",
+        "knowledge_point": [
+            "證明方法",
+            "直接證明"
+        ],
+        "difficulty": "easy",
+        "question": "證明「若 $x$ 是奇數，則 $x^2$ 是奇數」時，下列哪一個步驟是正確的？",
+        "options": {
+            "A": "設 $x = 2k$",
+            "B": "設 $x = 2k + 1$",
+            "C": "設 $x$ 是偶數",
+            "D": "設 $x^2$ 是偶數"
+        },
+        "answer": "B",
+        "explanation": "證明「若 $x$ 是奇數」的命題，應設 $x = 2k + 1$ (其中 $k$ 為整數)。"
+    },
+    {
+        "grade": "9A",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "3-1推理證明",
+        "topic": "推理證明",
+        "knowledge_point": [
+            "證明方法",
+            "反證法"
+        ],
+        "difficulty": "easy",
+        "question": "證明「質數有無窮多個」時，通常會使用哪一種證明方法？",
+        "options": {
+            "A": "直接證明法",
+            "B": "反證法",
+            "C": "歸納法",
+            "D": "枚舉法"
+        },
+        "answer": "B",
+        "explanation": "證明質數有無窮多個通常使用反證法，即假設質數只有有限多個，然後推導出矛盾。"
+    },
+    {
+        "grade": "9A",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "3-1推理證明",
+        "topic": "推理證明",
+        "knowledge_point": [
+            "證明步驟",
+            "邏輯推導"
+        ],
+        "difficulty": "normal",
+        "question": "在數學證明中，下列哪一個步驟是錯誤的？",
+        "options": {
+            "A": "假設已知條件",
+            "B": "利用定義、公理、定理進行推導",
+            "C": "推導出與已知條件或公理矛盾的結果",
+            "D": "直接假設結論成立"
+        },
+        "answer": "D",
+        "explanation": "直接假設結論成立是錯誤的證明方法，應該是從已知條件推導出結論。"
+    },
+    {
+        "grade": "9A",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "3-1推理證明",
+        "topic": "推理證明",
+        "knowledge_point": [
+            "證明應用",
+            "幾何證明"
+        ],
+        "difficulty": "normal",
+        "question": "證明「三角形外角大於不相鄰的任一內角」時，通常會利用哪一個幾何性質？",
+        "options": {
+            "A": "兩點之間直線最短",
+            "B": "兩點之間線段最短",
+            "C": "三角形內角和 $180^{\circ}$",
+            "D": "三角形外角定理"
+        },
+        "answer": "C",
+        "explanation": "三角形外角大於不相鄰的任一內角的證明，是利用三角形內角和 $180^{\circ}$ 的性質。"
+    },
+    {
+        "grade": "9A",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "3-1推理證明",
+        "topic": "推理證明",
+        "knowledge_point": [
+            "證明應用",
+            "綜合判斷"
+        ],
+        "difficulty": "hard",
+        "question": "下列哪一個敘述是正確的？",
+        "options": {
+            "A": "所有偶數都是質數。",
+            "B": "所有質數都是奇數。",
+            "C": "所有大於 $2$ 的偶數都不是質數。",
+            "D": "所有奇數都是質數。"
+        },
+        "answer": "C",
+        "explanation": "$A$ 選項：$2$ 是偶數也是質數，但不是所有偶數都是質數。\n$B$ 選項：$2$ 是質數但不是奇數。\n$C$ 選項：所有大於 $2$ 的偶數都可以被 $2$ 整除，所以都不是質數。正確。\n$D$ 選項：$9$ 是奇數但不是質數。"
+    },
+    {
+        "grade": "9A",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "3-2三角形的心",
+        "topic": "三角形的心",
+        "knowledge_point": [
+            "外心",
+            "定義"
+        ],
+        "difficulty": "easy",
+        "question": "三角形的外心是哪三條線的交點？",
+        "options": {
+            "A": "中線",
+            "B": "高線",
+            "C": "角平分線",
+            "D": "邊的垂直平分線"
+        },
+        "answer": "D",
+        "explanation": "三角形的外心是三邊的垂直平分線的交點。"
+    },
+    {
+        "grade": "9A",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "3-2三角形的心",
+        "topic": "三角形的心",
+        "knowledge_point": [
+            "內心",
+            "定義"
+        ],
+        "difficulty": "easy",
+        "question": "三角形的內心是哪三條線的交點？",
+        "options": {
+            "A": "中線",
+            "B": "高線",
+            "C": "角平分線",
+            "D": "邊的垂直平分線"
+        },
+        "answer": "C",
+        "explanation": "三角形的內心是三內角平分線的交點。"
+    },
+    {
+        "grade": "9A",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "3-2三角形的心",
+        "topic": "三角形的心",
+        "knowledge_point": [
+            "重心",
+            "定義"
+        ],
+        "difficulty": "normal",
+        "question": "三角形的重心是哪三條線的交點？",
+        "options": {
+            "A": "中線",
+            "B": "高線",
+            "C": "角平分線",
+            "D": "邊的垂直平分線"
+        },
+        "answer": "A",
+        "explanation": "三角形的重心是三中線的交點。"
+    },
+    {
+        "grade": "9A",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "3-2三角形的心",
+        "topic": "三角形的心",
+        "knowledge_point": [
+            "外心",
+            "性質"
+        ],
+        "difficulty": "normal",
+        "question": "下列關於三角形外心的敘述，何者正確？",
+        "options": {
+            "A": "外心到三邊的距離相等。",
+            "B": "外心到三頂點的距離相等。",
+            "C": "外心一定在三角形內部。",
+            "D": "外心是三角形的重心。"
+        },
+        "answer": "B",
+        "explanation": "外心到三頂點的距離相等，這個距離就是外接圓半徑。外心不一定在三角形內部，鈍角三角形的外心在外部。"
+    },
+    {
+        "grade": "9A",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "3-2三角形的心",
+        "topic": "三角形的心",
+        "knowledge_point": [
+            "內心",
+            "性質"
+        ],
+        "difficulty": "hard",
+        "question": "下列關於三角形內心的敘述，何者正確？",
+        "options": {
+            "A": "內心到三邊的距離相等。",
+            "B": "內心到三頂點的距離相等。",
+            "C": "內心一定在三角形外部。",
+            "D": "內心是三角形的重心。"
+        },
+        "answer": "A",
+        "explanation": "內心到三邊的距離相等，這個距離就是內切圓半徑。內心一定在三角形內部。"
+    },
+    {
+        "grade": "9B",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "1-1基本二次函數圖形",
+        "topic": "基本二次函數圖形",
+        "knowledge_point": [
+            "二次函數的定義",
+            "判斷"
+        ],
+        "difficulty": "easy",
+        "question": "下列哪一個選項是二次函數？",
+        "options": {
+            "A": "$y = 3x - 2$",
+            "B": "$y = x^2 - 4x + 1$",
+            "C": "$y = \frac{2}{x}$",
+            "D": "$y = x^3 + 2x$"
+        },
+        "answer": "B",
+        "explanation": "二次函數是指函數中自變數的最高次數為二次。選項B符合定義。"
+    },
+    {
+        "grade": "9B",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "1-1基本二次函數圖形",
+        "topic": "基本二次函數圖形",
+        "knowledge_point": [
+            "二次函數的圖形",
+            "開口方向"
+        ],
+        "difficulty": "easy",
+        "question": "二次函數 $y = 3x^2 - 5x + 2$ 的圖形開口方向為何？",
+        "options": {
+            "A": "向上",
+            "B": "向下",
+            "C": "向左",
+            "D": "向右"
+        },
+        "answer": "A",
+        "explanation": "二次函數 $y = ax^2 + bx + c$ 的圖形，若 $a > 0$ 則開口向上，若 $a < 0$ 則開口向下。此題 $a = 3 > 0$，所以開口向上。"
+    },
+    {
+        "grade": "9B",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "1-1基本二次函數圖形",
+        "topic": "基本二次函數圖形",
+        "knowledge_point": [
+            "二次函數的頂點",
+            "求值"
+        ],
+        "difficulty": "normal",
+        "question": "二次函數 $y = (x + 4)^2 - 1$ 的頂點坐標為何？",
+        "options": {
+            "A": "$(4, -1)$",
+            "B": "$(-4, -1)$",
+            "C": "$(4, 1)$",
+            "D": "$(-4, 1)$"
+        },
+        "answer": "B",
+        "explanation": "二次函數 $y = a(x - h)^2 + k$ 的頂點坐標為 $(h, k)$。所以頂點坐標為 $(-4, -1)$。"
+    },
+    {
+        "grade": "9B",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "1-1基本二次函數圖形",
+        "topic": "基本二次函數圖形",
+        "knowledge_point": [
+            "二次函數的對稱軸",
+            "求值"
+        ],
+        "difficulty": "normal",
+        "question": "二次函數 $y = x^2 + 6x + 7$ 的對稱軸方程式為何？",
+        "options": {
+            "A": "$x = -3$",
+            "B": "$x = 3$",
+            "C": "$x = -6$",
+            "D": "$x = 6$"
+        },
+        "answer": "A",
+        "explanation": "二次函數 $y = ax^2 + bx + c$ 的對稱軸方程式為 $x = -\frac{b}{2a}$。\n所以對稱軸方程式為 $x = -\frac{6}{2(1)} = -3$。"
+    },
+    {
+        "grade": "9B",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "1-1基本二次函數圖形",
+        "topic": "基本二次函數圖形",
+        "knowledge_point": [
+            "二次函數圖形應用",
+            "綜合判斷"
+        ],
+        "difficulty": "hard",
+        "question": "下列關於二次函數 $y = ax^2 + bx + c$ 的圖形敘述，何者正確？",
+        "options": {
+            "A": "若 $a > 0$，則圖形有最大值。",
+            "B": "若 $a < 0$，則圖形有最小值。",
+            "C": "頂點坐標為 $(-\frac{b}{2a}, \frac{4ac - b^2}{4a})$。",
+            "D": "以上皆非。"
+        },
+        "answer": "C",
+        "explanation": "若 $a > 0$，開口向上，有最小值。若 $a < 0$，開口向下，有最大值。頂點坐標公式正確。"
+    },
+    {
+        "grade": "9B",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "1-2二次函數圖形與最大值、最小值",
+        "topic": "二次函數圖形與最大值、最小值",
+        "knowledge_point": [
+            "二次函數最大值",
+            "求值"
+        ],
+        "difficulty": "easy",
+        "question": "二次函數 $y = -(x + 2)^2 + 7$ 的最大值為何？",
+        "options": {
+            "A": "$2$",
+            "B": "$-2$",
+            "C": "$7$",
+            "D": "$-7$"
+        },
+        "answer": "C",
+        "explanation": "二次函數 $y = a(x - h)^2 + k$，若 $a < 0$ 則有最大值 $k$。此題 $a = -1 < 0$，所以最大值為 $7$。"
+    },
+    {
+        "grade": "9B",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "1-2二次函數圖形與最大值、最小值",
+        "topic": "二次函數圖形與最大值、最小值",
+        "knowledge_point": [
+            "二次函數最小值",
+            "求值"
+        ],
+        "difficulty": "easy",
+        "question": "二次函數 $y = 3(x - 1)^2 + 5$ 的最小值為何？",
+        "options": {
+            "A": "$1$",
+            "B": "$-1$",
+            "C": "$5$",
+            "D": "$-5$"
+        },
+        "answer": "C",
+        "explanation": "二次函數 $y = a(x - h)^2 + k$，若 $a > 0$ 則有最小值 $k$。此題 $a = 3 > 0$，所以最小值為 $5$。"
+    },
+    {
+        "grade": "9B",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "1-2二次函數圖形與最大值、最小值",
+        "topic": "二次函數圖形與最大值、最小值",
+        "knowledge_point": [
+            "二次函數最大值或最小值",
+            "配方法"
+        ],
+        "difficulty": "normal",
+        "question": "二次函數 $y = x^2 - 4x + 7$ 的最小值為何？",
+        "options": {
+            "A": "$1$",
+            "B": "$2$",
+            "C": "$3$",
+            "D": "$4$"
+        },
+        "answer": "C",
+        "explanation": "$y = x^2 - 4x + 7 = (x^2 - 4x + 4) + 3 = (x - 2)^2 + 3$。\n因為 $(x - 2)^2 \ge 0$，所以最小值為 $3$。"
+    },
+    {
+        "grade": "9B",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "1-2二次函數圖形與最大值、最小值",
+        "topic": "二次函數圖形與最大值、最小值",
+        "knowledge_point": [
+            "二次函數最大值或最小值",
+            "配方法"
+        ],
+        "difficulty": "normal",
+        "question": "二次函數 $y = -x^2 + 6x - 5$ 的最大值為何？",
+        "options": {
+            "A": "$1$",
+            "B": "$2$",
+            "C": "$3$",
+            "D": "$4$"
+        },
+        "answer": "D",
+        "explanation": "$y = -x^2 + 6x - 5 = -(x^2 - 6x) - 5 = -(x^2 - 6x + 9) + 9 - 5 = -(x - 3)^2 + 4$。\n因為 $-(x - 3)^2 \le 0$，所以最大值為 $4$。"
+    },
+    {
+        "grade": "9B",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "1-2二次函數圖形與最大值、最小值",
+        "topic": "二次函數圖形與最大值、最小值",
+        "knowledge_point": [
+            "二次函數應用",
+            "綜合判斷"
+        ],
+        "difficulty": "hard",
+        "question": "一個矩形的周長為 $30$ 公分，則其面積的最大值是多少平方公分？",
+        "options": {
+            "A": "$50$",
+            "B": "$56.25$",
+            "C": "$60$",
+            "D": "$62.5$"
+        },
+        "answer": "B",
+        "explanation": "設長為 $x$ 公分，則寬為 $15 - x$ 公分。\n面積 $A = x(15 - x) = 15x - x^2 = -(x^2 - 15x) = -(x^2 - 15x + (\frac{15}{2})^2) + (\frac{15}{2})^2 = -(x - \frac{15}{2})^2 + \frac{225}{4}$。\n當 $x = \frac{15}{2} = 7.5$ 時，面積有最大值 $\frac{225}{4} = 56.25$。此時為正方形。"
+    },
+    {
+        "grade": "9B",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "2-1四分位數與盒狀圖",
+        "topic": "四分位數與盒狀圖",
+        "knowledge_point": [
+            "四分位數",
+            "計算"
+        ],
+        "difficulty": "easy",
+        "question": "下列一組數據：$10, 12, 15, 18, 20, 22, 25$，則其中位數為何？",
+        "options": {
+            "A": "$15$",
+            "B": "$18$",
+            "C": "$20$",
+            "D": "$22$"
+        },
+        "answer": "B",
+        "explanation": "將數據由小到大排列：$10, 12, 15, 18, 20, 22, 25$。\n共有 $7$ 個數據，中位數為第 $(7 + 1) \div 2 = 4$ 個數，即 $18$。"
+    },
+    {
+        "grade": "9B",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "2-1四分位數與盒狀圖",
+        "topic": "四分位數與盒狀圖",
+        "knowledge_point": [
+            "四分位數",
+            "計算"
+        ],
+        "difficulty": "easy",
+        "question": "下列一組數據：$1, 3, 5, 7, 9, 11$，則其第一四分位數為何？",
+        "options": {
+            "A": "$3$",
+            "B": "$4$",
+            "C": "$5$",
+            "D": "$6$"
+        },
+        "answer": "A",
+        "explanation": "將數據由小到大排列：$1, 3, 5, 7, 9, 11$。\n中位數為 $(5 + 7) \div 2 = 6$。\n第一四分位數為前半部數據的中位數，即 $1, 3, 5$ 的中位數，為 $3$。"
+    },
+    {
+        "grade": "9B",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "2-1四分位數與盒狀圖",
+        "topic": "四分位數與盒狀圖",
+        "knowledge_point": [
+            "四分位距",
+            "計算"
+        ],
+        "difficulty": "normal",
+        "question": "下列一組數據：$10, 12, 15, 18, 20, 22, 25, 28$，則其四分位距為何？",
+        "options": {
+            "A": "$5$",
+            "B": "$7$",
+            "C": "$10$",
+            "D": "$13$"
+        },
+        "answer": "C",
+        "explanation": "將數據由小到大排列：$10, 12, 15, 18, 20, 22, 25, 28$。\n中位數為 $(18 + 20) \div 2 = 19$。\n第一四分位數為前半部數據的中位數，即 $10, 12, 15, 18$ 的中位數，為 $(12 + 15) \div 2 = 13.5$。\n第三四分位數為後半部數據的中位數，即 $20, 22, 25, 28$ 的中位數，為 $(22 + 25) \div 2 = 23.5$。\n四分位距 = 第三四分位數 - 第一四分位數 $= 23.5 - 13.5 = 10$。"
+    },
+    {
+        "grade": "9B",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "2-1四分位數與盒狀圖",
+        "topic": "四分位數與盒狀圖",
+        "knowledge_point": [
+            "盒狀圖",
+            "判讀"
+        ],
+        "difficulty": "normal",
+        "question": "下列關於盒狀圖的敘述，何者正確？",
+        "options": {
+            "A": "盒狀圖可以顯示資料的平均數。",
+            "B": "盒狀圖可以顯示資料的眾數。",
+            "C": "盒狀圖可以顯示資料的四分位距。",
+            "D": "盒狀圖可以顯示資料的標準差。"
+        },
+        "answer": "C",
+        "explanation": "盒狀圖可以顯示資料的最小值、最大值、中位數、第一四分位數、第三四分位數，所以可以計算四分位距。"
+    },
+    {
+        "grade": "9B",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "2-1四分位數與盒狀圖",
+        "topic": "四分位數與盒狀圖",
+        "knowledge_point": [
+            "統計數據應用",
+            "綜合判斷"
+        ],
+        "difficulty": "hard",
+        "question": "某班 $20$ 位同學的數學分數，其盒狀圖如下所示。若最低分為 $50$，最高分為 $90$，中位數為 $75$，第一四分位數為 $65$，第三四分位數為 $85$，則下列哪一個敘述是錯誤的？",
+        "options": {
+            "A": "全距為 $40$。",
+            "B": "四分位距為 $20$。",
+            "C": "至少有 $5$ 位同學的分數在 $85$ 分以上。",
+            "D": "至少有 $12$ 位同學的分數在 $75$ 分以下。"
+        },
+        "answer": "D",
+        "explanation": "全距 = $90 - 50 = 40$。\n四分位距 = $85 - 65 = 20$。\n至少有 $25\%$ 的同學分數在第三四分位數以上，所以至少有 $20 \times 25\% = 5$ 位同學的分數在 $85$ 分以上。\n至少有 $50\%$ 的同學分數在中位數以下，所以至少有 $20 \times 50\% = 10$ 位同學的分數在 $75$ 分以下。\n所以D選項是錯誤的，因為是「至少有 $10$ 位」，而不是「至少有 $12$ 位」。"
+    },
+    {
+        "grade": "9B",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "2-2機率",
+        "topic": "機率",
+        "knowledge_point": [
+            "機率的定義",
+            "計算"
+        ],
+        "difficulty": "easy",
+        "question": "投擲一枚公正的硬幣一次，出現反面的機率是多少？",
+        "options": {
+            "A": "$0$",
+            "B": "$\frac{1}{2}$",
+            "C": "$1$",
+            "D": "$2$"
+        },
+        "answer": "B",
+        "explanation": "出現反面的情況有 $1$ 種，總情況有 $2$ 種 (正面或反面)，所以機率為 $\frac{1}{2}$。"
+    },
+    {
+        "grade": "9B",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "2-2機率",
+        "topic": "機率",
+        "knowledge_point": [
+            "機率的計算",
+            "骰子"
+        ],
+        "difficulty": "easy",
+        "question": "投擲一個公正的骰子一次，出現點數為奇數的機率是多少？",
+        "options": {
+            "A": "$\frac{1}{6}$",
+            "B": "$\frac{1}{3}$",
+            "C": "$\frac{1}{2}$",
+            "D": "$\frac{2}{3}$"
+        },
+        "answer": "C",
+        "explanation": "點數為奇數的情況有 $3$ 種 (1, 3, 5)，總情況有 $6$ 種，所以機率為 $\frac{3}{6} = \frac{1}{2}$。"
+    },
+    {
+        "grade": "9B",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "2-2機率",
+        "topic": "機率",
+        "knowledge_point": [
+            "機率的計算",
+            "撲克牌"
+        ],
+        "difficulty": "normal",
+        "question": "從一副撲克牌中隨機抽取一張，抽到黑桃的機率是多少？",
+        "options": {
+            "A": "$\frac{1}{4}$",
+            "B": "$\frac{1}{2}$",
+            "C": "$\frac{1}{13}$",
+            "D": "$\frac{1}{52}$"
+        },
+        "answer": "A",
+        "explanation": "一副撲克牌有 $52$ 張，黑桃有 $13$ 張，所以機率為 $\frac{13}{52} = \frac{1}{4}$。"
+    },
+    {
+        "grade": "9B",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "2-2機率",
+        "topic": "機率",
+        "knowledge_point": [
+            "機率的計算",
+            "球的抽取"
+        ],
+        "difficulty": "normal",
+        "question": "袋中有 $4$ 個紅球和 $6$ 個白球，隨機抽取一個球，抽到白球的機率是多少？",
+        "options": {
+            "A": "$\frac{2}{5}$",
+            "B": "$\frac{3}{5}$",
+            "C": "$\frac{1}{2}$",
+            "D": "$\frac{1}{3}$"
+        },
+        "answer": "B",
+        "explanation": "白球有 $6$ 個，總球數有 $4 + 6 = 10$ 個，所以機率為 $\frac{6}{10} = \frac{3}{5}$。"
+    },
+    {
+        "grade": "9B",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "2-2機率",
+        "topic": "機率",
+        "knowledge_point": [
+            "機率應用",
+            "綜合判斷"
+        ],
+        "difficulty": "hard",
+        "question": "投擲兩枚公正的硬幣一次，出現兩面都是正面的機率是多少？",
+        "options": {
+            "A": "$\frac{1}{4}$",
+            "B": "$\frac{1}{2}$",
+            "C": "$\frac{3}{4}$",
+            "D": "$1$"
+        },
+        "answer": "A",
+        "explanation": "所有可能的情況有：(正, 正), (正, 反), (反, 正), (反, 反)，共 $4$ 種。\n出現兩面都是正面的情況有：(正, 正)，共 $1$ 種。\n所以機率為 $\frac{1}{4}$。"
+    },
+    {
+        "grade": "9B",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "3-1角柱與圓柱",
+        "topic": "角柱與圓柱",
+        "knowledge_point": [
+            "角柱",
+            "定義"
+        ],
+        "difficulty": "easy",
+        "question": "下列哪一個選項是角柱？",
+        "options": {
+            "A": "圓錐",
+            "B": "三角錐",
+            "C": "四角柱",
+            "D": "球"
+        },
+        "answer": "C",
+        "explanation": "角柱是指上下底面是多邊形，側面是長方形的立體圖形。四角柱符合定義。"
+    },
+    {
+        "grade": "9B",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "3-1角柱與圓柱",
+        "topic": "角柱與圓柱",
+        "knowledge_point": [
+            "圓柱",
+            "定義"
+        ],
+        "difficulty": "easy",
+        "question": "下列哪一個選項是圓柱？",
+        "options": {
+            "A": "圓錐",
+            "B": "三角錐",
+            "C": "圓柱",
+            "D": "球"
+        },
+        "answer": "C",
+        "explanation": "圓柱是指上下底面是圓形，側面是曲面的立體圖形。圓柱符合定義。"
+    },
+    {
+        "grade": "9B",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "3-1角柱與圓柱",
+        "topic": "角柱與圓柱",
+        "knowledge_point": [
+            "柱體體積",
+            "計算"
+        ],
+        "difficulty": "normal",
+        "question": "一個長方體的長為 $5$ 公分，寬為 $4$ 公分，高為 $3$ 公分，則其體積是多少立方公分？",
+        "options": {
+            "A": "$12$",
+            "B": "$20$",
+            "C": "$30$",
+            "D": "$60$"
+        },
+        "answer": "D",
+        "explanation": "長方體體積 = 長 $\times$ 寬 $\times$ 高。\n所以體積為 $5 \times 4 \times 3 = 60$ 立方公分。"
+    },
+    {
+        "grade": "9B",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "3-1角柱與圓柱",
+        "topic": "角柱與圓柱",
+        "knowledge_point": [
+            "圓柱體積",
+            "計算"
+        ],
+        "difficulty": "normal",
+        "question": "一個圓柱體的底面半徑為 $2$ 公分，高為 $6$ 公分，則其體積是多少立方公分？",
+        "options": {
+            "A": "$12\pi$",
+            "B": "$24\pi$",
+            "C": "$36\pi$",
+            "D": "$48\pi$"
+        },
+        "answer": "B",
+        "explanation": "圓柱體體積 = 底面積 $\times$ 高。\n底面積為 $\pi r^2 = \pi \times 2^2 = 4\pi$。\n體積為 $4\pi \times 6 = 24\pi$ 立方公分。"
+    },
+    {
+        "grade": "9B",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "3-1角柱與圓柱",
+        "topic": "角柱與圓柱",
+        "knowledge_point": [
+            "柱體表面積",
+            "計算"
+        ],
+        "difficulty": "hard",
+        "question": "一個正方體的邊長為 $4$ 公分，則其表面積是多少平方公分？",
+        "options": {
+            "A": "$16$",
+            "B": "$32$",
+            "C": "$64$",
+            "D": "$96$"
+        },
+        "answer": "D",
+        "explanation": "正方體有 $6$ 個面，每個面都是正方形。\n每個面的面積為 $4 \times 4 = 16$ 平方公分。\n表面積為 $16 \times 6 = 96$ 平方公分。"
+    },
+    {
+        "grade": "9B",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "3-2角錐與圓錐",
+        "topic": "角錐與圓錐",
+        "knowledge_point": [
+            "角錐",
+            "定義"
+        ],
+        "difficulty": "easy",
+        "question": "下列哪一個選項是角錐？",
+        "options": {
+            "A": "圓柱",
+            "B": "三角柱",
+            "C": "四角錐",
+            "D": "球"
+        },
+        "answer": "C",
+        "explanation": "角錐是指只有一個底面是多邊形，側面是三角形的立體圖形。四角錐符合定義。"
+    },
+    {
+        "grade": "9B",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "3-2角錐與圓錐",
+        "topic": "角錐與圓錐",
+        "knowledge_point": [
+            "圓錐",
+            "定義"
+        ],
+        "difficulty": "easy",
+        "question": "下列哪一個選項是圓錐？",
+        "options": {
+            "A": "圓柱",
+            "B": "三角柱",
+            "C": "圓錐",
+            "D": "球"
+        },
+        "answer": "C",
+        "explanation": "圓錐是指只有一個底面是圓形，側面是曲面的立體圖形。圓錐符合定義。"
+    },
+    {
+        "grade": "9B",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "3-2角錐與圓錐",
+        "topic": "角錐與圓錐",
+        "knowledge_point": [
+            "錐體體積",
+            "計算"
+        ],
+        "difficulty": "normal",
+        "question": "一個三角錐的底面積為 $10$ 平方公分，高為 $6$ 公分，則其體積是多少立方公分？",
+        "options": {
+            "A": "$20$",
+            "B": "$30$",
+            "C": "$40$",
+            "D": "$60$"
+        },
+        "answer": "A",
+        "explanation": "錐體體積 = $\frac{1}{3} \times$ 底面積 $\times$ 高。\n所以體積為 $\frac{1}{3} \times 10 \times 6 = 20$ 立方公分。"
+    },
+    {
+        "grade": "9B",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "3-2角錐與圓錐",
+        "topic": "角錐與圓錐",
+        "knowledge_point": [
+            "圓錐體積",
+            "計算"
+        ],
+        "difficulty": "normal",
+        "question": "一個圓錐體的底面半徑為 $3$ 公分，高為 $4$ 公分，則其體積是多少立方公分？",
+        "options": {
+            "A": "$12\pi$",
+            "B": "$16\pi$",
+            "C": "$24\pi$",
+            "D": "$36\pi$"
+        },
+        "answer": "A",
+        "explanation": "圓錐體體積 = $\frac{1}{3} \times$ 底面積 $\times$ 高。\n底面積為 $\pi r^2 = \pi \times 3^2 = 9\pi$。\n體積為 $\frac{1}{3} \times 9\pi \times 4 = 12\pi$ 立方公分。"
+    },
+    {
+        "grade": "9B",
+        "subject": "數學",
+        "publisher": "翰林",
+        "chapter": "3-2角錐與圓錐",
+        "topic": "角錐與圓錐",
+        "knowledge_point": [
+            "錐體表面積",
+            "計算"
+        ],
+        "difficulty": "hard",
+        "question": "一個圓錐體的底面半徑為 $3$ 公分，斜高為 $5$ 公分，則其表面積是多少平方公分？",
+        "options": {
+            "A": "$9\pi$",
+            "B": "$15\pi$",
+            "C": "$24\pi$",
+            "D": "$30\pi$"
+        },
+        "answer": "C",
+        "explanation": "圓錐體表面積 = 底面積 + 側面面積。\n底面積為 $\pi r^2 = \pi \times 3^2 = 9\pi$。\n側面面積為 $\pi r l = \pi \times 3 \times 5 = 15\pi$。\n表面積為 $9\pi + 15\pi = 24\pi$ 平方公分。"
+    }
+]

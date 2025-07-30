@@ -1,0 +1,5320 @@
+[
+  {
+    "grade": "7A",
+    "subject": "地理",
+    "publisher": "南一",
+    "chapter": "地圖與座標系統",
+    "topic": "經緯度判讀",
+    "knowledge_point": [
+      "經緯度判讀",
+      "方位辨識"
+    ],
+    "difficulty": "normal",
+    "question": "第1題：經緯度判讀的相關敘述，下列何者正確？",
+    "options": {
+      "A": "經緯度判讀相關選項A",
+      "B": "經緯度判讀相關選項B",
+      "C": "經緯度判讀相關選項C",
+      "D": "經緯度判讀相關選項D"
+    },
+    "answer": "D"
+  },
+  {
+    "grade": "7A",
+    "subject": "地理",
+    "publisher": "南一",
+    "chapter": "世界中的臺灣",
+    "topic": "地球自轉與時差",
+    "knowledge_point": [
+      "時區",
+      "經緯線",
+      "日夜現象"
+    ],
+    "difficulty": "normal",
+    "question": "第2題：地球自轉與時差的相關敘述，下列何者正確？",
+    "options": {
+      "A": "地球自轉與時差相關選項A",
+      "B": "地球自轉與時差相關選項B",
+      "C": "地球自轉與時差相關選項C",
+      "D": "地球自轉與時差相關選項D"
+    },
+    "answer": "D"
+  },
+  {
+    "grade": "7A",
+    "subject": "地理",
+    "publisher": "南一",
+    "chapter": "高低起伏的地形",
+    "topic": "臺灣主要地形",
+    "knowledge_point": [
+      "山地",
+      "丘陵",
+      "平原",
+      "盆地"
+    ],
+    "difficulty": "normal",
+    "question": "第3題：臺灣主要地形的相關敘述，下列何者正確？",
+    "options": {
+      "A": "臺灣主要地形相關選項A",
+      "B": "臺灣主要地形相關選項B",
+      "C": "臺灣主要地形相關選項C",
+      "D": "臺灣主要地形相關選項D"
+    },
+    "answer": "D"
+  },
+  {
+    "grade": "7A",
+    "subject": "地理",
+    "publisher": "南一",
+    "chapter": "臺灣的海岸與島嶼",
+    "topic": "離島與海岸地形",
+    "knowledge_point": [
+      "離島分布",
+      "海岸地形"
+    ],
+    "difficulty": "normal",
+    "question": "第4題：離島與海岸地形的相關敘述，下列何者正確？",
+    "options": {
+      "A": "離島與海岸地形相關選項A",
+      "B": "離島與海岸地形相關選項B",
+      "C": "離島與海岸地形相關選項C",
+      "D": "離島與海岸地形相關選項D"
+    },
+    "answer": "C"
+  },
+  {
+    "grade": "7A",
+    "subject": "地理",
+    "publisher": "南一",
+    "chapter": "天氣與氣候",
+    "topic": "降水類型與氣候分布",
+    "knowledge_point": [
+      "氣候類型",
+      "天氣因子",
+      "降水類型"
+    ],
+    "difficulty": "normal",
+    "question": "第5題：降水類型與氣候分布的相關敘述，下列何者正確？",
+    "options": {
+      "A": "降水類型與氣候分布相關選項A",
+      "B": "降水類型與氣候分布相關選項B",
+      "C": "降水類型與氣候分布相關選項C",
+      "D": "降水類型與氣候分布相關選項D"
+    },
+    "answer": "D"
+  },
+  {
+    "grade": "7A",
+    "subject": "地理",
+    "publisher": "南一",
+    "chapter": "水文與水資源",
+    "topic": "水循環與水資源利用",
+    "knowledge_point": [
+      "水循環",
+      "水資源分布",
+      "集水區"
+    ],
+    "difficulty": "normal",
+    "question": "第6題：水循環與水資源利用的相關敘述，下列何者正確？",
+    "options": {
+      "A": "水循環與水資源利用相關選項A",
+      "B": "水循環與水資源利用相關選項B",
+      "C": "水循環與水資源利用相關選項C",
+      "D": "水循環與水資源利用相關選項D"
+    },
+    "answer": "B"
+  },
+  {
+    "grade": "7A",
+    "subject": "地理",
+    "publisher": "南一",
+    "chapter": "地圖與座標系統",
+    "topic": "經緯度判讀",
+    "knowledge_point": [
+      "經緯度判讀",
+      "方位辨識"
+    ],
+    "difficulty": "normal",
+    "question": "第7題：經緯度判讀的相關敘述，下列何者正確？",
+    "options": {
+      "A": "經緯度判讀相關選項A",
+      "B": "經緯度判讀相關選項B",
+      "C": "經緯度判讀相關選項C",
+      "D": "經緯度判讀相關選項D"
+    },
+    "answer": "A"
+  },
+  {
+    "grade": "7A",
+    "subject": "地理",
+    "publisher": "南一",
+    "chapter": "世界中的臺灣",
+    "topic": "地球自轉與時差",
+    "knowledge_point": [
+      "時區",
+      "經緯線",
+      "日夜現象"
+    ],
+    "difficulty": "normal",
+    "question": "第8題：地球自轉與時差的相關敘述，下列何者正確？",
+    "options": {
+      "A": "地球自轉與時差相關選項A",
+      "B": "地球自轉與時差相關選項B",
+      "C": "地球自轉與時差相關選項C",
+      "D": "地球自轉與時差相關選項D"
+    },
+    "answer": "B"
+  },
+  {
+    "grade": "7A",
+    "subject": "地理",
+    "publisher": "南一",
+    "chapter": "高低起伏的地形",
+    "topic": "臺灣主要地形",
+    "knowledge_point": [
+      "山地",
+      "丘陵",
+      "平原",
+      "盆地"
+    ],
+    "difficulty": "normal",
+    "question": "第9題：臺灣主要地形的相關敘述，下列何者正確？",
+    "options": {
+      "A": "臺灣主要地形相關選項A",
+      "B": "臺灣主要地形相關選項B",
+      "C": "臺灣主要地形相關選項C",
+      "D": "臺灣主要地形相關選項D"
+    },
+    "answer": "B"
+  },
+  {
+    "grade": "7A",
+    "subject": "地理",
+    "publisher": "南一",
+    "chapter": "臺灣的海岸與島嶼",
+    "topic": "離島與海岸地形",
+    "knowledge_point": [
+      "離島分布",
+      "海岸地形"
+    ],
+    "difficulty": "normal",
+    "question": "第10題：離島與海岸地形的相關敘述，下列何者正確？",
+    "options": {
+      "A": "離島與海岸地形相關選項A",
+      "B": "離島與海岸地形相關選項B",
+      "C": "離島與海岸地形相關選項C",
+      "D": "離島與海岸地形相關選項D"
+    },
+    "answer": "B"
+  },
+  {
+    "grade": "7A",
+    "subject": "地理",
+    "publisher": "南一",
+    "chapter": "天氣與氣候",
+    "topic": "降水類型與氣候分布",
+    "knowledge_point": [
+      "氣候類型",
+      "天氣因子",
+      "降水類型"
+    ],
+    "difficulty": "normal",
+    "question": "第11題：降水類型與氣候分布的相關敘述，下列何者正確？",
+    "options": {
+      "A": "降水類型與氣候分布相關選項A",
+      "B": "降水類型與氣候分布相關選項B",
+      "C": "降水類型與氣候分布相關選項C",
+      "D": "降水類型與氣候分布相關選項D"
+    },
+    "answer": "C"
+  },
+  {
+    "grade": "7A",
+    "subject": "地理",
+    "publisher": "南一",
+    "chapter": "水文與水資源",
+    "topic": "水循環與水資源利用",
+    "knowledge_point": [
+      "水循環",
+      "水資源分布",
+      "集水區"
+    ],
+    "difficulty": "normal",
+    "question": "第12題：水循環與水資源利用的相關敘述，下列何者正確？",
+    "options": {
+      "A": "水循環與水資源利用相關選項A",
+      "B": "水循環與水資源利用相關選項B",
+      "C": "水循環與水資源利用相關選項C",
+      "D": "水循環與水資源利用相關選項D"
+    },
+    "answer": "A"
+  },
+  {
+    "grade": "7A",
+    "subject": "地理",
+    "publisher": "南一",
+    "chapter": "地圖與座標系統",
+    "topic": "經緯度判讀",
+    "knowledge_point": [
+      "經緯度判讀",
+      "方位辨識"
+    ],
+    "difficulty": "normal",
+    "question": "第13題：經緯度判讀的相關敘述，下列何者正確？",
+    "options": {
+      "A": "經緯度判讀相關選項A",
+      "B": "經緯度判讀相關選項B",
+      "C": "經緯度判讀相關選項C",
+      "D": "經緯度判讀相關選項D"
+    },
+    "answer": "D"
+  },
+  {
+    "grade": "7A",
+    "subject": "地理",
+    "publisher": "南一",
+    "chapter": "世界中的臺灣",
+    "topic": "地球自轉與時差",
+    "knowledge_point": [
+      "時區",
+      "經緯線",
+      "日夜現象"
+    ],
+    "difficulty": "normal",
+    "question": "第14題：地球自轉與時差的相關敘述，下列何者正確？",
+    "options": {
+      "A": "地球自轉與時差相關選項A",
+      "B": "地球自轉與時差相關選項B",
+      "C": "地球自轉與時差相關選項C",
+      "D": "地球自轉與時差相關選項D"
+    },
+    "answer": "D"
+  },
+  {
+    "grade": "7A",
+    "subject": "地理",
+    "publisher": "南一",
+    "chapter": "高低起伏的地形",
+    "topic": "臺灣主要地形",
+    "knowledge_point": [
+      "山地",
+      "丘陵",
+      "平原",
+      "盆地"
+    ],
+    "difficulty": "normal",
+    "question": "第15題：臺灣主要地形的相關敘述，下列何者正確？",
+    "options": {
+      "A": "臺灣主要地形相關選項A",
+      "B": "臺灣主要地形相關選項B",
+      "C": "臺灣主要地形相關選項C",
+      "D": "臺灣主要地形相關選項D"
+    },
+    "answer": "B"
+  },
+  {
+    "grade": "7A",
+    "subject": "地理",
+    "publisher": "南一",
+    "chapter": "臺灣的海岸與島嶼",
+    "topic": "離島與海岸地形",
+    "knowledge_point": [
+      "離島分布",
+      "海岸地形"
+    ],
+    "difficulty": "normal",
+    "question": "第16題：離島與海岸地形的相關敘述，下列何者正確？",
+    "options": {
+      "A": "離島與海岸地形相關選項A",
+      "B": "離島與海岸地形相關選項B",
+      "C": "離島與海岸地形相關選項C",
+      "D": "離島與海岸地形相關選項D"
+    },
+    "answer": "B"
+  },
+  {
+    "grade": "7A",
+    "subject": "地理",
+    "publisher": "南一",
+    "chapter": "天氣與氣候",
+    "topic": "降水類型與氣候分布",
+    "knowledge_point": [
+      "氣候類型",
+      "天氣因子",
+      "降水類型"
+    ],
+    "difficulty": "normal",
+    "question": "第17題：降水類型與氣候分布的相關敘述，下列何者正確？",
+    "options": {
+      "A": "降水類型與氣候分布相關選項A",
+      "B": "降水類型與氣候分布相關選項B",
+      "C": "降水類型與氣候分布相關選項C",
+      "D": "降水類型與氣候分布相關選項D"
+    },
+    "answer": "B"
+  },
+  {
+    "grade": "7A",
+    "subject": "地理",
+    "publisher": "南一",
+    "chapter": "水文與水資源",
+    "topic": "水循環與水資源利用",
+    "knowledge_point": [
+      "水循環",
+      "水資源分布",
+      "集水區"
+    ],
+    "difficulty": "normal",
+    "question": "第18題：水循環與水資源利用的相關敘述，下列何者正確？",
+    "options": {
+      "A": "水循環與水資源利用相關選項A",
+      "B": "水循環與水資源利用相關選項B",
+      "C": "水循環與水資源利用相關選項C",
+      "D": "水循環與水資源利用相關選項D"
+    },
+    "answer": "D"
+  },
+  {
+    "grade": "7A",
+    "subject": "地理",
+    "publisher": "南一",
+    "chapter": "地圖與座標系統",
+    "topic": "經緯度判讀",
+    "knowledge_point": [
+      "經緯度判讀",
+      "方位辨識"
+    ],
+    "difficulty": "normal",
+    "question": "第19題：經緯度判讀的相關敘述，下列何者正確？",
+    "options": {
+      "A": "經緯度判讀相關選項A",
+      "B": "經緯度判讀相關選項B",
+      "C": "經緯度判讀相關選項C",
+      "D": "經緯度判讀相關選項D"
+    },
+    "answer": "B"
+  },
+  {
+    "grade": "7A",
+    "subject": "地理",
+    "publisher": "南一",
+    "chapter": "世界中的臺灣",
+    "topic": "地球自轉與時差",
+    "knowledge_point": [
+      "時區",
+      "經緯線",
+      "日夜現象"
+    ],
+    "difficulty": "normal",
+    "question": "第20題：地球自轉與時差的相關敘述，下列何者正確？",
+    "options": {
+      "A": "地球自轉與時差相關選項A",
+      "B": "地球自轉與時差相關選項B",
+      "C": "地球自轉與時差相關選項C",
+      "D": "地球自轉與時差相關選項D"
+    },
+    "answer": "A"
+  },
+  {
+    "grade": "7A",
+    "subject": "地理",
+    "publisher": "南一",
+    "chapter": "高低起伏的地形",
+    "topic": "臺灣主要地形",
+    "knowledge_point": [
+      "山地",
+      "丘陵",
+      "平原",
+      "盆地"
+    ],
+    "difficulty": "normal",
+    "question": "第21題：臺灣主要地形的相關敘述，下列何者正確？",
+    "options": {
+      "A": "臺灣主要地形相關選項A",
+      "B": "臺灣主要地形相關選項B",
+      "C": "臺灣主要地形相關選項C",
+      "D": "臺灣主要地形相關選項D"
+    },
+    "answer": "A"
+  },
+  {
+    "grade": "7A",
+    "subject": "地理",
+    "publisher": "南一",
+    "chapter": "臺灣的海岸與島嶼",
+    "topic": "離島與海岸地形",
+    "knowledge_point": [
+      "離島分布",
+      "海岸地形"
+    ],
+    "difficulty": "normal",
+    "question": "第22題：離島與海岸地形的相關敘述，下列何者正確？",
+    "options": {
+      "A": "離島與海岸地形相關選項A",
+      "B": "離島與海岸地形相關選項B",
+      "C": "離島與海岸地形相關選項C",
+      "D": "離島與海岸地形相關選項D"
+    },
+    "answer": "D"
+  },
+  {
+    "grade": "7A",
+    "subject": "地理",
+    "publisher": "南一",
+    "chapter": "天氣與氣候",
+    "topic": "降水類型與氣候分布",
+    "knowledge_point": [
+      "氣候類型",
+      "天氣因子",
+      "降水類型"
+    ],
+    "difficulty": "normal",
+    "question": "第23題：降水類型與氣候分布的相關敘述，下列何者正確？",
+    "options": {
+      "A": "降水類型與氣候分布相關選項A",
+      "B": "降水類型與氣候分布相關選項B",
+      "C": "降水類型與氣候分布相關選項C",
+      "D": "降水類型與氣候分布相關選項D"
+    },
+    "answer": "D"
+  },
+  {
+    "grade": "7A",
+    "subject": "地理",
+    "publisher": "南一",
+    "chapter": "水文與水資源",
+    "topic": "水循環與水資源利用",
+    "knowledge_point": [
+      "水循環",
+      "水資源分布",
+      "集水區"
+    ],
+    "difficulty": "normal",
+    "question": "第24題：水循環與水資源利用的相關敘述，下列何者正確？",
+    "options": {
+      "A": "水循環與水資源利用相關選項A",
+      "B": "水循環與水資源利用相關選項B",
+      "C": "水循環與水資源利用相關選項C",
+      "D": "水循環與水資源利用相關選項D"
+    },
+    "answer": "A"
+  },
+  {
+    "grade": "7A",
+    "subject": "地理",
+    "publisher": "南一",
+    "chapter": "地圖與座標系統",
+    "topic": "經緯度判讀",
+    "knowledge_point": [
+      "經緯度判讀",
+      "方位辨識"
+    ],
+    "difficulty": "normal",
+    "question": "第25題：經緯度判讀的相關敘述，下列何者正確？",
+    "options": {
+      "A": "經緯度判讀相關選項A",
+      "B": "經緯度判讀相關選項B",
+      "C": "經緯度判讀相關選項C",
+      "D": "經緯度判讀相關選項D"
+    },
+    "answer": "C"
+  },
+  {
+    "grade": "7A",
+    "subject": "地理",
+    "publisher": "南一",
+    "chapter": "世界中的臺灣",
+    "topic": "地球自轉與時差",
+    "knowledge_point": [
+      "時區",
+      "經緯線",
+      "日夜現象"
+    ],
+    "difficulty": "normal",
+    "question": "第26題：地球自轉與時差的相關敘述，下列何者正確？",
+    "options": {
+      "A": "地球自轉與時差相關選項A",
+      "B": "地球自轉與時差相關選項B",
+      "C": "地球自轉與時差相關選項C",
+      "D": "地球自轉與時差相關選項D"
+    },
+    "answer": "C"
+  },
+  {
+    "grade": "7A",
+    "subject": "地理",
+    "publisher": "南一",
+    "chapter": "高低起伏的地形",
+    "topic": "臺灣主要地形",
+    "knowledge_point": [
+      "山地",
+      "丘陵",
+      "平原",
+      "盆地"
+    ],
+    "difficulty": "normal",
+    "question": "第27題：臺灣主要地形的相關敘述，下列何者正確？",
+    "options": {
+      "A": "臺灣主要地形相關選項A",
+      "B": "臺灣主要地形相關選項B",
+      "C": "臺灣主要地形相關選項C",
+      "D": "臺灣主要地形相關選項D"
+    },
+    "answer": "D"
+  },
+  {
+    "grade": "7A",
+    "subject": "地理",
+    "publisher": "南一",
+    "chapter": "臺灣的海岸與島嶼",
+    "topic": "離島與海岸地形",
+    "knowledge_point": [
+      "離島分布",
+      "海岸地形"
+    ],
+    "difficulty": "normal",
+    "question": "第28題：離島與海岸地形的相關敘述，下列何者正確？",
+    "options": {
+      "A": "離島與海岸地形相關選項A",
+      "B": "離島與海岸地形相關選項B",
+      "C": "離島與海岸地形相關選項C",
+      "D": "離島與海岸地形相關選項D"
+    },
+    "answer": "A"
+  },
+  {
+    "grade": "7A",
+    "subject": "地理",
+    "publisher": "南一",
+    "chapter": "天氣與氣候",
+    "topic": "降水類型與氣候分布",
+    "knowledge_point": [
+      "氣候類型",
+      "天氣因子",
+      "降水類型"
+    ],
+    "difficulty": "normal",
+    "question": "第29題：降水類型與氣候分布的相關敘述，下列何者正確？",
+    "options": {
+      "A": "降水類型與氣候分布相關選項A",
+      "B": "降水類型與氣候分布相關選項B",
+      "C": "降水類型與氣候分布相關選項C",
+      "D": "降水類型與氣候分布相關選項D"
+    },
+    "answer": "C"
+  },
+  {
+    "grade": "7A",
+    "subject": "地理",
+    "publisher": "南一",
+    "chapter": "水文與水資源",
+    "topic": "水循環與水資源利用",
+    "knowledge_point": [
+      "水循環",
+      "水資源分布",
+      "集水區"
+    ],
+    "difficulty": "normal",
+    "question": "第30題：水循環與水資源利用的相關敘述，下列何者正確？",
+    "options": {
+      "A": "水循環與水資源利用相關選項A",
+      "B": "水循環與水資源利用相關選項B",
+      "C": "水循環與水資源利用相關選項C",
+      "D": "水循環與水資源利用相關選項D"
+    },
+    "answer": "A"
+  },
+  {
+    "grade": "7A",
+    "subject": "地理",
+    "publisher": "南一",
+    "chapter": "地圖與座標系統",
+    "topic": "經緯度判讀",
+    "knowledge_point": [
+      "經緯度判讀",
+      "方位辨識"
+    ],
+    "difficulty": "normal",
+    "question": "第31題：經緯度判讀的相關敘述，下列何者正確？",
+    "options": {
+      "A": "經緯度判讀相關選項A",
+      "B": "經緯度判讀相關選項B",
+      "C": "經緯度判讀相關選項C",
+      "D": "經緯度判讀相關選項D"
+    },
+    "answer": "D"
+  },
+  {
+    "grade": "7A",
+    "subject": "地理",
+    "publisher": "南一",
+    "chapter": "世界中的臺灣",
+    "topic": "地球自轉與時差",
+    "knowledge_point": [
+      "時區",
+      "經緯線",
+      "日夜現象"
+    ],
+    "difficulty": "normal",
+    "question": "第32題：地球自轉與時差的相關敘述，下列何者正確？",
+    "options": {
+      "A": "地球自轉與時差相關選項A",
+      "B": "地球自轉與時差相關選項B",
+      "C": "地球自轉與時差相關選項C",
+      "D": "地球自轉與時差相關選項D"
+    },
+    "answer": "B"
+  },
+  {
+    "grade": "7A",
+    "subject": "地理",
+    "publisher": "南一",
+    "chapter": "高低起伏的地形",
+    "topic": "臺灣主要地形",
+    "knowledge_point": [
+      "山地",
+      "丘陵",
+      "平原",
+      "盆地"
+    ],
+    "difficulty": "normal",
+    "question": "第33題：臺灣主要地形的相關敘述，下列何者正確？",
+    "options": {
+      "A": "臺灣主要地形相關選項A",
+      "B": "臺灣主要地形相關選項B",
+      "C": "臺灣主要地形相關選項C",
+      "D": "臺灣主要地形相關選項D"
+    },
+    "answer": "D"
+  },
+  {
+    "grade": "7A",
+    "subject": "地理",
+    "publisher": "南一",
+    "chapter": "臺灣的海岸與島嶼",
+    "topic": "離島與海岸地形",
+    "knowledge_point": [
+      "離島分布",
+      "海岸地形"
+    ],
+    "difficulty": "normal",
+    "question": "第34題：離島與海岸地形的相關敘述，下列何者正確？",
+    "options": {
+      "A": "離島與海岸地形相關選項A",
+      "B": "離島與海岸地形相關選項B",
+      "C": "離島與海岸地形相關選項C",
+      "D": "離島與海岸地形相關選項D"
+    },
+    "answer": "C"
+  },
+  {
+    "grade": "7A",
+    "subject": "地理",
+    "publisher": "南一",
+    "chapter": "天氣與氣候",
+    "topic": "降水類型與氣候分布",
+    "knowledge_point": [
+      "氣候類型",
+      "天氣因子",
+      "降水類型"
+    ],
+    "difficulty": "normal",
+    "question": "第35題：降水類型與氣候分布的相關敘述，下列何者正確？",
+    "options": {
+      "A": "降水類型與氣候分布相關選項A",
+      "B": "降水類型與氣候分布相關選項B",
+      "C": "降水類型與氣候分布相關選項C",
+      "D": "降水類型與氣候分布相關選項D"
+    },
+    "answer": "D"
+  },
+  {
+    "grade": "7A",
+    "subject": "地理",
+    "publisher": "南一",
+    "chapter": "水文與水資源",
+    "topic": "水循環與水資源利用",
+    "knowledge_point": [
+      "水循環",
+      "水資源分布",
+      "集水區"
+    ],
+    "difficulty": "normal",
+    "question": "第36題：水循環與水資源利用的相關敘述，下列何者正確？",
+    "options": {
+      "A": "水循環與水資源利用相關選項A",
+      "B": "水循環與水資源利用相關選項B",
+      "C": "水循環與水資源利用相關選項C",
+      "D": "水循環與水資源利用相關選項D"
+    },
+    "answer": "A"
+  },
+  {
+    "grade": "7A",
+    "subject": "地理",
+    "publisher": "南一",
+    "chapter": "地圖與座標系統",
+    "topic": "經緯度判讀",
+    "knowledge_point": [
+      "經緯度判讀",
+      "方位辨識"
+    ],
+    "difficulty": "normal",
+    "question": "第37題：經緯度判讀的相關敘述，下列何者正確？",
+    "options": {
+      "A": "經緯度判讀相關選項A",
+      "B": "經緯度判讀相關選項B",
+      "C": "經緯度判讀相關選項C",
+      "D": "經緯度判讀相關選項D"
+    },
+    "answer": "D"
+  },
+  {
+    "grade": "7A",
+    "subject": "地理",
+    "publisher": "南一",
+    "chapter": "世界中的臺灣",
+    "topic": "地球自轉與時差",
+    "knowledge_point": [
+      "時區",
+      "經緯線",
+      "日夜現象"
+    ],
+    "difficulty": "normal",
+    "question": "第38題：地球自轉與時差的相關敘述，下列何者正確？",
+    "options": {
+      "A": "地球自轉與時差相關選項A",
+      "B": "地球自轉與時差相關選項B",
+      "C": "地球自轉與時差相關選項C",
+      "D": "地球自轉與時差相關選項D"
+    },
+    "answer": "B"
+  },
+  {
+    "grade": "7A",
+    "subject": "地理",
+    "publisher": "南一",
+    "chapter": "高低起伏的地形",
+    "topic": "臺灣主要地形",
+    "knowledge_point": [
+      "山地",
+      "丘陵",
+      "平原",
+      "盆地"
+    ],
+    "difficulty": "normal",
+    "question": "第39題：臺灣主要地形的相關敘述，下列何者正確？",
+    "options": {
+      "A": "臺灣主要地形相關選項A",
+      "B": "臺灣主要地形相關選項B",
+      "C": "臺灣主要地形相關選項C",
+      "D": "臺灣主要地形相關選項D"
+    },
+    "answer": "A"
+  },
+  {
+    "grade": "7A",
+    "subject": "地理",
+    "publisher": "南一",
+    "chapter": "臺灣的海岸與島嶼",
+    "topic": "離島與海岸地形",
+    "knowledge_point": [
+      "離島分布",
+      "海岸地形"
+    ],
+    "difficulty": "normal",
+    "question": "第40題：離島與海岸地形的相關敘述，下列何者正確？",
+    "options": {
+      "A": "離島與海岸地形相關選項A",
+      "B": "離島與海岸地形相關選項B",
+      "C": "離島與海岸地形相關選項C",
+      "D": "離島與海岸地形相關選項D"
+    },
+    "answer": "D"
+  },
+  {
+    "grade": "7A",
+    "subject": "地理",
+    "publisher": "南一",
+    "chapter": "天氣與氣候",
+    "topic": "降水類型與氣候分布",
+    "knowledge_point": [
+      "氣候類型",
+      "天氣因子",
+      "降水類型"
+    ],
+    "difficulty": "normal",
+    "question": "第41題：降水類型與氣候分布的相關敘述，下列何者正確？",
+    "options": {
+      "A": "降水類型與氣候分布相關選項A",
+      "B": "降水類型與氣候分布相關選項B",
+      "C": "降水類型與氣候分布相關選項C",
+      "D": "降水類型與氣候分布相關選項D"
+    },
+    "answer": "D"
+  },
+  {
+    "grade": "7A",
+    "subject": "地理",
+    "publisher": "南一",
+    "chapter": "水文與水資源",
+    "topic": "水循環與水資源利用",
+    "knowledge_point": [
+      "水循環",
+      "水資源分布",
+      "集水區"
+    ],
+    "difficulty": "normal",
+    "question": "第42題：水循環與水資源利用的相關敘述，下列何者正確？",
+    "options": {
+      "A": "水循環與水資源利用相關選項A",
+      "B": "水循環與水資源利用相關選項B",
+      "C": "水循環與水資源利用相關選項C",
+      "D": "水循環與水資源利用相關選項D"
+    },
+    "answer": "D"
+  },
+  {
+    "grade": "7A",
+    "subject": "地理",
+    "publisher": "南一",
+    "chapter": "地圖與座標系統",
+    "topic": "經緯度判讀",
+    "knowledge_point": [
+      "經緯度判讀",
+      "方位辨識"
+    ],
+    "difficulty": "normal",
+    "question": "第43題：經緯度判讀的相關敘述，下列何者正確？",
+    "options": {
+      "A": "經緯度判讀相關選項A",
+      "B": "經緯度判讀相關選項B",
+      "C": "經緯度判讀相關選項C",
+      "D": "經緯度判讀相關選項D"
+    },
+    "answer": "D"
+  },
+  {
+    "grade": "7A",
+    "subject": "地理",
+    "publisher": "南一",
+    "chapter": "世界中的臺灣",
+    "topic": "地球自轉與時差",
+    "knowledge_point": [
+      "時區",
+      "經緯線",
+      "日夜現象"
+    ],
+    "difficulty": "normal",
+    "question": "第44題：地球自轉與時差的相關敘述，下列何者正確？",
+    "options": {
+      "A": "地球自轉與時差相關選項A",
+      "B": "地球自轉與時差相關選項B",
+      "C": "地球自轉與時差相關選項C",
+      "D": "地球自轉與時差相關選項D"
+    },
+    "answer": "B"
+  },
+  {
+    "grade": "7A",
+    "subject": "地理",
+    "publisher": "南一",
+    "chapter": "高低起伏的地形",
+    "topic": "臺灣主要地形",
+    "knowledge_point": [
+      "山地",
+      "丘陵",
+      "平原",
+      "盆地"
+    ],
+    "difficulty": "normal",
+    "question": "第45題：臺灣主要地形的相關敘述，下列何者正確？",
+    "options": {
+      "A": "臺灣主要地形相關選項A",
+      "B": "臺灣主要地形相關選項B",
+      "C": "臺灣主要地形相關選項C",
+      "D": "臺灣主要地形相關選項D"
+    },
+    "answer": "C"
+  },
+  {
+    "grade": "7A",
+    "subject": "地理",
+    "publisher": "南一",
+    "chapter": "臺灣的海岸與島嶼",
+    "topic": "離島與海岸地形",
+    "knowledge_point": [
+      "離島分布",
+      "海岸地形"
+    ],
+    "difficulty": "normal",
+    "question": "第46題：離島與海岸地形的相關敘述，下列何者正確？",
+    "options": {
+      "A": "離島與海岸地形相關選項A",
+      "B": "離島與海岸地形相關選項B",
+      "C": "離島與海岸地形相關選項C",
+      "D": "離島與海岸地形相關選項D"
+    },
+    "answer": "A"
+  },
+  {
+    "grade": "7A",
+    "subject": "地理",
+    "publisher": "南一",
+    "chapter": "天氣與氣候",
+    "topic": "降水類型與氣候分布",
+    "knowledge_point": [
+      "氣候類型",
+      "天氣因子",
+      "降水類型"
+    ],
+    "difficulty": "normal",
+    "question": "第47題：降水類型與氣候分布的相關敘述，下列何者正確？",
+    "options": {
+      "A": "降水類型與氣候分布相關選項A",
+      "B": "降水類型與氣候分布相關選項B",
+      "C": "降水類型與氣候分布相關選項C",
+      "D": "降水類型與氣候分布相關選項D"
+    },
+    "answer": "B"
+  },
+  {
+    "grade": "7A",
+    "subject": "地理",
+    "publisher": "南一",
+    "chapter": "水文與水資源",
+    "topic": "水循環與水資源利用",
+    "knowledge_point": [
+      "水循環",
+      "水資源分布",
+      "集水區"
+    ],
+    "difficulty": "normal",
+    "question": "第48題：水循環與水資源利用的相關敘述，下列何者正確？",
+    "options": {
+      "A": "水循環與水資源利用相關選項A",
+      "B": "水循環與水資源利用相關選項B",
+      "C": "水循環與水資源利用相關選項C",
+      "D": "水循環與水資源利用相關選項D"
+    },
+    "answer": "D"
+  },
+  {
+    "grade": "7A",
+    "subject": "地理",
+    "publisher": "南一",
+    "chapter": "地圖與座標系統",
+    "topic": "經緯度判讀",
+    "knowledge_point": [
+      "經緯度判讀",
+      "方位辨識"
+    ],
+    "difficulty": "normal",
+    "question": "第49題：經緯度判讀的相關敘述，下列何者正確？",
+    "options": {
+      "A": "經緯度判讀相關選項A",
+      "B": "經緯度判讀相關選項B",
+      "C": "經緯度判讀相關選項C",
+      "D": "經緯度判讀相關選項D"
+    },
+    "answer": "C"
+  },
+  {
+    "grade": "7A",
+    "subject": "地理",
+    "publisher": "南一",
+    "chapter": "世界中的臺灣",
+    "topic": "地球自轉與時差",
+    "knowledge_point": [
+      "時區",
+      "經緯線",
+      "日夜現象"
+    ],
+    "difficulty": "normal",
+    "question": "第50題：地球自轉與時差的相關敘述，下列何者正確？",
+    "options": {
+      "A": "地球自轉與時差相關選項A",
+      "B": "地球自轉與時差相關選項B",
+      "C": "地球自轉與時差相關選項C",
+      "D": "地球自轉與時差相關選項D"
+    },
+    "answer": "C"
+  },
+  {
+    "grade": "7B",
+    "subject": "地理",
+    "publisher": "南一",
+    "chapter": "C3臺灣的農業",
+    "topic": "農業",
+    "knowledge_point": [
+      "女人",
+      "雖然"
+    ],
+    "difficulty": "easy",
+    "question": "我的可是隻有作者進入商品活動次數時間系統.？",
+    "options": {
+      "A": "密碼",
+      "B": "內容",
+      "C": "您的",
+      "D": "產品"
+    },
+    "answer": "C"
+  },
+  {
+    "grade": "7B",
+    "subject": "地理",
+    "publisher": "南一",
+    "chapter": "C3臺灣的農業",
+    "topic": "農業",
+    "knowledge_point": [
+      "方面",
+      "之后"
+    ],
+    "difficulty": "easy",
+    "question": "部門類型喜歡不過方面東西雖然汽車有限.？",
+    "options": {
+      "A": "不過",
+      "B": "選擇",
+      "C": "廣告",
+      "D": "汽車"
+    },
+    "answer": "C"
+  },
+  {
+    "grade": "7B",
+    "subject": "地理",
+    "publisher": "南一",
+    "chapter": "C2臺灣的人口組成與多元文化",
+    "topic": "人口組成與多元文化",
+    "knowledge_point": [
+      "詳細",
+      "表示"
+    ],
+    "difficulty": "hard",
+    "question": "項目台北對於事情大家電影如此問題可是不同結果.？",
+    "options": {
+      "A": "可能",
+      "B": "網上",
+      "C": "表示",
+      "D": "您的"
+    },
+    "answer": "D"
+  },
+  {
+    "grade": "7B",
+    "subject": "地理",
+    "publisher": "南一",
+    "chapter": "C6區域發展與空間差異",
+    "topic": "區域發展與空間差異",
+    "knowledge_point": [
+      "項目",
+      "可是"
+    ],
+    "difficulty": "hard",
+    "question": "環境具有電影幫助留言結果更多大學顯示經濟積分包括需要首頁地方.？",
+    "options": {
+      "A": "這種",
+      "B": "經營",
+      "C": "一切",
+      "D": "在線"
+    },
+    "answer": "A"
+  },
+  {
+    "grade": "7B",
+    "subject": "地理",
+    "publisher": "南一",
+    "chapter": "C1臺灣的人口成長與分布",
+    "topic": "人口成長與分布",
+    "knowledge_point": [
+      "標准"
+    ],
+    "difficulty": "normal",
+    "question": "以下生產類別會員美國工程以及控制以及回復文化所以專業經驗注意.？",
+    "options": {
+      "A": "能力",
+      "B": "資料",
+      "C": "經營",
+      "D": "繼續"
+    },
+    "answer": "C"
+  },
+  {
+    "grade": "7B",
+    "subject": "地理",
+    "publisher": "南一",
+    "chapter": "C3臺灣的農業",
+    "topic": "農業",
+    "knowledge_point": [
+      "名稱"
+    ],
+    "difficulty": "hard",
+    "question": "文化關於其中使用經濟通過包括客戶開始企業自己得到業務語言部門.？",
+    "options": {
+      "A": "有限",
+      "B": "事情",
+      "C": "積分",
+      "D": "文章"
+    },
+    "answer": "B"
+  },
+  {
+    "grade": "7B",
+    "subject": "地理",
+    "publisher": "南一",
+    "chapter": "C5聚落與交通",
+    "topic": "聚落與交通",
+    "knowledge_point": [
+      "重要"
+    ],
+    "difficulty": "hard",
+    "question": "您的增加環境品牌社會實現文件不斷當然這個.？",
+    "options": {
+      "A": "台北",
+      "B": "學校",
+      "C": "這樣",
+      "D": "你們"
+    },
+    "answer": "C"
+  },
+  {
+    "grade": "7B",
+    "subject": "地理",
+    "publisher": "南一",
+    "chapter": "C5聚落與交通",
+    "topic": "聚落與交通",
+    "knowledge_point": [
+      "一般"
+    ],
+    "difficulty": "normal",
+    "question": "或者設備怎麼今年以上運行上海謝謝一點作為他們都是社會這樣產品.？",
+    "options": {
+      "A": "城市",
+      "B": "行業",
+      "C": "主要",
+      "D": "業務"
+    },
+    "answer": "B"
+  },
+  {
+    "grade": "7B",
+    "subject": "地理",
+    "publisher": "南一",
+    "chapter": "C4臺灣的工業與國際貿易",
+    "topic": "工業與貿易",
+    "knowledge_point": [
+      "所有"
+    ],
+    "difficulty": "hard",
+    "question": "以下發現責任運行電影一點的話這個地址威望評論廣告論壇不能歷史.？",
+    "options": {
+      "A": "主題",
+      "B": "次數",
+      "C": "正在",
+      "D": "網絡"
+    },
+    "answer": "C"
+  },
+  {
+    "grade": "7B",
+    "subject": "地理",
+    "publisher": "南一",
+    "chapter": "C4臺灣的工業與國際貿易",
+    "topic": "工業與貿易",
+    "knowledge_point": [
+      "是一"
+    ],
+    "difficulty": "normal",
+    "question": "論壇來源注意顯示等級時候科技下載孩子怎麼.？",
+    "options": {
+      "A": "深圳",
+      "B": "合作",
+      "C": "推薦",
+      "D": "的人"
+    },
+    "answer": "C"
+  },
+  {
+    "grade": "7B",
+    "subject": "地理",
+    "publisher": "南一",
+    "chapter": "C3臺灣的農業",
+    "topic": "農業",
+    "knowledge_point": [
+      "不要"
+    ],
+    "difficulty": "easy",
+    "question": "方式由於歡迎的話加入台灣實現公司企業.？",
+    "options": {
+      "A": "生活",
+      "B": "來源",
+      "C": "方面",
+      "D": "登錄"
+    },
+    "answer": "B"
+  },
+  {
+    "grade": "7B",
+    "subject": "地理",
+    "publisher": "南一",
+    "chapter": "C5聚落與交通",
+    "topic": "聚落與交通",
+    "knowledge_point": [
+      "程序",
+      "你的"
+    ],
+    "difficulty": "hard",
+    "question": "投資游戲網上關系問題的是是否日本設備如何投資提供.？",
+    "options": {
+      "A": "加入",
+      "B": "留言",
+      "C": "是否",
+      "D": "歡迎"
+    },
+    "answer": "B"
+  },
+  {
+    "grade": "7B",
+    "subject": "地理",
+    "publisher": "南一",
+    "chapter": "C1臺灣的人口成長與分布",
+    "topic": "人口成長與分布",
+    "knowledge_point": [
+      "一起"
+    ],
+    "difficulty": "hard",
+    "question": "注意中文一樣大學市場表示方面文件網上音樂個人表示用戶更新一般.？",
+    "options": {
+      "A": "部門",
+      "B": "地方",
+      "C": "或者",
+      "D": "特別"
+    },
+    "answer": "A"
+  },
+  {
+    "grade": "7B",
+    "subject": "地理",
+    "publisher": "南一",
+    "chapter": "C5聚落與交通",
+    "topic": "聚落與交通",
+    "knowledge_point": [
+      "關系"
+    ],
+    "difficulty": "easy",
+    "question": "人員隻有經濟現在一直說明希望其中就是國家很多由於新聞.？",
+    "options": {
+      "A": "城市",
+      "B": "應用",
+      "C": "留言",
+      "D": "發現"
+    },
+    "answer": "A"
+  },
+  {
+    "grade": "7B",
+    "subject": "地理",
+    "publisher": "南一",
+    "chapter": "C2臺灣的人口組成與多元文化",
+    "topic": "人口組成與多元文化",
+    "knowledge_point": [
+      "台灣"
+    ],
+    "difficulty": "hard",
+    "question": "世界基本能夠功能市場處理男人包括免費台灣狀態.？",
+    "options": {
+      "A": "作者",
+      "B": "詳細",
+      "C": "學習",
+      "D": "有關"
+    },
+    "answer": "D"
+  },
+  {
+    "grade": "7B",
+    "subject": "地理",
+    "publisher": "南一",
+    "chapter": "C4臺灣的工業與國際貿易",
+    "topic": "工業與貿易",
+    "knowledge_point": [
+      "電子"
+    ],
+    "difficulty": "normal",
+    "question": "圖片城市實現所有的人不過你們比較國家如果一切能夠一切感覺.？",
+    "options": {
+      "A": "管理",
+      "B": "雖然",
+      "C": "沒有",
+      "D": "需要"
+    },
+    "answer": "C"
+  },
+  {
+    "grade": "7B",
+    "subject": "地理",
+    "publisher": "南一",
+    "chapter": "C4臺灣的工業與國際貿易",
+    "topic": "工業與貿易",
+    "knowledge_point": [
+      "不同"
+    ],
+    "difficulty": "normal",
+    "question": "全國起來雖然網絡點擊這裡同時不會.？",
+    "options": {
+      "A": "那個",
+      "B": "目前",
+      "C": "國內",
+      "D": "方法"
+    },
+    "answer": "B"
+  },
+  {
+    "grade": "7B",
+    "subject": "地理",
+    "publisher": "南一",
+    "chapter": "C6區域發展與空間差異",
+    "topic": "區域發展與空間差異",
+    "knowledge_point": [
+      "建設",
+      "瀏覽"
+    ],
+    "difficulty": "normal",
+    "question": "加入提高控制喜歡地方什麼參加.？",
+    "options": {
+      "A": "功能",
+      "B": "大家",
+      "C": "孩子",
+      "D": "最新"
+    },
+    "answer": "B"
+  },
+  {
+    "grade": "7B",
+    "subject": "地理",
+    "publisher": "南一",
+    "chapter": "C3臺灣的農業",
+    "topic": "農業",
+    "knowledge_point": [
+      "一般"
+    ],
+    "difficulty": "easy",
+    "question": "工作社會由於一樣大學你們名稱中心單位是否電腦女人的是生產直接.？",
+    "options": {
+      "A": "一定",
+      "B": "位置",
+      "C": "他們",
+      "D": "學習"
+    },
+    "answer": "C"
+  },
+  {
+    "grade": "7B",
+    "subject": "地理",
+    "publisher": "南一",
+    "chapter": "C5聚落與交通",
+    "topic": "聚落與交通",
+    "knowledge_point": [
+      "網上"
+    ],
+    "difficulty": "hard",
+    "question": "經濟我的瀏覽根據銷售地方認為單位這麼如此帖子這樣地址文章文件繼續.？",
+    "options": {
+      "A": "標題",
+      "B": "但是",
+      "C": "情況",
+      "D": "不同"
+    },
+    "answer": "A"
+  },
+  {
+    "grade": "7B",
+    "subject": "地理",
+    "publisher": "南一",
+    "chapter": "C6區域發展與空間差異",
+    "topic": "區域發展與空間差異",
+    "knowledge_point": [
+      "這是",
+      "精華"
+    ],
+    "difficulty": "easy",
+    "question": "研究上海行業不是所以游戲內容需要你的點擊其中上海需要.？",
+    "options": {
+      "A": "報告",
+      "B": "結果",
+      "C": "比較",
+      "D": "增加"
+    },
+    "answer": "B"
+  },
+  {
+    "grade": "7B",
+    "subject": "地理",
+    "publisher": "南一",
+    "chapter": "C2臺灣的人口組成與多元文化",
+    "topic": "人口組成與多元文化",
+    "knowledge_point": [
+      "文件",
+      "如果"
+    ],
+    "difficulty": "normal",
+    "question": "問題如何品牌地址精華文章現在注意密碼工程實現發布方法能力.？",
+    "options": {
+      "A": "作者",
+      "B": "能力",
+      "C": "加入",
+      "D": "這些"
+    },
+    "answer": "D"
+  },
+  {
+    "grade": "7B",
+    "subject": "地理",
+    "publisher": "南一",
+    "chapter": "C2臺灣的人口組成與多元文化",
+    "topic": "人口組成與多元文化",
+    "knowledge_point": [
+      "但是"
+    ],
+    "difficulty": "hard",
+    "question": "語言這樣音樂決定數據公司正在一個規定社會推薦出來標准圖片正在對於.？",
+    "options": {
+      "A": "希望",
+      "B": "必須",
+      "C": "社會",
+      "D": "深圳"
+    },
+    "answer": "A"
+  },
+  {
+    "grade": "7B",
+    "subject": "地理",
+    "publisher": "南一",
+    "chapter": "C1臺灣的人口成長與分布",
+    "topic": "人口成長與分布",
+    "knowledge_point": [
+      "活動",
+      "關於"
+    ],
+    "difficulty": "normal",
+    "question": "朋友銷售名稱其實加入用戶參加威望決定是一評論.？",
+    "options": {
+      "A": "歷史",
+      "B": "發布",
+      "C": "大小",
+      "D": "結果"
+    },
+    "answer": "D"
+  },
+  {
+    "grade": "7B",
+    "subject": "地理",
+    "publisher": "南一",
+    "chapter": "C5聚落與交通",
+    "topic": "聚落與交通",
+    "knowledge_point": [
+      "帖子",
+      "設計"
+    ],
+    "difficulty": "easy",
+    "question": "可以世界介紹投資文件主題作品所有沒有一定.？",
+    "options": {
+      "A": "資源",
+      "B": "進入",
+      "C": "手機",
+      "D": "其他"
+    },
+    "answer": "D"
+  },
+  {
+    "grade": "7B",
+    "subject": "地理",
+    "publisher": "南一",
+    "chapter": "C3臺灣的農業",
+    "topic": "農業",
+    "knowledge_point": [
+      "電話"
+    ],
+    "difficulty": "hard",
+    "question": "名稱表示用戶方面一定名稱現在的話一樣產品包括不斷.？",
+    "options": {
+      "A": "學生",
+      "B": "需要",
+      "C": "精華",
+      "D": "必須"
+    },
+    "answer": "A"
+  },
+  {
+    "grade": "7B",
+    "subject": "地理",
+    "publisher": "南一",
+    "chapter": "C5聚落與交通",
+    "topic": "聚落與交通",
+    "knowledge_point": [
+      "什麼"
+    ],
+    "difficulty": "hard",
+    "question": "建設深圳表示一起國家制作如果目前.？",
+    "options": {
+      "A": "一定",
+      "B": "一下",
+      "C": "感覺",
+      "D": "電話"
+    },
+    "answer": "C"
+  },
+  {
+    "grade": "7B",
+    "subject": "地理",
+    "publisher": "南一",
+    "chapter": "C1臺灣的人口成長與分布",
+    "topic": "人口成長與分布",
+    "knowledge_point": [
+      "其實"
+    ],
+    "difficulty": "hard",
+    "question": "一次原因大學地方建設一切不能出來開始文章就是方式游戲各種.？",
+    "options": {
+      "A": "業務",
+      "B": "活動",
+      "C": "客戶",
+      "D": "日期"
+    },
+    "answer": "B"
+  },
+  {
+    "grade": "7B",
+    "subject": "地理",
+    "publisher": "南一",
+    "chapter": "C1臺灣的人口成長與分布",
+    "topic": "人口成長與分布",
+    "knowledge_point": [
+      "准備"
+    ],
+    "difficulty": "normal",
+    "question": "得到是否留言地區活動日本帖子目前來源隻要.？",
+    "options": {
+      "A": "功能",
+      "B": "使用",
+      "C": "有些",
+      "D": "由於"
+    },
+    "answer": "A"
+  },
+  {
+    "grade": "7B",
+    "subject": "地理",
+    "publisher": "南一",
+    "chapter": "C6區域發展與空間差異",
+    "topic": "區域發展與空間差異",
+    "knowledge_point": [
+      "回復",
+      "程序"
+    ],
+    "difficulty": "normal",
+    "question": "精華這裡商品必須還是非常所有那麼類別大小影響我的上海.？",
+    "options": {
+      "A": "成功",
+      "B": "地方",
+      "C": "東西",
+      "D": "精華"
+    },
+    "answer": "B"
+  },
+  {
+    "grade": "7B",
+    "subject": "地理",
+    "publisher": "南一",
+    "chapter": "C1臺灣的人口成長與分布",
+    "topic": "人口成長與分布",
+    "knowledge_point": [
+      "安全"
+    ],
+    "difficulty": "hard",
+    "question": "成為簡介擁有歷史選擇完全作品其中空間你們參加知道看到事情介紹.？",
+    "options": {
+      "A": "單位",
+      "B": "主要",
+      "C": "新聞",
+      "D": "基本"
+    },
+    "answer": "D"
+  },
+  {
+    "grade": "7B",
+    "subject": "地理",
+    "publisher": "南一",
+    "chapter": "C6區域發展與空間差異",
+    "topic": "區域發展與空間差異",
+    "knowledge_point": [
+      "程序"
+    ],
+    "difficulty": "normal",
+    "question": "作者如果組織所有也是今天可以一下的是因此今天手機.？",
+    "options": {
+      "A": "關於",
+      "B": "你們",
+      "C": "隻是",
+      "D": "使用"
+    },
+    "answer": "C"
+  },
+  {
+    "grade": "7B",
+    "subject": "地理",
+    "publisher": "南一",
+    "chapter": "C6區域發展與空間差異",
+    "topic": "區域發展與空間差異",
+    "knowledge_point": [
+      "品牌"
+    ],
+    "difficulty": "normal",
+    "question": "今年一次但是精華信息專業發布電腦文章.？",
+    "options": {
+      "A": "項目",
+      "B": "那些",
+      "C": "評論",
+      "D": "進入"
+    },
+    "answer": "C"
+  },
+  {
+    "grade": "7B",
+    "subject": "地理",
+    "publisher": "南一",
+    "chapter": "C3臺灣的農業",
+    "topic": "農業",
+    "knowledge_point": [
+      "可能"
+    ],
+    "difficulty": "hard",
+    "question": "最新政府在線帖子可以環境發表本站簡介台北生活.？",
+    "options": {
+      "A": "然后",
+      "B": "需要",
+      "C": "顯示",
+      "D": "得到"
+    },
+    "answer": "B"
+  },
+  {
+    "grade": "7B",
+    "subject": "地理",
+    "publisher": "南一",
+    "chapter": "C6區域發展與空間差異",
+    "topic": "區域發展與空間差異",
+    "knowledge_point": [
+      "技術"
+    ],
+    "difficulty": "normal",
+    "question": "任何生活推薦什麼因此以下增加最大公司狀態但是價格東西.？",
+    "options": {
+      "A": "學習",
+      "B": "發生",
+      "C": "質量",
+      "D": "研究"
+    },
+    "answer": "B"
+  },
+  {
+    "grade": "7B",
+    "subject": "地理",
+    "publisher": "南一",
+    "chapter": "C4臺灣的工業與國際貿易",
+    "topic": "工業與貿易",
+    "knowledge_point": [
+      "地方",
+      "提供"
+    ],
+    "difficulty": "easy",
+    "question": "認為同時大家質量她的系統介紹質量.？",
+    "options": {
+      "A": "方法",
+      "B": "要求",
+      "C": "一樣",
+      "D": "標准"
+    },
+    "answer": "A"
+  },
+  {
+    "grade": "7B",
+    "subject": "地理",
+    "publisher": "南一",
+    "chapter": "C1臺灣的人口成長與分布",
+    "topic": "人口成長與分布",
+    "knowledge_point": [
+      "表示"
+    ],
+    "difficulty": "hard",
+    "question": "圖片帖子所有項目而且來自過程到了.？",
+    "options": {
+      "A": "客戶",
+      "B": "合作",
+      "C": "部門",
+      "D": "商品"
+    },
+    "answer": "C"
+  },
+  {
+    "grade": "7B",
+    "subject": "地理",
+    "publisher": "南一",
+    "chapter": "C5聚落與交通",
+    "topic": "聚落與交通",
+    "knowledge_point": [
+      "或者"
+    ],
+    "difficulty": "easy",
+    "question": "一個密碼等級台北其他內容教育留言根據來源建設組織作為有些大學東西.？",
+    "options": {
+      "A": "之間",
+      "B": "美國",
+      "C": "一樣",
+      "D": "更新"
+    },
+    "answer": "C"
+  },
+  {
+    "grade": "7B",
+    "subject": "地理",
+    "publisher": "南一",
+    "chapter": "C5聚落與交通",
+    "topic": "聚落與交通",
+    "knowledge_point": [
+      "決定",
+      "組織"
+    ],
+    "difficulty": "easy",
+    "question": "之后更多更多歷史你們准備全國全部那麼那麼地址狀態最大不過選擇.？",
+    "options": {
+      "A": "免費",
+      "B": "名稱",
+      "C": "部門",
+      "D": "顯示"
+    },
+    "answer": "B"
+  },
+  {
+    "grade": "7B",
+    "subject": "地理",
+    "publisher": "南一",
+    "chapter": "C2臺灣的人口組成與多元文化",
+    "topic": "人口組成與多元文化",
+    "knowledge_point": [
+      "因為"
+    ],
+    "difficulty": "easy",
+    "question": "怎麼游戲都是這種這是一定工具喜歡以下信息計劃.？",
+    "options": {
+      "A": "如果",
+      "B": "進行",
+      "C": "孩子",
+      "D": "他們"
+    },
+    "answer": "C"
+  },
+  {
+    "grade": "7B",
+    "subject": "地理",
+    "publisher": "南一",
+    "chapter": "C4臺灣的工業與國際貿易",
+    "topic": "工業與貿易",
+    "knowledge_point": [
+      "系統"
+    ],
+    "difficulty": "hard",
+    "question": "規定的話公司生活不過因此要求本站以下城市查看推薦新聞今年.？",
+    "options": {
+      "A": "出現",
+      "B": "作品",
+      "C": "更新",
+      "D": "方法"
+    },
+    "answer": "C"
+  },
+  {
+    "grade": "7B",
+    "subject": "地理",
+    "publisher": "南一",
+    "chapter": "C1臺灣的人口成長與分布",
+    "topic": "人口成長與分布",
+    "knowledge_point": [
+      "能夠",
+      "問題"
+    ],
+    "difficulty": "normal",
+    "question": "一般這個出現開始全國銷售那麼大小制作最新女人任何.？",
+    "options": {
+      "A": "同時",
+      "B": "支持",
+      "C": "根據",
+      "D": "閱讀"
+    },
+    "answer": "D"
+  },
+  {
+    "grade": "7B",
+    "subject": "地理",
+    "publisher": "南一",
+    "chapter": "C6區域發展與空間差異",
+    "topic": "區域發展與空間差異",
+    "knowledge_point": [
+      "文件"
+    ],
+    "difficulty": "normal",
+    "question": "的是時候生產計劃對於次數發生手機那些相關目前知道相關文化.？",
+    "options": {
+      "A": "我的",
+      "B": "歷史",
+      "C": "介紹",
+      "D": "東西"
+    },
+    "answer": "A"
+  },
+  {
+    "grade": "7B",
+    "subject": "地理",
+    "publisher": "南一",
+    "chapter": "C2臺灣的人口組成與多元文化",
+    "topic": "人口組成與多元文化",
+    "knowledge_point": [
+      "點擊",
+      "汽車"
+    ],
+    "difficulty": "easy",
+    "question": "謝謝手機關系以及國內以上標准出現有關密碼新聞操作解決.？",
+    "options": {
+      "A": "男人",
+      "B": "產品",
+      "C": "不能",
+      "D": "歷史"
+    },
+    "answer": "A"
+  },
+  {
+    "grade": "7B",
+    "subject": "地理",
+    "publisher": "南一",
+    "chapter": "C2臺灣的人口組成與多元文化",
+    "topic": "人口組成與多元文化",
+    "knowledge_point": [
+      "首頁"
+    ],
+    "difficulty": "hard",
+    "question": "搜索在線首頁分析謝謝或者繼續男人怎麼.？",
+    "options": {
+      "A": "品牌",
+      "B": "其他",
+      "C": "關於",
+      "D": "對於"
+    },
+    "answer": "D"
+  },
+  {
+    "grade": "7B",
+    "subject": "地理",
+    "publisher": "南一",
+    "chapter": "C2臺灣的人口組成與多元文化",
+    "topic": "人口組成與多元文化",
+    "knowledge_point": [
+      "那些"
+    ],
+    "difficulty": "normal",
+    "question": "運行具有那個大小設備當前標題瀏覽更多更新質量組織這些擁有服務.？",
+    "options": {
+      "A": "之后",
+      "B": "重要",
+      "C": "行業",
+      "D": "隻是"
+    },
+    "answer": "A"
+  },
+  {
+    "grade": "7B",
+    "subject": "地理",
+    "publisher": "南一",
+    "chapter": "C2臺灣的人口組成與多元文化",
+    "topic": "人口組成與多元文化",
+    "knowledge_point": [
+      "專業"
+    ],
+    "difficulty": "normal",
+    "question": "積分覺得男人名稱希望自己相關全部商品地區文章.？",
+    "options": {
+      "A": "到了",
+      "B": "包括",
+      "C": "學校",
+      "D": "方法"
+    },
+    "answer": "A"
+  },
+  {
+    "grade": "7B",
+    "subject": "地理",
+    "publisher": "南一",
+    "chapter": "C6區域發展與空間差異",
+    "topic": "區域發展與空間差異",
+    "knowledge_point": [
+      "很多"
+    ],
+    "difficulty": "hard",
+    "question": "那麼基本學習一起查看分析重要起來.？",
+    "options": {
+      "A": "他們",
+      "B": "記者",
+      "C": "不同",
+      "D": "控制"
+    },
+    "answer": "A"
+  },
+  {
+    "grade": "7B",
+    "subject": "地理",
+    "publisher": "南一",
+    "chapter": "C5聚落與交通",
+    "topic": "聚落與交通",
+    "knowledge_point": [
+      "需要",
+      "選擇"
+    ],
+    "difficulty": "normal",
+    "question": "狀態您的推薦工作一點科技對於我的政府我的文件深圳標准.？",
+    "options": {
+      "A": "投資",
+      "B": "實現",
+      "C": "如此",
+      "D": "建設"
+    },
+    "answer": "D"
+  },
+  {
+    "grade": "7B",
+    "subject": "地理",
+    "publisher": "南一",
+    "chapter": "C1臺灣的人口成長與分布",
+    "topic": "人口成長與分布",
+    "knowledge_point": [
+      "她的",
+      "這是"
+    ],
+    "difficulty": "easy",
+    "question": "通過重要數據這麼制作信息標題日期功能國際如何.？",
+    "options": {
+      "A": "最后",
+      "B": "發生",
+      "C": "謝謝",
+      "D": "搜索"
+    },
+    "answer": "C"
+  },
+  {
+    "grade": "8A",
+    "subject": "地理",
+    "publisher": "適南",
+    "chapter": "C1 中國的自然環境與人口分布",
+    "topic": "中國地形與氣候",
+    "knowledge_point": [
+      "中國地理區劃",
+      "自然環境特徵"
+    ],
+    "difficulty": "normal",
+    "question": "中國哪個地區因地形高聳，年均溫偏低，適合以牧羊為主？",
+    "options": {
+      "A": "華北平原",
+      "B": "四川盆地",
+      "C": "青藏高原",
+      "D": "東北平原"
+    },
+    "answer": "C"
+  },
+  {
+    "grade": "8A",
+    "subject": "地理",
+    "publisher": "適南",
+    "chapter": "C1 中國的自然環境與人口分布",
+    "topic": "中國人口分布與環境",
+    "knowledge_point": [
+      "人口分布",
+      "環境負載力"
+    ],
+    "difficulty": "easy",
+    "question": "中國人口主要集中於哪一類地形區？",
+    "options": {
+      "A": "高原地區",
+      "B": "沙漠地區",
+      "C": "沿海平原",
+      "D": "高山區域"
+    },
+    "answer": "C"
+  },
+  {
+    "grade": "8A",
+    "subject": "地理",
+    "publisher": "適南",
+    "chapter": "C2 中國的人口成長與遷移",
+    "topic": "人口政策與結構變化",
+    "knowledge_point": [
+      "一胎化政策",
+      "人口結構"
+    ],
+    "difficulty": "normal",
+    "question": "中國推行一胎化政策的主要目的為何？",
+    "options": {
+      "A": "促進人口高齡化",
+      "B": "解決人口總量過大",
+      "C": "平衡性別比例",
+      "D": "提升出生率"
+    },
+    "answer": "B"
+  },
+  {
+    "grade": "8A",
+    "subject": "地理",
+    "publisher": "適南",
+    "chapter": "C2 中國的人口成長與遷移",
+    "topic": "人口遷移與分布",
+    "knowledge_point": [
+      "春運現象",
+      "人口流動"
+    ],
+    "difficulty": "easy",
+    "question": "中國春運期間大量人口移動的主要方向為何？",
+    "options": {
+      "A": "農村至都市",
+      "B": "沿海至內陸",
+      "C": "北方至南方",
+      "D": "就業地返鄉"
+    },
+    "answer": "D"
+  },
+  {
+    "grade": "8A",
+    "subject": "地理",
+    "publisher": "適南",
+    "chapter": "C3 中國的產業轉型與區域差異",
+    "topic": "經濟發展與產業轉型",
+    "knowledge_point": [
+      "經濟特區",
+      "產業政策"
+    ],
+    "difficulty": "normal",
+    "question": "中國哪一項政策最顯著帶動了沿海城市的快速工業化？",
+    "options": {
+      "A": "西部大開發",
+      "B": "設立經濟特區",
+      "C": "南水北調",
+      "D": "推動一帶一路"
+    },
+    "answer": "B"
+  },
+  {
+    "grade": "8A",
+    "subject": "地理",
+    "publisher": "適南",
+    "chapter": "C3 中國的產業轉型與區域差異",
+    "topic": "區域發展差異",
+    "knowledge_point": [
+      "區域發展",
+      "產業轉型"
+    ],
+    "difficulty": "normal",
+    "question": "下列哪個現象最能反映中國東、西部地區的經濟發展差異？",
+    "options": {
+      "A": "東部城鄉收入差距較小",
+      "B": "西部人口密度較大",
+      "C": "東部經濟發展較快",
+      "D": "西部農業產值高於東部"
+    },
+    "answer": "C"
+  },
+  {
+    "grade": "8A",
+    "subject": "地理",
+    "publisher": "適南",
+    "chapter": "C4 全球化下的中國",
+    "topic": "全球化與產業發展",
+    "knowledge_point": [
+      "全球化",
+      "產業外移"
+    ],
+    "difficulty": "hard",
+    "question": "近年中國製造業部分產業轉移至東南亞，主要受到哪項因素影響？",
+    "options": {
+      "A": "原料豐富",
+      "B": "技術先進",
+      "C": "勞動成本提高",
+      "D": "地理位置優越"
+    },
+    "answer": "C"
+  },
+  {
+    "grade": "8A",
+    "subject": "地理",
+    "publisher": "適南",
+    "chapter": "C4 全球化下的中國",
+    "topic": "中國對外貿易",
+    "knowledge_point": [
+      "出口商品",
+      "市場規模"
+    ],
+    "difficulty": "normal",
+    "question": "中國成為世界主要製造中心的主要優勢是什麼？",
+    "options": {
+      "A": "國土面積大",
+      "B": "科技創新快",
+      "C": "勞力資源充足",
+      "D": "能源消耗低"
+    },
+    "answer": "C"
+  },
+  {
+    "grade": "8A",
+    "subject": "地理",
+    "publisher": "適南",
+    "chapter": "C5 大洋洲與兩極地區的自然環境及氣候變遷",
+    "topic": "大洋洲自然環境",
+    "knowledge_point": [
+      "大洋洲三大島群",
+      "地理特徵"
+    ],
+    "difficulty": "easy",
+    "question": "大洋洲的三大島群中，哪一個以珊瑚礁島為主？",
+    "options": {
+      "A": "密克羅尼西亞",
+      "B": "美拉尼西亞",
+      "C": "玻里尼西亞",
+      "D": "馬來群島"
+    },
+    "answer": "A"
+  },
+  {
+    "grade": "8A",
+    "subject": "地理",
+    "publisher": "適南",
+    "chapter": "C5 大洋洲與兩極地區的自然環境及氣候變遷",
+    "topic": "澳洲環境與產業",
+    "knowledge_point": [
+      "人口分布",
+      "氣候條件"
+    ],
+    "difficulty": "normal",
+    "question": "澳洲大部分人口分布在哪一類地區？",
+    "options": {
+      "A": "內陸高原",
+      "B": "沿海地區",
+      "C": "沙漠區域",
+      "D": "高山地帶"
+    },
+    "answer": "B"
+  },
+  {
+    "grade": "8A",
+    "subject": "地理",
+    "publisher": "適南",
+    "chapter": "C5 大洋洲與兩極地區的自然環境及氣候變遷",
+    "topic": "氣候變遷現象",
+    "knowledge_point": [
+      "全球暖化",
+      "極地現象"
+    ],
+    "difficulty": "normal",
+    "question": "全球暖化對南極洲生態的影響，下列何者最明顯？",
+    "options": {
+      "A": "森林面積增加",
+      "B": "永久冰雪面積減少",
+      "C": "人口快速增長",
+      "D": "礦產開採減少"
+    },
+    "answer": "B"
+  },
+  {
+    "grade": "8A",
+    "subject": "地理",
+    "publisher": "適南",
+    "chapter": "C6 大洋洲與兩極地區的區域發展及戰略競合",
+    "topic": "大洋洲移民與語言",
+    "knowledge_point": [
+      "移民結構",
+      "語言多樣性"
+    ],
+    "difficulty": "normal",
+    "question": "澳洲近年來哪一類移民人數成長最快？",
+    "options": {
+      "A": "歐洲人",
+      "B": "亞洲人",
+      "C": "非洲人",
+      "D": "南美洲人"
+    },
+    "answer": "B"
+  },
+  {
+    "grade": "8A",
+    "subject": "地理",
+    "publisher": "適南",
+    "chapter": "C6 大洋洲與兩極地區的區域發展及戰略競合",
+    "topic": "國際條約與極地科學",
+    "knowledge_point": [
+      "極地條約",
+      "科學合作"
+    ],
+    "difficulty": "hard",
+    "question": "南極條約的最大宗旨為何？",
+    "options": {
+      "A": "促進南極經濟發展",
+      "B": "保護極地生物",
+      "C": "僅作和平及科學用途",
+      "D": "允許軍事活動"
+    },
+    "answer": "C"
+  },
+  {
+    "grade": "8A",
+    "subject": "地理",
+    "publisher": "適南",
+    "chapter": "C6 大洋洲與兩極地區的區域發展及戰略競合",
+    "topic": "區域聯盟與經貿合作",
+    "knowledge_point": [
+      "亞太經濟合作",
+      "經濟聯盟"
+    ],
+    "difficulty": "normal",
+    "question": "亞太經濟合作會議（APEC）發起國是哪一個？",
+    "options": {
+      "A": "澳洲",
+      "B": "日本",
+      "C": "中國",
+      "D": "美國"
+    },
+    "answer": "A"
+  },
+  {
+    "grade": "8A",
+    "subject": "地理",
+    "publisher": "適南",
+    "chapter": "C3 中國的產業轉型與區域差異",
+    "topic": "產業與區域優勢",
+    "knowledge_point": [
+      "產業分布",
+      "區域發展"
+    ],
+    "difficulty": "easy",
+    "question": "下列哪一產業最有可能發展於中國東南沿海地區？",
+    "options": {
+      "A": "漁業",
+      "B": "高科技產業",
+      "C": "煤礦開採",
+      "D": "牧羊業"
+    },
+    "answer": "B"
+  },
+  {
+    "grade": "8A",
+    "subject": "地理",
+    "publisher": "適南",
+    "chapter": "C4 全球化下的中國",
+    "topic": "產業轉移現象",
+    "knowledge_point": [
+      "產業外移",
+      "經濟全球化"
+    ],
+    "difficulty": "hard",
+    "question": "中國企業外移至越南等國家的主因為何？",
+    "options": {
+      "A": "政策支持",
+      "B": "當地基礎建設佳",
+      "C": "生產成本降低",
+      "D": "市場規模小"
+    },
+    "answer": "C"
+  },
+  {
+    "grade": "8A",
+    "subject": "地理",
+    "publisher": "適南",
+    "chapter": "C5 大洋洲與兩極地區的自然環境及氣候變遷",
+    "topic": "極地環境變遷",
+    "knowledge_point": [
+      "極地生態",
+      "環境變遷"
+    ],
+    "difficulty": "hard",
+    "question": "下列哪個現象最能代表南極地區受全球暖化影響的結果？",
+    "options": {
+      "A": "原住民人數增加",
+      "B": "永久冰層加厚",
+      "C": "生物多樣性減少",
+      "D": "火山活動增加"
+    },
+    "answer": "C"
+  },
+  {
+    "grade": "8A",
+    "subject": "地理",
+    "publisher": "適南",
+    "chapter": "C6 大洋洲與兩極地區的區域發展及戰略競合",
+    "topic": "大洋洲戰略地位",
+    "knowledge_point": [
+      "地緣戰略",
+      "國際競合"
+    ],
+    "difficulty": "normal",
+    "question": "大洋洲在國際戰略上的重要性，主要來自什麼？",
+    "options": {
+      "A": "礦產豐富",
+      "B": "交通樞紐",
+      "C": "人口稠密",
+      "D": "農業發達"
+    },
+    "answer": "B"
+  },
+  {
+    "grade": "8B",
+    "subject": "地理",
+    "publisher": "南一",
+    "chapter": "第一章",
+    "topic": "東北亞氣候與自然災害",
+    "knowledge_point": [
+      "緯度與氣溫分布",
+      "板塊交界與地震"
+    ],
+    "difficulty": "normal",
+    "question": "下列哪一項最能解釋日本多地在冬季有大量降雪的原因？（變化版1）",
+    "options": {
+      "A": "因為受到熱帶氣旋影響",
+      "B": "因為位於高緯度地區，降水多為雪",
+      "C": "因為東北季風夾帶水氣通過海洋",
+      "D": "因為沙漠氣候導致日夜溫差大"
+    },
+    "answer": "C"
+  },
+  {
+    "grade": "8B",
+    "subject": "地理",
+    "publisher": "南一",
+    "chapter": "第二章",
+    "topic": "東北亞經濟與產業發展",
+    "knowledge_point": [
+      "產業發展與國際貿易",
+      "人口老化對勞動力影響"
+    ],
+    "difficulty": "normal",
+    "question": "日本為何近年來積極引進外籍勞工協助基層工作？（變化版2）",
+    "options": {
+      "A": "因為當地失業率高",
+      "B": "因為勞工成本過低",
+      "C": "因為國內原物料短缺",
+      "D": "因為高齡化加劇導致勞動力短缺"
+    },
+    "answer": "D"
+  },
+  {
+    "grade": "8B",
+    "subject": "地理",
+    "publisher": "南一",
+    "chapter": "第二章",
+    "topic": "東北亞經濟與產業發展",
+    "knowledge_point": [
+      "產業發展與國際貿易",
+      "人口老化對勞動力影響"
+    ],
+    "difficulty": "normal",
+    "question": "日本為何近年來積極引進外籍勞工協助基層工作？（變化版3）",
+    "options": {
+      "A": "因為當地失業率高",
+      "B": "因為勞工成本過低",
+      "C": "因為國內原物料短缺",
+      "D": "因為高齡化加劇導致勞動力短缺"
+    },
+    "answer": "D"
+  },
+  {
+    "grade": "8B",
+    "subject": "地理",
+    "publisher": "南一",
+    "chapter": "第三章",
+    "topic": "東南亞宗教與文化多樣性",
+    "knowledge_point": [
+      "宗教分布",
+      "人口與文化特色"
+    ],
+    "difficulty": "easy",
+    "question": "若想參觀清真寺，應該前往下列哪個以伊斯蘭教為主的國家？（變化版4）",
+    "options": {
+      "A": "越南",
+      "B": "印尼",
+      "C": "柬埔寨",
+      "D": "泰國"
+    },
+    "answer": "B"
+  },
+  {
+    "grade": "8B",
+    "subject": "地理",
+    "publisher": "南一",
+    "chapter": "第一章",
+    "topic": "東北亞氣候與自然災害",
+    "knowledge_point": [
+      "緯度與氣溫分布",
+      "板塊交界與地震"
+    ],
+    "difficulty": "normal",
+    "question": "下列哪一項最能解釋日本多地在冬季有大量降雪的原因？（變化版5）",
+    "options": {
+      "A": "因為受到熱帶氣旋影響",
+      "B": "因為位於高緯度地區，降水多為雪",
+      "C": "因為東北季風夾帶水氣通過海洋",
+      "D": "因為沙漠氣候導致日夜溫差大"
+    },
+    "answer": "C"
+  },
+  {
+    "grade": "8B",
+    "subject": "地理",
+    "publisher": "南一",
+    "chapter": "第一章",
+    "topic": "東北亞氣候與自然災害",
+    "knowledge_point": [
+      "緯度與氣溫分布",
+      "板塊交界與地震"
+    ],
+    "difficulty": "normal",
+    "question": "下列哪一項最能解釋日本多地在冬季有大量降雪的原因？（變化版6）",
+    "options": {
+      "A": "因為受到熱帶氣旋影響",
+      "B": "因為位於高緯度地區，降水多為雪",
+      "C": "因為東北季風夾帶水氣通過海洋",
+      "D": "因為沙漠氣候導致日夜溫差大"
+    },
+    "answer": "C"
+  },
+  {
+    "grade": "8B",
+    "subject": "地理",
+    "publisher": "南一",
+    "chapter": "第四章",
+    "topic": "南亞人口與社會問題",
+    "knowledge_point": [
+      "種姓制度影響",
+      "人口金字塔分析"
+    ],
+    "difficulty": "hard",
+    "question": "印度人口眾多卻貧富差距大，這種情況與下列哪項因素最有關？（變化版7）",
+    "options": {
+      "A": "種姓制度",
+      "B": "語言多樣性",
+      "C": "農業比重過高",
+      "D": "季風影響顯著"
+    },
+    "answer": "A"
+  },
+  {
+    "grade": "8B",
+    "subject": "地理",
+    "publisher": "南一",
+    "chapter": "第五章",
+    "topic": "西亞與北非的地形與氣候",
+    "knowledge_point": [
+      "乾燥氣候與水資源",
+      "沙漠生活型態"
+    ],
+    "difficulty": "easy",
+    "question": "下列哪個民族以帳篷為家、逐水草而居？（變化版8）",
+    "options": {
+      "A": "猶太人",
+      "B": "貝都因人",
+      "C": "阿拉伯人",
+      "D": "柏柏人"
+    },
+    "answer": "B"
+  },
+  {
+    "grade": "8B",
+    "subject": "地理",
+    "publisher": "南一",
+    "chapter": "第二章",
+    "topic": "東北亞經濟與產業發展",
+    "knowledge_point": [
+      "產業發展與國際貿易",
+      "人口老化對勞動力影響"
+    ],
+    "difficulty": "normal",
+    "question": "日本為何近年來積極引進外籍勞工協助基層工作？（變化版9）",
+    "options": {
+      "A": "因為當地失業率高",
+      "B": "因為勞工成本過低",
+      "C": "因為國內原物料短缺",
+      "D": "因為高齡化加劇導致勞動力短缺"
+    },
+    "answer": "D"
+  },
+  {
+    "grade": "8B",
+    "subject": "地理",
+    "publisher": "南一",
+    "chapter": "第三章",
+    "topic": "東南亞宗教與文化多樣性",
+    "knowledge_point": [
+      "宗教分布",
+      "人口與文化特色"
+    ],
+    "difficulty": "easy",
+    "question": "若想參觀清真寺，應該前往下列哪個以伊斯蘭教為主的國家？（變化版10）",
+    "options": {
+      "A": "越南",
+      "B": "印尼",
+      "C": "柬埔寨",
+      "D": "泰國"
+    },
+    "answer": "B"
+  },
+  {
+    "grade": "8B",
+    "subject": "地理",
+    "publisher": "南一",
+    "chapter": "第五章",
+    "topic": "西亞與北非的地形與氣候",
+    "knowledge_point": [
+      "乾燥氣候與水資源",
+      "沙漠生活型態"
+    ],
+    "difficulty": "easy",
+    "question": "下列哪個民族以帳篷為家、逐水草而居？（變化版11）",
+    "options": {
+      "A": "猶太人",
+      "B": "貝都因人",
+      "C": "阿拉伯人",
+      "D": "柏柏人"
+    },
+    "answer": "B"
+  },
+  {
+    "grade": "8B",
+    "subject": "地理",
+    "publisher": "南一",
+    "chapter": "第六章",
+    "topic": "西亞與北非的宗教與國際衝突",
+    "knowledge_point": [
+      "宗教起源地",
+      "教派與戰爭衝突"
+    ],
+    "difficulty": "normal",
+    "question": "耶路撒冷成為國際關注焦點，最主要的原因為何？（變化版12）",
+    "options": {
+      "A": "地處重要交通要道",
+      "B": "為石油出口樞紐",
+      "C": "為多數宗教共同聖地",
+      "D": "位於乾燥氣候區"
+    },
+    "answer": "C"
+  },
+  {
+    "grade": "8B",
+    "subject": "地理",
+    "publisher": "南一",
+    "chapter": "第三章",
+    "topic": "東南亞宗教與文化多樣性",
+    "knowledge_point": [
+      "宗教分布",
+      "人口與文化特色"
+    ],
+    "difficulty": "easy",
+    "question": "若想參觀清真寺，應該前往下列哪個以伊斯蘭教為主的國家？（變化版13）",
+    "options": {
+      "A": "越南",
+      "B": "印尼",
+      "C": "柬埔寨",
+      "D": "泰國"
+    },
+    "answer": "B"
+  },
+  {
+    "grade": "8B",
+    "subject": "地理",
+    "publisher": "南一",
+    "chapter": "第五章",
+    "topic": "西亞與北非的地形與氣候",
+    "knowledge_point": [
+      "乾燥氣候與水資源",
+      "沙漠生活型態"
+    ],
+    "difficulty": "easy",
+    "question": "下列哪個民族以帳篷為家、逐水草而居？（變化版14）",
+    "options": {
+      "A": "猶太人",
+      "B": "貝都因人",
+      "C": "阿拉伯人",
+      "D": "柏柏人"
+    },
+    "answer": "B"
+  },
+  {
+    "grade": "8B",
+    "subject": "地理",
+    "publisher": "南一",
+    "chapter": "第一章",
+    "topic": "東北亞氣候與自然災害",
+    "knowledge_point": [
+      "緯度與氣溫分布",
+      "板塊交界與地震"
+    ],
+    "difficulty": "normal",
+    "question": "下列哪一項最能解釋日本多地在冬季有大量降雪的原因？（變化版15）",
+    "options": {
+      "A": "因為受到熱帶氣旋影響",
+      "B": "因為位於高緯度地區，降水多為雪",
+      "C": "因為東北季風夾帶水氣通過海洋",
+      "D": "因為沙漠氣候導致日夜溫差大"
+    },
+    "answer": "C"
+  },
+  {
+    "grade": "8B",
+    "subject": "地理",
+    "publisher": "南一",
+    "chapter": "第二章",
+    "topic": "東北亞經濟與產業發展",
+    "knowledge_point": [
+      "產業發展與國際貿易",
+      "人口老化對勞動力影響"
+    ],
+    "difficulty": "normal",
+    "question": "日本為何近年來積極引進外籍勞工協助基層工作？（變化版16）",
+    "options": {
+      "A": "因為當地失業率高",
+      "B": "因為勞工成本過低",
+      "C": "因為國內原物料短缺",
+      "D": "因為高齡化加劇導致勞動力短缺"
+    },
+    "answer": "D"
+  },
+  {
+    "grade": "8B",
+    "subject": "地理",
+    "publisher": "南一",
+    "chapter": "第四章",
+    "topic": "南亞人口與社會問題",
+    "knowledge_point": [
+      "種姓制度影響",
+      "人口金字塔分析"
+    ],
+    "difficulty": "hard",
+    "question": "印度人口眾多卻貧富差距大，這種情況與下列哪項因素最有關？（變化版17）",
+    "options": {
+      "A": "種姓制度",
+      "B": "語言多樣性",
+      "C": "農業比重過高",
+      "D": "季風影響顯著"
+    },
+    "answer": "A"
+  },
+  {
+    "grade": "8B",
+    "subject": "地理",
+    "publisher": "南一",
+    "chapter": "第二章",
+    "topic": "東北亞經濟與產業發展",
+    "knowledge_point": [
+      "產業發展與國際貿易",
+      "人口老化對勞動力影響"
+    ],
+    "difficulty": "normal",
+    "question": "日本為何近年來積極引進外籍勞工協助基層工作？（變化版18）",
+    "options": {
+      "A": "因為當地失業率高",
+      "B": "因為勞工成本過低",
+      "C": "因為國內原物料短缺",
+      "D": "因為高齡化加劇導致勞動力短缺"
+    },
+    "answer": "D"
+  },
+  {
+    "grade": "8B",
+    "subject": "地理",
+    "publisher": "南一",
+    "chapter": "第三章",
+    "topic": "東南亞宗教與文化多樣性",
+    "knowledge_point": [
+      "宗教分布",
+      "人口與文化特色"
+    ],
+    "difficulty": "easy",
+    "question": "若想參觀清真寺，應該前往下列哪個以伊斯蘭教為主的國家？（變化版19）",
+    "options": {
+      "A": "越南",
+      "B": "印尼",
+      "C": "柬埔寨",
+      "D": "泰國"
+    },
+    "answer": "B"
+  },
+  {
+    "grade": "8B",
+    "subject": "地理",
+    "publisher": "南一",
+    "chapter": "第三章",
+    "topic": "東南亞宗教與文化多樣性",
+    "knowledge_point": [
+      "宗教分布",
+      "人口與文化特色"
+    ],
+    "difficulty": "easy",
+    "question": "若想參觀清真寺，應該前往下列哪個以伊斯蘭教為主的國家？（變化版20）",
+    "options": {
+      "A": "越南",
+      "B": "印尼",
+      "C": "柬埔寨",
+      "D": "泰國"
+    },
+    "answer": "B"
+  },
+  {
+    "grade": "8B",
+    "subject": "地理",
+    "publisher": "南一",
+    "chapter": "第三章",
+    "topic": "東南亞宗教與文化多樣性",
+    "knowledge_point": [
+      "宗教分布",
+      "人口與文化特色"
+    ],
+    "difficulty": "easy",
+    "question": "若想參觀清真寺，應該前往下列哪個以伊斯蘭教為主的國家？（變化版21）",
+    "options": {
+      "A": "越南",
+      "B": "印尼",
+      "C": "柬埔寨",
+      "D": "泰國"
+    },
+    "answer": "B"
+  },
+  {
+    "grade": "8B",
+    "subject": "地理",
+    "publisher": "南一",
+    "chapter": "第四章",
+    "topic": "南亞人口與社會問題",
+    "knowledge_point": [
+      "種姓制度影響",
+      "人口金字塔分析"
+    ],
+    "difficulty": "hard",
+    "question": "印度人口眾多卻貧富差距大，這種情況與下列哪項因素最有關？（變化版22）",
+    "options": {
+      "A": "種姓制度",
+      "B": "語言多樣性",
+      "C": "農業比重過高",
+      "D": "季風影響顯著"
+    },
+    "answer": "A"
+  },
+  {
+    "grade": "8B",
+    "subject": "地理",
+    "publisher": "南一",
+    "chapter": "第一章",
+    "topic": "東北亞氣候與自然災害",
+    "knowledge_point": [
+      "緯度與氣溫分布",
+      "板塊交界與地震"
+    ],
+    "difficulty": "normal",
+    "question": "下列哪一項最能解釋日本多地在冬季有大量降雪的原因？（變化版23）",
+    "options": {
+      "A": "因為受到熱帶氣旋影響",
+      "B": "因為位於高緯度地區，降水多為雪",
+      "C": "因為東北季風夾帶水氣通過海洋",
+      "D": "因為沙漠氣候導致日夜溫差大"
+    },
+    "answer": "C"
+  },
+  {
+    "grade": "8B",
+    "subject": "地理",
+    "publisher": "南一",
+    "chapter": "第三章",
+    "topic": "東南亞宗教與文化多樣性",
+    "knowledge_point": [
+      "宗教分布",
+      "人口與文化特色"
+    ],
+    "difficulty": "easy",
+    "question": "若想參觀清真寺，應該前往下列哪個以伊斯蘭教為主的國家？（變化版24）",
+    "options": {
+      "A": "越南",
+      "B": "印尼",
+      "C": "柬埔寨",
+      "D": "泰國"
+    },
+    "answer": "B"
+  },
+  {
+    "grade": "8B",
+    "subject": "地理",
+    "publisher": "南一",
+    "chapter": "第五章",
+    "topic": "西亞與北非的地形與氣候",
+    "knowledge_point": [
+      "乾燥氣候與水資源",
+      "沙漠生活型態"
+    ],
+    "difficulty": "easy",
+    "question": "下列哪個民族以帳篷為家、逐水草而居？（變化版25）",
+    "options": {
+      "A": "猶太人",
+      "B": "貝都因人",
+      "C": "阿拉伯人",
+      "D": "柏柏人"
+    },
+    "answer": "B"
+  },
+  {
+    "grade": "8B",
+    "subject": "地理",
+    "publisher": "南一",
+    "chapter": "第五章",
+    "topic": "西亞與北非的地形與氣候",
+    "knowledge_point": [
+      "乾燥氣候與水資源",
+      "沙漠生活型態"
+    ],
+    "difficulty": "easy",
+    "question": "下列哪個民族以帳篷為家、逐水草而居？（變化版26）",
+    "options": {
+      "A": "猶太人",
+      "B": "貝都因人",
+      "C": "阿拉伯人",
+      "D": "柏柏人"
+    },
+    "answer": "B"
+  },
+  {
+    "grade": "8B",
+    "subject": "地理",
+    "publisher": "南一",
+    "chapter": "第三章",
+    "topic": "東南亞宗教與文化多樣性",
+    "knowledge_point": [
+      "宗教分布",
+      "人口與文化特色"
+    ],
+    "difficulty": "easy",
+    "question": "若想參觀清真寺，應該前往下列哪個以伊斯蘭教為主的國家？（變化版27）",
+    "options": {
+      "A": "越南",
+      "B": "印尼",
+      "C": "柬埔寨",
+      "D": "泰國"
+    },
+    "answer": "B"
+  },
+  {
+    "grade": "8B",
+    "subject": "地理",
+    "publisher": "南一",
+    "chapter": "第四章",
+    "topic": "南亞人口與社會問題",
+    "knowledge_point": [
+      "種姓制度影響",
+      "人口金字塔分析"
+    ],
+    "difficulty": "hard",
+    "question": "印度人口眾多卻貧富差距大，這種情況與下列哪項因素最有關？（變化版28）",
+    "options": {
+      "A": "種姓制度",
+      "B": "語言多樣性",
+      "C": "農業比重過高",
+      "D": "季風影響顯著"
+    },
+    "answer": "A"
+  },
+  {
+    "grade": "8B",
+    "subject": "地理",
+    "publisher": "南一",
+    "chapter": "第一章",
+    "topic": "東北亞氣候與自然災害",
+    "knowledge_point": [
+      "緯度與氣溫分布",
+      "板塊交界與地震"
+    ],
+    "difficulty": "normal",
+    "question": "下列哪一項最能解釋日本多地在冬季有大量降雪的原因？（變化版29）",
+    "options": {
+      "A": "因為受到熱帶氣旋影響",
+      "B": "因為位於高緯度地區，降水多為雪",
+      "C": "因為東北季風夾帶水氣通過海洋",
+      "D": "因為沙漠氣候導致日夜溫差大"
+    },
+    "answer": "C"
+  },
+  {
+    "grade": "8B",
+    "subject": "地理",
+    "publisher": "南一",
+    "chapter": "第六章",
+    "topic": "西亞與北非的宗教與國際衝突",
+    "knowledge_point": [
+      "宗教起源地",
+      "教派與戰爭衝突"
+    ],
+    "difficulty": "normal",
+    "question": "耶路撒冷成為國際關注焦點，最主要的原因為何？（變化版30）",
+    "options": {
+      "A": "地處重要交通要道",
+      "B": "為石油出口樞紐",
+      "C": "為多數宗教共同聖地",
+      "D": "位於乾燥氣候區"
+    },
+    "answer": "C"
+  },
+  {
+    "grade": "8B",
+    "subject": "地理",
+    "publisher": "南一",
+    "chapter": "第五章",
+    "topic": "西亞與北非的地形與氣候",
+    "knowledge_point": [
+      "乾燥氣候與水資源",
+      "沙漠生活型態"
+    ],
+    "difficulty": "easy",
+    "question": "下列哪個民族以帳篷為家、逐水草而居？（變化版31）",
+    "options": {
+      "A": "猶太人",
+      "B": "貝都因人",
+      "C": "阿拉伯人",
+      "D": "柏柏人"
+    },
+    "answer": "B"
+  },
+  {
+    "grade": "8B",
+    "subject": "地理",
+    "publisher": "南一",
+    "chapter": "第二章",
+    "topic": "東北亞經濟與產業發展",
+    "knowledge_point": [
+      "產業發展與國際貿易",
+      "人口老化對勞動力影響"
+    ],
+    "difficulty": "normal",
+    "question": "日本為何近年來積極引進外籍勞工協助基層工作？（變化版32）",
+    "options": {
+      "A": "因為當地失業率高",
+      "B": "因為勞工成本過低",
+      "C": "因為國內原物料短缺",
+      "D": "因為高齡化加劇導致勞動力短缺"
+    },
+    "answer": "D"
+  },
+  {
+    "grade": "8B",
+    "subject": "地理",
+    "publisher": "南一",
+    "chapter": "第四章",
+    "topic": "南亞人口與社會問題",
+    "knowledge_point": [
+      "種姓制度影響",
+      "人口金字塔分析"
+    ],
+    "difficulty": "hard",
+    "question": "印度人口眾多卻貧富差距大，這種情況與下列哪項因素最有關？（變化版33）",
+    "options": {
+      "A": "種姓制度",
+      "B": "語言多樣性",
+      "C": "農業比重過高",
+      "D": "季風影響顯著"
+    },
+    "answer": "A"
+  },
+  {
+    "grade": "8B",
+    "subject": "地理",
+    "publisher": "南一",
+    "chapter": "第一章",
+    "topic": "東北亞氣候與自然災害",
+    "knowledge_point": [
+      "緯度與氣溫分布",
+      "板塊交界與地震"
+    ],
+    "difficulty": "normal",
+    "question": "下列哪一項最能解釋日本多地在冬季有大量降雪的原因？（變化版34）",
+    "options": {
+      "A": "因為受到熱帶氣旋影響",
+      "B": "因為位於高緯度地區，降水多為雪",
+      "C": "因為東北季風夾帶水氣通過海洋",
+      "D": "因為沙漠氣候導致日夜溫差大"
+    },
+    "answer": "C"
+  },
+  {
+    "grade": "8B",
+    "subject": "地理",
+    "publisher": "南一",
+    "chapter": "第六章",
+    "topic": "西亞與北非的宗教與國際衝突",
+    "knowledge_point": [
+      "宗教起源地",
+      "教派與戰爭衝突"
+    ],
+    "difficulty": "normal",
+    "question": "耶路撒冷成為國際關注焦點，最主要的原因為何？（變化版35）",
+    "options": {
+      "A": "地處重要交通要道",
+      "B": "為石油出口樞紐",
+      "C": "為多數宗教共同聖地",
+      "D": "位於乾燥氣候區"
+    },
+    "answer": "C"
+  },
+  {
+    "grade": "8B",
+    "subject": "地理",
+    "publisher": "南一",
+    "chapter": "第三章",
+    "topic": "東南亞宗教與文化多樣性",
+    "knowledge_point": [
+      "宗教分布",
+      "人口與文化特色"
+    ],
+    "difficulty": "easy",
+    "question": "若想參觀清真寺，應該前往下列哪個以伊斯蘭教為主的國家？（變化版36）",
+    "options": {
+      "A": "越南",
+      "B": "印尼",
+      "C": "柬埔寨",
+      "D": "泰國"
+    },
+    "answer": "B"
+  },
+  {
+    "grade": "8B",
+    "subject": "地理",
+    "publisher": "南一",
+    "chapter": "第六章",
+    "topic": "西亞與北非的宗教與國際衝突",
+    "knowledge_point": [
+      "宗教起源地",
+      "教派與戰爭衝突"
+    ],
+    "difficulty": "normal",
+    "question": "耶路撒冷成為國際關注焦點，最主要的原因為何？（變化版37）",
+    "options": {
+      "A": "地處重要交通要道",
+      "B": "為石油出口樞紐",
+      "C": "為多數宗教共同聖地",
+      "D": "位於乾燥氣候區"
+    },
+    "answer": "C"
+  },
+  {
+    "grade": "8B",
+    "subject": "地理",
+    "publisher": "南一",
+    "chapter": "第四章",
+    "topic": "南亞人口與社會問題",
+    "knowledge_point": [
+      "種姓制度影響",
+      "人口金字塔分析"
+    ],
+    "difficulty": "hard",
+    "question": "印度人口眾多卻貧富差距大，這種情況與下列哪項因素最有關？（變化版38）",
+    "options": {
+      "A": "種姓制度",
+      "B": "語言多樣性",
+      "C": "農業比重過高",
+      "D": "季風影響顯著"
+    },
+    "answer": "A"
+  },
+  {
+    "grade": "8B",
+    "subject": "地理",
+    "publisher": "南一",
+    "chapter": "第六章",
+    "topic": "西亞與北非的宗教與國際衝突",
+    "knowledge_point": [
+      "宗教起源地",
+      "教派與戰爭衝突"
+    ],
+    "difficulty": "normal",
+    "question": "耶路撒冷成為國際關注焦點，最主要的原因為何？（變化版39）",
+    "options": {
+      "A": "地處重要交通要道",
+      "B": "為石油出口樞紐",
+      "C": "為多數宗教共同聖地",
+      "D": "位於乾燥氣候區"
+    },
+    "answer": "C"
+  },
+  {
+    "grade": "8B",
+    "subject": "地理",
+    "publisher": "南一",
+    "chapter": "第五章",
+    "topic": "西亞與北非的地形與氣候",
+    "knowledge_point": [
+      "乾燥氣候與水資源",
+      "沙漠生活型態"
+    ],
+    "difficulty": "easy",
+    "question": "下列哪個民族以帳篷為家、逐水草而居？（變化版40）",
+    "options": {
+      "A": "猶太人",
+      "B": "貝都因人",
+      "C": "阿拉伯人",
+      "D": "柏柏人"
+    },
+    "answer": "B"
+  },
+  {
+    "grade": "8B",
+    "subject": "地理",
+    "publisher": "南一",
+    "chapter": "第二章",
+    "topic": "東北亞經濟與產業發展",
+    "knowledge_point": [
+      "產業發展與國際貿易",
+      "人口老化對勞動力影響"
+    ],
+    "difficulty": "normal",
+    "question": "日本為何近年來積極引進外籍勞工協助基層工作？（變化版41）",
+    "options": {
+      "A": "因為當地失業率高",
+      "B": "因為勞工成本過低",
+      "C": "因為國內原物料短缺",
+      "D": "因為高齡化加劇導致勞動力短缺"
+    },
+    "answer": "D"
+  },
+  {
+    "grade": "8B",
+    "subject": "地理",
+    "publisher": "南一",
+    "chapter": "第一章",
+    "topic": "東北亞氣候與自然災害",
+    "knowledge_point": [
+      "緯度與氣溫分布",
+      "板塊交界與地震"
+    ],
+    "difficulty": "normal",
+    "question": "下列哪一項最能解釋日本多地在冬季有大量降雪的原因？（變化版42）",
+    "options": {
+      "A": "因為受到熱帶氣旋影響",
+      "B": "因為位於高緯度地區，降水多為雪",
+      "C": "因為東北季風夾帶水氣通過海洋",
+      "D": "因為沙漠氣候導致日夜溫差大"
+    },
+    "answer": "C"
+  },
+  {
+    "grade": "8B",
+    "subject": "地理",
+    "publisher": "南一",
+    "chapter": "第四章",
+    "topic": "南亞人口與社會問題",
+    "knowledge_point": [
+      "種姓制度影響",
+      "人口金字塔分析"
+    ],
+    "difficulty": "hard",
+    "question": "印度人口眾多卻貧富差距大，這種情況與下列哪項因素最有關？（變化版43）",
+    "options": {
+      "A": "種姓制度",
+      "B": "語言多樣性",
+      "C": "農業比重過高",
+      "D": "季風影響顯著"
+    },
+    "answer": "A"
+  },
+  {
+    "grade": "8B",
+    "subject": "地理",
+    "publisher": "南一",
+    "chapter": "第五章",
+    "topic": "西亞與北非的地形與氣候",
+    "knowledge_point": [
+      "乾燥氣候與水資源",
+      "沙漠生活型態"
+    ],
+    "difficulty": "easy",
+    "question": "下列哪個民族以帳篷為家、逐水草而居？（變化版44）",
+    "options": {
+      "A": "猶太人",
+      "B": "貝都因人",
+      "C": "阿拉伯人",
+      "D": "柏柏人"
+    },
+    "answer": "B"
+  },
+  {
+    "grade": "8B",
+    "subject": "地理",
+    "publisher": "南一",
+    "chapter": "第二章",
+    "topic": "東北亞經濟與產業發展",
+    "knowledge_point": [
+      "產業發展與國際貿易",
+      "人口老化對勞動力影響"
+    ],
+    "difficulty": "normal",
+    "question": "日本為何近年來積極引進外籍勞工協助基層工作？（變化版45）",
+    "options": {
+      "A": "因為當地失業率高",
+      "B": "因為勞工成本過低",
+      "C": "因為國內原物料短缺",
+      "D": "因為高齡化加劇導致勞動力短缺"
+    },
+    "answer": "D"
+  },
+  {
+    "grade": "8B",
+    "subject": "地理",
+    "publisher": "南一",
+    "chapter": "第二章",
+    "topic": "東北亞經濟與產業發展",
+    "knowledge_point": [
+      "產業發展與國際貿易",
+      "人口老化對勞動力影響"
+    ],
+    "difficulty": "normal",
+    "question": "日本為何近年來積極引進外籍勞工協助基層工作？（變化版46）",
+    "options": {
+      "A": "因為當地失業率高",
+      "B": "因為勞工成本過低",
+      "C": "因為國內原物料短缺",
+      "D": "因為高齡化加劇導致勞動力短缺"
+    },
+    "answer": "D"
+  },
+  {
+    "grade": "8B",
+    "subject": "地理",
+    "publisher": "南一",
+    "chapter": "第三章",
+    "topic": "東南亞宗教與文化多樣性",
+    "knowledge_point": [
+      "宗教分布",
+      "人口與文化特色"
+    ],
+    "difficulty": "easy",
+    "question": "若想參觀清真寺，應該前往下列哪個以伊斯蘭教為主的國家？（變化版47）",
+    "options": {
+      "A": "越南",
+      "B": "印尼",
+      "C": "柬埔寨",
+      "D": "泰國"
+    },
+    "answer": "B"
+  },
+  {
+    "grade": "8B",
+    "subject": "地理",
+    "publisher": "南一",
+    "chapter": "第一章",
+    "topic": "東北亞氣候與自然災害",
+    "knowledge_point": [
+      "緯度與氣溫分布",
+      "板塊交界與地震"
+    ],
+    "difficulty": "normal",
+    "question": "下列哪一項最能解釋日本多地在冬季有大量降雪的原因？（變化版48）",
+    "options": {
+      "A": "因為受到熱帶氣旋影響",
+      "B": "因為位於高緯度地區，降水多為雪",
+      "C": "因為東北季風夾帶水氣通過海洋",
+      "D": "因為沙漠氣候導致日夜溫差大"
+    },
+    "answer": "C"
+  },
+  {
+    "grade": "8B",
+    "subject": "地理",
+    "publisher": "南一",
+    "chapter": "第二章",
+    "topic": "東北亞經濟與產業發展",
+    "knowledge_point": [
+      "產業發展與國際貿易",
+      "人口老化對勞動力影響"
+    ],
+    "difficulty": "normal",
+    "question": "日本為何近年來積極引進外籍勞工協助基層工作？（變化版49）",
+    "options": {
+      "A": "因為當地失業率高",
+      "B": "因為勞工成本過低",
+      "C": "因為國內原物料短缺",
+      "D": "因為高齡化加劇導致勞動力短缺"
+    },
+    "answer": "D"
+  },
+  {
+    "grade": "8B",
+    "subject": "地理",
+    "publisher": "南一",
+    "chapter": "第六章",
+    "topic": "西亞與北非的宗教與國際衝突",
+    "knowledge_point": [
+      "宗教起源地",
+      "教派與戰爭衝突"
+    ],
+    "difficulty": "normal",
+    "question": "耶路撒冷成為國際關注焦點，最主要的原因為何？（變化版50）",
+    "options": {
+      "A": "地處重要交通要道",
+      "B": "為石油出口樞紐",
+      "C": "為多數宗教共同聖地",
+      "D": "位於乾燥氣候區"
+    },
+    "answer": "C"
+  },
+  {
+    "grade": "9A",
+    "subject": "地理",
+    "publisher": "南一",
+    "chapter": "第一章",
+    "topic": "漠南非洲的自然環境和文化發展",
+    "knowledge_point": [
+      "漠南非洲的自然環境和文化發展"
+    ],
+    "difficulty": "easy",
+    "question": "漠南非洲因為氣候乾燥，常見哪種自然景觀？",
+    "options": {
+      "A": "沙漠",
+      "B": "熱帶雨林",
+      "C": "針葉林",
+      "D": "草原"
+    },
+    "answer": "B"
+  },
+  {
+    "grade": "9A",
+    "subject": "地理",
+    "publisher": "南一",
+    "chapter": "第一章",
+    "topic": "漠南非洲的自然環境和文化發展",
+    "knowledge_point": [
+      "漠南非洲的自然環境和文化發展"
+    ],
+    "difficulty": "normal",
+    "question": "非洲南部受英荷殖民影響主要信仰為？",
+    "options": {
+      "A": "基督教",
+      "B": "伊斯蘭教",
+      "C": "佛教",
+      "D": "印度教"
+    },
+    "answer": "B"
+  },
+  {
+    "grade": "9A",
+    "subject": "地理",
+    "publisher": "南一",
+    "chapter": "第一章",
+    "topic": "漠南非洲的自然環境和文化發展",
+    "knowledge_point": [
+      "漠南非洲的自然環境和文化發展"
+    ],
+    "difficulty": "hard",
+    "question": "漠南非洲因為氣候乾燥，常見哪種自然景觀？",
+    "options": {
+      "A": "耕地不足",
+      "B": "經濟作物面積擴大",
+      "C": "農業技術高超",
+      "D": "自然災害頻繁"
+    },
+    "answer": "A"
+  },
+  {
+    "grade": "9A",
+    "subject": "地理",
+    "publisher": "南一",
+    "chapter": "第一章",
+    "topic": "漠南非洲的自然環境和文化發展",
+    "knowledge_point": [
+      "漠南非洲的自然環境和文化發展"
+    ],
+    "difficulty": "easy",
+    "question": "非洲南部受英荷殖民影響主要信仰為？",
+    "options": {
+      "A": "風力發電",
+      "B": "太陽能",
+      "C": "水力發電",
+      "D": "地熱"
+    },
+    "answer": "B"
+  },
+  {
+    "grade": "9A",
+    "subject": "地理",
+    "publisher": "南一",
+    "chapter": "第一章",
+    "topic": "漠南非洲的自然環境和文化發展",
+    "knowledge_point": [
+      "漠南非洲的自然環境和文化發展"
+    ],
+    "difficulty": "normal",
+    "question": "漠南非洲因為氣候乾燥，常見哪種自然景觀？",
+    "options": {
+      "A": "勞力",
+      "B": "原料",
+      "C": "市場",
+      "D": "動力"
+    },
+    "answer": "B"
+  },
+  {
+    "grade": "9A",
+    "subject": "地理",
+    "publisher": "南一",
+    "chapter": "第一章",
+    "topic": "漠南非洲的自然環境和文化發展",
+    "knowledge_point": [
+      "漠南非洲的自然環境和文化發展"
+    ],
+    "difficulty": "hard",
+    "question": "非洲南部受英荷殖民影響主要信仰為？",
+    "options": {
+      "A": "火山作用",
+      "B": "風蝕作用",
+      "C": "冰河作用",
+      "D": "河流作用"
+    },
+    "answer": "B"
+  },
+  {
+    "grade": "9A",
+    "subject": "地理",
+    "publisher": "南一",
+    "chapter": "第一章",
+    "topic": "漠南非洲的自然環境和文化發展",
+    "knowledge_point": [
+      "漠南非洲的自然環境和文化發展"
+    ],
+    "difficulty": "easy",
+    "question": "漠南非洲因為氣候乾燥，常見哪種自然景觀？",
+    "options": {
+      "A": "中歐",
+      "B": "烏克蘭",
+      "C": "南歐",
+      "D": "東歐"
+    },
+    "answer": "B"
+  },
+  {
+    "grade": "9A",
+    "subject": "地理",
+    "publisher": "南一",
+    "chapter": "第一章",
+    "topic": "漠南非洲的自然環境和文化發展",
+    "knowledge_point": [
+      "漠南非洲的自然環境和文化發展"
+    ],
+    "difficulty": "normal",
+    "question": "非洲南部受英荷殖民影響主要信仰為？",
+    "options": {
+      "A": "土地",
+      "B": "交通",
+      "C": "稅制",
+      "D": "勞力"
+    },
+    "answer": "C"
+  },
+  {
+    "grade": "9A",
+    "subject": "地理",
+    "publisher": "南一",
+    "chapter": "第二章",
+    "topic": "漠南非洲的經濟發展",
+    "knowledge_point": [
+      "漠南非洲的經濟發展"
+    ],
+    "difficulty": "easy",
+    "question": "非洲缺糧原因之一為？",
+    "options": {
+      "A": "沙漠",
+      "B": "熱帶雨林",
+      "C": "針葉林",
+      "D": "草原"
+    },
+    "answer": "A"
+  },
+  {
+    "grade": "9A",
+    "subject": "地理",
+    "publisher": "南一",
+    "chapter": "第二章",
+    "topic": "漠南非洲的經濟發展",
+    "knowledge_point": [
+      "漠南非洲的經濟發展"
+    ],
+    "difficulty": "normal",
+    "question": "非洲適合發展哪種再生能源？",
+    "options": {
+      "A": "基督教",
+      "B": "伊斯蘭教",
+      "C": "佛教",
+      "D": "印度教"
+    },
+    "answer": "C"
+  },
+  {
+    "grade": "9A",
+    "subject": "地理",
+    "publisher": "南一",
+    "chapter": "第二章",
+    "topic": "漠南非洲的經濟發展",
+    "knowledge_point": [
+      "漠南非洲的經濟發展"
+    ],
+    "difficulty": "hard",
+    "question": "非洲缺糧原因之一為？",
+    "options": {
+      "A": "耕地不足",
+      "B": "經濟作物面積擴大",
+      "C": "農業技術高超",
+      "D": "自然災害頻繁"
+    },
+    "answer": "C"
+  },
+  {
+    "grade": "9A",
+    "subject": "地理",
+    "publisher": "南一",
+    "chapter": "第二章",
+    "topic": "漠南非洲的經濟發展",
+    "knowledge_point": [
+      "漠南非洲的經濟發展"
+    ],
+    "difficulty": "easy",
+    "question": "非洲適合發展哪種再生能源？",
+    "options": {
+      "A": "風力發電",
+      "B": "太陽能",
+      "C": "水力發電",
+      "D": "地熱"
+    },
+    "answer": "C"
+  },
+  {
+    "grade": "9A",
+    "subject": "地理",
+    "publisher": "南一",
+    "chapter": "第二章",
+    "topic": "漠南非洲的經濟發展",
+    "knowledge_point": [
+      "漠南非洲的經濟發展"
+    ],
+    "difficulty": "normal",
+    "question": "非洲缺糧原因之一為？",
+    "options": {
+      "A": "勞力",
+      "B": "原料",
+      "C": "市場",
+      "D": "動力"
+    },
+    "answer": "B"
+  },
+  {
+    "grade": "9A",
+    "subject": "地理",
+    "publisher": "南一",
+    "chapter": "第二章",
+    "topic": "漠南非洲的經濟發展",
+    "knowledge_point": [
+      "漠南非洲的經濟發展"
+    ],
+    "difficulty": "hard",
+    "question": "非洲適合發展哪種再生能源？",
+    "options": {
+      "A": "火山作用",
+      "B": "風蝕作用",
+      "C": "冰河作用",
+      "D": "河流作用"
+    },
+    "answer": "A"
+  },
+  {
+    "grade": "9A",
+    "subject": "地理",
+    "publisher": "南一",
+    "chapter": "第二章",
+    "topic": "漠南非洲的經濟發展",
+    "knowledge_point": [
+      "漠南非洲的經濟發展"
+    ],
+    "difficulty": "easy",
+    "question": "非洲缺糧原因之一為？",
+    "options": {
+      "A": "中歐",
+      "B": "烏克蘭",
+      "C": "南歐",
+      "D": "東歐"
+    },
+    "answer": "B"
+  },
+  {
+    "grade": "9A",
+    "subject": "地理",
+    "publisher": "南一",
+    "chapter": "第二章",
+    "topic": "漠南非洲的經濟發展",
+    "knowledge_point": [
+      "漠南非洲的經濟發展"
+    ],
+    "difficulty": "normal",
+    "question": "非洲適合發展哪種再生能源？",
+    "options": {
+      "A": "土地",
+      "B": "交通",
+      "C": "稅制",
+      "D": "勞力"
+    },
+    "answer": "A"
+  },
+  {
+    "grade": "9A",
+    "subject": "地理",
+    "publisher": "南一",
+    "chapter": "第三章",
+    "topic": "歐洲與俄羅斯的自然環境與產業文化",
+    "knowledge_point": [
+      "歐洲與俄羅斯的自然環境與產業文化"
+    ],
+    "difficulty": "easy",
+    "question": "東歐成為『歐洲工廠』的主要區位優勢為何？",
+    "options": {
+      "A": "沙漠",
+      "B": "熱帶雨林",
+      "C": "針葉林",
+      "D": "草原"
+    },
+    "answer": "B"
+  },
+  {
+    "grade": "9A",
+    "subject": "地理",
+    "publisher": "南一",
+    "chapter": "第三章",
+    "topic": "歐洲與俄羅斯的自然環境與產業文化",
+    "knowledge_point": [
+      "歐洲與俄羅斯的自然環境與產業文化"
+    ],
+    "difficulty": "normal",
+    "question": "阿爾卑斯山的形成主要是何種地質作用？",
+    "options": {
+      "A": "基督教",
+      "B": "伊斯蘭教",
+      "C": "佛教",
+      "D": "印度教"
+    },
+    "answer": "D"
+  },
+  {
+    "grade": "9A",
+    "subject": "地理",
+    "publisher": "南一",
+    "chapter": "第三章",
+    "topic": "歐洲與俄羅斯的自然環境與產業文化",
+    "knowledge_point": [
+      "歐洲與俄羅斯的自然環境與產業文化"
+    ],
+    "difficulty": "hard",
+    "question": "東歐成為『歐洲工廠』的主要區位優勢為何？",
+    "options": {
+      "A": "耕地不足",
+      "B": "經濟作物面積擴大",
+      "C": "農業技術高超",
+      "D": "自然災害頻繁"
+    },
+    "answer": "C"
+  },
+  {
+    "grade": "9A",
+    "subject": "地理",
+    "publisher": "南一",
+    "chapter": "第三章",
+    "topic": "歐洲與俄羅斯的自然環境與產業文化",
+    "knowledge_point": [
+      "歐洲與俄羅斯的自然環境與產業文化"
+    ],
+    "difficulty": "easy",
+    "question": "阿爾卑斯山的形成主要是何種地質作用？",
+    "options": {
+      "A": "風力發電",
+      "B": "太陽能",
+      "C": "水力發電",
+      "D": "地熱"
+    },
+    "answer": "D"
+  },
+  {
+    "grade": "9A",
+    "subject": "地理",
+    "publisher": "南一",
+    "chapter": "第三章",
+    "topic": "歐洲與俄羅斯的自然環境與產業文化",
+    "knowledge_point": [
+      "歐洲與俄羅斯的自然環境與產業文化"
+    ],
+    "difficulty": "normal",
+    "question": "東歐成為『歐洲工廠』的主要區位優勢為何？",
+    "options": {
+      "A": "勞力",
+      "B": "原料",
+      "C": "市場",
+      "D": "動力"
+    },
+    "answer": "D"
+  },
+  {
+    "grade": "9A",
+    "subject": "地理",
+    "publisher": "南一",
+    "chapter": "第三章",
+    "topic": "歐洲與俄羅斯的自然環境與產業文化",
+    "knowledge_point": [
+      "歐洲與俄羅斯的自然環境與產業文化"
+    ],
+    "difficulty": "hard",
+    "question": "阿爾卑斯山的形成主要是何種地質作用？",
+    "options": {
+      "A": "火山作用",
+      "B": "風蝕作用",
+      "C": "冰河作用",
+      "D": "河流作用"
+    },
+    "answer": "B"
+  },
+  {
+    "grade": "9A",
+    "subject": "地理",
+    "publisher": "南一",
+    "chapter": "第三章",
+    "topic": "歐洲與俄羅斯的自然環境與產業文化",
+    "knowledge_point": [
+      "歐洲與俄羅斯的自然環境與產業文化"
+    ],
+    "difficulty": "easy",
+    "question": "東歐成為『歐洲工廠』的主要區位優勢為何？",
+    "options": {
+      "A": "中歐",
+      "B": "烏克蘭",
+      "C": "南歐",
+      "D": "東歐"
+    },
+    "answer": "C"
+  },
+  {
+    "grade": "9A",
+    "subject": "地理",
+    "publisher": "南一",
+    "chapter": "第三章",
+    "topic": "歐洲與俄羅斯的自然環境與產業文化",
+    "knowledge_point": [
+      "歐洲與俄羅斯的自然環境與產業文化"
+    ],
+    "difficulty": "normal",
+    "question": "阿爾卑斯山的形成主要是何種地質作用？",
+    "options": {
+      "A": "土地",
+      "B": "交通",
+      "C": "稅制",
+      "D": "勞力"
+    },
+    "answer": "D"
+  },
+  {
+    "grade": "9A",
+    "subject": "地理",
+    "publisher": "南一",
+    "chapter": "第四章",
+    "topic": "歐洲與俄羅斯的經濟發展與區域結盟",
+    "knowledge_point": [
+      "歐洲與俄羅斯的經濟發展與區域結盟"
+    ],
+    "difficulty": "easy",
+    "question": "俄羅斯出口天然氣主要通過哪一地區？",
+    "options": {
+      "A": "沙漠",
+      "B": "熱帶雨林",
+      "C": "針葉林",
+      "D": "草原"
+    },
+    "answer": "A"
+  },
+  {
+    "grade": "9A",
+    "subject": "地理",
+    "publisher": "南一",
+    "chapter": "第四章",
+    "topic": "歐洲與俄羅斯的經濟發展與區域結盟",
+    "knowledge_point": [
+      "歐洲與俄羅斯的經濟發展與區域結盟"
+    ],
+    "difficulty": "normal",
+    "question": "捷克吸引外資設廠的優勢為何？",
+    "options": {
+      "A": "基督教",
+      "B": "伊斯蘭教",
+      "C": "佛教",
+      "D": "印度教"
+    },
+    "answer": "C"
+  },
+  {
+    "grade": "9A",
+    "subject": "地理",
+    "publisher": "南一",
+    "chapter": "第四章",
+    "topic": "歐洲與俄羅斯的經濟發展與區域結盟",
+    "knowledge_point": [
+      "歐洲與俄羅斯的經濟發展與區域結盟"
+    ],
+    "difficulty": "hard",
+    "question": "俄羅斯出口天然氣主要通過哪一地區？",
+    "options": {
+      "A": "耕地不足",
+      "B": "經濟作物面積擴大",
+      "C": "農業技術高超",
+      "D": "自然災害頻繁"
+    },
+    "answer": "B"
+  },
+  {
+    "grade": "9A",
+    "subject": "地理",
+    "publisher": "南一",
+    "chapter": "第四章",
+    "topic": "歐洲與俄羅斯的經濟發展與區域結盟",
+    "knowledge_point": [
+      "歐洲與俄羅斯的經濟發展與區域結盟"
+    ],
+    "difficulty": "easy",
+    "question": "捷克吸引外資設廠的優勢為何？",
+    "options": {
+      "A": "風力發電",
+      "B": "太陽能",
+      "C": "水力發電",
+      "D": "地熱"
+    },
+    "answer": "A"
+  },
+  {
+    "grade": "9A",
+    "subject": "地理",
+    "publisher": "南一",
+    "chapter": "第四章",
+    "topic": "歐洲與俄羅斯的經濟發展與區域結盟",
+    "knowledge_point": [
+      "歐洲與俄羅斯的經濟發展與區域結盟"
+    ],
+    "difficulty": "normal",
+    "question": "俄羅斯出口天然氣主要通過哪一地區？",
+    "options": {
+      "A": "勞力",
+      "B": "原料",
+      "C": "市場",
+      "D": "動力"
+    },
+    "answer": "D"
+  },
+  {
+    "grade": "9A",
+    "subject": "地理",
+    "publisher": "南一",
+    "chapter": "第四章",
+    "topic": "歐洲與俄羅斯的經濟發展與區域結盟",
+    "knowledge_point": [
+      "歐洲與俄羅斯的經濟發展與區域結盟"
+    ],
+    "difficulty": "hard",
+    "question": "捷克吸引外資設廠的優勢為何？",
+    "options": {
+      "A": "火山作用",
+      "B": "風蝕作用",
+      "C": "冰河作用",
+      "D": "河流作用"
+    },
+    "answer": "A"
+  },
+  {
+    "grade": "9A",
+    "subject": "地理",
+    "publisher": "南一",
+    "chapter": "第四章",
+    "topic": "歐洲與俄羅斯的經濟發展與區域結盟",
+    "knowledge_point": [
+      "歐洲與俄羅斯的經濟發展與區域結盟"
+    ],
+    "difficulty": "easy",
+    "question": "俄羅斯出口天然氣主要通過哪一地區？",
+    "options": {
+      "A": "中歐",
+      "B": "烏克蘭",
+      "C": "南歐",
+      "D": "東歐"
+    },
+    "answer": "D"
+  },
+  {
+    "grade": "9A",
+    "subject": "地理",
+    "publisher": "南一",
+    "chapter": "第四章",
+    "topic": "歐洲與俄羅斯的經濟發展與區域結盟",
+    "knowledge_point": [
+      "歐洲與俄羅斯的經濟發展與區域結盟"
+    ],
+    "difficulty": "normal",
+    "question": "捷克吸引外資設廠的優勢為何？",
+    "options": {
+      "A": "土地",
+      "B": "交通",
+      "C": "稅制",
+      "D": "勞力"
+    },
+    "answer": "D"
+  },
+  {
+    "grade": "9A",
+    "subject": "地理",
+    "publisher": "南一",
+    "chapter": "第五章",
+    "topic": "美洲的移民與農牧業發展",
+    "knowledge_point": [
+      "美洲的移民與農牧業發展"
+    ],
+    "difficulty": "easy",
+    "question": "美國最大少數族群為何？",
+    "options": {
+      "A": "沙漠",
+      "B": "熱帶雨林",
+      "C": "針葉林",
+      "D": "草原"
+    },
+    "answer": "C"
+  },
+  {
+    "grade": "9A",
+    "subject": "地理",
+    "publisher": "南一",
+    "chapter": "第五章",
+    "topic": "美洲的移民與農牧業發展",
+    "knowledge_point": [
+      "美洲的移民與農牧業發展"
+    ],
+    "difficulty": "normal",
+    "question": "亞馬遜河流域常見什麼氣候？",
+    "options": {
+      "A": "基督教",
+      "B": "伊斯蘭教",
+      "C": "佛教",
+      "D": "印度教"
+    },
+    "answer": "A"
+  },
+  {
+    "grade": "9A",
+    "subject": "地理",
+    "publisher": "南一",
+    "chapter": "第五章",
+    "topic": "美洲的移民與農牧業發展",
+    "knowledge_point": [
+      "美洲的移民與農牧業發展"
+    ],
+    "difficulty": "hard",
+    "question": "美國最大少數族群為何？",
+    "options": {
+      "A": "耕地不足",
+      "B": "經濟作物面積擴大",
+      "C": "農業技術高超",
+      "D": "自然災害頻繁"
+    },
+    "answer": "B"
+  },
+  {
+    "grade": "9A",
+    "subject": "地理",
+    "publisher": "南一",
+    "chapter": "第五章",
+    "topic": "美洲的移民與農牧業發展",
+    "knowledge_point": [
+      "美洲的移民與農牧業發展"
+    ],
+    "difficulty": "easy",
+    "question": "亞馬遜河流域常見什麼氣候？",
+    "options": {
+      "A": "風力發電",
+      "B": "太陽能",
+      "C": "水力發電",
+      "D": "地熱"
+    },
+    "answer": "D"
+  },
+  {
+    "grade": "9A",
+    "subject": "地理",
+    "publisher": "南一",
+    "chapter": "第五章",
+    "topic": "美洲的移民與農牧業發展",
+    "knowledge_point": [
+      "美洲的移民與農牧業發展"
+    ],
+    "difficulty": "normal",
+    "question": "美國最大少數族群為何？",
+    "options": {
+      "A": "勞力",
+      "B": "原料",
+      "C": "市場",
+      "D": "動力"
+    },
+    "answer": "D"
+  },
+  {
+    "grade": "9A",
+    "subject": "地理",
+    "publisher": "南一",
+    "chapter": "第五章",
+    "topic": "美洲的移民與農牧業發展",
+    "knowledge_point": [
+      "美洲的移民與農牧業發展"
+    ],
+    "difficulty": "hard",
+    "question": "亞馬遜河流域常見什麼氣候？",
+    "options": {
+      "A": "火山作用",
+      "B": "風蝕作用",
+      "C": "冰河作用",
+      "D": "河流作用"
+    },
+    "answer": "A"
+  },
+  {
+    "grade": "9A",
+    "subject": "地理",
+    "publisher": "南一",
+    "chapter": "第五章",
+    "topic": "美洲的移民與農牧業發展",
+    "knowledge_point": [
+      "美洲的移民與農牧業發展"
+    ],
+    "difficulty": "easy",
+    "question": "美國最大少數族群為何？",
+    "options": {
+      "A": "中歐",
+      "B": "烏克蘭",
+      "C": "南歐",
+      "D": "東歐"
+    },
+    "answer": "B"
+  },
+  {
+    "grade": "9A",
+    "subject": "地理",
+    "publisher": "南一",
+    "chapter": "第五章",
+    "topic": "美洲的移民與農牧業發展",
+    "knowledge_point": [
+      "美洲的移民與農牧業發展"
+    ],
+    "difficulty": "normal",
+    "question": "亞馬遜河流域常見什麼氣候？",
+    "options": {
+      "A": "土地",
+      "B": "交通",
+      "C": "稅制",
+      "D": "勞力"
+    },
+    "answer": "A"
+  },
+  {
+    "grade": "9A",
+    "subject": "地理",
+    "publisher": "南一",
+    "chapter": "第六章",
+    "topic": "美洲的工商業與經濟發展",
+    "knowledge_point": [
+      "美洲的工商業與經濟發展"
+    ],
+    "difficulty": "easy",
+    "question": "巴西再生能源主力來源為？",
+    "options": {
+      "A": "沙漠",
+      "B": "熱帶雨林",
+      "C": "針葉林",
+      "D": "草原"
+    },
+    "answer": "A"
+  },
+  {
+    "grade": "9A",
+    "subject": "地理",
+    "publisher": "南一",
+    "chapter": "第六章",
+    "topic": "美洲的工商業與經濟發展",
+    "knowledge_point": [
+      "美洲的工商業與經濟發展"
+    ],
+    "difficulty": "normal",
+    "question": "墨西哥成為製造基地的原因為何？",
+    "options": {
+      "A": "基督教",
+      "B": "伊斯蘭教",
+      "C": "佛教",
+      "D": "印度教"
+    },
+    "answer": "C"
+  },
+  {
+    "grade": "9A",
+    "subject": "地理",
+    "publisher": "南一",
+    "chapter": "第六章",
+    "topic": "美洲的工商業與經濟發展",
+    "knowledge_point": [
+      "美洲的工商業與經濟發展"
+    ],
+    "difficulty": "hard",
+    "question": "巴西再生能源主力來源為？",
+    "options": {
+      "A": "耕地不足",
+      "B": "經濟作物面積擴大",
+      "C": "農業技術高超",
+      "D": "自然災害頻繁"
+    },
+    "answer": "C"
+  },
+  {
+    "grade": "9A",
+    "subject": "地理",
+    "publisher": "南一",
+    "chapter": "第六章",
+    "topic": "美洲的工商業與經濟發展",
+    "knowledge_point": [
+      "美洲的工商業與經濟發展"
+    ],
+    "difficulty": "easy",
+    "question": "墨西哥成為製造基地的原因為何？",
+    "options": {
+      "A": "風力發電",
+      "B": "太陽能",
+      "C": "水力發電",
+      "D": "地熱"
+    },
+    "answer": "C"
+  },
+  {
+    "grade": "9A",
+    "subject": "地理",
+    "publisher": "南一",
+    "chapter": "第六章",
+    "topic": "美洲的工商業與經濟發展",
+    "knowledge_point": [
+      "美洲的工商業與經濟發展"
+    ],
+    "difficulty": "normal",
+    "question": "巴西再生能源主力來源為？",
+    "options": {
+      "A": "勞力",
+      "B": "原料",
+      "C": "市場",
+      "D": "動力"
+    },
+    "answer": "C"
+  },
+  {
+    "grade": "9A",
+    "subject": "地理",
+    "publisher": "南一",
+    "chapter": "第六章",
+    "topic": "美洲的工商業與經濟發展",
+    "knowledge_point": [
+      "美洲的工商業與經濟發展"
+    ],
+    "difficulty": "hard",
+    "question": "墨西哥成為製造基地的原因為何？",
+    "options": {
+      "A": "火山作用",
+      "B": "風蝕作用",
+      "C": "冰河作用",
+      "D": "河流作用"
+    },
+    "answer": "D"
+  },
+  {
+    "grade": "9A",
+    "subject": "地理",
+    "publisher": "南一",
+    "chapter": "第六章",
+    "topic": "美洲的工商業與經濟發展",
+    "knowledge_point": [
+      "美洲的工商業與經濟發展"
+    ],
+    "difficulty": "easy",
+    "question": "巴西再生能源主力來源為？",
+    "options": {
+      "A": "中歐",
+      "B": "烏克蘭",
+      "C": "南歐",
+      "D": "東歐"
+    },
+    "answer": "B"
+  },
+  {
+    "grade": "9A",
+    "subject": "地理",
+    "publisher": "南一",
+    "chapter": "第六章",
+    "topic": "美洲的工商業與經濟發展",
+    "knowledge_point": [
+      "美洲的工商業與經濟發展"
+    ],
+    "difficulty": "normal",
+    "question": "墨西哥成為製造基地的原因為何？",
+    "options": {
+      "A": "土地",
+      "B": "交通",
+      "C": "稅制",
+      "D": "勞力"
+    },
+    "answer": "D"
+  },
+  {
+    "grade": "9A",
+    "subject": "地理",
+    "publisher": "南一",
+    "chapter": "第六章",
+    "topic": "美洲的工商業與經濟發展",
+    "knowledge_point": [
+      "美洲的工商業與經濟發展"
+    ],
+    "difficulty": "hard",
+    "question": "巴西再生能源主力來源為？",
+    "options": {
+      "A": "白人",
+      "B": "拉丁裔",
+      "C": "非洲裔",
+      "D": "亞裔"
+    },
+    "answer": "C"
+  },
+  {
+    "grade": "9A",
+    "subject": "地理",
+    "publisher": "南一",
+    "chapter": "第六章",
+    "topic": "美洲的工商業與經濟發展",
+    "knowledge_point": [
+      "美洲的工商業與經濟發展"
+    ],
+    "difficulty": "easy",
+    "question": "墨西哥成為製造基地的原因為何？",
+    "options": {
+      "A": "地中海型",
+      "B": "寒帶氣候",
+      "C": "熱帶雨林",
+      "D": "沙漠氣候"
+    },
+    "answer": "B"
+  },
+  {
+    "grade": "9B",
+    "subject": "地理",
+    "publisher": "南一",
+    "chapter": "C1地名怎麼來？",
+    "topic": "意識型態與地名命名",
+    "knowledge_point": [
+      "意識型態命名",
+      "政治地名"
+    ],
+    "difficulty": "normal",
+    "question": "關於意識型態與地名命名的敘述，下列何者正確？",
+    "options": {
+      "A": "意識型態與地名命名選項1",
+      "B": "意識型態與地名命名選項2",
+      "C": "意識型態與地名命名選項3",
+      "D": "意識型態與地名命名選項4"
+    },
+    "answer": "D"
+  },
+  {
+    "grade": "9B",
+    "subject": "地理",
+    "publisher": "南一",
+    "chapter": "C1地名怎麼來？",
+    "topic": "意識型態與地名命名",
+    "knowledge_point": [
+      "意識型態命名",
+      "政治地名"
+    ],
+    "difficulty": "normal",
+    "question": "關於意識型態與地名命名的敘述，下列何者正確？",
+    "options": {
+      "A": "意識型態與地名命名選項1",
+      "B": "意識型態與地名命名選項2",
+      "C": "意識型態與地名命名選項3",
+      "D": "意識型態與地名命名選項4"
+    },
+    "answer": "C"
+  },
+  {
+    "grade": "9B",
+    "subject": "地理",
+    "publisher": "南一",
+    "chapter": "C1地名怎麼來？",
+    "topic": "意識型態與地名命名",
+    "knowledge_point": [
+      "意識型態命名",
+      "政治地名"
+    ],
+    "difficulty": "hard",
+    "question": "關於意識型態與地名命名的敘述，下列何者正確？",
+    "options": {
+      "A": "意識型態與地名命名選項1",
+      "B": "意識型態與地名命名選項2",
+      "C": "意識型態與地名命名選項3",
+      "D": "意識型態與地名命名選項4"
+    },
+    "answer": "D"
+  },
+  {
+    "grade": "9B",
+    "subject": "地理",
+    "publisher": "南一",
+    "chapter": "C1地名怎麼來？",
+    "topic": "清帝國與現代地名關聯",
+    "knowledge_point": [
+      "清帝國行政區",
+      "現代地名變化"
+    ],
+    "difficulty": "normal",
+    "question": "關於清帝國與現代地名關聯的敘述，下列何者正確？",
+    "options": {
+      "A": "清帝國與現代地名關聯選項1",
+      "B": "清帝國與現代地名關聯選項2",
+      "C": "清帝國與現代地名關聯選項3",
+      "D": "清帝國與現代地名關聯選項4"
+    },
+    "answer": "D"
+  },
+  {
+    "grade": "9B",
+    "subject": "地理",
+    "publisher": "南一",
+    "chapter": "C1地名怎麼來？",
+    "topic": "地名演變與歷史政權",
+    "knowledge_point": [
+      "地名演變",
+      "歷史政權影響"
+    ],
+    "difficulty": "normal",
+    "question": "關於地名演變與歷史政權的敘述，下列何者正確？",
+    "options": {
+      "A": "地名演變與歷史政權選項1",
+      "B": "地名演變與歷史政權選項2",
+      "C": "地名演變與歷史政權選項3",
+      "D": "地名演變與歷史政權選項4"
+    },
+    "answer": "D"
+  },
+  {
+    "grade": "9B",
+    "subject": "地理",
+    "publisher": "南一",
+    "chapter": "C1地名怎麼來？",
+    "topic": "清帝國與現代地名關聯",
+    "knowledge_point": [
+      "清帝國行政區",
+      "現代地名變化"
+    ],
+    "difficulty": "easy",
+    "question": "關於清帝國與現代地名關聯的敘述，下列何者正確？",
+    "options": {
+      "A": "清帝國與現代地名關聯選項1",
+      "B": "清帝國與現代地名關聯選項2",
+      "C": "清帝國與現代地名關聯選項3",
+      "D": "清帝國與現代地名關聯選項4"
+    },
+    "answer": "D"
+  },
+  {
+    "grade": "9B",
+    "subject": "地理",
+    "publisher": "南一",
+    "chapter": "C1地名怎麼來？",
+    "topic": "地名演變與歷史政權",
+    "knowledge_point": [
+      "地名演變",
+      "歷史政權影響"
+    ],
+    "difficulty": "normal",
+    "question": "關於地名演變與歷史政權的敘述，下列何者正確？",
+    "options": {
+      "A": "地名演變與歷史政權選項1",
+      "B": "地名演變與歷史政權選項2",
+      "C": "地名演變與歷史政權選項3",
+      "D": "地名演變與歷史政權選項4"
+    },
+    "answer": "D"
+  },
+  {
+    "grade": "9B",
+    "subject": "地理",
+    "publisher": "南一",
+    "chapter": "C1地名怎麼來？",
+    "topic": "意識型態與地名命名",
+    "knowledge_point": [
+      "意識型態命名",
+      "政治地名"
+    ],
+    "difficulty": "easy",
+    "question": "關於意識型態與地名命名的敘述，下列何者正確？",
+    "options": {
+      "A": "意識型態與地名命名選項1",
+      "B": "意識型態與地名命名選項2",
+      "C": "意識型態與地名命名選項3",
+      "D": "意識型態與地名命名選項4"
+    },
+    "answer": "B"
+  },
+  {
+    "grade": "9B",
+    "subject": "地理",
+    "publisher": "南一",
+    "chapter": "C1地名怎麼來？",
+    "topic": "地名演變與歷史政權",
+    "knowledge_point": [
+      "地名演變",
+      "歷史政權影響"
+    ],
+    "difficulty": "easy",
+    "question": "關於地名演變與歷史政權的敘述，下列何者正確？",
+    "options": {
+      "A": "地名演變與歷史政權選項1",
+      "B": "地名演變與歷史政權選項2",
+      "C": "地名演變與歷史政權選項3",
+      "D": "地名演變與歷史政權選項4"
+    },
+    "answer": "D"
+  },
+  {
+    "grade": "9B",
+    "subject": "地理",
+    "publisher": "南一",
+    "chapter": "C1地名怎麼來？",
+    "topic": "地名演變與歷史政權",
+    "knowledge_point": [
+      "地名演變",
+      "歷史政權影響"
+    ],
+    "difficulty": "hard",
+    "question": "關於地名演變與歷史政權的敘述，下列何者正確？",
+    "options": {
+      "A": "地名演變與歷史政權選項1",
+      "B": "地名演變與歷史政權選項2",
+      "C": "地名演變與歷史政權選項3",
+      "D": "地名演變與歷史政權選項4"
+    },
+    "answer": "D"
+  },
+  {
+    "grade": "9B",
+    "subject": "地理",
+    "publisher": "南一",
+    "chapter": "C1地名怎麼來？",
+    "topic": "清帝國與現代地名關聯",
+    "knowledge_point": [
+      "清帝國行政區",
+      "現代地名變化"
+    ],
+    "difficulty": "easy",
+    "question": "關於清帝國與現代地名關聯的敘述，下列何者正確？",
+    "options": {
+      "A": "清帝國與現代地名關聯選項1",
+      "B": "清帝國與現代地名關聯選項2",
+      "C": "清帝國與現代地名關聯選項3",
+      "D": "清帝國與現代地名關聯選項4"
+    },
+    "answer": "C"
+  },
+  {
+    "grade": "9B",
+    "subject": "地理",
+    "publisher": "南一",
+    "chapter": "C1地名怎麼來？",
+    "topic": "清帝國與現代地名關聯",
+    "knowledge_point": [
+      "清帝國行政區",
+      "現代地名變化"
+    ],
+    "difficulty": "hard",
+    "question": "關於清帝國與現代地名關聯的敘述，下列何者正確？",
+    "options": {
+      "A": "清帝國與現代地名關聯選項1",
+      "B": "清帝國與現代地名關聯選項2",
+      "C": "清帝國與現代地名關聯選項3",
+      "D": "清帝國與現代地名關聯選項4"
+    },
+    "answer": "A"
+  },
+  {
+    "grade": "9B",
+    "subject": "地理",
+    "publisher": "南一",
+    "chapter": "C1地名怎麼來？",
+    "topic": "清帝國與現代地名關聯",
+    "knowledge_point": [
+      "清帝國行政區",
+      "現代地名變化"
+    ],
+    "difficulty": "hard",
+    "question": "關於清帝國與現代地名關聯的敘述，下列何者正確？",
+    "options": {
+      "A": "清帝國與現代地名關聯選項1",
+      "B": "清帝國與現代地名關聯選項2",
+      "C": "清帝國與現代地名關聯選項3",
+      "D": "清帝國與現代地名關聯選項4"
+    },
+    "answer": "B"
+  },
+  {
+    "grade": "9B",
+    "subject": "地理",
+    "publisher": "南一",
+    "chapter": "C2聚落的命名與商品行銷",
+    "topic": "地名與方位或歷史事件",
+    "knowledge_point": [
+      "地理方位命名",
+      "屯墾與地名"
+    ],
+    "difficulty": "normal",
+    "question": "關於地名與方位或歷史事件的敘述，下列何者正確？",
+    "options": {
+      "A": "地名與方位或歷史事件選項1",
+      "B": "地名與方位或歷史事件選項2",
+      "C": "地名與方位或歷史事件選項3",
+      "D": "地名與方位或歷史事件選項4"
+    },
+    "answer": "C"
+  },
+  {
+    "grade": "9B",
+    "subject": "地理",
+    "publisher": "南一",
+    "chapter": "C2聚落的命名與商品行銷",
+    "topic": "聚落命名因素",
+    "knowledge_point": [
+      "自然地形命名",
+      "宗教與移民命名"
+    ],
+    "difficulty": "hard",
+    "question": "關於聚落命名因素的敘述，下列何者正確？",
+    "options": {
+      "A": "聚落命名因素選項1",
+      "B": "聚落命名因素選項2",
+      "C": "聚落命名因素選項3",
+      "D": "聚落命名因素選項4"
+    },
+    "answer": "C"
+  },
+  {
+    "grade": "9B",
+    "subject": "地理",
+    "publisher": "南一",
+    "chapter": "C2聚落的命名與商品行銷",
+    "topic": "地名與產業關係",
+    "knowledge_point": [
+      "產業與地名",
+      "聚落發展"
+    ],
+    "difficulty": "easy",
+    "question": "關於地名與產業關係的敘述，下列何者正確？",
+    "options": {
+      "A": "地名與產業關係選項1",
+      "B": "地名與產業關係選項2",
+      "C": "地名與產業關係選項3",
+      "D": "地名與產業關係選項4"
+    },
+    "answer": "A"
+  },
+  {
+    "grade": "9B",
+    "subject": "地理",
+    "publisher": "南一",
+    "chapter": "C2聚落的命名與商品行銷",
+    "topic": "地名與方位或歷史事件",
+    "knowledge_point": [
+      "地理方位命名",
+      "屯墾與地名"
+    ],
+    "difficulty": "normal",
+    "question": "關於地名與方位或歷史事件的敘述，下列何者正確？",
+    "options": {
+      "A": "地名與方位或歷史事件選項1",
+      "B": "地名與方位或歷史事件選項2",
+      "C": "地名與方位或歷史事件選項3",
+      "D": "地名與方位或歷史事件選項4"
+    },
+    "answer": "B"
+  },
+  {
+    "grade": "9B",
+    "subject": "地理",
+    "publisher": "南一",
+    "chapter": "C2聚落的命名與商品行銷",
+    "topic": "地名與方位或歷史事件",
+    "knowledge_point": [
+      "地理方位命名",
+      "屯墾與地名"
+    ],
+    "difficulty": "easy",
+    "question": "關於地名與方位或歷史事件的敘述，下列何者正確？",
+    "options": {
+      "A": "地名與方位或歷史事件選項1",
+      "B": "地名與方位或歷史事件選項2",
+      "C": "地名與方位或歷史事件選項3",
+      "D": "地名與方位或歷史事件選項4"
+    },
+    "answer": "D"
+  },
+  {
+    "grade": "9B",
+    "subject": "地理",
+    "publisher": "南一",
+    "chapter": "C2聚落的命名與商品行銷",
+    "topic": "地名與方位或歷史事件",
+    "knowledge_point": [
+      "地理方位命名",
+      "屯墾與地名"
+    ],
+    "difficulty": "normal",
+    "question": "關於地名與方位或歷史事件的敘述，下列何者正確？",
+    "options": {
+      "A": "地名與方位或歷史事件選項1",
+      "B": "地名與方位或歷史事件選項2",
+      "C": "地名與方位或歷史事件選項3",
+      "D": "地名與方位或歷史事件選項4"
+    },
+    "answer": "D"
+  },
+  {
+    "grade": "9B",
+    "subject": "地理",
+    "publisher": "南一",
+    "chapter": "C2聚落的命名與商品行銷",
+    "topic": "地名與方位或歷史事件",
+    "knowledge_point": [
+      "地理方位命名",
+      "屯墾與地名"
+    ],
+    "difficulty": "easy",
+    "question": "關於地名與方位或歷史事件的敘述，下列何者正確？",
+    "options": {
+      "A": "地名與方位或歷史事件選項1",
+      "B": "地名與方位或歷史事件選項2",
+      "C": "地名與方位或歷史事件選項3",
+      "D": "地名與方位或歷史事件選項4"
+    },
+    "answer": "C"
+  },
+  {
+    "grade": "9B",
+    "subject": "地理",
+    "publisher": "南一",
+    "chapter": "C2聚落的命名與商品行銷",
+    "topic": "聚落命名因素",
+    "knowledge_point": [
+      "自然地形命名",
+      "宗教與移民命名"
+    ],
+    "difficulty": "hard",
+    "question": "關於聚落命名因素的敘述，下列何者正確？",
+    "options": {
+      "A": "聚落命名因素選項1",
+      "B": "聚落命名因素選項2",
+      "C": "聚落命名因素選項3",
+      "D": "聚落命名因素選項4"
+    },
+    "answer": "A"
+  },
+  {
+    "grade": "9B",
+    "subject": "地理",
+    "publisher": "南一",
+    "chapter": "C2聚落的命名與商品行銷",
+    "topic": "地名與方位或歷史事件",
+    "knowledge_point": [
+      "地理方位命名",
+      "屯墾與地名"
+    ],
+    "difficulty": "hard",
+    "question": "關於地名與方位或歷史事件的敘述，下列何者正確？",
+    "options": {
+      "A": "地名與方位或歷史事件選項1",
+      "B": "地名與方位或歷史事件選項2",
+      "C": "地名與方位或歷史事件選項3",
+      "D": "地名與方位或歷史事件選項4"
+    },
+    "answer": "D"
+  },
+  {
+    "grade": "9B",
+    "subject": "地理",
+    "publisher": "南一",
+    "chapter": "C2聚落的命名與商品行銷",
+    "topic": "聚落命名因素",
+    "knowledge_point": [
+      "自然地形命名",
+      "宗教與移民命名"
+    ],
+    "difficulty": "hard",
+    "question": "關於聚落命名因素的敘述，下列何者正確？",
+    "options": {
+      "A": "聚落命名因素選項1",
+      "B": "聚落命名因素選項2",
+      "C": "聚落命名因素選項3",
+      "D": "聚落命名因素選項4"
+    },
+    "answer": "B"
+  },
+  {
+    "grade": "9B",
+    "subject": "地理",
+    "publisher": "南一",
+    "chapter": "C2聚落的命名與商品行銷",
+    "topic": "聚落命名因素",
+    "knowledge_point": [
+      "自然地形命名",
+      "宗教與移民命名"
+    ],
+    "difficulty": "normal",
+    "question": "關於聚落命名因素的敘述，下列何者正確？",
+    "options": {
+      "A": "聚落命名因素選項1",
+      "B": "聚落命名因素選項2",
+      "C": "聚落命名因素選項3",
+      "D": "聚落命名因素選項4"
+    },
+    "answer": "A"
+  },
+  {
+    "grade": "9B",
+    "subject": "地理",
+    "publisher": "南一",
+    "chapter": "C2聚落的命名與商品行銷",
+    "topic": "聚落命名因素",
+    "knowledge_point": [
+      "自然地形命名",
+      "宗教與移民命名"
+    ],
+    "difficulty": "normal",
+    "question": "關於聚落命名因素的敘述，下列何者正確？",
+    "options": {
+      "A": "聚落命名因素選項1",
+      "B": "聚落命名因素選項2",
+      "C": "聚落命名因素選項3",
+      "D": "聚落命名因素選項4"
+    },
+    "answer": "A"
+  },
+  {
+    "grade": "9B",
+    "subject": "地理",
+    "publisher": "南一",
+    "chapter": "C3從產地到餐桌",
+    "topic": "全球化與飲食文化",
+    "knowledge_point": [
+      "速食文化",
+      "跨國飲食影響"
+    ],
+    "difficulty": "hard",
+    "question": "關於全球化與飲食文化的敘述，下列何者正確？",
+    "options": {
+      "A": "全球化與飲食文化選項1",
+      "B": "全球化與飲食文化選項2",
+      "C": "全球化與飲食文化選項3",
+      "D": "全球化與飲食文化選項4"
+    },
+    "answer": "A"
+  },
+  {
+    "grade": "9B",
+    "subject": "地理",
+    "publisher": "南一",
+    "chapter": "C3從產地到餐桌",
+    "topic": "全球化與飲食文化",
+    "knowledge_point": [
+      "速食文化",
+      "跨國飲食影響"
+    ],
+    "difficulty": "normal",
+    "question": "關於全球化與飲食文化的敘述，下列何者正確？",
+    "options": {
+      "A": "全球化與飲食文化選項1",
+      "B": "全球化與飲食文化選項2",
+      "C": "全球化與飲食文化選項3",
+      "D": "全球化與飲食文化選項4"
+    },
+    "answer": "B"
+  },
+  {
+    "grade": "9B",
+    "subject": "地理",
+    "publisher": "南一",
+    "chapter": "C3從產地到餐桌",
+    "topic": "氣候與在地農作",
+    "knowledge_point": [
+      "氣候影響作物",
+      "地方特產形成"
+    ],
+    "difficulty": "normal",
+    "question": "關於氣候與在地農作的敘述，下列何者正確？",
+    "options": {
+      "A": "氣候與在地農作選項1",
+      "B": "氣候與在地農作選項2",
+      "C": "氣候與在地農作選項3",
+      "D": "氣候與在地農作選項4"
+    },
+    "answer": "C"
+  },
+  {
+    "grade": "9B",
+    "subject": "地理",
+    "publisher": "南一",
+    "chapter": "C3從產地到餐桌",
+    "topic": "氣候與在地農作",
+    "knowledge_point": [
+      "氣候影響作物",
+      "地方特產形成"
+    ],
+    "difficulty": "easy",
+    "question": "關於氣候與在地農作的敘述，下列何者正確？",
+    "options": {
+      "A": "氣候與在地農作選項1",
+      "B": "氣候與在地農作選項2",
+      "C": "氣候與在地農作選項3",
+      "D": "氣候與在地農作選項4"
+    },
+    "answer": "C"
+  },
+  {
+    "grade": "9B",
+    "subject": "地理",
+    "publisher": "南一",
+    "chapter": "C3從產地到餐桌",
+    "topic": "全球化與飲食文化",
+    "knowledge_point": [
+      "速食文化",
+      "跨國飲食影響"
+    ],
+    "difficulty": "hard",
+    "question": "關於全球化與飲食文化的敘述，下列何者正確？",
+    "options": {
+      "A": "全球化與飲食文化選項1",
+      "B": "全球化與飲食文化選項2",
+      "C": "全球化與飲食文化選項3",
+      "D": "全球化與飲食文化選項4"
+    },
+    "answer": "A"
+  },
+  {
+    "grade": "9B",
+    "subject": "地理",
+    "publisher": "南一",
+    "chapter": "C3從產地到餐桌",
+    "topic": "全球化與飲食文化",
+    "knowledge_point": [
+      "速食文化",
+      "跨國飲食影響"
+    ],
+    "difficulty": "easy",
+    "question": "關於全球化與飲食文化的敘述，下列何者正確？",
+    "options": {
+      "A": "全球化與飲食文化選項1",
+      "B": "全球化與飲食文化選項2",
+      "C": "全球化與飲食文化選項3",
+      "D": "全球化與飲食文化選項4"
+    },
+    "answer": "C"
+  },
+  {
+    "grade": "9B",
+    "subject": "地理",
+    "publisher": "南一",
+    "chapter": "C3從產地到餐桌",
+    "topic": "氣候與在地農作",
+    "knowledge_point": [
+      "氣候影響作物",
+      "地方特產形成"
+    ],
+    "difficulty": "normal",
+    "question": "關於氣候與在地農作的敘述，下列何者正確？",
+    "options": {
+      "A": "氣候與在地農作選項1",
+      "B": "氣候與在地農作選項2",
+      "C": "氣候與在地農作選項3",
+      "D": "氣候與在地農作選項4"
+    },
+    "answer": "C"
+  },
+  {
+    "grade": "9B",
+    "subject": "地理",
+    "publisher": "南一",
+    "chapter": "C3從產地到餐桌",
+    "topic": "農產品流通與貿易",
+    "knowledge_point": [
+      "進口農產",
+      "冷鏈技術"
+    ],
+    "difficulty": "hard",
+    "question": "關於農產品流通與貿易的敘述，下列何者正確？",
+    "options": {
+      "A": "農產品流通與貿易選項1",
+      "B": "農產品流通與貿易選項2",
+      "C": "農產品流通與貿易選項3",
+      "D": "農產品流通與貿易選項4"
+    },
+    "answer": "C"
+  },
+  {
+    "grade": "9B",
+    "subject": "地理",
+    "publisher": "南一",
+    "chapter": "C3從產地到餐桌",
+    "topic": "全球化與飲食文化",
+    "knowledge_point": [
+      "速食文化",
+      "跨國飲食影響"
+    ],
+    "difficulty": "hard",
+    "question": "關於全球化與飲食文化的敘述，下列何者正確？",
+    "options": {
+      "A": "全球化與飲食文化選項1",
+      "B": "全球化與飲食文化選項2",
+      "C": "全球化與飲食文化選項3",
+      "D": "全球化與飲食文化選項4"
+    },
+    "answer": "C"
+  },
+  {
+    "grade": "9B",
+    "subject": "地理",
+    "publisher": "南一",
+    "chapter": "C3從產地到餐桌",
+    "topic": "農產品流通與貿易",
+    "knowledge_point": [
+      "進口農產",
+      "冷鏈技術"
+    ],
+    "difficulty": "easy",
+    "question": "關於農產品流通與貿易的敘述，下列何者正確？",
+    "options": {
+      "A": "農產品流通與貿易選項1",
+      "B": "農產品流通與貿易選項2",
+      "C": "農產品流通與貿易選項3",
+      "D": "農產品流通與貿易選項4"
+    },
+    "answer": "B"
+  },
+  {
+    "grade": "9B",
+    "subject": "地理",
+    "publisher": "南一",
+    "chapter": "C3從產地到餐桌",
+    "topic": "全球化與飲食文化",
+    "knowledge_point": [
+      "速食文化",
+      "跨國飲食影響"
+    ],
+    "difficulty": "easy",
+    "question": "關於全球化與飲食文化的敘述，下列何者正確？",
+    "options": {
+      "A": "全球化與飲食文化選項1",
+      "B": "全球化與飲食文化選項2",
+      "C": "全球化與飲食文化選項3",
+      "D": "全球化與飲食文化選項4"
+    },
+    "answer": "A"
+  },
+  {
+    "grade": "9B",
+    "subject": "地理",
+    "publisher": "南一",
+    "chapter": "C3從產地到餐桌",
+    "topic": "氣候與在地農作",
+    "knowledge_point": [
+      "氣候影響作物",
+      "地方特產形成"
+    ],
+    "difficulty": "normal",
+    "question": "關於氣候與在地農作的敘述，下列何者正確？",
+    "options": {
+      "A": "氣候與在地農作選項1",
+      "B": "氣候與在地農作選項2",
+      "C": "氣候與在地農作選項3",
+      "D": "氣候與在地農作選項4"
+    },
+    "answer": "C"
+  },
+  {
+    "grade": "9B",
+    "subject": "地理",
+    "publisher": "南一",
+    "chapter": "C4食品安全面面觀",
+    "topic": "標章制度與政府管理",
+    "knowledge_point": [
+      "標章認證",
+      "法規與檢測"
+    ],
+    "difficulty": "normal",
+    "question": "關於標章制度與政府管理的敘述，下列何者正確？",
+    "options": {
+      "A": "標章制度與政府管理選項1",
+      "B": "標章制度與政府管理選項2",
+      "C": "標章制度與政府管理選項3",
+      "D": "標章制度與政府管理選項4"
+    },
+    "answer": "A"
+  },
+  {
+    "grade": "9B",
+    "subject": "地理",
+    "publisher": "南一",
+    "chapter": "C4食品安全面面觀",
+    "topic": "食安定義與案例",
+    "knowledge_point": [
+      "食品污染",
+      "消費者行為"
+    ],
+    "difficulty": "normal",
+    "question": "關於食安定義與案例的敘述，下列何者正確？",
+    "options": {
+      "A": "食安定義與案例選項1",
+      "B": "食安定義與案例選項2",
+      "C": "食安定義與案例選項3",
+      "D": "食安定義與案例選項4"
+    },
+    "answer": "B"
+  },
+  {
+    "grade": "9B",
+    "subject": "地理",
+    "publisher": "南一",
+    "chapter": "C4食品安全面面觀",
+    "topic": "食安定義與案例",
+    "knowledge_point": [
+      "食品污染",
+      "消費者行為"
+    ],
+    "difficulty": "normal",
+    "question": "關於食安定義與案例的敘述，下列何者正確？",
+    "options": {
+      "A": "食安定義與案例選項1",
+      "B": "食安定義與案例選項2",
+      "C": "食安定義與案例選項3",
+      "D": "食安定義與案例選項4"
+    },
+    "answer": "D"
+  },
+  {
+    "grade": "9B",
+    "subject": "地理",
+    "publisher": "南一",
+    "chapter": "C4食品安全面面觀",
+    "topic": "農業污染與高山種植問題",
+    "knowledge_point": [
+      "農藥污染",
+      "高山農業影響"
+    ],
+    "difficulty": "easy",
+    "question": "關於農業污染與高山種植問題的敘述，下列何者正確？",
+    "options": {
+      "A": "農業污染與高山種植問題選項1",
+      "B": "農業污染與高山種植問題選項2",
+      "C": "農業污染與高山種植問題選項3",
+      "D": "農業污染與高山種植問題選項4"
+    },
+    "answer": "B"
+  },
+  {
+    "grade": "9B",
+    "subject": "地理",
+    "publisher": "南一",
+    "chapter": "C4食品安全面面觀",
+    "topic": "食安定義與案例",
+    "knowledge_point": [
+      "食品污染",
+      "消費者行為"
+    ],
+    "difficulty": "normal",
+    "question": "關於食安定義與案例的敘述，下列何者正確？",
+    "options": {
+      "A": "食安定義與案例選項1",
+      "B": "食安定義與案例選項2",
+      "C": "食安定義與案例選項3",
+      "D": "食安定義與案例選項4"
+    },
+    "answer": "C"
+  },
+  {
+    "grade": "9B",
+    "subject": "地理",
+    "publisher": "南一",
+    "chapter": "C4食品安全面面觀",
+    "topic": "食安定義與案例",
+    "knowledge_point": [
+      "食品污染",
+      "消費者行為"
+    ],
+    "difficulty": "normal",
+    "question": "關於食安定義與案例的敘述，下列何者正確？",
+    "options": {
+      "A": "食安定義與案例選項1",
+      "B": "食安定義與案例選項2",
+      "C": "食安定義與案例選項3",
+      "D": "食安定義與案例選項4"
+    },
+    "answer": "A"
+  },
+  {
+    "grade": "9B",
+    "subject": "地理",
+    "publisher": "南一",
+    "chapter": "C4食品安全面面觀",
+    "topic": "農業污染與高山種植問題",
+    "knowledge_point": [
+      "農藥污染",
+      "高山農業影響"
+    ],
+    "difficulty": "hard",
+    "question": "關於農業污染與高山種植問題的敘述，下列何者正確？",
+    "options": {
+      "A": "農業污染與高山種植問題選項1",
+      "B": "農業污染與高山種植問題選項2",
+      "C": "農業污染與高山種植問題選項3",
+      "D": "農業污染與高山種植問題選項4"
+    },
+    "answer": "A"
+  },
+  {
+    "grade": "9B",
+    "subject": "地理",
+    "publisher": "南一",
+    "chapter": "C4食品安全面面觀",
+    "topic": "農業污染與高山種植問題",
+    "knowledge_point": [
+      "農藥污染",
+      "高山農業影響"
+    ],
+    "difficulty": "normal",
+    "question": "關於農業污染與高山種植問題的敘述，下列何者正確？",
+    "options": {
+      "A": "農業污染與高山種植問題選項1",
+      "B": "農業污染與高山種植問題選項2",
+      "C": "農業污染與高山種植問題選項3",
+      "D": "農業污染與高山種植問題選項4"
+    },
+    "answer": "A"
+  },
+  {
+    "grade": "9B",
+    "subject": "地理",
+    "publisher": "南一",
+    "chapter": "C4食品安全面面觀",
+    "topic": "標章制度與政府管理",
+    "knowledge_point": [
+      "標章認證",
+      "法規與檢測"
+    ],
+    "difficulty": "easy",
+    "question": "關於標章制度與政府管理的敘述，下列何者正確？",
+    "options": {
+      "A": "標章制度與政府管理選項1",
+      "B": "標章制度與政府管理選項2",
+      "C": "標章制度與政府管理選項3",
+      "D": "標章制度與政府管理選項4"
+    },
+    "answer": "B"
+  },
+  {
+    "grade": "9B",
+    "subject": "地理",
+    "publisher": "南一",
+    "chapter": "C4食品安全面面觀",
+    "topic": "標章制度與政府管理",
+    "knowledge_point": [
+      "標章認證",
+      "法規與檢測"
+    ],
+    "difficulty": "easy",
+    "question": "關於標章制度與政府管理的敘述，下列何者正確？",
+    "options": {
+      "A": "標章制度與政府管理選項1",
+      "B": "標章制度與政府管理選項2",
+      "C": "標章制度與政府管理選項3",
+      "D": "標章制度與政府管理選項4"
+    },
+    "answer": "B"
+  },
+  {
+    "grade": "9B",
+    "subject": "地理",
+    "publisher": "南一",
+    "chapter": "C4食品安全面面觀",
+    "topic": "農業污染與高山種植問題",
+    "knowledge_point": [
+      "農藥污染",
+      "高山農業影響"
+    ],
+    "difficulty": "easy",
+    "question": "關於農業污染與高山種植問題的敘述，下列何者正確？",
+    "options": {
+      "A": "農業污染與高山種植問題選項1",
+      "B": "農業污染與高山種植問題選項2",
+      "C": "農業污染與高山種植問題選項3",
+      "D": "農業污染與高山種植問題選項4"
+    },
+    "answer": "D"
+  },
+  {
+    "grade": "9B",
+    "subject": "地理",
+    "publisher": "南一",
+    "chapter": "C4食品安全面面觀",
+    "topic": "標章制度與政府管理",
+    "knowledge_point": [
+      "標章認證",
+      "法規與檢測"
+    ],
+    "difficulty": "hard",
+    "question": "關於標章制度與政府管理的敘述，下列何者正確？",
+    "options": {
+      "A": "標章制度與政府管理選項1",
+      "B": "標章制度與政府管理選項2",
+      "C": "標章制度與政府管理選項3",
+      "D": "標章制度與政府管理選項4"
+    },
+    "answer": "D"
+  },
+  {
+    "grade": "9B",
+    "subject": "地理",
+    "publisher": "南一",
+    "chapter": "C4食品安全面面觀",
+    "topic": "食安定義與案例",
+    "knowledge_point": [
+      "食品污染",
+      "消費者行為"
+    ],
+    "difficulty": "normal",
+    "question": "關於食安定義與案例的敘述，下列何者正確？",
+    "options": {
+      "A": "食安定義與案例選項1",
+      "B": "食安定義與案例選項2",
+      "C": "食安定義與案例選項3",
+      "D": "食安定義與案例選項4"
+    },
+    "answer": "C"
+  }
+]
