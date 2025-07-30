@@ -12,7 +12,7 @@ class ExamPage {
         this.timeRemaining = 0;
         this.timerInterval = null;
         this.startTime = null;
-        
+
         // DOM 元素
         this.questionContent = document.getElementById('questionContent');
         this.optionsContainer = document.getElementById('optionsContainer');
@@ -23,7 +23,7 @@ class ExamPage {
         this.currentQuestion = document.getElementById('currentQuestion');
         this.totalQuestions = document.getElementById('totalQuestions');
         this.questionNav = document.getElementById('questionNav');
-        
+
         this.init();
     }
 
@@ -34,16 +34,16 @@ class ExamPage {
         try {
             // 載入會話資料
             await this.loadSessionData();
-            
+
             // 初始化UI
             this.initializeUI();
-            
+
             // 載入第一題
             this.displayQuestion(0);
-            
+
             // 開始計時
             this.startTimer();
-            
+
         } catch (error) {
             console.error('初始化考試失敗:', error);
             this.showError('載入考試失敗，請重新開始');
@@ -67,7 +67,7 @@ class ExamPage {
             // 設置題目和答案陣列
             this.questions = this.sessionData.questions || [];
             this.answers = new Array(this.questions.length).fill(null);
-            
+
             // 設置考試時間（每題2分鐘）
             this.timeRemaining = this.questions.length * 120; // 秒
             this.startTime = new Date();
@@ -90,10 +90,10 @@ class ExamPage {
     initializeUI() {
         // 綁定事件
         this.bindEvents();
-        
+
         // 創建題目導航
         this.createQuestionNavigation();
-        
+
         // 更新總題數顯示
         if (this.totalQuestions) {
             this.totalQuestions.textContent = this.questions.length;
@@ -119,11 +119,11 @@ class ExamPage {
         // 提交確認對話框事件
         const confirmSubmit = document.getElementById('confirmSubmit');
         const cancelSubmit = document.getElementById('cancelSubmit');
-        
+
         if (confirmSubmit) {
             confirmSubmit.addEventListener('click', () => this.submitExam());
         }
-        
+
         if (cancelSubmit) {
             cancelSubmit.addEventListener('click', () => this.hideSubmitModal());
         }
@@ -144,13 +144,13 @@ class ExamPage {
         if (!this.questionNav) return;
 
         this.questionNav.innerHTML = '';
-        
+
         this.questions.forEach((_, index) => {
             const navButton = document.createElement('button');
             navButton.className = 'w-8 h-8 rounded border-2 border-gray-300 text-sm font-medium hover:bg-gray-100 transition-colors';
             navButton.textContent = index + 1;
             navButton.addEventListener('click', () => this.goToQuestion(index));
-            
+
             this.questionNav.appendChild(navButton);
         });
     }
@@ -173,7 +173,20 @@ class ExamPage {
 
         // 更新題目內容
         if (this.questionContent) {
+            let imageHtml = '';
+            if (question.image_filename || question.image_url) {
+                const imageUrl = question.image_url || `/api/v1/images/${question.image_filename}`;
+                imageHtml = `
+                    <div class="mb-4 text-center">
+                        <img src="${imageUrl}" alt="題目圖片" class="max-w-full h-auto mx-auto rounded-lg shadow-md" 
+                             onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                        <p class="text-red-500 text-sm mt-2 hidden">圖片載入失敗</p>
+                    </div>
+                `;
+            }
+
             this.questionContent.innerHTML = `
+                ${imageHtml}
                 <p class="text-lg text-gray-800">${question.question || question.content || question.question_text}</p>
             `;
         }
@@ -186,6 +199,9 @@ class ExamPage {
 
         // 更新題目導航狀態
         this.updateQuestionNavigation();
+
+        // 更新提交按鈕狀態
+        this.updateSubmitButton();
     }
 
     /**
@@ -212,14 +228,14 @@ class ExamPage {
         options.forEach((option, optionIndex) => {
             const optionElement = document.createElement('div');
             optionElement.className = 'flex items-center p-4 border rounded-lg hover:bg-gray-50 cursor-pointer transition-colors';
-            
+
             const isSelected = selectedAnswer === optionIndex;
             if (isSelected) {
                 optionElement.classList.add('bg-blue-50', 'border-blue-300');
             }
 
             const optionLetter = String.fromCharCode(65 + optionIndex);
-            
+
             optionElement.innerHTML = `
                 <input type="radio" name="question_${questionIndex}" value="${optionIndex}" 
                        class="mr-3 text-blue-600 focus:ring-blue-500" ${isSelected ? 'checked' : ''}>
@@ -241,7 +257,7 @@ class ExamPage {
      */
     selectAnswer(questionIndex, optionIndex) {
         this.answers[questionIndex] = optionIndex;
-        
+
         // 重新顯示選項以更新選中狀態
         this.displayOptions(this.questions[questionIndex], questionIndex);
 
@@ -302,7 +318,7 @@ class ExamPage {
         navButtons.forEach((button, index) => {
             // 重置樣式
             button.className = 'w-8 h-8 rounded border-2 text-sm font-medium transition-colors';
-            
+
             if (index === this.currentQuestionIndex) {
                 // 當前題目
                 button.classList.add('bg-blue-600', 'text-white', 'border-blue-600');
@@ -324,10 +340,15 @@ class ExamPage {
 
         const answeredCount = this.answers.filter(answer => answer !== null).length;
         const isLastQuestion = this.currentQuestionIndex === this.questions.length - 1;
-        
-        // 如果是最後一題且已作答，或所有題目都已作答，顯示提交按鈕
-        if ((isLastQuestion && this.answers[this.currentQuestionIndex] !== null) || 
-            answeredCount === this.questions.length) {
+        const hasAnsweredCurrentQuestion = this.answers[this.currentQuestionIndex] !== null;
+
+        // 顯示提交按鈕的條件：
+        // 1. 是最後一題且當前題目已作答
+        // 2. 或者所有題目都已作答
+        // 3. 或者是最後一題（不論是否作答，讓用戶可以提交）
+        if ((isLastQuestion && hasAnsweredCurrentQuestion) ||
+            answeredCount === this.questions.length ||
+            isLastQuestion) {
             this.submitBtn.classList.remove('hidden');
         } else {
             this.submitBtn.classList.add('hidden');
@@ -339,11 +360,11 @@ class ExamPage {
      */
     startTimer() {
         this.updateTimeDisplay();
-        
+
         this.timerInterval = setInterval(() => {
             this.timeRemaining--;
             this.updateTimeDisplay();
-            
+
             if (this.timeRemaining <= 0) {
                 this.timeUp();
             }
@@ -471,7 +492,7 @@ class ExamPage {
 
         this.questions.forEach((question, index) => {
             const userAnswer = this.answers[index];
-            
+
             // 處理正確答案格式
             let correctAnswer = 0;
             if (question.answer !== undefined) {
@@ -486,7 +507,7 @@ class ExamPage {
             }
 
             const isCorrect = userAnswer === correctAnswer;
-            
+
             if (isCorrect) {
                 correctCount++;
             }
@@ -514,7 +535,7 @@ class ExamPage {
 
         const accuracy = Math.round((correctCount / this.questions.length) * 100);
         const score = accuracy;
-        
+
         return {
             score: score,
             accuracy: accuracy,

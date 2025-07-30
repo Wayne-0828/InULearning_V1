@@ -131,6 +131,11 @@ services:
     volumes:
       - ./logs:/app/logs
       - ./rawdata:/app/rawdata
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:8000/health" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
 
   # 學習服務
   learning-service:

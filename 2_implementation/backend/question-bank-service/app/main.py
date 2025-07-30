@@ -3,7 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from contextlib import asynccontextmanager
 from app.config import settings
 from app.database import db_manager
-from app.api import questions, chapters, knowledge_points
+from app.api import questions, chapters, knowledge_points, images
 
 
 @asynccontextmanager
@@ -43,6 +43,7 @@ app.add_middleware(
 app.include_router(questions.router, prefix=settings.api_prefix)
 app.include_router(chapters.router, prefix=settings.api_prefix)
 app.include_router(knowledge_points.router, prefix=settings.api_prefix)
+app.include_router(images.router, prefix=settings.api_prefix)
 
 
 @app.get("/")

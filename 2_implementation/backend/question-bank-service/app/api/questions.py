@@ -61,6 +61,103 @@ async def create_question(
 
 
 
+@router.get("/check", response_model=Dict[str, Any])
+async def check_question_bank(
+    grade: str = Query(..., description="年級"),
+    edition: str = Query(..., description="版本/出版社"),
+    subject: str = Query(..., description="科目"),
+    chapter: Optional[str] = Query(None, description="章節"),
+    db: DatabaseManager = Depends(get_database)
+):
+    """檢查題庫是否有符合條件的題目"""
+    try:
+        # 構建查詢條件
+        query = {
+            "grade": grade,
+            "publisher": edition,  # edition 對應 publisher
+            "subject": subject
+        }
+        
+        if chapter and chapter.strip():
+            query["chapter"] = chapter
+        
+        # 查詢題目數量
+        count = await db.questions_collection.count_documents(query)
+        
+        return {
+            "success": True,
+            "data": {
+                "count": count,
+                "available": count > 0
+            }
+        }
+    except Exception as e:
+        return {
+            "success": False,
+            "error": str(e),
+            "data": {
+                "count": 0,
+                "available": False
+            }
+        }
+
+
+@router.get("/by-conditions", response_model=Dict[str, Any])
+async def get_questions_by_conditions(
+    grade: str = Query(..., description="年級"),
+    edition: str = Query(..., description="版本/出版社"),
+    subject: str = Query(..., description="科目"),
+    chapter: Optional[str] = Query(None, description="章節"),
+    questionCount: int = Query(10, ge=1, le=50, description="題目數量"),
+    db: DatabaseManager = Depends(get_database)
+):
+    """根據條件獲取題目"""
+    try:
+        # 構建查詢條件
+        query = {
+            "grade": grade,
+            "publisher": edition,  # edition 對應 publisher
+            "subject": subject
+        }
+        
+        if chapter and chapter.strip():
+            query["chapter"] = chapter
+        
+        # 查詢題目
+        cursor = db.questions_collection.find(query).limit(questionCount)
+        questions = await cursor.to_list(length=questionCount)
+        
+        # 轉換格式以符合前端需求
+        formatted_questions = []
+        for q in questions:
+            formatted_q = {
+                "id": str(q["_id"]),
+                "question": q["question"],
+                "options": q["options"],
+                "answer": q["answer"],
+                "explanation": q.get("explanation", ""),
+                "difficulty": q.get("difficulty", "normal"),
+                "subject": q["subject"],
+                "grade": q["grade"],
+                "publisher": q["publisher"],
+                "chapter": q.get("chapter", ""),
+                "image_filename": q.get("image_filename"),
+                "image_url": q.get("image_url")
+            }
+            formatted_questions.append(formatted_q)
+        
+        return {
+            "success": True,
+            "data": formatted_questions
+        }
+    except Exception as e:
+        return {
+            "success": False,
+            "error": str(e),
+            "data": []
+        }
+
+
 @router.get("/search", response_model=PaginatedResponse)
 async def search_questions(
     grade: Optional[str] = Query(None, description="年級"),

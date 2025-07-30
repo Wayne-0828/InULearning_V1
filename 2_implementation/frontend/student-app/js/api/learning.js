@@ -22,28 +22,32 @@ class LearningAPI {
     // 檢查題庫數量
     async checkQuestionBank(conditions) {
         try {
-            // 暫時使用基本的題目列表 API 來檢查題庫
-            const response = await fetch(`${this.questionBankURL}/?limit=100`, {
+            // 構建查詢參數
+            const params = new URLSearchParams();
+            if (conditions.grade) params.append('grade', conditions.grade);
+            if (conditions.edition) params.append('edition', conditions.edition);
+            if (conditions.subject) params.append('subject', conditions.subject);
+            if (conditions.chapter) params.append('chapter', conditions.chapter);
+
+            const response = await fetch(`${this.questionBankURL}/check?${params}`, {
                 method: 'GET',
-                headers: this.getAuthHeaders()
+                headers: {
+                    'Content-Type': 'application/json'
+                }
             });
-            
+
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
-            
+
             const result = await response.json();
-            const count = result.total || 0;
-            
-            return {
-                success: true,
-                data: { count: count }
-            };
+            return result;
         } catch (error) {
             console.error('檢查題庫失敗:', error);
             return {
                 success: false,
-                error: error.message
+                error: error.message,
+                data: { count: 0, available: false }
             };
         }
     }
@@ -51,27 +55,33 @@ class LearningAPI {
     // 根據條件獲取題目
     async getQuestionsByConditions(conditions) {
         try {
-            // 暫時使用基本的題目列表 API
-            const limit = conditions.questionCount || '10';
-            const response = await fetch(`${this.questionBankURL}/?limit=${limit}`, {
+            // 構建查詢參數
+            const params = new URLSearchParams();
+            if (conditions.grade) params.append('grade', conditions.grade);
+            if (conditions.edition) params.append('edition', conditions.edition);
+            if (conditions.subject) params.append('subject', conditions.subject);
+            if (conditions.chapter) params.append('chapter', conditions.chapter);
+            if (conditions.questionCount) params.append('questionCount', conditions.questionCount);
+
+            const response = await fetch(`${this.questionBankURL}/by-conditions?${params}`, {
                 method: 'GET',
-                headers: this.getAuthHeaders()
+                headers: {
+                    'Content-Type': 'application/json'
+                }
             });
-            
+
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
-            
+
             const result = await response.json();
-            return {
-                success: true,
-                data: result.items || []
-            };
+            return result;
         } catch (error) {
             console.error('獲取題目失敗:', error);
             return {
                 success: false,
-                error: error.message
+                error: error.message,
+                data: []
             };
         }
     }
@@ -83,12 +93,12 @@ class LearningAPI {
                 count: count,
                 ...filters
             });
-            
+
             const response = await fetch(`${this.questionBankURL}/random?${params}`);
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
-            
+
             const questions = await response.json();
             return {
                 success: true,
@@ -111,12 +121,12 @@ class LearningAPI {
                 limit: limit,
                 ...filters
             });
-            
+
             const response = await fetch(`${this.questionBankURL}/search?${params}`);
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
-            
+
             const result = await response.json();
             return {
                 success: true,
@@ -139,11 +149,11 @@ class LearningAPI {
                 headers: this.getAuthHeaders(),
                 body: JSON.stringify(sessionData)
             });
-            
+
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
-            
+
             const session = await response.json();
             return {
                 success: true,
@@ -169,11 +179,11 @@ class LearningAPI {
                     answers: answers
                 })
             });
-            
+
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
-            
+
             const result = await response.json();
             return {
                 success: true,
@@ -196,11 +206,11 @@ class LearningAPI {
                 headers: this.getAuthHeaders(),
                 body: JSON.stringify(resultData)
             });
-            
+
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
-            
+
             const result = await response.json();
             return {
                 success: true,
@@ -223,15 +233,15 @@ class LearningAPI {
                 limit: limit,
                 ...filters
             });
-            
+
             const response = await fetch(`${this.baseURL}/records?${params}`, {
                 headers: this.getAuthHeaders()
             });
-            
+
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
-            
+
             const records = await response.json();
             return {
                 success: true,
@@ -250,15 +260,15 @@ class LearningAPI {
     async getLearningStatistics(days = 30) {
         try {
             const params = new URLSearchParams({ days: days });
-            
+
             const response = await fetch(`${this.baseURL}/statistics?${params}`, {
                 headers: this.getAuthHeaders()
             });
-            
+
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
-            
+
             const statistics = await response.json();
             return {
                 success: true,
