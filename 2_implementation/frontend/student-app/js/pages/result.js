@@ -153,6 +153,18 @@ class ResultPage {
         // 更新題目內容
         const questionContent = document.getElementById('currentQuestionContent');
         if (questionContent) {
+            let imageHtml = '';
+            if (result.image_filename || result.image_url) {
+                const imageUrl = result.image_url || `/api/v1/images/${result.image_filename}`;
+                imageHtml = `
+                    <div class="mb-4 text-center">
+                        <img src="${imageUrl}" alt="題目圖片" class="max-w-full h-auto mx-auto rounded-lg shadow-md" 
+                             onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                        <p class="text-red-500 text-sm mt-2 hidden">圖片載入失敗</p>
+                    </div>
+                `;
+            }
+
             questionContent.innerHTML = `
                 <div class="flex items-center justify-between mb-4">
                     <h3 class="text-xl font-bold">第 ${index + 1} 題</h3>
@@ -164,6 +176,7 @@ class ResultPage {
                         ${result.isCorrect ? '✓ 正確' : '✗ 錯誤'}
                     </span>
                 </div>
+                ${imageHtml}
                 <p class="text-lg text-gray-800">${result.questionText}</p>
             `;
         }

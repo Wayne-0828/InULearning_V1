@@ -20,8 +20,8 @@ class Settings(BaseSettings):
     
     # MinIO 設定 - 使用 Docker 環境變數
     minio_endpoint: str = "minio:9000"
-    minio_access_key: str = "inulearning_admin"
-    minio_secret_key: str = "inulearning_password"
+    minio_access_key: str = "aipe-tester"
+    minio_secret_key: str = "aipe-tester"
     minio_bucket_name: str = "question-bank"
     minio_secure: bool = False
     
