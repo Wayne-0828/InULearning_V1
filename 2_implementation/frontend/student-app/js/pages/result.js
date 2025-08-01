@@ -80,6 +80,9 @@ class ResultPage {
         
         // 顯示時間統計
         this.displayTimeStats();
+        
+        // 初始 MathJax 渲染
+        this.renderMath();
     }
 
     /**
@@ -225,6 +228,9 @@ class ResultPage {
         
         // 更新題目導航高亮
         this.updateQuestionNavigation();
+        
+        // 觸發 MathJax 重新渲染
+        this.renderMath();
     }
 
     /**
@@ -317,6 +323,19 @@ class ResultPage {
             errorElement.classList.remove('hidden');
         } else {
             alert(message);
+        }
+    }
+
+    /**
+     * 觸發 MathJax 重新渲染數學公式
+     */
+    renderMath() {
+        if (window.MathJax && window.MathJax.typesetPromise) {
+            window.MathJax.typesetPromise().then(() => {
+                console.log('Result頁面 MathJax 渲染完成');
+            }).catch((err) => {
+                console.error('Result頁面 MathJax 渲染失敗:', err);
+            });
         }
     }
 }
