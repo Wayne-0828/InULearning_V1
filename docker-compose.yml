@@ -177,7 +177,8 @@ services:
     volumes:
       - ./nginx/nginx.conf:/etc/nginx/nginx.conf
       - ./nginx/conf.d:/etc/nginx/conf.d
-      - ./login.html:/usr/share/nginx/html/login.html
+      - ./2_implementation/frontend/shared/auth/login.html:/usr/share/nginx/html/login.html
+      - ./2_implementation/frontend/shared/homepage/index.html:/usr/share/nginx/html/index.html
     depends_on:
       - auth-service
       - question-bank-service
@@ -199,7 +200,7 @@ services:
       - inulearning_network
     volumes:
       - ./files:/usr/share/nginx/html/files
-      - ./login.html:/usr/share/nginx/html/login.html
+      - ./2_implementation/frontend/shared/auth/login.html:/usr/share/nginx/html/login.html
 
   # 管理員端前端
   admin-frontend:
