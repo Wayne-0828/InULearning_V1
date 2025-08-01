@@ -66,16 +66,16 @@ question-bank/
 cd 2_implementation/backend/question-bank-service
 
 # 啟動 MongoDB 和 MinIO
-docker-compose -f docker-compose.data-loading.yml up -d mongodb minio
+docker compose -f docker-compose.data-loading.yml up -d mongodb minio
 
 # 等待服務啟動 (約30秒)
 sleep 30
 
 # 執行資料載入
-docker-compose -f docker-compose.data-loading.yml up data-loader
+docker compose -f docker-compose.data-loading.yml up data-loader
 
 # 清理容器 (可選)
-docker-compose -f docker-compose.data-loading.yml down
+docker compose -f docker-compose.data-loading.yml down
 ```
 
 #### 2. 檢查結果

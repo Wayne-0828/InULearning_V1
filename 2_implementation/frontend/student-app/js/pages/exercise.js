@@ -371,10 +371,13 @@ class ExerciseManager {
             if (questionsResult.success && questionsResult.data && questionsResult.data.length > 0) {
                 this.questions = questionsResult.data;
                 console.log('成功載入題目:', this.questions.length, '題');
+                console.log('題目內容:', this.questions);
             } else {
-                console.log('API 調用失敗，使用模擬題目');
-                // 如果 API 失敗，創建一些模擬題目用於測試
-                this.questions = this.createMockQuestions(this.selectedCriteria.question_count);
+                console.log('API 調用失敗，錯誤:', questionsResult.error);
+                console.log('原始回應:', questionsResult);
+                // 顯示錯誤信息給用戶
+                this.showError('載入題目失敗，請檢查選擇條件或稍後再試');
+                return; // 停止執行，不跳轉
             }
 
             // 創建學習會話並跳轉到考試頁面
@@ -396,18 +399,8 @@ class ExerciseManager {
 
         } catch (error) {
             console.error('開始練習失敗:', error);
-            // 即使出錯也嘗試創建模擬題目
-            this.questions = this.createMockQuestions(this.selectedCriteria.question_count);
-            const sessionData = {
-                grade: this.selectedCriteria.grade,
-                edition: this.selectedCriteria.edition,
-                subject: this.selectedCriteria.subject,
-                chapter: this.selectedCriteria.chapter,
-                question_count: this.questions.length,
-                questions: this.questions
-            };
-            sessionStorage.setItem('examSession', JSON.stringify(sessionData));
-            window.location.href = 'exam.html';
+            this.showError('開始練習時發生錯誤: ' + error.message);
+            return; // 停止執行，不跳轉
         } finally {
             this.hideLoading();
         }

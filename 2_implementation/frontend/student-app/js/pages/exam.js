@@ -202,6 +202,9 @@ class ExamPage {
 
         // 更新提交按鈕狀態
         this.updateSubmitButton();
+        
+        // 觸發 MathJax 重新渲染
+        this.renderMath();
     }
 
     /**
@@ -250,6 +253,9 @@ class ExamPage {
 
             this.optionsContainer.appendChild(optionElement);
         });
+        
+        // 觸發 MathJax 重新渲染選項中的數學公式
+        this.renderMath();
     }
 
     /**
@@ -558,6 +564,19 @@ class ExamPage {
      */
     showError(message) {
         alert(message); // 簡單實現，後續可改為更好的UI
+    }
+
+    /**
+     * 觸發 MathJax 重新渲染數學公式
+     */
+    renderMath() {
+        if (window.MathJax && window.MathJax.typesetPromise) {
+            window.MathJax.typesetPromise().then(() => {
+                console.log('MathJax 渲染完成');
+            }).catch((err) => {
+                console.error('MathJax 渲染失敗:', err);
+            });
+        }
     }
 }
 

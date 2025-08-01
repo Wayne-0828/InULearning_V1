@@ -1,0 +1,92 @@
+[
+  {
+    "grade": "7A",
+    "subject": "自然",
+    "publisher": "南一",
+    "chapter": "1-1 探究自然的方法",
+    "topic": "探究自然的方法",
+    "knowledge_point": ["假設與驗證"],
+    "difficulty": "easy",
+    "question": "在科學探究過程中，下列何者最符合「假設」的定義？",
+    "options": {
+      "A": "對實驗結果的隨意猜測",
+      "B": "針對觀察現象提出可驗證的解釋",
+      "C": "記錄實驗數據的過程",
+      "D": "整合研究結論後的闡述"
+    },
+    "answer": "B",
+    "explanation": "假設是針對觀察到的現象提出可設計實驗驗證的解釋，因此選項 B 為正確，而 A 為誤導性的描述。"
+  },
+  {
+    "grade": "7A",
+    "subject": "自然",
+    "publisher": "南一",
+    "chapter": "1-1 探究自然的方法",
+    "topic": "探究自然的方法",
+    "knowledge_point": ["觀察與量測"],
+    "difficulty": "easy",
+    "question": "下列哪個活動屬於科學探究中的「觀察」？",
+    "options": {
+      "A": "設計對照組與實驗組",
+      "B": "記錄植物每天的高度變化",
+      "C": "分析實驗數據並下結論",
+      "D": "提出待驗證的假設"
+    },
+    "answer": "B",
+    "explanation": "觀察是指透過感官或儀器來獲取資訊的過程，記錄植物高度變化屬於觀察活動。"
+  },
+  {
+    "grade": "7A",
+    "subject": "自然",
+    "publisher": "南一",
+    "chapter": "1-2 生命現象與細胞的發現",
+    "topic": "生命現象",
+    "knowledge_point": ["生命現象特徵"],
+    "difficulty": "medium",
+    "question": "下列何者不是生物的基本特徵？",
+    "options": {
+      "A": "具有新陳代謝作用",
+      "B": "能夠生長與發育",
+      "C": "一定要能夠移動",
+      "D": "能夠繁殖後代"
+    },
+    "answer": "C",
+    "explanation": "生物的基本特徵包括新陳代謝、生長發育、繁殖等，但不是所有生物都能移動，如植物。"
+  },
+  {
+    "grade": "7A",
+    "subject": "自然",
+    "publisher": "南一",
+    "chapter": "1-3 細胞的形態與構造",
+    "topic": "細胞構造",
+    "knowledge_point": ["細胞膜功能"],
+    "difficulty": "medium",
+    "question": "細胞膜的主要功能是什麼？",
+    "options": {
+      "A": "儲存遺傳物質",
+      "B": "控制物質進出細胞",
+      "C": "進行呼吸作用",
+      "D": "製造蛋白質"
+    },
+    "answer": "B",
+    "explanation": "細胞膜是細胞的邊界，具有選擇透過性，主要功能是控制物質進出細胞。"
+  },
+  {
+    "grade": "7A",
+    "subject": "自然",
+    "publisher": "南一",
+    "chapter": "1-4 細胞的組成與物質進出方式",
+    "topic": "物質進出細胞",
+    "knowledge_point": ["擴散作用"],
+    "difficulty": "hard",
+    "question": "下列何種物質運輸方式不需要消耗能量？",
+    "options": {
+      "A": "主動運輸",
+      "B": "內吞作用",
+      "C": "擴散作用",
+      "D": "胞吐作用"
+    },
+    "answer": "C",
+    "explanation": "擴散作用是物質從高濃度向低濃度的被動運輸，不需要消耗ATP能量。"
+  }
+] 

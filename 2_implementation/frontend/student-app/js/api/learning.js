@@ -8,6 +8,8 @@ class LearningAPI {
     constructor() {
         this.baseURL = '/api/v1/learning';
         this.questionBankURL = '/api/v1/questions';
+        // 開發環境直接調用服務
+        this.directQuestionBankURL = 'http://localhost:8002/api/v1/questions';
     }
 
     // 獲取認證頭
@@ -29,12 +31,24 @@ class LearningAPI {
             if (conditions.subject) params.append('subject', conditions.subject);
             if (conditions.chapter) params.append('chapter', conditions.chapter);
 
-            const response = await fetch(`${this.questionBankURL}/check?${params}`, {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json'
-                }
-            });
+            // 先嘗試代理 URL，失敗則使用直接 URL
+            let response;
+            try {
+                response = await fetch(`${this.questionBankURL}/check?${params}`, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+            } catch (proxyError) {
+                console.log('代理調用失敗，嘗試直接調用:', proxyError);
+                response = await fetch(`${this.directQuestionBankURL}/check?${params}`, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+            }
 
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
@@ -63,12 +77,24 @@ class LearningAPI {
             if (conditions.chapter) params.append('chapter', conditions.chapter);
             if (conditions.questionCount) params.append('questionCount', conditions.questionCount);
 
-            const response = await fetch(`${this.questionBankURL}/by-conditions?${params}`, {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json'
-                }
-            });
+            // 先嘗試代理 URL，失敗則使用直接 URL
+            let response;
+            try {
+                response = await fetch(`${this.questionBankURL}/by-conditions?${params}`, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+            } catch (proxyError) {
+                console.log('代理調用失敗，嘗試直接調用:', proxyError);
+                response = await fetch(`${this.directQuestionBankURL}/by-conditions?${params}`, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+            }
 
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);

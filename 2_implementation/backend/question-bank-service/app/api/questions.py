@@ -130,11 +130,22 @@ async def get_questions_by_conditions(
         # 轉換格式以符合前端需求
         formatted_questions = []
         for q in questions:
+            # 處理選項格式 - 轉換為前端期望的格式
+            options = q.get("options", [])
+            if isinstance(options, list) and len(options) > 0:
+                # 如果是 [{key: 'A', text: '...'}, ...] 格式，轉換為 ['...', '...', ...]
+                if isinstance(options[0], dict) and 'text' in options[0]:
+                    option_texts = [opt['text'] for opt in options]
+                else:
+                    option_texts = options
+            else:
+                option_texts = []
+            
             formatted_q = {
                 "id": str(q["_id"]),
-                "question": q["question"],
-                "options": q["options"],
-                "answer": q["answer"],
+                "question": q.get("content", q.get("question", "")),  # 支援 content 和 question 欄位
+                "options": option_texts,
+                "answer": q.get("correct_answer", q.get("answer", "")),  # 支援 correct_answer 和 answer 欄位
                 "explanation": q.get("explanation", ""),
                 "difficulty": q.get("difficulty", "normal"),
                 "subject": q["subject"],
