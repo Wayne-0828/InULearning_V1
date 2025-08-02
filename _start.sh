@@ -334,12 +334,6 @@ setup_directories() {
     # 設置權限
     chmod -R 755 logs init-scripts nginx/conf.d files 2>/dev/null || true
     
-    # 針對 logs 目錄額外設定擁有者權限，確保日誌寫入順暢
-    if [ -d "logs" ]; then
-        log_info "設定 logs 目錄權限..."
-        sudo chown -R $USER:$USER logs/ || log_warning "無法設定 logs 目錄擁有者權限，請手動檢查。"
-    fi
-
     log_success "目錄結構建立完成"
 }
 
@@ -538,7 +532,7 @@ create_basic_users() {
     $DOCKER_COMPOSE_CMD exec -T postgres psql -U aipe-tester -d inulearning -c "
     INSERT INTO users (username, email, hashed_password, role, first_name, last_name, is_active, is_verified, created_at) VALUES 
     ('student01', 'student01@test.com', '\$2b\$12\$80NUNl/aAMIfCCfbqbRc7e0ADOB81Ibbv1LWHNe7FytsweVw5ySNm', 'student', '學生', '01', true, true, NOW()),
-    ('teacher01', 'teacher01@test.com', '\$2b\$12\$80NUNl/aAMIfCCfbqbRc7e0ADOB81Ibbv1LWHNe7FytsweVw5ySNm', 'teacher', '01', true, true, NOW()),
+    ('teacher01', 'teacher01@test.com', '\$2b\$12\$80NUNl/aAMIfCCfbqbRc7e0ADOB81Ibbv1LWHNe7FytsweVw5ySNm', 'teacher', '教師', '01', true, true, NOW()),
     ('parent01', 'parent01@test.com', '\$2b\$12\$80NUNl/aAMIfCCfbqbRc7e0ADOB81Ibbv1LWHNe7FytsweVw5ySNm', 'parent', '家長', '01', true, true, NOW()),
     ('admin01', 'admin01@test.com', '\$2b\$12\$80NUNl/aAMIfCCfbqbRc7e0ADOB81Ibbv1LWHNe7FytsweVw5ySNm', 'admin', '管理員', '01', true, true, NOW())
     ON CONFLICT (email) DO NOTHING;
@@ -624,46 +618,46 @@ show_system_info() {
     echo "================================================"
     echo ""
     log_highlight "📋 服務訪問地址："
-    echo "  🎓 學生端前端: http://localhost:8080"
-    echo "  👨‍💼 管理員端前端: http://localhost:8081"
-    echo "  👪 家長端前端: http://localhost:8082"
-    echo "  👨‍🏫 教師端前端: http://localhost:8083"
+    echo "   🎓 學生端前端: http://localhost:8080"
+    echo "   👨‍💼 管理員端前端: http://localhost:8081"
+    echo "   👪 家長端前端: http://localhost:8082"
+    echo "   👨‍🏫 教師端前端: http://localhost:8083"
     echo ""
     log_highlight "🔐 API 服務地址："
-    echo "  認證服務: http://localhost:8001"
-    echo "  題庫服務: http://localhost:8002"
-    echo "  學習服務: http://localhost:8003"
+    echo "   認證服務: http://localhost:8001"
+    echo "   題庫服務: http://localhost:8002"
+    echo "   學習服務: http://localhost:8003"
     echo ""
     log_highlight "🗄️ 資料庫服務："
-    echo "  PostgreSQL: localhost:5432"
-    echo "  MongoDB: localhost:27017"
-    echo "  Redis: localhost:6379"
-    echo "  MinIO: http://localhost:9000 (Console: http://localhost:9001)"
+    echo "   PostgreSQL: localhost:5432"
+    echo "   MongoDB: localhost:27017"
+    echo "   Redis: localhost:6379"
+    echo "   MinIO: http://localhost:9000 (Console: http://localhost:9001)"
     echo ""
     log_highlight "📝 測試帳號 (密碼都是 password123)："
-    echo "  👨‍🎓 學生帳號: student01@test.com"
-    echo "  👨‍🏫 教師帳號: teacher01@test.com"
-    echo "  👪 家長帳號: parent01@test.com"
-    echo "  👨‍💼 管理員帳號: admin01@test.com"
+    echo "   👨‍🎓 學生帳號: student01@test.com"
+    echo "   👨‍🏫 教師帳號: teacher01@test.com"
+    echo "   👪 家長帳號: parent01@test.com"
+    echo "   👨‍💼 管理員帳號: admin01@test.com"
     echo ""
     log_highlight "🔧 管理命令："
-    echo "  查看所有服務狀態: $DOCKER_COMPOSE_CMD ps"
-    echo "  查看服務日誌: $DOCKER_COMPOSE_CMD logs -f [服務名]"
-    echo "  停止所有服務: $DOCKER_COMPOSE_CMD down"
-    echo "  重啟特定服務: $DOCKER_COMPOSE_CMD restart [服務名]"
-    echo "  進入容器: $DOCKER_COMPOSE_CMD exec [服務名] bash"
+    echo "   查看所有服務狀態: $DOCKER_COMPOSE_CMD ps"
+    echo "   查看服務日誌: $DOCKER_COMPOSE_CMD logs -f [服務名]"
+    echo "   停止所有服務: $DOCKER_COMPOSE_CMD down"
+    echo "   重啟特定服務: $DOCKER_COMPOSE_CMD restart [服務名]"
+    echo "   進入容器: $DOCKER_COMPOSE_CMD exec [服務名] bash"
     echo ""
     log_highlight "🔍 故障排除："
-    echo "  • 如果服務無法訪問，請等待 1-2 分鐘後重試"
-    echo "  • 查看服務日誌: $DOCKER_COMPOSE_CMD logs -f"
-    echo "  • 重新啟動系統: ./start.sh"
-    echo "  • 完全重置: $DOCKER_COMPOSE_CMD down -v && ./start.sh"
+    echo "   • 如果服務無法訪問，請等待 1-2 分鐘後重試"
+    echo "   • 查看服務日誌: $DOCKER_COMPOSE_CMD logs -f"
+    echo "   • 重新啟動系統: ./start.sh"
+    echo "   • 完全重置: $DOCKER_COMPOSE_CMD down -v && ./start.sh"
     echo ""
     log_highlight "💡 系統資訊："
-    echo "  作業系統: $SYSTEM_TYPE ($ARCH)"
-    echo "  記憶體: ${MEMORY_GB}GB"
-    echo "  Docker Compose: $DOCKER_COMPOSE_CMD"
-    echo "  工作目錄: $SCRIPT_DIR"
+    echo "   作業系統: $SYSTEM_TYPE ($ARCH)"
+    echo "   記憶體: ${MEMORY_GB}GB"
+    echo "   Docker Compose: $DOCKER_COMPOSE_CMD"
+    echo "   工作目錄: $SCRIPT_DIR"
     echo ""
     echo "✨ 開始使用 InULearning 吧！"
     echo "================================================"
@@ -709,4 +703,4 @@ main() {
 # 檢查是否為直接執行
 if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
     main "$@"
-fi
+fi 

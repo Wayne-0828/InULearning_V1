@@ -270,7 +270,7 @@ docker exec -it inulearning_redis redis-cli
 
 
 #上傳mongoDB題庫
-MONGODB_URL='mongodb://aipe-tester:aipe-tester@localhost:27017/inulearning?authSource=admin' MINIO_ENDPOINT='localhost:9000' MINIO_ACCESS_KEY='aipe-tester' MINIO_SECRET_KEY='aipe-tester' python3 load_valid_data.py
+MONGODB_URL='mongodb://aipe-tester:aipe-tester@localhost:27017/inulearning?authSource=admin' MINIO_ENDPOINT='localhost:9000' MINIO_ACCESS_KEY='aipe-tester' MINIO_SECRET_KEY='aipe-tester' python3 load_rawdata.py
 
 #上傳minio題庫圖片
 
