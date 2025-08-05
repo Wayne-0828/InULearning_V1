@@ -520,9 +520,18 @@ class ResultPage {
 
             // 檢查是否已經保存過（避免重複保存）
             const savedSessionId = sessionStorage.getItem('savedSessionId');
-            if (savedSessionId) {
+            const currentExamResults = sessionStorage.getItem('examResults');
+            
+            // 如果有保存標記且當前沒有新的練習結果，則跳過保存
+            if (savedSessionId && !currentExamResults) {
                 console.log('練習結果已保存，會話ID:', savedSessionId);
                 return;
+            }
+            
+            // 如果有新的練習結果，清除舊的保存標記
+            if (currentExamResults) {
+                console.log('發現新的練習結果，清除舊的保存標記');
+                sessionStorage.removeItem('savedSessionId');
             }
 
             // 檢查用戶是否已登入
@@ -559,6 +568,9 @@ class ResultPage {
                 console.log('練習結果保存成功:', result.data);
                 // 保存會話ID，避免重複保存
                 sessionStorage.setItem('savedSessionId', result.data.session_id);
+                
+                // 清除 sessionStorage 中的練習結果，避免重複處理
+                sessionStorage.removeItem('examResults');
 
                 // 更新頁面顯示的會話ID
                 const sessionIdElement = document.getElementById('sessionId');

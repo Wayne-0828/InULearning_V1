@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>學習記錄修復測試</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet"/>
+    <style>
+        body { font-family: 'Noto Sans TC', sans-serif; }
+    </style>
+</head>
+<body class="bg-gray-100 p-8">
+    <div class="max-w-4xl mx-auto">
+        <h1 class="text-3xl font-bold text-center mb-8">學習記錄修復測試</h1>
+        
+        <!-- 測試狀態 -->
+        <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+            <h2 class="text-xl font-semibold mb-4">測試狀態</h2>
+            <div id="testStatus" class="space-y-2">
+                <div class="text-gray-600">準備開始測試...</div>
+            </div>
+        </div>
+
+        <!-- 測試控制 -->
+        <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+            <h2 class="text-xl font-semibold mb-4">測試控制</h2>
+            <div class="space-x-4">
+                <button id="testBtn1" onclick="simulateFirstExercise()" 
+                        class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700">
+                    模擬第一次練習
+                </button>
+                <button id="testBtn2" onclick="simulateSecondExercise()" 
+                        class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700">
+                    模擬第二次練習
+                </button>
+                <button id="clearBtn" onclick="clearStorage()" 
+                        class="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700">
+                    清除存儲
+                </button>
+                <button id="checkBtn" onclick="checkStorage()" 
+                        class="bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700">
+                    檢查存儲
+                </button>
+            </div>
+        </div>
+
+        <!-- 存儲狀態 -->
+        <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+            <h2 class="text-xl font-semibold mb-4">存儲狀態</h2>
+            <div id="storageStatus" class="space-y-2">
+                <div class="text-gray-600">點擊「檢查存儲」查看當前狀態</div>
+            </div>
+        </div>
+
+        <!-- 測試結果 -->
+        <div class="bg-white rounded-lg shadow-md p-6">
+            <h2 class="text-xl font-semibold mb-4">測試結果</h2>
+            <div id="testResults" class="space-y-2">
+                <div class="text-gray-600">測試結果將在這裡顯示</div>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/utils/auth.js"></script>
+    <script src="js/api/learning.js"></script>
+    
+    <script>
+        let testCounter = 0;
+
+        function updateStatus(message, type = 'info') {
+            const statusDiv = document.getElementById('testStatus');
+            const colors = {
+                'info': 'text-blue-600',
+                'success': 'text-green-600',
+                'error': 'text-red-600',
+                'warning': 'text-yellow-600'
+            };
+            
+            const timestamp = new Date().toLocaleTimeString();
+            statusDiv.innerHTML += `<div class="${colors[type]}">[${timestamp}] ${message}</div>`;
+            statusDiv.scrollTop = statusDiv.scrollHeight;
+        }
+
+        function simulateFirstExercise() {
+            testCounter++;
+            updateStatus(`開始模擬第 ${testCounter} 次練習...`, 'info');
+            
+            // 模擬練習結果數據
+            const examResults = {
+                score: 80,
+                accuracy: 80,
+                totalQuestions: 5,
+                correctAnswers: 4,
+                wrongAnswers: 1,
+                timeSpent: 300, // 5分鐘
+                submittedAt: new Date().toISOString(),
+                sessionData: {
+                    sessionId: `test_session_${testCounter}_${Date.now()}`,
+                    sessionName: `數學練習 ${testCounter} - ${new Date().toLocaleDateString()}`,
+                    grade: '8A',
+                    publisher: '南一',
+                    subject: '數學',
+                    chapter: '第一章',
+                    difficulty: 'normal',
+                    knowledgePoints: ['代數', '方程式']
+                },
+                detailedResults: [
+                    {
+                        questionId: 'q1',
+                        questionContent: '解方程式 2x + 3 = 7',
+                        answerChoices: {'A': 'x = 1', 'B': 'x = 2', 'C': 'x = 3', 'D': 'x = 4'},
+                        userAnswer: 'B',
+                        correctAnswer: 'B',
+                        isCorrect: true,
+                        score: 100,
+                        explanation: '2x = 7 - 3 = 4，所以 x = 2'
+                    },
+                    {
+                        questionId: 'q2',
+                        questionContent: '計算 3 × 4 + 2',
+                        answerChoices: {'A': '12', 'B': '14', 'C': '16', 'D': '18'},
+                        userAnswer: 'B',
+                        correctAnswer: 'B',
+                        isCorrect: true,
+                        score: 100,
+                        explanation: '先乘後加：3 × 4 + 2 = 12 + 2 = 14'
+                    },
+                    {
+                        questionId: 'q3',
+                        questionContent: '下列何者為質數？',
+                        answerChoices: {'A': '4', 'B': '6', 'C': '7', 'D': '8'},
+                        userAnswer: 'C',
+                        correctAnswer: 'C',
+                        isCorrect: true,
+                        score: 100,
+                        explanation: '7 只能被 1 和 7 整除，所以是質數'
+                    },
+                    {
+                        questionId: 'q4',
+                        questionContent: '計算 √16',
+                        answerChoices: {'A': '2', 'B': '3', 'C': '4', 'D': '5'},
+                        userAnswer: 'D',
+                        correctAnswer: 'C',
+                        isCorrect: false,
+                        score: 0,
+                        explanation: '√16 = 4，因為 4² = 16'
+                    },
+                    {
+                        questionId: 'q5',
+                        questionContent: '化簡 2x + 3x',
+                        answerChoices: {'A': '5x', 'B': '6x', 'C': '5', 'D': '6'},
+                        userAnswer: 'A',
+                        correctAnswer: 'A',
+                        isCorrect: true,
+                        score: 100,
+                        explanation: '同類項相加：2x + 3x = 5x'
+                    }
+                ]
+            };
+
+            // 模擬 exercise.js 的保存邏輯
+            sessionStorage.setItem('examResults', JSON.stringify(examResults));
+            sessionStorage.removeItem('savedSessionId');
+            
+            updateStatus(`第 ${testCounter} 次練習數據已保存到 sessionStorage`, 'success');
+            updateStatus('模擬跳轉到 result.html...', 'info');
+            
+            // 模擬跳轉後的 result.js 保存邏輯
+            setTimeout(() => {
+                simulateResultPageSave(examResults);
+            }, 1000);
+        }
+
+        function simulateSecondExercise() {
+            // 等待一秒後執行，模擬用戶操作間隔
+            setTimeout(() => {
+                simulateFirstExercise();
+            }, 100);
+        }
+
+        async function simulateResultPageSave(examResults) {
+            updateStatus('模擬 result.js 保存邏輯...', 'info');
+            
+            try {
+                // 檢查認證狀態
+                const token = localStorage.getItem('auth_token');
+                if (!token) {
+                    updateStatus('用戶未登入，跳過保存', 'warning');
+                    return;
+                }
+
+                // 檢查重複保存邏輯
+                const savedSessionId = sessionStorage.getItem('savedSessionId');
+                const currentExamResults = sessionStorage.getItem('examResults');
+                
+                if (savedSessionId && !currentExamResults) {
+                    updateStatus('發現已保存的會話，跳過重複保存', 'warning');
+                    return;
+                }
+
+                if (currentExamResults) {
+                    updateStatus('發現新的練習結果，清除舊的保存標記', 'info');
+                    sessionStorage.removeItem('savedSessionId');
+                }
+
+                // 轉換數據格式
+                const requestData = convertToAPIFormat(examResults);
+                
+                updateStatus('調用 API 保存練習結果...', 'info');
+                
+                // 模擬 API 調用
+                const mockResponse = {
+                    success: true,
+                    data: {
+                        session_id: examResults.sessionData.sessionId,
+                        message: '練習結果保存成功'
+                    }
+                };
+
+                if (mockResponse.success) {
+                    sessionStorage.setItem('savedSessionId', mockResponse.data.session_id);
+                    sessionStorage.removeItem('examResults');
+                    updateStatus(`練習結果保存成功！會話ID: ${mockResponse.data.session_id.substring(0, 8)}`, 'success');
+                } else {
+                    throw new Error('API 保存失敗');
+                }
+
+            } catch (error) {
+                updateStatus(`保存失敗: ${error.message}`, 'error');
+            }
+        }
+
+        function convertToAPIFormat(examResults) {
+            const sessionData = examResults.sessionData || {};
+            
+            const exerciseResults = examResults.detailedResults.map((result, index) => ({
+                question_id: result.questionId,
+                subject: sessionData.subject || '未分類',
+                grade: sessionData.grade || '8A',
+                chapter: sessionData.chapter,
+                publisher: sessionData.publisher || '南一',
+                knowledge_points: result.knowledgePoints || [],
+                question_content: result.questionContent,
+                answer_choices: result.answerChoices,
+                difficulty: result.difficulty || 'normal',
+                question_topic: result.questionTopic,
+                user_answer: String(result.userAnswer),
+                correct_answer: String(result.correctAnswer),
+                is_correct: result.isCorrect,
+                score: result.score,
+                explanation: result.explanation,
+                time_spent: result.timeSpent
+            }));
+
+            return {
+                session_name: sessionData.sessionName,
+                subject: sessionData.subject,
+                grade: sessionData.grade,
+                chapter: sessionData.chapter,
+                publisher: sessionData.publisher,
+                difficulty: sessionData.difficulty,
+                knowledge_points: sessionData.knowledgePoints,
+                exercise_results: exerciseResults,
+                total_time_spent: examResults.timeSpent,
+                session_metadata: {
+                    source: 'web',
+                    device: 'desktop',
+                    submitted_at: new Date().toISOString()
+                }
+            };
+        }
+
+        function clearStorage() {
+            sessionStorage.removeItem('examResults');
+            sessionStorage.removeItem('savedSessionId');
+            updateStatus('已清除所有存儲數據', 'info');
+            checkStorage();
+        }
+
+        function checkStorage() {
+            const examResults = sessionStorage.getItem('examResults');
+            const savedSessionId = sessionStorage.getItem('savedSessionId');
+            
+            const statusDiv = document.getElementById('storageStatus');
+            statusDiv.innerHTML = `
+                <div class="space-y-2">
+                    <div><strong>examResults:</strong> ${examResults ? '存在' : '不存在'}</div>
+                    <div><strong>savedSessionId:</strong> ${savedSessionId || '不存在'}</div>
+                    ${examResults ? `<div class="text-sm text-gray-600">examResults 長度: ${examResults.length} 字符</div>` : ''}
+                </div>
+            `;
+        }
+
+        // 頁面載入時檢查存儲狀態
+        document.addEventListener('DOMContentLoaded', () => {
+            updateStatus('測試頁面載入完成', 'success');
+            checkStorage();
+            
+            // 模擬登入狀態
+            if (!localStorage.getItem('auth_token')) {
+                localStorage.setItem('auth_token', 'test_token_' + Date.now());
+                updateStatus('已設置測試認證令牌', 'info');
+            }
+        });
+    </script>
+</body>
+</html>

@@ -573,27 +573,93 @@ class ExerciseManager {
     }
 
     showResults(results) {
-        const interfaceDiv = document.getElementById('exerciseInterface');
-        const resultsDiv = document.getElementById('exerciseResults');
-        
-        if (interfaceDiv) interfaceDiv.classList.add('hidden');
-        if (resultsDiv) resultsDiv.classList.remove('hidden');
-
         const endTime = new Date();
-        const timeSpent = Math.round((endTime - this.startTime) / 1000 / 60); // 分鐘
+        const timeSpentSeconds = Math.round((endTime - this.startTime) / 1000);
+        const timeSpentMinutes = Math.round(timeSpentSeconds / 60);
 
         // 計算結果統計
         let correctCount = 0;
-        this.questions.forEach(question => {
+        const detailedResults = [];
+        
+        this.questions.forEach((question, index) => {
             const userAnswer = this.userAnswers[question.id];
             const correctAnswer = question.answer;
-            if (userAnswer === correctAnswer) {
+            const isCorrect = userAnswer === correctAnswer;
+            
+            if (isCorrect) {
                 correctCount++;
             }
+
+            // 構建詳細結果
+            detailedResults.push({
+                questionId: question.id,
+                questionContent: question.question || question.content,
+                questionText: question.question || question.content,
+                answerChoices: question.options,
+                options: Array.isArray(question.options) ? question.options : Object.values(question.options),
+                userAnswer: userAnswer,
+                correctAnswer: correctAnswer,
+                isCorrect: isCorrect,
+                score: isCorrect ? 100 : 0,
+                explanation: question.explanation || '暫無解析',
+                timeSpent: Math.round(timeSpentSeconds / this.questions.length),
+                knowledgePoints: question.knowledgePoints || [],
+                difficulty: question.difficulty || 'normal',
+                questionTopic: question.topic || question.subject || this.selectedCriteria.subject
+            });
         });
 
         const accuracy = Math.round((correctCount / this.questions.length) * 100);
         const totalScore = Math.round((correctCount / this.questions.length) * 100);
+
+        // 構建完整的考試結果數據
+        const examResults = {
+            score: totalScore,
+            accuracy: accuracy,
+            totalQuestions: this.questions.length,
+            correctAnswers: correctCount,
+            wrongAnswers: this.questions.length - correctCount,
+            timeSpent: timeSpentSeconds,
+            submittedAt: endTime.toISOString(),
+            sessionData: {
+                sessionId: this.sessionId,
+                sessionName: `${this.selectedCriteria.subject || '練習'}測驗 - ${new Date().toLocaleDateString()}`,
+                grade: this.selectedCriteria.grade,
+                publisher: this.selectedCriteria.edition,
+                subject: this.selectedCriteria.subject,
+                chapter: this.selectedCriteria.chapter,
+                difficulty: 'normal',
+                knowledgePoints: []
+            },
+            detailedResults: detailedResults,
+            questions: this.questions.map(q => ({
+                id: q.id,
+                content: q.question || q.content,
+                choices: q.options,
+                correctAnswer: q.answer,
+                explanation: q.explanation || '暫無解析',
+                knowledgePoints: q.knowledgePoints || [],
+                difficulty: q.difficulty || 'normal',
+                topic: q.topic || q.subject || this.selectedCriteria.subject
+            })),
+            userAnswers: this.questions.map(q => ({
+                questionId: q.id,
+                answer: this.userAnswers[q.id],
+                isCorrect: this.userAnswers[q.id] === q.answer,
+                timeSpent: Math.round(timeSpentSeconds / this.questions.length)
+            }))
+        };
+
+        // 保存結果到 sessionStorage
+        sessionStorage.setItem('examResults', JSON.stringify(examResults));
+        
+        // 清除之前的保存標記，確保新練習能夠保存
+        sessionStorage.removeItem('savedSessionId');
+
+        console.log('練習結果已保存到 sessionStorage:', examResults);
+
+        // 跳轉到結果頁面
+        window.location.href = 'result.html';
 
         const resultsContainer = document.getElementById('resultsContainer');
         if (!resultsContainer) return;
