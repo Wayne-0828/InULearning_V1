@@ -227,14 +227,16 @@ class LearningAPI {
     // 提交完整的練習結果（包含PostgreSQL記錄）
     async submitExerciseResult(resultData) {
         try {
-            const response = await fetch(`${this.baseURL}/exercises/complete`, {
+            // 使用正確的API端點路徑
+            const response = await fetch('/api/v1/learning/exercises/complete', {
                 method: 'POST',
                 headers: this.getAuthHeaders(),
                 body: JSON.stringify(resultData)
             });
 
             if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
+                const errorText = await response.text();
+                throw new Error(`HTTP error! status: ${response.status}, message: ${errorText}`);
             }
 
             const result = await response.json();
@@ -252,15 +254,27 @@ class LearningAPI {
     }
 
     // 獲取學習記錄
-    async getLearningRecords(filters = {}, page = 1, limit = 10) {
+    async getLearningRecords(filters = {}) {
         try {
-            const params = new URLSearchParams({
-                page: page,
-                limit: limit,
-                ...filters
-            });
+            // 處理分頁參數
+            const page = filters.page || 1;
+            const page_size = filters.page_size || filters.limit || 20;
 
-            const response = await fetch(`${this.baseURL}/records?${params}`, {
+            // 構建查詢參數
+            const params = new URLSearchParams();
+
+            // 分頁參數
+            params.append('page', page);
+            params.append('page_size', page_size);
+
+            // 篩選參數
+            if (filters.subject) params.append('subject', filters.subject);
+            if (filters.grade) params.append('grade', filters.grade);
+            if (filters.publisher) params.append('publisher', filters.publisher);
+            if (filters.start_date) params.append('start_date', filters.start_date);
+            if (filters.end_date) params.append('end_date', filters.end_date);
+
+            const response = await fetch(`/api/v1/records?${params}`, {
                 headers: this.getAuthHeaders()
             });
 
@@ -268,10 +282,10 @@ class LearningAPI {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
 
-            const records = await response.json();
+            const result = await response.json();
             return {
                 success: true,
-                data: records
+                data: result
             };
         } catch (error) {
             console.error('獲取學習記錄失敗:', error);
@@ -282,12 +296,35 @@ class LearningAPI {
         }
     }
 
-    // 獲取學習統計
-    async getLearningStatistics(days = 30) {
+    // 獲取會話詳細資訊
+    async getSessionDetail(sessionId) {
         try {
-            const params = new URLSearchParams({ days: days });
+            const response = await fetch(`/api/v1/records/${sessionId}`, {
+                headers: this.getAuthHeaders()
+            });
 
-            const response = await fetch(`${this.baseURL}/statistics?${params}`, {
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+
+            const result = await response.json();
+            return {
+                success: true,
+                data: result
+            };
+        } catch (error) {
+            console.error('獲取會話詳情失敗:', error);
+            return {
+                success: false,
+                error: error.message
+            };
+        }
+    }
+
+    // 獲取學習統計
+    async getLearningStatistics() {
+        try {
+            const response = await fetch(`/api/v1/statistics`, {
                 headers: this.getAuthHeaders()
             });
 

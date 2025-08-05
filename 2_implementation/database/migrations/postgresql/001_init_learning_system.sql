@@ -1,11 +1,19 @@
 -- ===============================================
--- InULearning PostgreSQL 初始化腳本（簡化版）
--- 注意：完整的資料庫結構請參考 2_implementation/database/
--- 此檔案用於 Docker 容器初始化，包含基本結構
+-- InULearning 學習練習記錄系統 - PostgreSQL 初始化腳本
+-- 版本: v1.0.0
+-- 作者: AIPE01_group2
+-- 日期: 2024-12-19
+-- 
+-- 目的: 建立完整的學習練習記錄系統資料庫結構
+-- 包含用戶管理、學習會話、練習記錄、知識點追蹤等功能
 -- ===============================================
 
 -- 建立擴展
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+
+-- ===============================================
+-- 1. 用戶管理相關表
+-- ===============================================
 
 -- 建立用戶表（如果不存在）
 CREATE TABLE IF NOT EXISTS users (
@@ -34,6 +42,21 @@ CREATE TABLE IF NOT EXISTS refresh_tokens (
     is_revoked BOOLEAN DEFAULT FALSE,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
+
+-- 建立家長學生關聯表
+CREATE TABLE IF NOT EXISTS parent_child_relations (
+    id SERIAL PRIMARY KEY,
+    parent_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    child_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    relationship_type VARCHAR(50) DEFAULT 'parent',
+    is_active BOOLEAN DEFAULT TRUE,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+
+-- ===============================================
+-- 2. 學習系統核心表
+-- ===============================================
 
 -- 建立學習會話表
 CREATE TABLE IF NOT EXISTS learning_sessions (
@@ -105,16 +128,9 @@ CREATE TABLE IF NOT EXISTS learning_progress (
     UNIQUE(user_id, subject, grade, chapter, knowledge_point)
 );
 
--- 建立家長學生關聯表
-CREATE TABLE IF NOT EXISTS parent_child_relations (
-    id SERIAL PRIMARY KEY,
-    parent_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
-    child_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
-    relationship_type VARCHAR(50) DEFAULT 'parent',
-    is_active BOOLEAN DEFAULT TRUE,
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
-);
+-- ===============================================
+-- 3. 學習分析和檔案系統
+-- ===============================================
 
 -- 建立用戶學習檔案表
 CREATE TABLE IF NOT EXISTS user_learning_profiles (
@@ -169,7 +185,11 @@ CREATE TABLE IF NOT EXISTS knowledge_points_master (
         CHECK (difficulty_level IN ('easy', 'normal', 'hard'))
 );
 
--- 建立索引
+-- ===============================================
+-- 4. 建立索引以提升查詢效能
+-- ===============================================
+
+-- 用戶表索引
 CREATE INDEX IF NOT EXISTS idx_users_email ON users(email);
 CREATE INDEX IF NOT EXISTS idx_users_username ON users(username);
 CREATE INDEX IF NOT EXISTS idx_refresh_tokens_user_id ON refresh_tokens(user_id);
@@ -205,6 +225,10 @@ CREATE INDEX IF NOT EXISTS idx_user_profiles_weakness_knowledge ON user_learning
 CREATE INDEX IF NOT EXISTS idx_knowledge_points_subject_grade ON knowledge_points_master(subject, grade);
 CREATE INDEX IF NOT EXISTS idx_knowledge_points_chapter ON knowledge_points_master(chapter);
 
+-- ===============================================
+-- 5. 建立觸發器函數和觸發器
+-- ===============================================
+
 -- 建立更新時間觸發器函數
 CREATE OR REPLACE FUNCTION update_updated_at_column()
 RETURNS TRIGGER AS $$
@@ -221,22 +245,12 @@ CREATE TRIGGER update_learning_progress_updated_at BEFORE UPDATE ON learning_pro
 CREATE TRIGGER update_parent_child_relations_updated_at BEFORE UPDATE ON parent_child_relations FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
 CREATE TRIGGER update_user_learning_profiles_updated_at BEFORE UPDATE ON user_learning_profiles FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
 
--- 插入測試數據（可選）
+-- ===============================================
+-- 6. 插入測試數據（可選）
+-- ===============================================
+
+-- 插入測試用戶
 INSERT INTO users (username, email, hashed_password, role) VALUES 
 ('test_student', 'student@test.com', '$2b$12$LQv3c1yqBWVHxkd0LHAkCOYz6TtxMQJqhN8/LewdBPj/RK.s5u.G', 'student'),
 ('test_teacher', 'teacher@test.com', '$2b$12$LQv3c1yqBWVHxkd0LHAkCOYz6TtxMQJqhN8/LewdBPj/RK.s5u.G', 'teacher')
 ON CONFLICT (username) DO NOTHING;
-
--- ===============================================
--- 注意：完整的資料庫管理請使用以下資源
--- ===============================================
--- 
--- 📁 完整資料庫結構: 2_implementation/database/
--- 🚀 自動化設置腳本: ./2_implementation/database/scripts/setup_database.sh
--- 📊 知識點種子數據: 2_implementation/database/seeds/postgresql/knowledge_points_seed.sql
--- 📖 資料庫文檔: 2_implementation/database/README.md
--- 
--- 建議使用自動化腳本進行完整的資料庫設置：
--- ./2_implementation/database/scripts/setup_database.sh
--- 
--- ===============================================

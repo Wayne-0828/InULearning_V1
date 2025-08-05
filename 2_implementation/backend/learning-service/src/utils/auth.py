@@ -13,9 +13,9 @@ from jose import jwt, JWTError
 
 logger = logging.getLogger(__name__)
 
-# JWT 配置
-JWT_SECRET_KEY = os.getenv("JWT_SECRET_KEY", "your-secret-key")
-JWT_ALGORITHM = "HS256"
+# JWT 配置 - 使用與認證服務相同的環境變數名稱
+JWT_SECRET_KEY = os.getenv("SECRET_KEY", os.getenv("JWT_SECRET_KEY", "your-secret-key-here-change-in-production"))
+JWT_ALGORITHM = os.getenv("ALGORITHM", os.getenv("JWT_ALGORITHM", "HS256"))
 
 # HTTP Bearer 認證
 security = HTTPBearer()

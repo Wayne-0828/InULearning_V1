@@ -1,8 +1,5 @@
--- ===============================================
--- InULearning PostgreSQL 初始化腳本（簡化版）
--- 注意：完整的資料庫結構請參考 2_implementation/database/
--- 此檔案用於 Docker 容器初始化，包含基本結構
--- ===============================================
+-- 建立資料庫（如果不存在）
+-- 注意：PostgreSQL 容器已經建立了 inulearning 資料庫
 
 -- 建立擴展
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
@@ -227,16 +224,28 @@ INSERT INTO users (username, email, hashed_password, role) VALUES
 ('test_teacher', 'teacher@test.com', '$2b$12$LQv3c1yqBWVHxkd0LHAkCOYz6TtxMQJqhN8/LewdBPj/RK.s5u.G', 'teacher')
 ON CONFLICT (username) DO NOTHING;
 
--- ===============================================
--- 注意：完整的資料庫管理請使用以下資源
--- ===============================================
--- 
--- 📁 完整資料庫結構: 2_implementation/database/
--- 🚀 自動化設置腳本: ./2_implementation/database/scripts/setup_database.sh
--- 📊 知識點種子數據: 2_implementation/database/seeds/postgresql/knowledge_points_seed.sql
--- 📖 資料庫文檔: 2_implementation/database/README.md
--- 
--- 建議使用自動化腳本進行完整的資料庫設置：
--- ./2_implementation/database/scripts/setup_database.sh
--- 
--- ===============================================
+-- 插入知識點測試數據
+INSERT INTO knowledge_points_master (knowledge_point, subject, grade, chapter, difficulty_level, description) VALUES
+-- 數學 8A 知識點
+('一元一次方程式', '數學', '8A', '第1章 一元一次方程式', 'normal', '含有一個未知數的一次方程式'),
+('移項運算', '數學', '8A', '第1章 一元一次方程式', 'easy', '方程式求解中的移項技巧'),
+('分數方程式', '數學', '8A', '第1章 一元一次方程式', 'hard', '含有分數的一元一次方程式'),
+('應用問題', '數學', '8A', '第1章 一元一次方程式', 'hard', '利用一元一次方程式解決實際問題'),
+('代數運算', '數學', '8A', '第1章 一元一次方程式', 'normal', '基本的代數運算法則'),
+
+-- 數學 7A 知識點
+('正負數', '數學', '7A', '第1章 整數', 'easy', '正數、負數的概念和表示'),
+('絕對值', '數學', '7A', '第1章 整數', 'normal', '數的絕對值概念和計算'),
+('整數加減', '數學', '7A', '第1章 整數', 'normal', '正負整數的加法和減法運算'),
+
+-- 英文知識點
+('現在簡單式', '英文', '7A', '第1課 介紹自己', 'normal', '現在簡單式的用法和變化'),
+('人稱代名詞', '英文', '7A', '第1課 介紹自己', 'easy', '主格人稱代名詞的使用'),
+('be動詞', '英文', '7A', '第1課 介紹自己', 'easy', 'am, is, are 的正確使用'),
+
+-- 國文知識點
+('修辭技巧', '國文', '8A', '第1課 夏夜', 'normal', '各種修辭手法的認識和運用'),
+('文意理解', '國文', '8A', '第1課 夏夜', 'normal', '文章內容的理解和分析'),
+('字音字形', '國文', '8A', '第1課 夏夜', 'easy', '正確的字音和字形辨識')
+
+ON CONFLICT (knowledge_point) DO NOTHING; 

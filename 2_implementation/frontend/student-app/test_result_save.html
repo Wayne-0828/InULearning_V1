@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>測試練習結果保存功能</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+
+        .test-section {
+            margin: 20px 0;
+            padding: 20px;
+            border: 1px solid #ccc;
+        }
+
+        button {
+            padding: 10px 20px;
+            margin: 10px;
+        }
+
+        .result {
+            margin: 10px 0;
+            padding: 10px;
+            background: #f5f5f5;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>測試練習結果保存功能</h1>
+
+    <div class="test-section">
+        <h2>1. 模擬練習結果數據</h2>
+        <button onclick="createTestData()">創建測試數據</button>
+        <div id="testDataResult" class="result"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>2. 跳轉到結果頁面</h2>
+        <button onclick="goToResultPage()">查看結果頁面</button>
+        <p>這將模擬用戶完成練習後跳轉到結果頁面的情況</p>
+    </div>
+
+    <div class="test-section">
+        <h2>3. 跳轉到歷程頁面</h2>
+        <button onclick="goToHistoryPage()">查看學習歷程</button>
+        <p>查看已保存的學習記錄</p>
+    </div>
+
+    <script>
+        function createTestData() {
+            const testData = {
+                score: 85,
+                accuracy: 80,
+                totalQuestions: 5,
+                correctAnswers: 4,
+                wrongAnswers: 1,
+                timeSpent: 300, // 5分鐘
+                submittedAt: new Date().toISOString(),
+                sessionData: {
+                    sessionName: "數學練習測試",
+                    subject: "數學",
+                    grade: "8A",
+                    chapter: "一元一次方程式",
+                    publisher: "南一",
+                    difficulty: "normal",
+                    knowledgePoints: ["一元一次方程式", "移項運算"]
+                },
+                detailedResults: [
+                    {
+                        questionId: "q_test_1",
+                        questionContent: "解方程式：2x + 3 = 7",
+                        answerChoices: { "A": "x = 2", "B": "x = 3", "C": "x = 4", "D": "x = 5" },
+                        userAnswer: "A",
+                        correctAnswer: "A",
+                        isCorrect: true,
+                        score: 100,
+                        explanation: "移項得到 2x = 4，所以 x = 2",
+                        timeSpent: 45,
+                        knowledgePoints: ["一元一次方程式"],
+                        difficulty: "normal",
+                        questionTopic: "一元一次方程式解法"
+                    },
+                    {
+                        questionId: "q_test_2",
+                        questionContent: "解方程式：3x - 5 = 10",
+                        answerChoices: { "A": "x = 3", "B": "x = 5", "C": "x = 7", "D": "x = 9" },
+                        userAnswer: "B",
+                        correctAnswer: "B",
+                        isCorrect: true,
+                        score: 100,
+                        explanation: "移項得到 3x = 15，所以 x = 5",
+                        timeSpent: 50,
+                        knowledgePoints: ["一元一次方程式"],
+                        difficulty: "normal",
+                        questionTopic: "一元一次方程式解法"
+                    },
+                    {
+                        questionId: "q_test_3",
+                        questionContent: "解方程式：4x + 8 = 20",
+                        answerChoices: { "A": "x = 2", "B": "x = 3", "C": "x = 4", "D": "x = 5" },
+                        userAnswer: "C",
+                        correctAnswer: "B",
+                        isCorrect: false,
+                        score: 0,
+                        explanation: "移項得到 4x = 12，所以 x = 3",
+                        timeSpent: 60,
+                        knowledgePoints: ["一元一次方程式"],
+                        difficulty: "normal",
+                        questionTopic: "一元一次方程式解法"
+                    },
+                    {
+                        questionId: "q_test_4",
+                        questionContent: "解方程式：5x - 15 = 0",
+                        answerChoices: { "A": "x = 2", "B": "x = 3", "C": "x = 4", "D": "x = 5" },
+                        userAnswer: "B",
+                        correctAnswer: "B",
+                        isCorrect: true,
+                        score: 100,
+                        explanation: "移項得到 5x = 15，所以 x = 3",
+                        timeSpent: 40,
+                        knowledgePoints: ["一元一次方程式"],
+                        difficulty: "normal",
+                        questionTopic: "一元一次方程式解法"
+                    },
+                    {
+                        questionId: "q_test_5",
+                        questionContent: "解方程式：6x + 12 = 30",
+                        answerChoices: { "A": "x = 2", "B": "x = 3", "C": "x = 4", "D": "x = 5" },
+                        userAnswer: "B",
+                        correctAnswer: "B",
+                        isCorrect: true,
+                        score: 100,
+                        explanation: "移項得到 6x = 18，所以 x = 3",
+                        timeSpent: 55,
+                        knowledgePoints: ["一元一次方程式"],
+                        difficulty: "normal",
+                        questionTopic: "一元一次方程式解法"
+                    }
+                ],
+                questions: [
+                    {
+                        id: "q_test_1",
+                        content: "解方程式：2x + 3 = 7",
+                        choices: { "A": "x = 2", "B": "x = 3", "C": "x = 4", "D": "x = 5" },
+                        correctAnswer: "A",
+                        explanation: "移項得到 2x = 4，所以 x = 2",
+                        knowledgePoints: ["一元一次方程式"],
+                        difficulty: "normal",
+                        topic: "一元一次方程式解法"
+                    },
+                    {
+                        id: "q_test_2",
+                        content: "解方程式：3x - 5 = 10",
+                        choices: { "A": "x = 3", "B": "x = 5", "C": "x = 7", "D": "x = 9" },
+                        correctAnswer: "B",
+                        explanation: "移項得到 3x = 15，所以 x = 5",
+                        knowledgePoints: ["一元一次方程式"],
+                        difficulty: "normal",
+                        topic: "一元一次方程式解法"
+                    },
+                    {
+                        id: "q_test_3",
+                        content: "解方程式：4x + 8 = 20",
+                        choices: { "A": "x = 2", "B": "x = 3", "C": "x = 4", "D": "x = 5" },
+                        correctAnswer: "B",
+                        explanation: "移項得到 4x = 12，所以 x = 3",
+                        knowledgePoints: ["一元一次方程式"],
+                        difficulty: "normal",
+                        topic: "一元一次方程式解法"
+                    },
+                    {
+                        id: "q_test_4",
+                        content: "解方程式：5x - 15 = 0",
+                        choices: { "A": "x = 2", "B": "x = 3", "C": "x = 4", "D": "x = 5" },
+                        correctAnswer: "B",
+                        explanation: "移項得到 5x = 15，所以 x = 3",
+                        knowledgePoints: ["一元一次方程式"],
+                        difficulty: "normal",
+                        topic: "一元一次方程式解法"
+                    },
+                    {
+                        id: "q_test_5",
+                        content: "解方程式：6x + 12 = 30",
+                        choices: { "A": "x = 2", "B": "x = 3", "C": "x = 4", "D": "x = 5" },
+                        correctAnswer: "B",
+                        explanation: "移項得到 6x = 18，所以 x = 3",
+                        knowledgePoints: ["一元一次方程式"],
+                        difficulty: "normal",
+                        topic: "一元一次方程式解法"
+                    }
+                ],
+                userAnswers: [
+                    { questionId: "q_test_1", answer: "A", isCorrect: true, timeSpent: 45 },
+                    { questionId: "q_test_2", answer: "B", isCorrect: true, timeSpent: 50 },
+                    { questionId: "q_test_3", answer: "C", isCorrect: false, timeSpent: 60 },
+                    { questionId: "q_test_4", answer: "B", isCorrect: true, timeSpent: 40 },
+                    { questionId: "q_test_5", answer: "B", isCorrect: true, timeSpent: 55 }
+                ]
+            };
+
+            // 保存到 sessionStorage
+            sessionStorage.setItem('examResults', JSON.stringify(testData));
+
+            document.getElementById('testDataResult').innerHTML = `
+                <h3>測試數據已創建</h3>
+                <p>總題數: ${testData.totalQuestions}</p>
+                <p>正確題數: ${testData.correctAnswers}</p>
+                <p>正確率: ${testData.accuracy}%</p>
+                <p>總分: ${testData.score}</p>
+                <p>用時: ${Math.floor(testData.timeSpent / 60)}分${testData.timeSpent % 60}秒</p>
+            `;
+        }
+
+        function goToResultPage() {
+            window.location.href = 'pages/result.html';
+        }
+
+        function goToHistoryPage() {
+            window.location.href = 'pages/history.html';
+        }
+    </script>
+</body>
+
+</html>

@@ -7,8 +7,9 @@ Learning Service Database Models
 import uuid
 from datetime import datetime
 from typing import Optional, Dict, Any
-from sqlalchemy import Column, String, Integer, Float, DateTime, Text, Boolean, JSON
-from sqlalchemy.dialects.postgresql import UUID
+from sqlalchemy import Column, String, Integer, Float, DateTime, Text, Boolean, JSON, DECIMAL
+from sqlalchemy.dialects.postgresql import UUID, ARRAY
+from sqlalchemy import ForeignKey
 
 from .base import Base
 
@@ -18,62 +19,56 @@ class LearningSession(Base):
     __tablename__ = "learning_sessions"
     
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
-    session_id = Column(String(50), unique=True, nullable=False, index=True)
-    user_id = Column(String(50), nullable=False, index=True)
-    subject = Column(String(100), nullable=False)
-    grade = Column(String(50), nullable=True)
-    chapter = Column(String(200), nullable=True)
-    status = Column(String(20), nullable=False, default="active")  # active, completed, paused, cancelled
+    user_id = Column(Integer, nullable=False)
+    session_name = Column(String(200), nullable=False)
+    subject = Column(String(50), nullable=False)
+    grade = Column(String(20), nullable=False)
+    chapter = Column(String(100))
+    publisher = Column(String(20), nullable=False, default='南一')
+    difficulty = Column(String(20))
+    knowledge_points = Column(ARRAY(Text))
     
-    # 會話參數
+    # 會話統計
     question_count = Column(Integer, nullable=False, default=10)
-    difficulty = Column(String(20), nullable=True, default="medium")
-    time_limit = Column(Integer, nullable=True)  # 分鐘
-    
-    # 會話數據 (JSON)
-    questions = Column(JSON, nullable=True)  # 題目列表
-    answers = Column(JSON, nullable=True)    # 答案記錄
-    results = Column(JSON, nullable=True)    # 結果記錄
-    
-    # 統計資訊
-    total_questions = Column(Integer, nullable=False, default=0)
-    answered_questions = Column(Integer, nullable=False, default=0)
-    correct_answers = Column(Integer, nullable=False, default=0)
-    total_score = Column(Float, nullable=True)
-    time_spent = Column(Integer, nullable=True)  # 秒數
+    correct_count = Column(Integer, default=0)
+    total_score = Column(DECIMAL(5, 2))
+    accuracy_rate = Column(DECIMAL(5, 2))
+    time_spent = Column(Integer)  # 秒數
+    status = Column(String(20), default='completed')  # active, completed, paused
+    session_metadata = Column(JSON)
     
     # 時間戳記
+    start_time = Column(DateTime, nullable=False, default=datetime.utcnow)
+    end_time = Column(DateTime)
     created_at = Column(DateTime, nullable=False, default=datetime.utcnow)
     updated_at = Column(DateTime, nullable=False, default=datetime.utcnow, onupdate=datetime.utcnow)
-    completed_at = Column(DateTime, nullable=True)
     
     def __repr__(self):
-        return f"<LearningSession(session_id='{self.session_id}', user_id='{self.user_id}', subject='{self.subject}')>"
+        return f"<LearningSession(id='{self.id}', user_id='{self.user_id}', subject='{self.subject}')>"
     
     def to_dict(self) -> Dict[str, Any]:
         """轉換為字典格式"""
         return {
             "id": str(self.id),
-            "session_id": self.session_id,
             "user_id": self.user_id,
+            "session_name": self.session_name,
             "subject": self.subject,
             "grade": self.grade,
             "chapter": self.chapter,
-            "status": self.status,
-            "question_count": self.question_count,
+            "publisher": self.publisher,
             "difficulty": self.difficulty,
-            "time_limit": self.time_limit,
-            "questions": self.questions,
-            "answers": self.answers,
-            "results": self.results,
-            "total_questions": self.total_questions,
-            "answered_questions": self.answered_questions,
-            "correct_answers": self.correct_answers,
-            "total_score": self.total_score,
+            "knowledge_points": self.knowledge_points or [],
+            "question_count": self.question_count,
+            "correct_count": self.correct_count,
+            "total_score": float(self.total_score) if self.total_score else 0.0,
+            "accuracy_rate": float(self.accuracy_rate) if self.accuracy_rate else 0.0,
             "time_spent": self.time_spent,
+            "status": self.status,
+            "session_metadata": self.session_metadata,
+            "start_time": self.start_time.isoformat() if self.start_time else None,
+            "end_time": self.end_time.isoformat() if self.end_time else None,
             "created_at": self.created_at.isoformat() if self.created_at else None,
             "updated_at": self.updated_at.isoformat() if self.updated_at else None,
-            "completed_at": self.completed_at.isoformat() if self.completed_at else None,
         }
 
 

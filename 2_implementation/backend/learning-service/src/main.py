@@ -24,7 +24,7 @@ from fastapi.responses import JSONResponse
 from fastapi.exceptions import RequestValidationError
 from starlette.exceptions import HTTPException as StarletteHTTPException
 
-from .routers import exercises, sessions, recommendations, trends, records
+from .routers import exercises, sessions, recommendations, trends, records, learning_history
 from .utils.logging_config import setup_logging
 from .utils.auth import get_current_user
 from .utils.exceptions import (
@@ -245,6 +245,13 @@ app.include_router(
     dependencies=[Depends(get_current_user)]
 )
 
+app.include_router(
+    learning_history.router,
+    prefix="/api/v1/learning",
+    tags=["學習歷程"],
+    dependencies=[Depends(get_current_user)]
+)
+
 # 健康檢查端點
 @app.get("/health", tags=["系統"])
 async def health_check():
@@ -255,6 +262,101 @@ async def health_check():
         "version": "1.0.0",
         "timestamp": "2024-12-19T10:30:00Z"
     }
+
+# 系統狀態端點（公開，不需要認證）
+@app.get("/status", tags=["系統"])
+async def system_status():
+    """系統狀態檢查端點 - 提供基本的服務統計信息"""
+    try:
+        from .utils.database import get_db_session
+        from sqlalchemy import text
+        from datetime import datetime
+        
+        async with get_db_session() as db_session:
+            # 檢查資料庫連接
+            try:
+                await db_session.execute(text("SELECT 1"))
+                database_status = "healthy"
+            except Exception:
+                database_status = "unhealthy"
+            
+            # 獲取基本統計（不涉及具體用戶數據）
+            try:
+                # 總會話數
+                total_sessions_result = await db_session.execute(text("SELECT COUNT(*) FROM learning_sessions"))
+                total_sessions = total_sessions_result.scalar() or 0
+                
+                # 今日會話數
+                today_sessions_result = await db_session.execute(text(
+                    "SELECT COUNT(*) FROM learning_sessions WHERE DATE(start_time) = CURRENT_DATE"
+                ))
+                today_sessions = today_sessions_result.scalar() or 0
+                
+                statistics = {
+                    "total_sessions": total_sessions,
+                    "today_sessions": today_sessions
+                }
+            except Exception:
+                statistics = {
+                    "total_sessions": "unavailable",
+                    "today_sessions": "unavailable"
+                }
+            
+            return {
+                "status": "healthy",
+                "service": "learning-service",
+                "version": "1.0.0",
+                "timestamp": datetime.utcnow().isoformat() + "Z",
+                "database": database_status,
+                "statistics": statistics
+            }
+            
+    except Exception as e:
+        logger.error(f"System status check failed: {e}")
+        return {
+            "status": "degraded",
+            "service": "learning-service", 
+            "version": "1.0.0",
+            "timestamp": datetime.utcnow().isoformat() + "Z",
+            "database": "unknown",
+            "error": "Status check failed"
+        }
+
+# 測試認證配置端點
+@app.get("/test-auth", tags=["系統"])
+async def test_auth():
+    """測試認證配置"""
+    import os
+    from .utils.auth import JWT_SECRET_KEY, JWT_ALGORITHM
+    return {
+        "jwt_secret_key": JWT_SECRET_KEY[:10] + "...",  # 只顯示前10個字符
+        "jwt_algorithm": JWT_ALGORITHM,
+        "env_jwt_secret": os.getenv("JWT_SECRET_KEY", "")[:10] + "..." if os.getenv("JWT_SECRET_KEY") else "None",
+        "env_jwt_algorithm": os.getenv("JWT_ALGORITHM", "None")
+    }
+
+# 測試JWT解碼端點
+@app.post("/test-jwt", tags=["系統"])
+async def test_jwt(token: str):
+    """測試JWT解碼"""
+    from jose import jwt, JWTError
+    from .utils.auth import JWT_SECRET_KEY, JWT_ALGORITHM
+    
+    try:
+        payload = jwt.decode(token, JWT_SECRET_KEY, algorithms=[JWT_ALGORITHM])
+        return {
+            "success": True,
+            "payload": payload,
+            "secret_used": JWT_SECRET_KEY[:10] + "...",
+            "algorithm_used": JWT_ALGORITHM
+        }
+    except JWTError as e:
+        return {
+            "success": False,
+            "error": str(e),
+            "secret_used": JWT_SECRET_KEY[:10] + "...",
+            "algorithm_used": JWT_ALGORITHM
+        }
 
 # 根端點
 @app.get("/", tags=["系統"])

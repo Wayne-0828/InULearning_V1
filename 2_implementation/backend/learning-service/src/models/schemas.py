@@ -474,3 +474,230 @@ class PerformancePrediction(BaseModel):
                 "prediction_date": "2024-01-01T10:00:00"
             }
         }
+
+
+# ===============================================
+# 新增的練習結果提交和歷程查詢相關 Schemas
+# ===============================================
+
+class ExerciseResult(BaseModel):
+    """單個練習結果"""
+    question_id: str = Field(..., description="題目ID")
+    subject: str = Field(..., description="科目")
+    grade: str = Field(..., description="年級")
+    chapter: Optional[str] = Field(None, description="章節")
+    publisher: str = Field("南一", description="出版社")
+    knowledge_points: List[str] = Field(default_factory=list, description="知識點")
+    question_content: str = Field(..., description="題目內容")
+    answer_choices: Optional[Dict[str, Any]] = Field(None, description="選項")
+    difficulty: str = Field("normal", description="難度")
+    question_topic: Optional[str] = Field(None, description="題目主題")
+    user_answer: str = Field(..., description="用戶答案")
+    correct_answer: str = Field(..., description="正確答案")
+    is_correct: bool = Field(..., description="是否正確")
+    score: float = Field(..., ge=0, le=100, description="得分")
+    explanation: Optional[str] = Field(None, description="解釋")
+    time_spent: Optional[int] = Field(None, description="答題時間(秒)")
+    
+    class Config:
+        schema_extra = {
+            "example": {
+                "question_id": "q_123456",
+                "subject": "數學",
+                "grade": "8A",
+                "chapter": "一元一次方程式",
+                "publisher": "南一",
+                "knowledge_points": ["一元一次方程式", "移項運算"],
+                "question_content": "解方程式 2x + 3 = 7",
+                "answer_choices": {"A": "x = 2", "B": "x = 3", "C": "x = 4", "D": "x = 5"},
+                "difficulty": "normal",
+                "question_topic": "一元一次方程式解法",
+                "user_answer": "A",
+                "correct_answer": "A",
+                "is_correct": True,
+                "score": 100.0,
+                "explanation": "移項得到 2x = 4，所以 x = 2",
+                "time_spent": 45
+            }
+        }
+
+
+class CompleteExerciseRequest(BaseModel):
+    """完成練習請求"""
+    session_name: str = Field(..., description="會話名稱")
+    subject: str = Field(..., description="科目")
+    grade: str = Field(..., description="年級")
+    chapter: Optional[str] = Field(None, description="章節")
+    publisher: str = Field("南一", description="出版社")
+    difficulty: Optional[str] = Field("normal", description="難度")
+    knowledge_points: List[str] = Field(default_factory=list, description="會話知識點")
+    exercise_results: List[ExerciseResult] = Field(..., description="練習結果列表")
+    total_time_spent: Optional[int] = Field(None, description="總耗時(秒)")
+    session_metadata: Optional[Dict[str, Any]] = Field(None, description="會話元數據")
+    
+    class Config:
+        schema_extra = {
+            "example": {
+                "session_name": "數學練習 - 一元一次方程式",
+                "subject": "數學",
+                "grade": "8A",
+                "chapter": "一元一次方程式",
+                "publisher": "南一",
+                "difficulty": "normal",
+                "knowledge_points": ["一元一次方程式", "移項運算"],
+                "exercise_results": [],
+                "total_time_spent": 1800,
+                "session_metadata": {"source": "web", "device": "desktop"}
+            }
+        }
+
+
+class CompleteExerciseResponse(BaseModel):
+    """完成練習響應"""
+    session_id: str = Field(..., description="會話ID")
+    total_questions: int = Field(..., description="總題數")
+    correct_count: int = Field(..., description="答對數")
+    total_score: float = Field(..., description="總得分")
+    accuracy_rate: float = Field(..., description="正確率")
+    time_spent: int = Field(..., description="耗時(秒)")
+    created_at: datetime = Field(..., description="創建時間")
+    
+    class Config:
+        schema_extra = {
+            "example": {
+                "session_id": "550e8400-e29b-41d4-a716-446655440000",
+                "total_questions": 10,
+                "correct_count": 8,
+                "total_score": 85.5,
+                "accuracy_rate": 80.0,
+                "time_spent": 1800,
+                "created_at": "2024-12-19T10:00:00"
+            }
+        }
+
+
+class LearningHistoryQuery(BaseModel):
+    """學習歷程查詢參數"""
+    subject: Optional[str] = Field(None, description="科目篩選")
+    grade: Optional[str] = Field(None, description="年級篩選")
+    publisher: Optional[str] = Field(None, description="出版社篩選")
+    start_date: Optional[datetime] = Field(None, description="開始日期")
+    end_date: Optional[datetime] = Field(None, description="結束日期")
+    page: int = Field(1, ge=1, description="頁碼")
+    page_size: int = Field(20, ge=1, le=100, description="每頁數量")
+    
+    class Config:
+        schema_extra = {
+            "example": {
+                "subject": "數學",
+                "grade": "8A",
+                "publisher": "南一",
+                "start_date": "2024-12-01T00:00:00",
+                "end_date": "2024-12-31T23:59:59",
+                "page": 1,
+                "page_size": 20
+            }
+        }
+
+
+class LearningSessionSummary(BaseModel):
+    """學習會話摘要"""
+    session_id: str = Field(..., description="會話ID")
+    session_name: str = Field(..., description="會話名稱")
+    subject: str = Field(..., description="科目")
+    grade: str = Field(..., description="年級")
+    chapter: Optional[str] = Field(None, description="章節")
+    publisher: str = Field(..., description="出版社")
+    difficulty: Optional[str] = Field(None, description="難度")
+    knowledge_points: List[str] = Field(default_factory=list, description="知識點")
+    question_count: int = Field(..., description="題目數量")
+    correct_count: int = Field(..., description="答對數量")
+    total_score: float = Field(..., description="總得分")
+    accuracy_rate: float = Field(..., description="正確率")
+    time_spent: Optional[int] = Field(None, description="耗時(秒)")
+    status: str = Field(..., description="狀態")
+    start_time: datetime = Field(..., description="開始時間")
+    end_time: Optional[datetime] = Field(None, description="結束時間")
+    
+    class Config:
+        schema_extra = {
+            "example": {
+                "session_id": "550e8400-e29b-41d4-a716-446655440000",
+                "session_name": "數學練習 - 一元一次方程式",
+                "subject": "數學",
+                "grade": "8A",
+                "chapter": "一元一次方程式",
+                "publisher": "南一",
+                "difficulty": "normal",
+                "knowledge_points": ["一元一次方程式", "移項運算"],
+                "question_count": 10,
+                "correct_count": 8,
+                "total_score": 85.5,
+                "accuracy_rate": 80.0,
+                "time_spent": 1800,
+                "status": "completed",
+                "start_time": "2024-12-19T10:00:00",
+                "end_time": "2024-12-19T10:30:00"
+            }
+        }
+
+
+class LearningHistoryResponse(BaseModel):
+    """學習歷程響應"""
+    sessions: List[LearningSessionSummary] = Field(..., description="會話列表")
+    total: int = Field(..., description="總數量")
+    page: int = Field(..., description="當前頁碼")
+    page_size: int = Field(..., description="每頁數量")
+    total_pages: int = Field(..., description="總頁數")
+    
+    class Config:
+        schema_extra = {
+            "example": {
+                "sessions": [],
+                "total": 100,
+                "page": 1,
+                "page_size": 20,
+                "total_pages": 5
+            }
+        }
+
+
+class LearningStatistics(BaseModel):
+    """學習統計"""
+    total_sessions: int = Field(..., description="總會話數")
+    total_questions: int = Field(..., description="總題目數")
+    total_correct: int = Field(..., description="總答對數")
+    overall_accuracy: float = Field(..., description="整體正確率")
+    total_time_spent: int = Field(..., description="總耗時(秒)")
+    subject_stats: Dict[str, Dict[str, Any]] = Field(default_factory=dict, description="科目統計")
+    recent_performance: List[Dict[str, Any]] = Field(default_factory=list, description="近期表現")
+    
+    class Config:
+        schema_extra = {
+            "example": {
+                "total_sessions": 25,
+                "total_questions": 250,
+                "total_correct": 200,
+                "overall_accuracy": 80.0,
+                "total_time_spent": 45000,
+                "subject_stats": {
+                    "數學": {"sessions": 10, "accuracy": 85.0, "avg_score": 87.5},
+                    "英文": {"sessions": 8, "accuracy": 75.0, "avg_score": 78.0}
+                },
+                "recent_performance": []
+            }
+        }
+
+
+class SessionDetailResponse(BaseModel):
+    """會話詳細響應"""
+    session: LearningSessionSummary = Field(..., description="會話基本資訊")
+    exercise_records: List[Dict[str, Any]] = Field(..., description="練習記錄詳情")
+    
+    class Config:
+        schema_extra = {
+            "example": {
+                "session": {},
+                "exercise_records": []
+            }
+        }

@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>前端整合測試</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+
+        .test-section {
+            margin: 20px 0;
+            padding: 15px;
+            border: 1px solid #ccc;
+        }
+
+        .success {
+            color: green;
+        }
+
+        .error {
+            color: red;
+        }
+
+        .info {
+            color: blue;
+        }
+
+        button {
+            padding: 10px 15px;
+            margin: 5px;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>前端整合測試</h1>
+
+    <div class="test-section">
+        <h3>1. 用戶登入測試</h3>
+        <button onclick="testLogin()">測試登入</button>
+        <div id="loginResult"></div>
+    </div>
+
+    <div class="test-section">
+        <h3>2. 模擬練習結果數據</h3>
+        <button onclick="setupMockExamResults()">設置模擬數據</button>
+        <div id="setupResult"></div>
+    </div>
+
+    <div class="test-section">
+        <h3>3. 測試 API 調用</h3>
+        <button onclick="testAPICall()">測試 API 調用</button>
+        <div id="apiResult"></div>
+    </div>
+
+    <div class="test-section">
+        <h3>4. 打開結果頁面</h3>
+        <button onclick="openResultPage()">打開 result.html</button>
+    </div>
+
+    <script>
+        // 1. 測試用戶登入
+        async function testLogin() {
+            const resultDiv = document.getElementById('loginResult');
+            resultDiv.innerHTML = '<div class="info">正在測試登入...</div>';
+
+            try {
+                const response = await fetch('/api/v1/auth/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        email: 'test02@test.com',
+                        password: 'P@ssw0rd'
+                    })
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    localStorage.setItem('auth_token', data.access_token);
+                    resultDiv.innerHTML = `
+                        <div class="success">✅ 登入成功！</div>
+                        <div>Token: ${data.access_token.substring(0, 50)}...</div>
+                    `;
+                } else {
+                    throw new Error(`登入失敗: ${response.status}`);
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `<div class="error">❌ 登入失敗: ${error.message}</div>`;
+            }
+        }
+
+        // 2. 設置模擬練習結果數據
+        function setupMockExamResults() {
+            const mockResults = {
+                score: 85,
+                correctAnswers: 8,
+                accuracy: 80,
+                timeSpent: 300,
+                detailedResults: [
+                    {
+                        questionId: 'mock_q_001',
+                        questionContent: '解方程式 3x + 5 = 14',
+                        questionText: '解方程式 3x + 5 = 14',
+                        options: ['x = 2', 'x = 3', 'x = 4', 'x = 5'],
+                        answerChoices: { A: 'x = 2', B: 'x = 3', C: 'x = 4', D: 'x = 5' },
+                        userAnswer: 'B',
+                        correctAnswer: 'B',
+                        isCorrect: true,
+                        score: 100,
+                        explanation: '移項得到 3x = 9，所以 x = 3',
+                        timeSpent: 45,
+                        subject: '數學',
+                        grade: '8A',
+                        chapter: '一元一次方程式',
+                        publisher: '南一',
+                        difficulty: 'normal',
+                        knowledgePoints: ['一元一次方程式', '移項運算'],
+                        questionTopic: '一元一次方程式解法'
+                    },
+                    {
+                        questionId: 'mock_q_002',
+                        questionContent: '計算 2 + 3 × 4',
+                        questionText: '計算 2 + 3 × 4',
+                        options: ['14', '20', '12', '16'],
+                        answerChoices: { A: '14', B: '20', C: '12', D: '16' },
+                        userAnswer: 'A',
+                        correctAnswer: 'A',
+                        isCorrect: true,
+                        score: 100,
+                        explanation: '先算乘法：3 × 4 = 12，再算加法：2 + 12 = 14',
+                        timeSpent: 30,
+                        subject: '數學',
+                        grade: '8A',
+                        chapter: '四則運算',
+                        publisher: '南一',
+                        difficulty: 'easy',
+                        knowledgePoints: ['四則運算', '運算順序'],
+                        questionTopic: '四則運算順序'
+                    }
+                ],
+                sessionData: {
+                    subject: '數學',
+                    grade: '8A',
+                    chapter: '綜合練習',
+                    publisher: '南一',
+                    difficulty: 'normal',
+                    sessionName: '前端整合測試會話',
+                    knowledgePoints: ['一元一次方程式', '四則運算']
+                },
+                questions: [
+                    {
+                        id: 'mock_q_001',
+                        content: '解方程式 3x + 5 = 14',
+                        choices: { A: 'x = 2', B: 'x = 3', C: 'x = 4', D: 'x = 5' },
+                        correctAnswer: 'B',
+                        explanation: '移項得到 3x = 9，所以 x = 3',
+                        chapter: '一元一次方程式',
+                        difficulty: 'normal',
+                        knowledgePoints: ['一元一次方程式', '移項運算'],
+                        topic: '一元一次方程式解法'
+                    },
+                    {
+                        id: 'mock_q_002',
+                        content: '計算 2 + 3 × 4',
+                        choices: { A: '14', B: '20', C: '12', D: '16' },
+                        correctAnswer: 'A',
+                        explanation: '先算乘法：3 × 4 = 12，再算加法：2 + 12 = 14',
+                        chapter: '四則運算',
+                        difficulty: 'easy',
+                        knowledgePoints: ['四則運算', '運算順序'],
+                        topic: '四則運算順序'
+                    }
+                ],
+                userAnswers: [
+                    { answer: 'B', isCorrect: true, timeSpent: 45 },
+                    { answer: 'A', isCorrect: true, timeSpent: 30 }
+                ]
+            };
+
+            sessionStorage.setItem('examResults', JSON.stringify(mockResults));
+
+            const resultDiv = document.getElementById('setupResult');
+            resultDiv.innerHTML = `
+                <div class="success">✅ 模擬數據設置成功！</div>
+                <div>設置了 ${mockResults.detailedResults.length} 題練習結果</div>
+                <div>總分: ${mockResults.score}，正確率: ${mockResults.accuracy}%</div>
+            `;
+        }
+
+        // 3. 測試 API 調用
+        async function testAPICall() {
+            const resultDiv = document.getElementById('apiResult');
+            resultDiv.innerHTML = '<div class="info">正在測試 API 調用...</div>';
+
+            try {
+                const token = localStorage.getItem('auth_token');
+                if (!token) {
+                    throw new Error('請先登入');
+                }
+
+                const examResults = JSON.parse(sessionStorage.getItem('examResults'));
+                if (!examResults) {
+                    throw new Error('請先設置模擬數據');
+                }
+
+                // 轉換數據格式
+                const requestData = {
+                    session_name: examResults.sessionData.sessionName,
+                    subject: examResults.sessionData.subject,
+                    grade: examResults.sessionData.grade,
+                    chapter: examResults.sessionData.chapter,
+                    publisher: examResults.sessionData.publisher,
+                    difficulty: examResults.sessionData.difficulty,
+                    knowledge_points: examResults.sessionData.knowledgePoints,
+                    exercise_results: examResults.detailedResults.map((result, index) => ({
+                        question_id: result.questionId,
+                        subject: result.subject,
+                        grade: result.grade,
+                        chapter: result.chapter,
+                        publisher: result.publisher,
+                        knowledge_points: result.knowledgePoints,
+                        question_content: result.questionContent,
+                        answer_choices: result.answerChoices,
+                        difficulty: result.difficulty,
+                        question_topic: result.questionTopic,
+                        user_answer: result.userAnswer,
+                        correct_answer: result.correctAnswer,
+                        is_correct: result.isCorrect,
+                        score: result.score,
+                        explanation: result.explanation,
+                        time_spent: result.timeSpent
+                    })),
+                    total_time_spent: examResults.timeSpent,
+                    session_metadata: {
+                        source: 'frontend_test',
+                        device: 'desktop'
+                    }
+                };
+
+                const response = await fetch('/api/v1/learning/exercises/complete', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify(requestData)
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    resultDiv.innerHTML = `
+                        <div class="success">✅ API 調用成功！</div>
+                        <div>會話ID: ${data.session_id}</div>
+                        <div>總題數: ${data.total_questions}</div>
+                        <div>答對數: ${data.correct_count}</div>
+                        <div>總分: ${data.total_score}</div>
+                        <div>正確率: ${data.accuracy_rate}%</div>
+                    `;
+
+                    // 保存會話ID到sessionStorage
+                    sessionStorage.setItem('savedSessionId', data.session_id);
+                } else {
+                    const errorText = await response.text();
+                    throw new Error(`API 調用失敗: ${response.status} - ${errorText}`);
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `<div class="error">❌ API 調用失敗: ${error.message}</div>`;
+            }
+        }
+
+        // 4. 打開結果頁面
+        function openResultPage() {
+            window.open('/pages/result.html', '_blank');
+        }
+    </script>
+</body>
+
+</html>

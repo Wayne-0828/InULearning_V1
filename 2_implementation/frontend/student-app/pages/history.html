@@ -1,12 +1,13 @@
 <!DOCTYPE html>
 <html lang="zh-TW">
+
 <head>
-    <meta charset="utf-8"/>
-    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
     <title>學習歷程 - InU Learning【因你而學】</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet"/>
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
     <link rel="stylesheet" href="../css/main.css">
     <style>
         body {
@@ -14,13 +15,15 @@
         }
     </style>
 </head>
+
 <body class="bg-gray-100">
     <div class="flex h-screen bg-white">
         <!-- 側邊欄 -->
         <aside class="w-64 bg-blue-800 text-white flex flex-col">
             <a class="block" href="../index.html">
                 <div class="flex items-center justify-center p-6 hover:bg-blue-700">
-                    <img alt="InU Learning Logo" class="w-24 h-24 rounded-full" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBkUkYI-c0qBm9BcHamuWBs9ebu6mgGni1SlXL6giHvgu2WnHxHaQYkRoAlzI_OZ8yNf6Rn90d73q13vLeMoBfFP0mQHcxlf2YHE9__XhpOUl-OvECBnRad91AKcE4dKkTJtEoAm_alktSTzu_Aw9Fah_2IQ6YeqBALwAqrLNP2oghwOkLSyBMdfpOrW24nKk3dnl3z6piT9-S0cISDfJ5rhAlBYvIzoAhypgUHvJCzxlSG9ag8QMkltK1Hu_rX4jqdQgGuOD2JLzo"/>
+                    <img alt="InU Learning Logo" class="w-24 h-24 rounded-full"
+                        src="https://lh3.googleusercontent.com/aida-public/AB6AXuBkUkYI-c0qBm9BcHamuWBs9ebu6mgGni1SlXL6giHvgu2WnHxHaQYkRoAlzI_OZ8yNf6Rn90d73q13vLeMoBfFP0mQHcxlf2YHE9__XhpOUl-OvECBnRad91AKcE4dKkTJtEoAm_alktSTzu_Aw9Fah_2IQ6YeqBALwAqrLNP2oghwOkLSyBMdfpOrW24nKk3dnl3z6piT9-S0cISDfJ5rhAlBYvIzoAhypgUHvJCzxlSG9ag8QMkltK1Hu_rX4jqdQgGuOD2JLzo" />
                 </div>
                 <div class="px-6 pb-4 hover:bg-blue-700">
                     <h1 class="text-xl font-bold text-center">InU Learning</h1>
@@ -50,7 +53,8 @@
                 </a>
             </nav>
             <div class="p-4 border-t border-blue-700">
-                <button id="logoutBtn" class="w-full flex items-center px-4 py-2 text-gray-100 hover:bg-blue-700 rounded-lg">
+                <button id="logoutBtn"
+                    class="w-full flex items-center px-4 py-2 text-gray-100 hover:bg-blue-700 rounded-lg">
                     <span class="material-icons">logout</span>
                     <span class="ml-3">登出</span>
                 </button>
@@ -71,7 +75,9 @@
                                 <span class="material-icons">search</span>
                             </button>
                         </span>
-                        <input autocomplete="off" class="py-2 text-sm text-gray-700 bg-gray-200 rounded-md pl-10 focus:outline-none focus:bg-white focus:text-gray-900 w-full" name="q" placeholder="搜尋練習記錄..." type="search"/>
+                        <input autocomplete="off"
+                            class="py-2 text-sm text-gray-700 bg-gray-200 rounded-md pl-10 focus:outline-none focus:bg-white focus:text-gray-900 w-full"
+                            name="q" placeholder="搜尋練習記錄..." type="search" />
                     </div>
                 </div>
                 <div class="flex items-center space-x-4">
@@ -80,8 +86,10 @@
                         <span id="userName" class="text-sm font-medium text-blue-600"></span>
                     </div>
                     <div id="authButtons">
-                        <a class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors" href="login.html">登入</a>
-                        <a class="bg-gray-200 text-gray-800 px-4 py-2 rounded-lg hover:bg-gray-300 transition-colors" href="register.html">註冊</a>
+                        <a class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors"
+                            href="login.html">登入</a>
+                        <a class="bg-gray-200 text-gray-800 px-4 py-2 rounded-lg hover:bg-gray-300 transition-colors"
+                            href="register.html">註冊</a>
                     </div>
                 </div>
             </header>
@@ -97,10 +105,11 @@
 
                     <!-- 篩選器 -->
                     <div class="bg-white p-6 rounded-lg shadow-md mb-8">
-                        <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                        <div class="grid grid-cols-1 md:grid-cols-5 gap-4">
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-2">科目</label>
-                                <select id="subjectFilter" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                                <select id="subjectFilter"
+                                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500">
                                     <option value="">全部科目</option>
                                     <option value="國文">國文</option>
                                     <option value="英文">英文</option>
@@ -112,9 +121,23 @@
                                 </select>
                             </div>
                             <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">版本</label>
-                                <select id="editionFilter" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500">
-                                    <option value="">全部版本</option>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">年級</label>
+                                <select id="gradeFilter"
+                                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                                    <option value="">全部年級</option>
+                                    <option value="7A">七年級上學期</option>
+                                    <option value="7B">七年級下學期</option>
+                                    <option value="8A">八年級上學期</option>
+                                    <option value="8B">八年級下學期</option>
+                                    <option value="9A">九年級上學期</option>
+                                    <option value="9B">九年級下學期</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">出版社</label>
+                                <select id="editionFilter"
+                                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                                    <option value="">全部出版社</option>
                                     <option value="南一">南一</option>
                                     <option value="翰林">翰林</option>
                                     <option value="康軒">康軒</option>
@@ -122,19 +145,42 @@
                             </div>
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-2">日期範圍</label>
-                                <select id="dateFilter" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                                <select id="dateFilter"
+                                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500">
                                     <option value="7">最近7天</option>
-                                    <option value="30">最近30天</option>
+                                    <option value="30" selected>最近30天</option>
                                     <option value="90">最近3個月</option>
                                     <option value="365">最近一年</option>
                                     <option value="all">全部時間</option>
                                 </select>
                             </div>
                             <div class="flex items-end">
-                                <button id="applyFilter" class="w-full bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition-colors">
+                                <button id="applyFilter"
+                                    class="w-full bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition-colors flex items-center justify-center">
+                                    <span class="material-icons mr-1 text-sm">filter_list</span>
                                     套用篩選
                                 </button>
                             </div>
+                        </div>
+                        <!-- 快速篩選標籤 -->
+                        <div class="mt-4 flex flex-wrap gap-2" id="quickFilters">
+                            <button
+                                class="px-3 py-1 text-sm bg-gray-100 text-gray-700 rounded-full hover:bg-gray-200 transition-colors"
+                                onclick="historyManager.quickFilter('subject', '數學')">數學</button>
+                            <button
+                                class="px-3 py-1 text-sm bg-gray-100 text-gray-700 rounded-full hover:bg-gray-200 transition-colors"
+                                onclick="historyManager.quickFilter('subject', '英文')">英文</button>
+                            <button
+                                class="px-3 py-1 text-sm bg-gray-100 text-gray-700 rounded-full hover:bg-gray-200 transition-colors"
+                                onclick="historyManager.quickFilter('subject', '國文')">國文</button>
+                            <button
+                                class="px-3 py-1 text-sm bg-gray-100 text-gray-700 rounded-full hover:bg-gray-200 transition-colors"
+                                onclick="historyManager.quickFilter('dateRange', '7')">本週</button>
+                            <button
+                                class="px-3 py-1 text-sm bg-gray-100 text-gray-700 rounded-full hover:bg-gray-200 transition-colors"
+                                onclick="historyManager.clearFilters()">
+                                <span class="material-icons text-sm mr-1">clear</span>清除篩選
+                            </button>
                         </div>
                     </div>
 
@@ -201,21 +247,25 @@
                                 載入練習記錄中...
                             </div>
                         </div>
-                        
+
                         <!-- 分頁控制 -->
-                        <div id="pagination" class="px-6 py-4 border-t border-gray-200 flex items-center justify-between">
+                        <div id="pagination"
+                            class="px-6 py-4 border-t border-gray-200 flex items-center justify-between">
                             <div class="flex items-center space-x-2">
-                                <button id="prevPage" class="px-3 py-2 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed">
+                                <button id="prevPage"
+                                    class="px-3 py-2 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed">
                                     上一頁
                                 </button>
                                 <span id="pageInfo" class="text-sm text-gray-700">第 1 頁，共 1 頁</span>
-                                <button id="nextPage" class="px-3 py-2 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed">
+                                <button id="nextPage"
+                                    class="px-3 py-2 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed">
                                     下一頁
                                 </button>
                             </div>
                             <div class="flex items-center space-x-2">
                                 <span class="text-sm text-gray-700">每頁顯示：</span>
-                                <select id="pageSize" class="px-3 py-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                                <select id="pageSize"
+                                    class="px-3 py-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500">
                                     <option value="10">10 筆</option>
                                     <option value="20">20 筆</option>
                                     <option value="50">50 筆</option>
@@ -232,4 +282,5 @@
     <script src="../js/api/learning.js"></script>
     <script src="../js/pages/history.js"></script>
 </body>
-</html> 
+
+</html>

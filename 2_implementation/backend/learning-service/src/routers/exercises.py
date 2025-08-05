@@ -11,7 +11,8 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from ..models.schemas import (
     ExerciseParams, Answer, SubmissionResult, 
-    ExerciseResponse, SessionStatus
+    ExerciseResponse, SessionStatus,
+    CompleteExerciseRequest, CompleteExerciseResponse
 )
 from ..services.exercise_service import ExerciseService
 from ..utils.database import get_db_session
@@ -191,4 +192,25 @@ async def cancel_session(
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="取消會話失敗"
+        )
+
+
+@router.post("/complete", response_model=CompleteExerciseResponse)
+async def complete_exercise(
+    request: CompleteExerciseRequest,
+    current_user = Depends(get_current_user),
+    db_session: AsyncSession = Depends(get_db_session)
+):
+    """完成練習並提交結果（重定向到新的學習歷程API）"""
+    
+    try:
+        # 重定向到新的學習歷程API
+        from ..routers.learning_history import complete_exercise as complete_exercise_impl
+        return await complete_exercise_impl(request, current_user, db_session)
+        
+    except Exception as e:
+        logger.error(f"Failed to complete exercise: {e}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="完成練習失敗"
         ) 

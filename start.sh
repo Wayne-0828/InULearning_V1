@@ -515,19 +515,36 @@ initialize_test_data() {
     
     if [ "$user_count" -gt "5" ]; then
         log_success "測試資料已存在 ($user_count 個用戶)"
-        return
+    else
+        # 執行測試資料初始化
+        if [ -f "init-scripts/init-test-data.sql" ]; then
+            log_info "執行測試資料初始化..."
+            $DOCKER_COMPOSE_CMD exec -T postgres psql -U aipe-tester -d inulearning < init-scripts/init-test-data.sql 2>/dev/null || {
+                log_warning "測試資料初始化失敗，使用基本用戶創建"
+                create_basic_users
+            }
+        else
+            log_info "創建基本測試用戶..."
+            create_basic_users
+        fi
     fi
     
-    # 執行測試資料初始化
-    if [ -f "init-scripts/init-test-data.sql" ]; then
-        log_info "執行測試資料初始化..."
-        $DOCKER_COMPOSE_CMD exec -T postgres psql -U aipe-tester -d inulearning < init-scripts/init-test-data.sql 2>/dev/null || {
-            log_warning "測試資料初始化失敗，使用基本用戶創建"
-            create_basic_users
-        }
+    # 檢查知識點數據
+    local knowledge_count=$($DOCKER_COMPOSE_CMD exec -T postgres psql -U aipe-tester -d inulearning -t -c "SELECT COUNT(*) FROM knowledge_points_master;" 2>/dev/null | tr -d ' \n' || echo "0")
+    
+    if [ "$knowledge_count" -gt "100" ]; then
+        log_success "知識點數據已存在 ($knowledge_count 個知識點)"
     else
-        log_info "創建基本測試用戶..."
-        create_basic_users
+        log_info "初始化知識點數據..."
+        if [ -f "2_implementation/database/seeds/postgresql/knowledge_points_seed.sql" ]; then
+            $DOCKER_COMPOSE_CMD exec -T postgres psql -U aipe-tester -d inulearning < 2_implementation/database/seeds/postgresql/knowledge_points_seed.sql 2>/dev/null || {
+                log_warning "知識點數據初始化失敗"
+            }
+            local new_knowledge_count=$($DOCKER_COMPOSE_CMD exec -T postgres psql -U aipe-tester -d inulearning -t -c "SELECT COUNT(*) FROM knowledge_points_master;" 2>/dev/null | tr -d ' \n' || echo "0")
+            log_success "知識點數據初始化完成 ($new_knowledge_count 個知識點)"
+        else
+            log_warning "找不到知識點種子數據文件"
+        fi
     fi
     
     log_success "測試資料初始化完成"
@@ -591,9 +608,10 @@ test_connectivity() {
         "http://localhost:8081|管理員端前端"
         "http://localhost:8082|家長端前端"
         "http://localhost:8083|教師端前端"
-        "http://localhost:8001/health|認證服務"
-        "http://localhost:8002/health|題庫服務"
-        "http://localhost:8003/health|學習服務"
+        "http://localhost:8001/health|認證服務健康檢查"
+        "http://localhost:8002/health|題庫服務健康檢查"
+        "http://localhost:8003/health|學習服務健康檢查"
+        "http://localhost/|Nginx代理服務"
     )
     
     local failed_endpoints=()

@@ -14,16 +14,19 @@ class ResultPage {
         try {
             // 從 sessionStorage 載入考試結果
             this.loadExamResults();
-            
+
             // 檢查認證狀態
             this.checkAuthStatus();
-            
+
             // 顯示結果
             this.displayResults();
-            
+
             // 綁定事件
             this.bindEvents();
-            
+
+            // 自動保存練習結果到數據庫
+            await this.saveResultsToDatabase();
+
         } catch (error) {
             console.error('初始化結果頁面失敗:', error);
             this.showError('載入結果失敗，請重新進入');
@@ -36,9 +39,25 @@ class ResultPage {
     loadExamResults() {
         const resultsData = sessionStorage.getItem('examResults');
         if (!resultsData) {
-            throw new Error('找不到考試結果數據');
+            console.warn('找不到考試結果數據，使用預設數據');
+            // 創建預設的測試數據
+            this.examResults = {
+                score: 0,
+                correctAnswers: 0,
+                accuracy: 0,
+                timeSpent: 0,
+                detailedResults: [],
+                sessionData: {
+                    subject: '未知',
+                    grade: '8A',
+                    chapter: '未知',
+                    publisher: '南一',
+                    sessionName: '測試會話'
+                }
+            };
+            return;
         }
-        
+
         this.examResults = JSON.parse(resultsData);
         console.log('載入考試結果:', this.examResults);
 
@@ -58,7 +77,7 @@ class ResultPage {
             console.warn('authManager 未定義，跳過認證檢查');
             return;
         }
-        
+
         // 更新認證狀態 UI
         if (typeof authManager.updateAuthUI === 'function') {
             authManager.updateAuthUI();
@@ -71,16 +90,16 @@ class ResultPage {
     displayResults() {
         // 顯示總體分數
         this.displayOverallScore();
-        
+
         // 創建題目導航
         this.createQuestionNavigation();
-        
+
         // 顯示第一題詳解
         this.displayQuestionDetail(0);
-        
+
         // 顯示時間統計
         this.displayTimeStats();
-        
+
         // 初始 MathJax 渲染
         this.renderMath();
     }
@@ -97,16 +116,16 @@ class ResultPage {
         if (totalScoreElement) {
             totalScoreElement.textContent = this.examResults.score || 0;
         }
-        
+
         if (correctCountElement) {
             correctCountElement.textContent = this.examResults.correctAnswers || 0;
         }
-        
+
         if (accuracyRateElement) {
             const accuracy = this.examResults.accuracy || this.examResults.score || 0;
             accuracyRateElement.textContent = `${accuracy}%`;
         }
-        
+
         if (timeSpentElement && this.examResults.timeSpent) {
             const minutes = Math.floor(this.examResults.timeSpent / 60);
             const seconds = this.examResults.timeSpent % 60;
@@ -124,17 +143,16 @@ class ResultPage {
         }
 
         questionNav.innerHTML = '';
-        
+
         this.examResults.detailedResults.forEach((result, index) => {
             const navButton = document.createElement('button');
-            navButton.className = `w-10 h-10 rounded-full border-2 text-sm font-medium transition-colors ${
-                result.isCorrect 
-                    ? 'bg-green-100 border-green-300 text-green-800 hover:bg-green-200' 
-                    : 'bg-red-100 border-red-300 text-red-800 hover:bg-red-200'
-            }`;
+            navButton.className = `w-10 h-10 rounded-full border-2 text-sm font-medium transition-colors ${result.isCorrect
+                ? 'bg-green-100 border-green-300 text-green-800 hover:bg-green-200'
+                : 'bg-red-100 border-red-300 text-red-800 hover:bg-red-200'
+                }`;
             navButton.textContent = index + 1;
             navButton.addEventListener('click', () => this.displayQuestionDetail(index));
-            
+
             questionNav.appendChild(navButton);
         });
     }
@@ -168,55 +186,74 @@ class ResultPage {
             questionContent.innerHTML = `
                 <div class="flex items-center justify-between mb-4">
                     <h3 class="text-xl font-bold">第 ${index + 1} 題</h3>
-                    <span class="px-3 py-1 rounded-full text-sm font-medium ${
-                        result.isCorrect 
-                            ? 'bg-green-100 text-green-800' 
-                            : 'bg-red-100 text-red-800'
-                    }">
+                    <span class="px-3 py-1 rounded-full text-sm font-medium ${result.isCorrect
+                    ? 'bg-green-100 text-green-800'
+                    : 'bg-red-100 text-red-800'
+                }">
                         ${result.isCorrect ? '✓ 正確' : '✗ 錯誤'}
                     </span>
                 </div>
                 ${imageHtml}
-                <p class="text-lg text-gray-800">${result.questionText}</p>
+                <p class="text-lg text-gray-800">${result.questionContent || result.questionText || '題目內容載入中...'}</p>
             `;
         }
 
         // 更新選項
         const optionsContainer = document.getElementById('currentOptions');
-        if (optionsContainer && result.options) {
+        if (optionsContainer) {
             optionsContainer.innerHTML = '';
-            
-            result.options.forEach((option, optionIndex) => {
-                const optionElement = document.createElement('div');
-                let optionClass = 'flex items-center p-4 border rounded-lg mb-3';
-                
-                if (optionIndex === result.correctAnswer) {
-                    optionClass += ' bg-green-50 border-green-300';
-                } else if (optionIndex === result.userAnswer && !result.isCorrect) {
-                    optionClass += ' bg-red-50 border-red-300';
-                } else {
-                    optionClass += ' bg-gray-50 border-gray-200';
+
+            // 處理選項數據 - 支持數組格式和對象格式
+            let options = result.options || [];
+            let answerChoices = result.answerChoices;
+
+            // 如果沒有options但有answerChoices，轉換格式
+            if ((!options || options.length === 0) && answerChoices) {
+                if (Array.isArray(answerChoices)) {
+                    options = answerChoices;
+                } else if (typeof answerChoices === 'object') {
+                    // 將對象格式轉為數組 {A: "選項1", B: "選項2"} -> ["選項1", "選項2"]
+                    options = Object.keys(answerChoices).sort().map(key => answerChoices[key]);
                 }
-                
-                optionElement.className = optionClass;
-                
-                const optionLetter = String.fromCharCode(65 + optionIndex);
-                let statusIcon = '';
-                
-                if (optionIndex === result.correctAnswer) {
-                    statusIcon = '<span class="ml-2 text-green-600 font-medium">(正確答案)</span>';
-                } else if (optionIndex === result.userAnswer && !result.isCorrect) {
-                    statusIcon = '<span class="ml-2 text-red-600 font-medium">(您的選擇)</span>';
-                }
-                
-                optionElement.innerHTML = `
-                    <span class="font-medium text-gray-700 mr-3">${optionLetter}.</span>
-                    <span class="flex-1">${option}</span>
-                    ${statusIcon}
-                `;
-                
-                optionsContainer.appendChild(optionElement);
-            });
+            }
+
+            if (options && options.length > 0) {
+                options.forEach((option, optionIndex) => {
+                    const optionElement = document.createElement('div');
+                    let optionClass = 'flex items-center p-4 border rounded-lg mb-3';
+
+                    // 處理答案比較 - 支持數字索引和字母索引
+                    const correctAnswerIndex = this.getAnswerIndex(result.correctAnswer);
+                    const userAnswerIndex = this.getAnswerIndex(result.userAnswer);
+
+                    if (optionIndex === correctAnswerIndex) {
+                        optionClass += ' bg-green-50 border-green-300';
+                    } else if (optionIndex === userAnswerIndex && !result.isCorrect) {
+                        optionClass += ' bg-red-50 border-red-300';
+                    } else {
+                        optionClass += ' bg-gray-50 border-gray-200';
+                    }
+
+                    optionElement.className = optionClass;
+
+                    const optionLetter = String.fromCharCode(65 + optionIndex);
+                    let statusIcon = '';
+
+                    if (optionIndex === correctAnswerIndex) {
+                        statusIcon = '<span class="ml-2 text-green-600 font-medium">(正確答案)</span>';
+                    } else if (optionIndex === userAnswerIndex && !result.isCorrect) {
+                        statusIcon = '<span class="ml-2 text-red-600 font-medium">(您的選擇)</span>';
+                    }
+
+                    optionElement.innerHTML = `
+                        <span class="font-medium text-gray-700 mr-3">${optionLetter}.</span>
+                        <span class="flex-1">${option}</span>
+                        ${statusIcon}
+                    `;
+
+                    optionsContainer.appendChild(optionElement);
+                });
+            }
         }
 
         // 更新詳解
@@ -238,10 +275,10 @@ class ResultPage {
 
         // 更新導航按鈕狀態
         this.updateNavigationButtons();
-        
+
         // 更新題目導航高亮
         this.updateQuestionNavigation();
-        
+
         // 觸發 MathJax 重新渲染
         this.renderMath();
     }
@@ -252,12 +289,12 @@ class ResultPage {
     updateNavigationButtons() {
         const prevBtn = document.getElementById('prevQuestionBtn');
         const nextBtn = document.getElementById('nextQuestionBtn');
-        
+
         if (prevBtn) {
             prevBtn.disabled = this.currentDetailIndex === 0;
             prevBtn.classList.toggle('opacity-50', this.currentDetailIndex === 0);
         }
-        
+
         if (nextBtn) {
             const isLast = this.currentDetailIndex === this.examResults.detailedResults.length - 1;
             nextBtn.disabled = isLast;
@@ -350,6 +387,237 @@ class ResultPage {
                 console.error('Result頁面 MathJax 渲染失敗:', err);
             });
         }
+    }
+
+    /**
+     * 保存練習結果到數據庫
+     */
+    async saveResultsToDatabase() {
+        try {
+            // 檢查是否是從歷程記錄查看（已經保存過的記錄）
+            if (this.examResults.sessionData && this.examResults.sessionData.sessionId) {
+                console.log('這是已保存的歷程記錄，跳過重複保存');
+                // 更新頁面顯示的會話ID
+                const sessionIdElement = document.getElementById('sessionId');
+                if (sessionIdElement) {
+                    sessionIdElement.textContent = this.examResults.sessionData.sessionId.substring(0, 8).toUpperCase();
+                }
+                return;
+            }
+
+            // 檢查是否已經保存過（避免重複保存）
+            const savedSessionId = sessionStorage.getItem('savedSessionId');
+            if (savedSessionId) {
+                console.log('練習結果已保存，會話ID:', savedSessionId);
+                return;
+            }
+
+            // 檢查用戶是否已登入
+            const token = localStorage.getItem('auth_token');
+            if (!token) {
+                console.log('用戶未登入，跳過保存練習結果');
+                this.showWarningMessage('需要登入才能保存練習記錄');
+                return;
+            }
+
+            // 檢查是否有練習結果數據
+            if (!this.examResults || !this.examResults.detailedResults) {
+                console.log('沒有練習結果數據，跳過保存');
+                this.showWarningMessage('沒有練習結果數據可保存');
+                return;
+            }
+
+            // 如果沒有詳細結果，也跳過保存
+            if (this.examResults.detailedResults.length === 0) {
+                console.log('詳細結果為空，跳過保存');
+                this.showWarningMessage('沒有詳細的練習結果可保存');
+                return;
+            }
+
+            console.log('開始保存練習結果到數據庫...');
+
+            // 轉換數據格式為後端API格式
+            const requestData = this.convertToAPIFormat();
+
+            // 調用API保存結果
+            const result = await learningAPI.submitExerciseResult(requestData);
+
+            if (result.success) {
+                console.log('練習結果保存成功:', result.data);
+                // 保存會話ID，避免重複保存
+                sessionStorage.setItem('savedSessionId', result.data.session_id);
+
+                // 更新頁面顯示的會話ID
+                const sessionIdElement = document.getElementById('sessionId');
+                if (sessionIdElement) {
+                    sessionIdElement.textContent = result.data.session_id.substring(0, 8).toUpperCase();
+                }
+
+                // 顯示保存成功提示
+                this.showSuccessMessage('練習結果已保存');
+            } else {
+                throw new Error(result.error || '保存失敗');
+            }
+
+        } catch (error) {
+            console.error('保存練習結果失敗:', error);
+
+            // 根據錯誤類型決定是否顯示給用戶
+            if (error.message.includes('401') || error.message.includes('Unauthorized')) {
+                this.showWarningMessage('需要登入才能保存練習記錄');
+            } else if (error.message.includes('403') || error.message.includes('Forbidden')) {
+                this.showWarningMessage('沒有權限保存練習記錄');
+            } else if (error.message.includes('500') || error.message.includes('Internal Server Error')) {
+                this.showWarningMessage('服務器暫時無法保存記錄，但不影響查看結果');
+            } else {
+                // 網絡錯誤或其他錯誤，不影響用戶查看結果
+                console.warn('保存練習結果時發生錯誤，但不影響結果查看:', error.message);
+            }
+        }
+    }
+
+    /**
+     * 轉換數據格式為後端API格式
+     */
+    convertToAPIFormat() {
+        const sessionData = this.examResults.sessionData || {};
+
+        // 構建練習結果列表
+        const exerciseResults = this.examResults.detailedResults.map((result, index) => {
+            // 從題目數據中獲取更多信息
+            const question = this.examResults.questions ? this.examResults.questions[index] : {};
+            const userAnswer = this.examResults.userAnswers ? this.examResults.userAnswers[index] : {};
+
+            return {
+                question_id: result.questionId || question.id || `q_${index}`,
+                subject: sessionData.subject || '未分類',
+                grade: sessionData.grade || '8A',
+                chapter: sessionData.chapter || result.chapter || question.chapter,
+                publisher: sessionData.publisher || '南一',
+                knowledge_points: result.knowledgePoints || question.knowledgePoints || [],
+                question_content: result.questionContent || question.content || result.questionText || '',
+                answer_choices: result.answerChoices || question.choices || this.convertOptionsToChoices(result.options),
+                difficulty: result.difficulty || question.difficulty || sessionData.difficulty || 'normal',
+                question_topic: result.questionTopic || question.topic || result.topic,
+                user_answer: result.userAnswer !== undefined ? String(result.userAnswer) : (userAnswer.answer !== undefined ? String(userAnswer.answer) : ''),
+                correct_answer: result.correctAnswer !== undefined ? String(result.correctAnswer) : (question.correctAnswer !== undefined ? String(question.correctAnswer) : ''),
+                is_correct: result.isCorrect !== undefined ? result.isCorrect : (userAnswer.isCorrect !== undefined ? userAnswer.isCorrect : false),
+                score: result.score !== undefined ? result.score : (result.isCorrect ? 100 : 0),
+                explanation: result.explanation || question.explanation || '暫無解析',
+                time_spent: result.timeSpent || userAnswer.timeSpent || null
+            };
+        });
+
+        // 構建完整請求數據
+        const requestData = {
+            session_name: sessionData.sessionName || `${sessionData.subject || '練習'}測驗 - ${new Date().toLocaleDateString()}`,
+            subject: sessionData.subject || '未分類',
+            grade: sessionData.grade || '8A',
+            chapter: sessionData.chapter,
+            publisher: sessionData.publisher || '南一',
+            difficulty: sessionData.difficulty || 'normal',
+            knowledge_points: sessionData.knowledgePoints || [],
+            exercise_results: exerciseResults,
+            total_time_spent: this.examResults.timeSpent || 0,
+            session_metadata: {
+                source: 'web',
+                device: 'desktop',
+                original_session_data: sessionData,
+                submitted_at: new Date().toISOString()
+            }
+        };
+
+        console.log('轉換後的API請求數據:', requestData);
+        return requestData;
+    }
+
+    /**
+     * 轉換選項數組為選項對象
+     */
+    convertOptionsToChoices(options) {
+        if (!options || !Array.isArray(options)) {
+            return null;
+        }
+
+        const choices = {};
+        options.forEach((option, index) => {
+            const letter = String.fromCharCode(65 + index); // A, B, C, D
+            choices[letter] = option;
+        });
+
+        return choices;
+    }
+
+    /**
+     * 獲取答案索引 - 支持字母格式(A,B,C,D)和數字格式(0,1,2,3)
+     */
+    getAnswerIndex(answer) {
+        if (answer === null || answer === undefined) {
+            return -1;
+        }
+
+        const answerStr = String(answer).toUpperCase();
+
+        // 如果是字母格式 (A, B, C, D)
+        if (answerStr.match(/^[A-Z]$/)) {
+            return answerStr.charCodeAt(0) - 65; // A=0, B=1, C=2, D=3
+        }
+
+        // 如果是數字格式
+        const answerNum = parseInt(answerStr);
+        if (!isNaN(answerNum)) {
+            return answerNum;
+        }
+
+        return -1;
+    }
+
+    /**
+     * 顯示成功訊息
+     */
+    showSuccessMessage(message) {
+        this.showToast(message, 'success');
+    }
+
+    /**
+     * 顯示警告訊息
+     */
+    showWarningMessage(message) {
+        this.showToast(message, 'warning');
+    }
+
+    /**
+     * 顯示通用提示訊息
+     */
+    showToast(message, type = 'info') {
+        const colors = {
+            'success': 'bg-green-500',
+            'warning': 'bg-yellow-500',
+            'error': 'bg-red-500',
+            'info': 'bg-blue-500'
+        };
+
+        const toastElement = document.createElement('div');
+        toastElement.className = `fixed top-4 right-4 ${colors[type]} text-white px-6 py-3 rounded-lg shadow-lg z-50 transform transition-all duration-300 translate-x-full`;
+        toastElement.textContent = message;
+
+        document.body.appendChild(toastElement);
+
+        // 動畫顯示
+        setTimeout(() => {
+            toastElement.classList.remove('translate-x-full');
+        }, 100);
+
+        // 自動隱藏時間根據類型調整
+        const hideDelay = type === 'warning' ? 5000 : 3000;
+        setTimeout(() => {
+            toastElement.classList.add('translate-x-full');
+            setTimeout(() => {
+                if (toastElement.parentNode) {
+                    toastElement.parentNode.removeChild(toastElement);
+                }
+            }, 300);
+        }, hideDelay);
     }
 }
 

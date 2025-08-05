@@ -6,7 +6,10 @@ Learning Service Models Package
 
 from .base import *
 from .schemas import *
+from .user import *
 from .learning_session import *
+from .exercise_record import *
+from .user_learning_profile import *
 
 __all__ = [
     # Base
@@ -34,7 +37,10 @@ __all__ = [
     "PerformancePrediction",
     
     # Models
+    "User",
     "LearningSession",
-    "LearningRecord",
+    "LearningRecord", 
+    "ExerciseRecord",
+    "UserLearningProfile",
     "UserLearningStats"
 ]

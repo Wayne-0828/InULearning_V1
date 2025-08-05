@@ -10,6 +10,7 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
       - ./init-scripts/init-postgres.sql:/docker-entrypoint-initdb.d/01-init-postgres.sql
+      - ./2_implementation/database/seeds/postgresql/knowledge_points_seed.sql:/docker-entrypoint-initdb.d/02-knowledge-points-seed.sql
     ports:
       - "5432:5432"
     networks:
@@ -144,12 +145,18 @@ services:
       dockerfile: Dockerfile
     container_name: inulearning_learning_service
     environment:
-      - DATABASE_URL=postgresql+asyncpg://aipe-tester:aipe-tester@postgres:5432/inulearning
-      - MONGODB_URL=mongodb://aipe-tester:aipe-tester@mongodb:27017/inulearning?authSource=admin
-      - REDIS_URL=redis://redis:6379/0
-      - AUTH_SERVICE_URL=http://auth-service:8000
-      - QUESTION_BANK_SERVICE_URL=http://question-bank-service:8000
-      - CORS_ORIGINS=["http://localhost:3000","http://localhost:8080","http://localhost:8081","http://localhost:8082","http://localhost:8083"]
+      DATABASE_URL: postgresql+asyncpg://aipe-tester:aipe-tester@postgres:5432/inulearning
+      MONGODB_URL: mongodb://aipe-tester:aipe-tester@mongodb:27017/inulearning?authSource=admin
+      REDIS_URL: redis://redis:6379/0
+      AUTH_SERVICE_URL: http://auth-service:8000
+      QUESTION_BANK_SERVICE_URL: http://question-bank-service:8000
+      CORS_ORIGINS: '["http://localhost","http://localhost:3000","http://localhost:8080","http://localhost:8081","http://localhost:8082","http://localhost:8083"]'
+      SECRET_KEY: your-secret-key-change-in-production
+      ALGORITHM: HS256
+      JWT_SECRET_KEY: your-secret-key-change-in-production
+      JWT_ALGORITHM: HS256
+      DEBUG: "true"
+      ENVIRONMENT: development
     ports:
       - "8003:8000"
     depends_on:
