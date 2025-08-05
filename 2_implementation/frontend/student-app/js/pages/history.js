@@ -19,9 +19,14 @@ class HistoryManager {
     }
 
     init() {
+        console.log('HistoryManager 初始化開始');
+        console.log('learningAPI 狀態:', typeof learningAPI, learningAPI);
+
         this.bindEvents();
-        this.loadLearningRecords();
+        this.loadRecentRecords(); // 先載入最近5筆記錄
         this.loadStatistics();
+
+        console.log('HistoryManager 初始化完成');
     }
 
     bindEvents() {
@@ -63,9 +68,49 @@ class HistoryManager {
         }
     }
 
+    async loadRecentRecords() {
+        try {
+            this.showLoading();
+
+            // 確保 learningAPI 已初始化
+            if (typeof learningAPI === 'undefined' || !learningAPI) {
+                throw new Error('learningAPI 未初始化');
+            }
+
+            const result = await learningAPI.getRecentLearningRecords(5);
+
+            if (result.success && result.data) {
+                this.records = result.data.sessions || [];
+                this.totalRecords = result.data.total || 0;
+                this.displayRecords();
+                this.updatePagination();
+
+                // 顯示「最近5筆記錄」標題
+                this.showRecentRecordsHeader();
+            } else {
+                throw new Error(result.error || '載入最近學習記錄失敗');
+            }
+        } catch (error) {
+            console.error('載入最近學習記錄失敗:', error);
+            console.error('錯誤詳情:', error.stack);
+
+            // 顯示更詳細的錯誤信息
+            const errorMessage = error.message || '未知錯誤';
+            this.showError(`載入最近學習記錄失敗: ${errorMessage}`);
+            this.displayEmptyRecords();
+        } finally {
+            this.hideLoading();
+        }
+    }
+
     async loadLearningRecords() {
         try {
             this.showLoading();
+
+            // 確保 learningAPI 已初始化
+            if (typeof learningAPI === 'undefined' || !learningAPI) {
+                throw new Error('learningAPI 未初始化');
+            }
 
             const params = {
                 page: this.currentPage,
@@ -80,6 +125,9 @@ class HistoryManager {
                 this.totalRecords = result.data.total || 0;
                 this.displayRecords();
                 this.updatePagination();
+
+                // 隱藏「最近5筆記錄」標題
+                this.hideRecentRecordsHeader();
             } else {
                 throw new Error(result.error || '載入學習記錄失敗');
             }
@@ -94,6 +142,12 @@ class HistoryManager {
 
     async loadStatistics() {
         try {
+            // 確保 learningAPI 已初始化
+            if (typeof learningAPI === 'undefined' || !learningAPI) {
+                console.warn('learningAPI 未初始化，跳過統計載入');
+                return;
+            }
+
             const result = await learningAPI.getLearningStatistics();
 
             if (result.success && result.data) {
@@ -381,76 +435,9 @@ class HistoryManager {
 
     async viewRecordDetails(sessionId) {
         try {
-            // 顯示載入中
-            const loadingToast = this.showToast('載入詳細資料中...', 'info');
-
-            // 獲取會話詳細資料
-            const result = await learningAPI.getSessionDetail(sessionId);
-
-            if (!result.success || !result.data) {
-                throw new Error(result.error || '獲取詳細資料失敗');
-            }
-
-            const sessionDetail = result.data;
-            const session = sessionDetail.session;
-            const exerciseRecords = sessionDetail.exercise_records || [];
-
-            // 將記錄資料存儲到 sessionStorage 並跳轉到結果頁面
-            const resultData = {
-                score: Math.round(session.total_score || 0),
-                accuracy: Math.round(session.accuracy_rate || 0),
-                totalQuestions: session.question_count || 0,
-                correctAnswers: session.correct_count || 0,
-                wrongAnswers: (session.question_count || 0) - (session.correct_count || 0),
-                timeSpent: session.time_spent || 0,
-                submittedAt: session.end_time || session.start_time,
-                sessionData: {
-                    sessionId: session.session_id,
-                    sessionName: session.session_name,
-                    grade: session.grade,
-                    publisher: session.publisher,
-                    subject: session.subject,
-                    chapter: session.chapter,
-                    difficulty: session.difficulty,
-                    knowledgePoints: session.knowledge_points || []
-                },
-                detailedResults: exerciseRecords.map(record => ({
-                    questionId: record.question_id,
-                    questionContent: record.question_content,
-                    answerChoices: record.answer_choices,
-                    userAnswer: record.user_answer,
-                    correctAnswer: record.correct_answer,
-                    isCorrect: record.is_correct,
-                    score: record.score,
-                    explanation: record.explanation,
-                    timeSpent: record.time_spent,
-                    knowledgePoints: record.knowledge_points || [],
-                    difficulty: record.difficulty,
-                    questionTopic: record.question_topic
-                })),
-                questions: exerciseRecords.map(record => ({
-                    id: record.question_id,
-                    content: record.question_content,
-                    choices: record.answer_choices,
-                    correctAnswer: record.correct_answer,
-                    explanation: record.explanation,
-                    knowledgePoints: record.knowledge_points || [],
-                    difficulty: record.difficulty,
-                    topic: record.question_topic
-                })),
-                userAnswers: exerciseRecords.map(record => ({
-                    questionId: record.question_id,
-                    answer: record.user_answer,
-                    isCorrect: record.is_correct,
-                    timeSpent: record.time_spent
-                }))
-            };
-
-            // 隱藏載入提示
-            this.hideToast(loadingToast);
-
-            sessionStorage.setItem('examResults', JSON.stringify(resultData));
-            window.location.href = 'result.html';
+            // 直接跳轉到結果頁面並帶上 sessionId 參數
+            // result.js 會自動從 API 載入歷史數據
+            window.location.href = `result.html?sessionId=${sessionId}`;
 
         } catch (error) {
             console.error('查看記錄詳情失敗:', error);
@@ -568,14 +555,69 @@ class HistoryManager {
             }, 300);
         }
     }
+
+    showRecentRecordsHeader() {
+        // 在練習記錄列表上方添加「最近5筆記錄」標題
+        const sessionsList = document.getElementById('sessionsList');
+        if (sessionsList && sessionsList.parentNode) {
+            let header = document.getElementById('recentRecordsHeader');
+            if (!header) {
+                header = document.createElement('div');
+                header.id = 'recentRecordsHeader';
+                header.className = 'px-6 py-3 bg-blue-50 border-b border-blue-200';
+                header.innerHTML = `
+                    <div class="flex items-center justify-between">
+                        <h4 class="text-sm font-medium text-blue-800 flex items-center">
+                            <span class="material-icons text-sm mr-2">history</span>
+                            最近 5 筆練習記錄
+                        </h4>
+                        <button onclick="historyManager.loadLearningRecords()" class="text-sm text-blue-600 hover:text-blue-800">
+                            查看更多
+                        </button>
+                    </div>
+                `;
+                sessionsList.parentNode.insertBefore(header, sessionsList);
+            }
+            header.style.display = 'block';
+        }
+    }
+
+    hideRecentRecordsHeader() {
+        const header = document.getElementById('recentRecordsHeader');
+        if (header) {
+            header.style.display = 'none';
+        }
+    }
 }
 
 // 頁面載入完成後初始化
 document.addEventListener('DOMContentLoaded', () => {
-    // 確保authManager已初始化
-    if (typeof authManager !== 'undefined') {
-        authManager.init();
-    }
+    console.log('DOMContentLoaded 事件觸發');
 
-    window.historyManager = new HistoryManager();
+    // 等待一小段時間確保所有腳本都載入完成
+    setTimeout(() => {
+        console.log('開始初始化 HistoryManager');
+        console.log('authManager 狀態:', typeof authManager, authManager);
+        console.log('learningAPI 狀態:', typeof learningAPI, learningAPI);
+
+        // 確保authManager已初始化
+        if (typeof authManager !== 'undefined' && authManager) {
+            console.log('authManager 已載入，更新 UI');
+            try {
+                authManager.updateAuthUI();
+            } catch (error) {
+                console.error('更新認證 UI 失敗:', error);
+            }
+        } else {
+            console.error('authManager 未定義或為空');
+        }
+
+        // 創建 HistoryManager 實例
+        try {
+            window.historyManager = new HistoryManager();
+            console.log('HistoryManager 創建成功');
+        } catch (error) {
+            console.error('HistoryManager 創建失敗:', error);
+        }
+    }, 100); // 等待 100ms
 });

@@ -69,7 +69,7 @@ class AuthManager {
     parseToken(token) {
         const base64Url = token.split('.')[1];
         const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-        const jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
+        const jsonPayload = decodeURIComponent(atob(base64).split('').map(function (c) {
             return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
         }).join(''));
         return JSON.parse(jsonPayload);
@@ -120,7 +120,7 @@ class AuthManager {
      */
     handleApiError(error) {
         console.error('API 錯誤:', error);
-        
+
         if (error.status === 401) {
             // Token 過期或無效
             this.logout();
@@ -144,7 +144,7 @@ class AuthManager {
         if (errorElement) {
             errorElement.textContent = message;
             errorElement.classList.remove('hidden');
-            
+
             // 5秒後自動隱藏
             setTimeout(() => {
                 errorElement.classList.add('hidden');
@@ -160,7 +160,7 @@ class AuthManager {
         if (successElement) {
             successElement.textContent = message;
             successElement.classList.remove('hidden');
-            
+
             // 3秒後自動隱藏
             setTimeout(() => {
                 successElement.classList.add('hidden');
@@ -173,11 +173,11 @@ class AuthManager {
      */
     setLoading(isLoading, buttonElement, originalText) {
         if (buttonElement) {
-            const spinner = buttonElement.querySelector('.loading-spinner') || 
-                           buttonElement.querySelector('[id$="Spinner"]');
-            const text = buttonElement.querySelector('[id$="ButtonText"]') || 
-                        buttonElement.querySelector('span:not(.loading-spinner)');
-            
+            const spinner = buttonElement.querySelector('.loading-spinner') ||
+                buttonElement.querySelector('[id$="Spinner"]');
+            const text = buttonElement.querySelector('[id$="ButtonText"]') ||
+                buttonElement.querySelector('span:not(.loading-spinner)');
+
             if (isLoading) {
                 buttonElement.disabled = true;
                 buttonElement.classList.add('opacity-50');
@@ -196,10 +196,13 @@ class AuthManager {
 // 創建全域認證管理器實例
 const authManager = new AuthManager();
 
+// 立即導出認證管理器到全域
+window.authManager = authManager;
+
 // 頁面載入時更新認證狀態
 document.addEventListener('DOMContentLoaded', () => {
     authManager.updateAuthUI();
-    
+
     // 綁定登出按鈕事件
     const logoutBtn = document.getElementById('logoutBtn');
     if (logoutBtn) {
@@ -208,7 +211,4 @@ document.addEventListener('DOMContentLoaded', () => {
             authManager.logout();
         });
     }
-});
-
-// 導出認證管理器
-window.authManager = authManager; 
+}); 

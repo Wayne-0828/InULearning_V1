@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <title>強制重新載入</title>
+</head>
+
+<body>
+    <h1>正在清除緩存並重新載入...</h1>
+    <script>
+        // 清除所有緩存
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.getRegistrations().then(function (registrations) {
+                for (let registration of registrations) {
+                    registration.unregister();
+                }
+            });
+        }
+
+        if ('caches' in window) {
+            caches.keys().then(function (cacheNames) {
+                return Promise.all(
+                    cacheNames.map(function (cacheName) {
+                        return caches.delete(cacheName);
+                    })
+                );
+            });
+        }
+
+        // 清除 localStorage 和 sessionStorage
+        localStorage.clear();
+        sessionStorage.clear();
+
+        // 重新載入頁面，添加時間戳強制刷新
+        setTimeout(() => {
+            window.location.href = 'pages/history.html?t=' + Date.now();
+        }, 1000);
+    </script>
+</body>
+
+</html>

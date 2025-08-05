@@ -253,6 +253,31 @@ class LearningAPI {
         }
     }
 
+    // 獲取最近的學習記錄
+    async getRecentLearningRecords(limit = 5) {
+        try {
+            const response = await fetch(`${this.baseURL}/recent?limit=${limit}`, {
+                headers: this.getAuthHeaders()
+            });
+
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+
+            const result = await response.json();
+            return {
+                success: true,
+                data: result
+            };
+        } catch (error) {
+            console.error('獲取最近學習記錄失敗:', error);
+            return {
+                success: false,
+                error: error.message
+            };
+        }
+    }
+
     // 獲取學習記錄
     async getLearningRecords(filters = {}) {
         try {
@@ -274,7 +299,7 @@ class LearningAPI {
             if (filters.start_date) params.append('start_date', filters.start_date);
             if (filters.end_date) params.append('end_date', filters.end_date);
 
-            const response = await fetch(`/api/v1/records?${params}`, {
+            const response = await fetch(`${this.baseURL}/records?${params}`, {
                 headers: this.getAuthHeaders()
             });
 
@@ -299,7 +324,7 @@ class LearningAPI {
     // 獲取會話詳細資訊
     async getSessionDetail(sessionId) {
         try {
-            const response = await fetch(`/api/v1/records/${sessionId}`, {
+            const response = await fetch(`${this.baseURL}/records/${sessionId}`, {
                 headers: this.getAuthHeaders()
             });
 
@@ -324,7 +349,7 @@ class LearningAPI {
     // 獲取學習統計
     async getLearningStatistics() {
         try {
-            const response = await fetch(`/api/v1/statistics`, {
+            const response = await fetch(`${this.baseURL}/statistics`, {
                 headers: this.getAuthHeaders()
             });
 

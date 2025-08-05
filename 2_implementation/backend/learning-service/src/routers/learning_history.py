@@ -168,6 +168,67 @@ async def complete_exercise(
             )
 
 
+@router.get("/recent", response_model=LearningHistoryResponse)
+async def get_recent_learning_records(
+    limit: int = Query(5, ge=1, le=20, description="記錄數量"),
+    current_user = Depends(get_current_user),
+    db_session: AsyncSession = Depends(get_db_session)
+):
+    """獲取最近的學習記錄"""
+    
+    try:
+        logger.info(f"Getting recent {limit} learning records for user {current_user.user_id}")
+        
+        user_id_int = int(current_user.user_id)
+        
+        # 查詢最近的學習記錄
+        result = await db_session.execute(
+            select(LearningSession)
+            .where(LearningSession.user_id == user_id_int)
+            .order_by(desc(LearningSession.start_time))
+            .limit(limit)
+        )
+        sessions = result.scalars().all()
+        
+        # 轉換為響應格式
+        session_summaries = []
+        for session in sessions:
+            summary = LearningSessionSummary(
+                session_id=str(session.id),
+                session_name=session.session_name,
+                subject=session.subject,
+                grade=session.grade,
+                chapter=session.chapter,
+                publisher=session.publisher,
+                difficulty=session.difficulty,
+                knowledge_points=session.knowledge_points or [],
+                question_count=session.question_count,
+                correct_count=session.correct_count,
+                total_score=float(session.total_score) if session.total_score else 0.0,
+                accuracy_rate=float(session.accuracy_rate) if session.accuracy_rate else 0.0,
+                time_spent=session.time_spent,
+                status=session.status,
+                start_time=session.start_time,
+                end_time=session.end_time
+            )
+            session_summaries.append(summary)
+        
+        return LearningHistoryResponse(
+            sessions=session_summaries,
+            total=len(session_summaries),
+            page=1,
+            page_size=limit,
+            total_pages=1
+        )
+        
+    except Exception as e:
+        logger.error(f"Failed to get recent learning records: {e}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="查詢最近學習記錄失敗"
+        )
+
+
 @router.get("/records", response_model=LearningHistoryResponse)
 async def get_learning_records(
     subject: Optional[str] = Query(None, description="科目篩選"),
@@ -369,7 +430,7 @@ async def get_learning_statistics(
                 func.avg(LearningSession.accuracy_rate).label('avg_accuracy'),
                 func.avg(LearningSession.total_score).label('avg_score')
             )
-            .where(LearningSession.user_id == current_user.user_id)
+            .where(LearningSession.user_id == int(current_user.user_id))
             .group_by(LearningSession.subject)
         )
         
@@ -386,7 +447,7 @@ async def get_learning_statistics(
         # 查詢近期表現（最近10次會話）
         recent_result = await db_session.execute(
             select(LearningSession)
-            .where(LearningSession.user_id == current_user.user_id)
+            .where(LearningSession.user_id == int(current_user.user_id))
             .order_by(desc(LearningSession.start_time))
             .limit(10)
         )

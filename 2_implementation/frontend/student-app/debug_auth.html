@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+
+<head>
+    <meta charset="utf-8" />
+    <title>認證調試工具</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+        }
+
+        .status {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+        }
+
+        .success {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .error {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .warning {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        pre {
+            background: #f8f9fa;
+            padding: 10px;
+            border-radius: 5px;
+            overflow-x: auto;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>認證和 API 調試工具</h1>
+
+    <div id="authStatus"></div>
+    <div id="apiStatus"></div>
+
+    <button onclick="testLogin()">測試登入</button>
+    <button onclick="testAPI()">測試 API</button>
+    <button onclick="clearCache()">清除緩存</button>
+
+    <div id="results"></div>
+
+    <script src="js/utils/auth.js"></script>
+    <script src="js/api/learning.js"></script>
+
+    <script>
+        function updateStatus() {
+            const authStatus = document.getElementById('authStatus');
+            const apiStatus = document.getElementById('apiStatus');
+
+            // 檢查 authManager
+            if (typeof authManager !== 'undefined') {
+                authStatus.innerHTML = `<div class="status success">✅ authManager 已載入</div>`;
+                console.log('authManager methods:', Object.getOwnPropertyNames(Object.getPrototypeOf(authManager)));
+            } else {
+                authStatus.innerHTML = `<div class="status error">❌ authManager 未載入</div>`;
+            }
+
+            // 檢查 learningAPI
+            if (typeof learningAPI !== 'undefined') {
+                apiStatus.innerHTML = `<div class="status success">✅ learningAPI 已載入</div>`;
+            } else {
+                apiStatus.innerHTML = `<div class="status error">❌ learningAPI 未載入</div>`;
+            }
+
+            // 檢查 token
+            const token = localStorage.getItem('auth_token');
+            if (token) {
+                authStatus.innerHTML += `<div class="status success">✅ Token 存在 (長度: ${token.length})</div>`;
+            } else {
+                authStatus.innerHTML += `<div class="status warning">⚠️ Token 不存在</div>`;
+            }
+        }
+
+        async function testLogin() {
+            const results = document.getElementById('results');
+            results.innerHTML = '<div class="status">登入測試中...</div>';
+
+            try {
+                const response = await fetch('/api/v1/auth/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        email: 'test02@test.com',
+                        password: 'P@ssw0rd'
+                    })
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    localStorage.setItem('auth_token', data.access_token);
+                    results.innerHTML = `<div class="status success">✅ 登入成功！</div>`;
+                    updateStatus();
+                } else {
+                    const error = await response.text();
+                    results.innerHTML = `<div class="status error">❌ 登入失敗: ${response.status}<br><pre>${error}</pre></div>`;
+                }
+            } catch (error) {
+                results.innerHTML = `<div class="status error">❌ 登入錯誤: ${error.message}</div>`;
+            }
+        }
+
+        async function testAPI() {
+            const results = document.getElementById('results');
+            const token = localStorage.getItem('auth_token');
+
+            if (!token) {
+                results.innerHTML = '<div class="status error">❌ 請先登入</div>';
+                return;
+            }
+
+            results.innerHTML = '<div class="status">API 測試中...</div>';
+
+            try {
+                const response = await fetch('/api/v1/learning/recent?limit=5', {
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    results.innerHTML = `
+                        <div class="status success">✅ API 成功！</div>
+                        <div class="status">記錄數量: ${data.sessions ? data.sessions.length : 0}</div>
+                        <div class="status">總數: ${data.total}</div>
+                        <pre>${JSON.stringify(data, null, 2)}</pre>
+                    `;
+                } else {
+                    const error = await response.text();
+                    results.innerHTML = `<div class="status error">❌ API 失敗: ${response.status}<br><pre>${error}</pre></div>`;
+                }
+            } catch (error) {
+                results.innerHTML = `<div class="status error">❌ API 錯誤: ${error.message}</div>`;
+            }
+        }
+
+        function clearCache() {
+            localStorage.clear();
+            sessionStorage.clear();
+            location.reload(true);
+        }
+
+        // 頁面載入時更新狀態
+        document.addEventListener('DOMContentLoaded', updateStatus);
+    </script>
+</body>
+
+</html>

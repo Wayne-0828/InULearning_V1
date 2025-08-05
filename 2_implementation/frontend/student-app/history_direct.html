@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>學習歷程 - InU Learning</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .loading-spinner {
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #3498db;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+    </style>
+</head>
+
+<body class="bg-gray-50">
+    <div class="min-h-screen flex">
+        <!-- 側邊欄 -->
+        <aside class="w-64 bg-blue-600 text-white">
+            <div class="p-6">
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 bg-yellow-400 rounded-full flex items-center justify-center">
+                        <span class="text-blue-600 font-bold">InU</span>
+                    </div>
+                    <div>
+                        <h1 class="text-xl font-bold">InU Learning</h1>
+                        <p class="text-sm text-blue-200">[習你師學]</p>
+                    </div>
+                </div>
+            </div>
+
+            <nav class="mt-8">
+                <a href="practice.html"
+                    class="flex items-center px-6 py-3 text-blue-200 hover:bg-blue-700 hover:text-white">
+                    <span class="mr-3">📚</span>
+                    學生練功區
+                </a>
+                <a href="practice-table.html"
+                    class="flex items-center px-6 py-3 text-blue-200 hover:bg-blue-700 hover:text-white">
+                    <span class="mr-3">📋</span>
+                    學習備表板
+                </a>
+                <a href="practice.html"
+                    class="flex items-center px-6 py-3 text-blue-200 hover:bg-blue-700 hover:text-white">
+                    <span class="mr-3">🎯</span>
+                    開始練習
+                </a>
+                <a href="history.html" class="flex items-center px-6 py-3 bg-blue-700 text-white">
+                    <span class="mr-3">📊</span>
+                    學習歷程
+                </a>
+                <a href="profile.html"
+                    class="flex items-center px-6 py-3 text-blue-200 hover:bg-blue-700 hover:text-white">
+                    <span class="mr-3">👤</span>
+                    個人資料
+                </a>
+            </nav>
+
+            <div class="absolute bottom-0 w-64 p-6">
+                <button id="logoutBtn" class="flex items-center text-blue-200 hover:text-white">
+                    <span class="mr-3">🚪</span>
+                    登出
+                </button>
+            </div>
+        </aside>
+
+        <!-- 主要內容 -->
+        <main class="flex-1 p-8">
+            <div class="max-w-6xl mx-auto">
+                <div class="mb-8">
+                    <h2 class="text-3xl font-bold text-gray-800 mb-2">學習歷程</h2>
+                    <p class="text-gray-600">追蹤您的學習進度和成果</p>
+                </div>
+
+                <!-- 統計卡片 -->
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+                    <div class="bg-white p-6 rounded-lg shadow-sm border">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-sm text-gray-600 mb-1">總練習次數</p>
+                                <p id="totalSessions" class="text-2xl font-bold text-blue-600">0</p>
+                            </div>
+                            <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
+                                <span class="text-blue-600 text-xl">📚</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white p-6 rounded-lg shadow-sm border">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-sm text-gray-600 mb-1">總題數</p>
+                                <p id="totalQuestions" class="text-2xl font-bold text-green-600">0</p>
+                            </div>
+                            <div class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
+                                <span class="text-green-600 text-xl">📝</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white p-6 rounded-lg shadow-sm border">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-sm text-gray-600 mb-1">平均正確率</p>
+                                <p id="averageAccuracy" class="text-2xl font-bold text-orange-600">0%</p>
+                            </div>
+                            <div class="w-12 h-12 bg-orange-100 rounded-lg flex items-center justify-center">
+                                <span class="text-orange-600 text-xl">📈</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white p-6 rounded-lg shadow-sm border">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-sm text-gray-600 mb-1">總學習時數</p>
+                                <p id="totalStudyTime" class="text-2xl font-bold text-purple-600">0h</p>
+                            </div>
+                            <div class="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center">
+                                <span class="text-purple-600 text-xl">⏰</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 學習記錄 -->
+                <div class="bg-white rounded-lg shadow-sm border">
+                    <div class="p-6 border-b">
+                        <h3 class="text-xl font-semibold text-gray-800">練習記錄</h3>
+                        <div id="recentRecordsHeader" class="text-sm text-blue-600 mt-1" style="display: none;">
+                            最近 5 筆記錄
+                        </div>
+                    </div>
+
+                    <!-- 載入中狀態 -->
+                    <div id="loadingState" class="p-8 text-center">
+                        <div class="loading-spinner"></div>
+                        <p class="mt-4 text-gray-600">載入學習記錄中...</p>
+                    </div>
+
+                    <!-- 錯誤狀態 -->
+                    <div id="errorState" class="p-8 text-center" style="display: none;">
+                        <div class="text-red-500 text-4xl mb-4">⚠️</div>
+                        <p id="errorMessage" class="text-red-600 mb-4">載入失敗</p>
+                        <button id="retryBtn" class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">
+                            重試
+                        </button>
+                    </div>
+
+                    <!-- 空狀態 -->
+                    <div id="emptyState" class="p-8 text-center" style="display: none;">
+                        <div class="text-gray-400 text-4xl mb-4">📚</div>
+                        <p class="text-gray-600 mb-4">尚無學習記錄</p>
+                        <a href="practice.html" class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">
+                            開始練習
+                        </a>
+                    </div>
+
+                    <!-- 記錄列表 -->
+                    <div id="recordsList" style="display: none;">
+                        <div class="overflow-x-auto">
+                            <table class="w-full">
+                                <thead class="bg-gray-50">
+                                    <tr>
+                                        <th
+                                            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                            練習名稱</th>
+                                        <th
+                                            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                            科目</th>
+                                        <th
+                                            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                            題數</th>
+                                        <th
+                                            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                            正確率</th>
+                                        <th
+                                            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                            練習時間</th>
+                                        <th
+                                            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                            操作</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="recordsTableBody" class="bg-white divide-y divide-gray-200">
+                                    <!-- 動態生成記錄 -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // 內嵌所有必要的 JavaScript 代碼
+
+        // AuthManager 類
+        class AuthManager {
+            constructor() {
+                this.tokenKey = 'auth_token';
+                this.userKey = 'user_info';
+                this.baseURL = 'http://localhost:8001';
+            }
+
+            isLoggedIn() {
+                return !!this.getToken();
+            }
+
+            getToken() {
+                return localStorage.getItem(this.tokenKey);
+            }
+
+            getUser() {
+                try {
+                    return JSON.parse(localStorage.getItem(this.userKey));
+                } catch {
+                    return null;
+                }
+            }
+
+            logout() {
+                localStorage.removeItem(this.tokenKey);
+                localStorage.removeItem(this.userKey);
+                window.location.href = '../index.html';
+            }
+        }
+
+        // LearningAPI 類
+        class LearningAPI {
+            constructor() {
+                this.baseURL = '/api/v1/learning';
+            }
+
+            getAuthHeaders() {
+                const token = localStorage.getItem('auth_token');
+                return {
+                    'Content-Type': 'application/json',
+                    'Authorization': token ? `Bearer ${token}` : ''
+                };
+            }
+
+            async getRecentLearningRecords(limit = 5) {
+                try {
+                    console.log('正在獲取最近學習記錄...');
+                    const response = await fetch(`${this.baseURL}/recent?limit=${limit}`, {
+                        headers: this.getAuthHeaders()
+                    });
+
+                    console.log('API 響應狀態:', response.status);
+
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+
+                    const result = await response.json();
+                    console.log('API 響應數據:', result);
+                    return { success: true, data: result };
+                } catch (error) {
+                    console.error('獲取最近學習記錄失敗:', error);
+                    return { success: false, error: error.message };
+                }
+            }
+
+            async getLearningStatistics() {
+                try {
+                    const response = await fetch(`${this.baseURL}/statistics`, {
+                        headers: this.getAuthHeaders()
+                    });
+
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+
+                    const result = await response.json();
+                    return { success: true, data: result };
+                } catch (error) {
+                    console.error('獲取學習統計失敗:', error);
+                    return { success: false, error: error.message };
+                }
+            }
+        }
+
+        // 創建全局實例
+        const authManager = new AuthManager();
+        const learningAPI = new LearningAPI();
+
+        // 歷史管理器
+        class HistoryManager {
+            constructor() {
+                this.records = [];
+                this.totalRecords = 0;
+                this.currentPage = 1;
+                this.pageSize = 10;
+                this.init();
+            }
+
+            init() {
+                console.log('HistoryManager 初始化開始');
+                this.bindEvents();
+                this.loadRecentRecords();
+                this.loadStatistics();
+                console.log('HistoryManager 初始化完成');
+            }
+
+            bindEvents() {
+                const retryBtn = document.getElementById('retryBtn');
+                if (retryBtn) {
+                    retryBtn.addEventListener('click', () => {
+                        this.loadRecentRecords();
+                    });
+                }
+
+                const logoutBtn = document.getElementById('logoutBtn');
+                if (logoutBtn) {
+                    logoutBtn.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        authManager.logout();
+                    });
+                }
+            }
+
+            async loadRecentRecords() {
+                try {
+                    console.log('開始載入最近學習記錄');
+                    this.showLoading();
+
+                    const result = await learningAPI.getRecentLearningRecords(5);
+                    console.log('載入結果:', result);
+
+                    if (result.success && result.data) {
+                        this.records = result.data.sessions || [];
+                        this.totalRecords = result.data.total || 0;
+                        console.log('記錄數量:', this.records.length);
+
+                        this.displayRecords();
+                        this.showRecentRecordsHeader();
+                    } else {
+                        throw new Error(result.error || '載入最近學習記錄失敗');
+                    }
+                } catch (error) {
+                    console.error('載入最近學習記錄失敗:', error);
+                    this.showError(`載入最近學習記錄失敗: ${error.message}`);
+                } finally {
+                    this.hideLoading();
+                }
+            }
+
+            async loadStatistics() {
+                try {
+                    const result = await learningAPI.getLearningStatistics();
+                    if (result.success && result.data) {
+                        this.updateStatistics(result.data);
+                    }
+                } catch (error) {
+                    console.error('載入統計數據失敗:', error);
+                }
+            }
+
+            updateStatistics(stats) {
+                document.getElementById('totalSessions').textContent = stats.total_sessions || 0;
+                document.getElementById('totalQuestions').textContent = stats.total_questions || 0;
+                document.getElementById('averageAccuracy').textContent =
+                    stats.average_accuracy ? `${Math.round(stats.average_accuracy)}%` : '0%';
+                document.getElementById('totalStudyTime').textContent =
+                    stats.total_study_time ? `${Math.round(stats.total_study_time / 60)}h` : '0h';
+            }
+
+            displayRecords() {
+                const tableBody = document.getElementById('recordsTableBody');
+                const recordsList = document.getElementById('recordsList');
+
+                if (this.records.length === 0) {
+                    this.displayEmptyRecords();
+                    return;
+                }
+
+                tableBody.innerHTML = '';
+
+                this.records.forEach(record => {
+                    const row = document.createElement('tr');
+                    row.className = 'hover:bg-gray-50 cursor-pointer';
+
+                    const startTime = new Date(record.start_time);
+                    const formattedTime = startTime.toLocaleString('zh-TW');
+
+                    row.innerHTML = `
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <div class="text-sm font-medium text-gray-900">${record.session_name}</div>
+                            <div class="text-sm text-gray-500">${record.chapter || ''}</div>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800">
+                                ${record.subject}
+                            </span>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                            ${record.correct_count}/${record.question_count}
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <div class="text-sm text-gray-900">${Math.round(record.accuracy_rate)}%</div>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                            ${formattedTime}
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                            <button class="text-blue-600 hover:text-blue-900" onclick="viewRecordDetails('${record.session_id}')">
+                                查看詳情
+                            </button>
+                        </td>
+                    `;
+
+                    tableBody.appendChild(row);
+                });
+
+                recordsList.style.display = 'block';
+            }
+
+            displayEmptyRecords() {
+                document.getElementById('recordsList').style.display = 'none';
+                document.getElementById('emptyState').style.display = 'block';
+            }
+
+            showLoading() {
+                document.getElementById('loadingState').style.display = 'block';
+                document.getElementById('errorState').style.display = 'none';
+                document.getElementById('emptyState').style.display = 'none';
+                document.getElementById('recordsList').style.display = 'none';
+            }
+
+            hideLoading() {
+                document.getElementById('loadingState').style.display = 'none';
+            }
+
+            showError(message) {
+                document.getElementById('errorMessage').textContent = message;
+                document.getElementById('errorState').style.display = 'block';
+                document.getElementById('emptyState').style.display = 'none';
+                document.getElementById('recordsList').style.display = 'none';
+            }
+
+            showRecentRecordsHeader() {
+                document.getElementById('recentRecordsHeader').style.display = 'block';
+            }
+        }
+
+        // 查看記錄詳情
+        function viewRecordDetails(sessionId) {
+            window.location.href = `result.html?sessionId=${sessionId}`;
+        }
+
+        // 頁面載入完成後初始化
+        document.addEventListener('DOMContentLoaded', () => {
+            console.log('頁面載入完成，開始初始化');
+
+            // 檢查登入狀態
+            if (!authManager.isLoggedIn()) {
+                window.location.href = '../index.html';
+                return;
+            }
+
+            // 創建歷史管理器
+            window.historyManager = new HistoryManager();
+        });
+    </script>
+</body>
+
+</html>

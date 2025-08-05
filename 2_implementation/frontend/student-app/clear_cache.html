@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>清除緩存</title>
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+</head>
+
+<body>
+    <h1>清除瀏覽器緩存</h1>
+    <button onclick="clearAll()">清除所有緩存並重新載入</button>
+    <div id="status"></div>
+
+    <script>
+        function clearAll() {
+            const status = document.getElementById('status');
+            status.innerHTML = '正在清除緩存...';
+
+            // 清除 localStorage 和 sessionStorage
+            localStorage.clear();
+            sessionStorage.clear();
+
+            // 嘗試清除服務工作者緩存
+            if ('serviceWorker' in navigator) {
+                navigator.serviceWorker.getRegistrations().then(function (registrations) {
+                    for (let registration of registrations) {
+                        registration.unregister();
+                    }
+                });
+            }
+
+            // 嘗試清除緩存 API
+            if ('caches' in window) {
+                caches.keys().then(function (cacheNames) {
+                    return Promise.all(
+                        cacheNames.map(function (cacheName) {
+                            return caches.delete(cacheName);
+                        })
+                    );
+                });
+            }
+
+            status.innerHTML = '緩存已清除，3秒後重新載入...';
+
+            setTimeout(() => {
+                window.location.href = 'pages/history.html?' + Date.now();
+            }, 3000);
+        }
+
+        // 自動執行
+        document.addEventListener('DOMContentLoaded', () => {
+            setTimeout(clearAll, 1000);
+        });
+    </script>
+</body>
+
+</html>

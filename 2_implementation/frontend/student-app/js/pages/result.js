@@ -5,6 +5,8 @@ class ResultPage {
     constructor() {
         this.examResults = null;
         this.currentDetailIndex = 0;
+        this.isHistoryMode = false; // 是否從歷程記錄進入
+        this.sessionId = null; // 會話ID
     }
 
     /**
@@ -12,8 +14,11 @@ class ResultPage {
      */
     async init() {
         try {
-            // 從 sessionStorage 載入考試結果
-            this.loadExamResults();
+            // 檢查是否從歷程記錄進入
+            this.checkHistoryMode();
+
+            // 載入考試結果（從 sessionStorage 或 API）
+            await this.loadExamResults();
 
             // 檢查認證狀態
             this.checkAuthStatus();
@@ -24,8 +29,10 @@ class ResultPage {
             // 綁定事件
             this.bindEvents();
 
-            // 自動保存練習結果到數據庫
-            await this.saveResultsToDatabase();
+            // 只有新練習才需要保存到數據庫
+            if (!this.isHistoryMode) {
+                await this.saveResultsToDatabase();
+            }
 
         } catch (error) {
             console.error('初始化結果頁面失敗:', error);
@@ -34,9 +41,115 @@ class ResultPage {
     }
 
     /**
+     * 檢查是否從歷程記錄進入
+     */
+    checkHistoryMode() {
+        const urlParams = new URLSearchParams(window.location.search);
+        this.sessionId = urlParams.get('sessionId');
+        this.isHistoryMode = !!this.sessionId;
+
+        console.log('歷程模式:', this.isHistoryMode, '會話ID:', this.sessionId);
+    }
+
+    /**
      * 載入考試結果
      */
-    loadExamResults() {
+    async loadExamResults() {
+        if (this.isHistoryMode && this.sessionId) {
+            // 從歷程記錄進入，從 API 載入數據
+            await this.loadHistoricalResults();
+        } else {
+            // 從練習頁面進入，從 sessionStorage 載入數據
+            this.loadSessionStorageResults();
+        }
+    }
+
+    /**
+     * 從 API 載入歷史結果
+     */
+    async loadHistoricalResults() {
+        try {
+            console.log('從 API 載入歷史結果，會話ID:', this.sessionId);
+
+            const result = await learningAPI.getSessionDetail(this.sessionId);
+
+            if (!result.success || !result.data) {
+                throw new Error(result.error || '載入歷史結果失敗');
+            }
+
+            const sessionDetail = result.data;
+            const session = sessionDetail.session;
+            const exerciseRecords = sessionDetail.exercise_records || [];
+
+            // 轉換為 examResults 格式
+            this.examResults = {
+                score: Math.round(session.total_score || 0),
+                accuracy: Math.round(session.accuracy_rate || 0),
+                totalQuestions: session.question_count || 0,
+                correctAnswers: session.correct_count || 0,
+                wrongAnswers: (session.question_count || 0) - (session.correct_count || 0),
+                timeSpent: session.time_spent || 0,
+                submittedAt: session.end_time || session.start_time,
+                sessionData: {
+                    sessionId: session.session_id,
+                    sessionName: session.session_name,
+                    grade: session.grade,
+                    publisher: session.publisher,
+                    subject: session.subject,
+                    chapter: session.chapter,
+                    difficulty: session.difficulty,
+                    knowledgePoints: session.knowledge_points || []
+                },
+                detailedResults: exerciseRecords.map(record => ({
+                    questionId: record.question_id,
+                    questionContent: record.question_content,
+                    answerChoices: record.answer_choices,
+                    userAnswer: record.user_answer,
+                    correctAnswer: record.correct_answer,
+                    isCorrect: record.is_correct,
+                    score: record.score,
+                    explanation: record.explanation,
+                    timeSpent: record.time_spent,
+                    knowledgePoints: record.knowledge_points || [],
+                    difficulty: record.difficulty,
+                    questionTopic: record.question_topic
+                })),
+                questions: exerciseRecords.map(record => ({
+                    id: record.question_id,
+                    content: record.question_content,
+                    choices: record.answer_choices,
+                    correctAnswer: record.correct_answer,
+                    explanation: record.explanation,
+                    knowledgePoints: record.knowledge_points || [],
+                    difficulty: record.difficulty,
+                    topic: record.question_topic
+                })),
+                userAnswers: exerciseRecords.map(record => ({
+                    questionId: record.question_id,
+                    answer: record.user_answer,
+                    isCorrect: record.is_correct,
+                    timeSpent: record.time_spent
+                }))
+            };
+
+            console.log('載入歷史結果:', this.examResults);
+
+            // 更新會話ID顯示
+            const sessionIdElement = document.getElementById('sessionId');
+            if (sessionIdElement) {
+                sessionIdElement.textContent = this.sessionId;
+            }
+
+        } catch (error) {
+            console.error('載入歷史結果失敗:', error);
+            throw error;
+        }
+    }
+
+    /**
+     * 從 sessionStorage 載入結果
+     */
+    loadSessionStorageResults() {
         const resultsData = sessionStorage.getItem('examResults');
         if (!resultsData) {
             console.warn('找不到考試結果數據，使用預設數據');
