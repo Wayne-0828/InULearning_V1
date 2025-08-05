@@ -12,7 +12,7 @@
 
 // ===== 全域變數 =====
 const APP_CONFIG = {
-    API_BASE_URL: 'http://localhost:8000/api/v1',
+    API_BASE_URL: 'http://localhost/api/v1',
     STORAGE_PREFIX: 'inulearning_',
     DATE_FORMAT: 'YYYY-MM-DD',
     TIME_FORMAT: 'HH:mm:ss',
@@ -60,7 +60,7 @@ function $$(selector, parent = document) {
  */
 function createElement(tagName, attributes = {}, textContent = '') {
     const element = document.createElement(tagName);
-    
+
     // 設定屬性
     Object.entries(attributes).forEach(([key, value]) => {
         if (key === 'className') {
@@ -71,12 +71,12 @@ function createElement(tagName, attributes = {}, textContent = '') {
             element.setAttribute(key, value);
         }
     });
-    
+
     // 設定文字內容
     if (textContent) {
         element.textContent = textContent;
     }
-    
+
     return element;
 }
 
@@ -111,17 +111,17 @@ function toggleElement(element, show) {
  */
 function formatDate(date, format = APP_CONFIG.DATE_FORMAT) {
     if (!date) return '';
-    
+
     const d = new Date(date);
     if (isNaN(d.getTime())) return '';
-    
+
     const year = d.getFullYear();
     const month = String(d.getMonth() + 1).padStart(2, '0');
     const day = String(d.getDate()).padStart(2, '0');
     const hours = String(d.getHours()).padStart(2, '0');
     const minutes = String(d.getMinutes()).padStart(2, '0');
     const seconds = String(d.getSeconds()).padStart(2, '0');
-    
+
     return format
         .replace('YYYY', year)
         .replace('MM', month)
@@ -138,19 +138,19 @@ function formatDate(date, format = APP_CONFIG.DATE_FORMAT) {
  */
 function getRelativeTime(date) {
     if (!date) return '';
-    
+
     const now = new Date();
     const target = new Date(date);
     const diffMs = now - target;
     const diffMinutes = Math.floor(diffMs / (1000 * 60));
     const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
     const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
-    
+
     if (diffMinutes < 1) return '剛剛';
     if (diffMinutes < 60) return `${diffMinutes} 分鐘前`;
     if (diffHours < 24) return `${diffHours} 小時前`;
     if (diffDays < 7) return `${diffDays} 天前`;
-    
+
     return formatDate(target, 'MM-DD');
 }
 
@@ -161,10 +161,10 @@ function getRelativeTime(date) {
  */
 function isToday(date) {
     if (!date) return false;
-    
+
     const today = new Date();
     const target = new Date(date);
-    
+
     return today.toDateString() === target.toDateString();
 }
 
@@ -177,7 +177,7 @@ function isToday(date) {
  */
 function isValidEmail(email) {
     if (!email) return false;
-    
+
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return emailRegex.test(email);
 }
@@ -191,15 +191,15 @@ function validatePassword(password) {
     if (!password) {
         return { isValid: false, message: '密碼不能為空' };
     }
-    
+
     const minLength = 8;
     const hasUpperCase = /[A-Z]/.test(password);
     const hasLowerCase = /[a-z]/.test(password);
     const hasNumbers = /\d/.test(password);
     const hasSpecialChar = /[!@#$%^&*(),.?":{}|<>]/.test(password);
-    
+
     const errors = [];
-    
+
     if (password.length < minLength) {
         errors.push(`密碼至少需要 ${minLength} 個字元`);
     }
@@ -215,7 +215,7 @@ function validatePassword(password) {
     if (!hasSpecialChar) {
         errors.push('密碼需要包含特殊字元');
     }
-    
+
     return {
         isValid: errors.length === 0,
         message: errors.length > 0 ? errors.join(', ') : '密碼強度良好',
@@ -230,7 +230,7 @@ function validatePassword(password) {
  */
 function isValidPhone(phone) {
     if (!phone) return false;
-    
+
     // 台灣手機號碼格式
     const phoneRegex = /^09\d{8}$/;
     return phoneRegex.test(phone.replace(/\s/g, ''));
@@ -243,27 +243,27 @@ function isValidPhone(phone) {
  */
 function isValidTaiwanID(id) {
     if (!id) return false;
-    
+
     // 台灣身份證字號格式
     const idRegex = /^[A-Z][12]\d{8}$/;
     if (!idRegex.test(id)) return false;
-    
+
     // 檢查碼驗證
     const letters = 'ABCDEFGHJKLMNPQRSTUVXYWZIO';
     const letterValues = {};
     for (let i = 0; i < letters.length; i++) {
         letterValues[letters[i]] = i + 10;
     }
-    
+
     const firstLetter = id.charAt(0);
     const firstValue = Math.floor(letterValues[firstLetter] / 10) + (letterValues[firstLetter] % 10) * 9;
-    
+
     let sum = firstValue;
     for (let i = 1; i < 9; i++) {
         sum += parseInt(id.charAt(i)) * (9 - i);
     }
     sum += parseInt(id.charAt(9));
-    
+
     return sum % 10 === 0;
 }
 
@@ -282,11 +282,11 @@ function setStorageItem(key, value, ttl = null) {
             value: value,
             timestamp: Date.now()
         };
-        
+
         if (ttl) {
             item.expires = Date.now() + (ttl * 1000);
         }
-        
+
         localStorage.setItem(fullKey, JSON.stringify(item));
     } catch (error) {
         console.error('設定本地儲存失敗:', error);
@@ -303,17 +303,17 @@ function getStorageItem(key, defaultValue = null) {
     try {
         const fullKey = APP_CONFIG.STORAGE_PREFIX + key;
         const item = localStorage.getItem(fullKey);
-        
+
         if (!item) return defaultValue;
-        
+
         const parsed = JSON.parse(item);
-        
+
         // 檢查是否過期
         if (parsed.expires && Date.now() > parsed.expires) {
             localStorage.removeItem(fullKey);
             return defaultValue;
         }
-        
+
         return parsed.value;
     } catch (error) {
         console.error('取得本地儲存失敗:', error);
@@ -359,10 +359,10 @@ function clearStorage() {
  */
 function handleError(error, context = '') {
     console.error(`錯誤 [${context}]:`, error);
-    
+
     // 記錄錯誤到伺服器 (可選)
     // logErrorToServer(error, context);
-    
+
     // 顯示使用者友善的錯誤訊息
     showErrorMessage(getErrorMessage(error));
 }
@@ -374,37 +374,37 @@ function handleError(error, context = '') {
  */
 function getErrorMessage(error) {
     if (!error) return '發生未知錯誤';
-    
+
     // 網路錯誤
     if (error.name === 'NetworkError' || error.message.includes('fetch')) {
         return '網路連線失敗，請檢查網路設定';
     }
-    
+
     // 超時錯誤
     if (error.name === 'TimeoutError' || error.message.includes('timeout')) {
         return '請求超時，請稍後再試';
     }
-    
+
     // 認證錯誤
     if (error.status === 401) {
         return '登入已過期，請重新登入';
     }
-    
+
     // 權限錯誤
     if (error.status === 403) {
         return '沒有權限執行此操作';
     }
-    
+
     // 伺服器錯誤
     if (error.status >= 500) {
         return '伺服器發生錯誤，請稍後再試';
     }
-    
+
     // 自定義錯誤訊息
     if (error.userMessage) {
         return error.userMessage;
     }
-    
+
     return error.message || '發生未知錯誤';
 }
 
@@ -419,11 +419,11 @@ function showErrorMessage(message, type = 'error') {
         className: `alert alert-${type === 'error' ? 'danger' : type}`,
         role: 'alert'
     }, message);
-    
+
     // 插入到頁面頂部
     const container = $('.container') || document.body;
     container.insertBefore(alertDiv, container.firstChild);
-    
+
     // 自動移除
     setTimeout(() => {
         if (alertDiv.parentNode) {
@@ -513,11 +513,11 @@ function formatNumber(num, decimals = 0) {
  */
 function formatFileSize(bytes) {
     if (bytes === 0) return '0 Bytes';
-    
+
     const k = 1024;
     const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
     const i = Math.floor(Math.log(bytes) / Math.log(k));
-    
+
     return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
 }
 
@@ -551,7 +551,7 @@ function deepClone(obj) {
  */
 function uniqueArray(array, key = null) {
     if (!Array.isArray(array)) return [];
-    
+
     if (key) {
         const seen = new Set();
         return array.filter(item => {
@@ -563,7 +563,7 @@ function uniqueArray(array, key = null) {
             return true;
         });
     }
-    
+
     return [...new Set(array)];
 }
 
@@ -575,7 +575,7 @@ function uniqueArray(array, key = null) {
  */
 function groupArray(array, key) {
     if (!Array.isArray(array)) return {};
-    
+
     return array.reduce((groups, item) => {
         const groupKey = typeof key === 'function' ? key(item) : item[key];
         if (!groups[groupKey]) {
@@ -594,44 +594,44 @@ window.Utils = {
     createElement,
     clearElement,
     toggleElement,
-    
+
     // 日期時間
     formatDate,
     getRelativeTime,
     isToday,
-    
+
     // 資料驗證
     isValidEmail,
     validatePassword,
     isValidPhone,
     isValidTaiwanID,
-    
+
     // 本地儲存
     setStorageItem,
     getStorageItem,
     removeStorageItem,
     clearStorage,
-    
+
     // 錯誤處理
     handleError,
     getErrorMessage,
     showErrorMessage,
-    
+
     // 效能優化
     debounce,
     throttle,
     delay,
-    
+
     // 字串處理
     truncateString,
     formatNumber,
     formatFileSize,
-    
+
     // 陣列和物件處理
     deepClone,
     uniqueArray,
     groupArray,
-    
+
     // 配置
     config: APP_CONFIG
 }; 

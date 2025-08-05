@@ -16,10 +16,15 @@ router = APIRouter(prefix="/auth", tags=["authentication"])
 
 @router.post("/register", response_model=Message, status_code=status.HTTP_201_CREATED)
 def register(user: UserCreate, db: Session = Depends(get_db)):
-    """Register a new user"""
+    """Register a new user - only student, parent, and teacher roles allowed"""
     try:
+        # Additional server-side role validation for security
+        from app.models import UserRole
+        if user.role == UserRole.admin:
+            raise ValueError("管理員帳號無法通過此方式註冊，請聯繫系統管理員")
+        
         create_user(db, user)
-        return {"message": "User registered successfully"}
+        return {"message": "註冊成功！歡迎加入 InU Learning 學習平台"}
     except ValueError as e:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,

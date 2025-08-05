@@ -1,0 +1,181 @@
+{
+  "timestamp": "2025-08-05 10:10:34",
+  "summary": {
+    "total_tests": 17,
+    "total_passed": 17,
+    "total_failed": 0,
+    "pass_rate": "100.0%"
+  },
+  "stage_reports": {
+    "stage4": {
+      "timestamp": "2025-08-05 09:57:51",
+      "test_results": {
+        "backend_startup": true,
+        "frontend_files": true,
+        "backend_files": true,
+        "security_enhancements": true,
+        "html_security": true,
+        "backend_validation": true
+      },
+      "summary": {
+        "total": 6,
+        "passed": 6,
+        "failed": 0,
+        "pass_rate": "100.0%"
+      }
+    },
+    "api_integration": {
+      "timestamp": "2025-08-05 10:09:28",
+      "test_results": [
+        {
+          "name": "健康檢查",
+          "passed": true,
+          "message": "API 服務正常運行",
+          "details": {
+            "status_code": 200,
+            "response": {
+              "message": "InULearning Auth Service",
+              "version": "1.0.0",
+              "status": "running"
+            }
+          },
+          "timestamp": "10:09:27"
+        },
+        {
+          "name": "Student 角色註冊",
+          "passed": true,
+          "message": "註冊成功: 註冊成功！歡迎加入 InU Learning 學習平台",
+          "details": {
+            "role": "student",
+            "email": "student_1754359767_1@test.com",
+            "username": "student_1754359767_1"
+          },
+          "timestamp": "10:09:27"
+        },
+        {
+          "name": "Parent 角色註冊",
+          "passed": true,
+          "message": "註冊成功: 註冊成功！歡迎加入 InU Learning 學習平台",
+          "details": {
+            "role": "parent",
+            "email": "parent_1754359767_2@test.com",
+            "username": "parent_1754359767_2"
+          },
+          "timestamp": "10:09:27"
+        },
+        {
+          "name": "Teacher 角色註冊",
+          "passed": true,
+          "message": "註冊成功: 註冊成功！歡迎加入 InU Learning 學習平台",
+          "details": {
+            "role": "teacher",
+            "email": "teacher_1754359767_3@test.com",
+            "username": "teacher_1754359767_3"
+          },
+          "timestamp": "10:09:27"
+        },
+        {
+          "name": "管理員角色限制",
+          "passed": true,
+          "message": "正確阻擋管理員註冊: [{'type': 'value_error', 'loc': ['body', 'role'], 'msg': 'Value error, 管理員帳號無法通過此方式註冊，請聯繫系統管理員', 'input': 'admin', 'ctx': {'error': {}}, 'url': 'https://errors.pydantic.dev/2.5/v/value_error'}]",
+          "details": {
+            "status_code": 422,
+            "error_message": "[{'type': 'value_error', 'loc': ['body', 'role'], 'msg': 'Value error, 管理員帳號無法通過此方式註冊，請聯繫系統管理員', 'input': 'admin', 'ctx': {'error': {}}, 'url': 'https://errors.pydantic.dev/2.5/v/value_error'}]"
+          },
+          "timestamp": "10:09:27"
+        },
+        {
+          "name": "驗證測試: 空白郵件",
+          "passed": true,
+          "message": "正確拒絕無效資料: [{'type': 'value_error', 'loc': ['body', 'email'], 'msg': 'value is not a valid email address: The email address is not valid. It must have exactly one @-sign.', 'input': '', 'ctx': {'reason': 'The email address is not valid. It must have exactly one @-sign.'}}]",
+          "details": {
+            "status_code": 422
+          },
+          "timestamp": "10:09:27"
+        },
+        {
+          "name": "驗證測試: 無效郵件格式",
+          "passed": true,
+          "message": "正確拒絕無效資料: [{'type': 'value_error', 'loc': ['body', 'email'], 'msg': 'value is not a valid email address: The email address is not valid. It must have exactly one @-sign.', 'input': 'invalid-email-format', 'ctx': {'reason': 'The email address is not valid. It must have exactly one @-sign.'}}]",
+          "details": {
+            "status_code": 422
+          },
+          "timestamp": "10:09:27"
+        },
+        {
+          "name": "驗證測試: 短密碼",
+          "passed": true,
+          "message": "正確拒絕無效資料: [{'type': 'value_error', 'loc': ['body', 'password'], 'msg': 'Value error, Password must be at least 8 characters long', 'input': '123', 'ctx': {'error': {}}, 'url': 'https://errors.pydantic.dev/2.5/v/value_error'}]",
+          "details": {
+            "status_code": 422
+          },
+          "timestamp": "10:09:27"
+        },
+        {
+          "name": "驗證測試: 無效角色",
+          "passed": true,
+          "message": "正確拒絕無效資料: [{'type': 'enum', 'loc': ['body', 'role'], 'msg': \"Input should be 'student', 'parent', 'teacher' or 'admin'\", 'input': 'invalid_role', 'ctx': {'expected': \"'student', 'parent', 'teacher' or 'admin'\"}}]",
+          "details": {
+            "status_code": 422
+          },
+          "timestamp": "10:09:27"
+        },
+        {
+          "name": "重複註冊 - 首次",
+          "passed": true,
+          "message": "首次註冊成功",
+          "details": {
+            "status_code": 201
+          },
+          "timestamp": "10:09:27"
+        },
+        {
+          "name": "重複註冊 - 防護",
+          "passed": true,
+          "message": "正確阻擋重複註冊: User with this email or username already exists",
+          "details": {
+            "status_code": 400
+          },
+          "timestamp": "10:09:28"
+        }
+      ],
+      "summary": {
+        "total": 11,
+        "passed": 11,
+        "failed": 0
+      }
+    }
+  },
+  "completed_features": [
+    "✅ 三種角色註冊支援 (學生、家長、教師)",
+    "✅ 管理員角色註冊限制",
+    "✅ 前端表單驗證與即時回饋",
+    "✅ 密碼強度檢查",
+    "✅ 輸入資料清理與安全檢查",
+    "✅ 後端 API 驗證",
+    "✅ 重複註冊防護",
+    "✅ 安全事件記錄機制",
+    "✅ 使用者友善錯誤處理",
+    "✅ 角色導向重定向功能"
+  ],
+  "security_checks": [
+    "✅ 角色白名單驗證",
+    "✅ 輸入長度限制",
+    "✅ 特殊字符過濾",
+    "✅ 密碼複製禁用",
+    "✅ 安全重定向檢查",
+    "✅ 資料清理機制",
+    "✅ 前後端雙重驗證"
+  ],
+  "recommendations": [
+    "📧 實現電子郵件驗證機制",
+    "🔐 添加雙因素認證 (2FA)",
+    "📱 支援社交媒體登入",
+    "🌐 多語言介面支援",
+    "📊 用戶行為分析",
+    "🔍 進階安全監控",
+    "⚡ 效能優化",
+    "🧪 自動化測試擴展"
+  ],
+  "conclusion": "開發完成"
+}

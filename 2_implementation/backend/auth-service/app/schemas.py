@@ -21,6 +21,15 @@ class UserCreate(UserBase):
         if len(v) < 8:
             raise ValueError('Password must be at least 8 characters long')
         return v
+    
+    @validator('role')
+    def validate_role(cls, v):
+        if v == UserRole.admin:
+            raise ValueError('管理員帳號無法通過此方式註冊，請聯繫系統管理員')
+        allowed_roles = [UserRole.student, UserRole.parent, UserRole.teacher]
+        if v not in allowed_roles:
+            raise ValueError(f'無效的角色選擇，僅允許: {", ".join([role.value for role in allowed_roles])}')
+        return v
 
 
 class UserUpdate(BaseModel):

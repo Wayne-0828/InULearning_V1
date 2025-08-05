@@ -178,7 +178,10 @@ services:
       - ./nginx/nginx.conf:/etc/nginx/nginx.conf
       - ./nginx/conf.d:/etc/nginx/conf.d
       - ./2_implementation/frontend/shared/auth/login.html:/usr/share/nginx/html/login.html
+      - ./2_implementation/frontend/shared/auth/register.html:/usr/share/nginx/html/register.html
       - ./2_implementation/frontend/shared/homepage/index.html:/usr/share/nginx/html/index.html
+      - ./2_implementation/frontend/shared/js:/usr/share/nginx/html/js
+      - ./2_implementation/frontend/shared/css:/usr/share/nginx/html/css
     depends_on:
       - auth-service
       - question-bank-service
