@@ -1415,7 +1415,7 @@
             "D": "100%"
         },
         "answer": "A",
-        "explanation": "重量百分濃度 = $(\text{溶質質量} / \text{溶液質量}) \times 100\% = (20 \text{ g} / (20 \text{ g} + 80 \text{ g})) \times 100\% = (20 \text{ g} / 100 \text{ g}) \times 100\% = 20\%$。"
+        "explanation": "重量百分濃度 = $(\\text{溶質質量} / \\text{溶液質量}) \\times 100\\% = (20 \\text{ g} / (20 \\text{ g} + 80 \\text{ g})) \\times 100\\% = (20 \\text{ g} / 100 \\text{ g}) \\times 100\\% = 20\\%$。"
     },
     {
         "grade": "8A",
@@ -1548,7 +1548,7 @@
             "D": "6.8 m"
         },
         "answer": "B",
-        "explanation": "波速 $v = f \lambda$。所以，波長 $\lambda = v/f = 340 \text{ m/s} / 200 \text{ Hz} = 1.7 \text{ m}$。"
+        "explanation": "波速 $v = f \\lambda$。所以，波長 $\\lambda = v/f = 340 \\text{ m/s} / 200 \\text{ Hz} = 1.7 \\text{ m}$。"
     },
     {
         "grade": "8A",
@@ -1922,7 +1922,8 @@
         "options": {
             "A": "H$_2$ + O$_2$ \to H$_2$O",
             "B": "2H$_2$ + O$_2$ \to 2H$_2$O",
-            "C": "H$_2$ + 2O$_2$ \to H$_2$O",            "D": "H$_2$ + O$_2$ \to 2H$_2$O"
+            "C": "H$_2$ + 2O$_2$ \to H$_2$O",
+            "D": "H$_2$ + O$_2$ \to 2H$_2$O"
         },
         "answer": "B",
         "explanation": "化學反應式必須遵守原子不滅定律，反應前後各原子的種類和數目必須相等。選項B中，反應前後氫原子和氧原子的數目都相等。"
