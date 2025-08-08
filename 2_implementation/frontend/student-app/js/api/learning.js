@@ -12,6 +12,47 @@ class LearningAPI {
         this.directQuestionBankURL = 'http://localhost:8002/api/v1/questions';
     }
 
+    // 取得科目雷達圖資料（analytics）
+    async getSubjectRadar({ window = '30d' } = {}) {
+        try {
+            const params = new URLSearchParams();
+            if (window) params.append('window', window);
+            const response = await fetch(`${this.baseURL}/analytics/subjects/radar?${params.toString()}`, {
+                method: 'GET',
+                headers: this.getAuthHeaders()
+            });
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return await response.json();
+        } catch (error) {
+            console.error('獲取雷達圖資料失敗:', error);
+            return { window, metrics: [], subjects: [] };
+        }
+    }
+
+    // 取得科目趨勢資料（analytics）
+    async getSubjectTrend({ metric = 'accuracy', window = '30d', limit = 100, subject = null } = {}) {
+        try {
+            const params = new URLSearchParams();
+            if (metric) params.append('metric', metric);
+            if (window) params.append('window', window);
+            if (limit) params.append('limit', limit);
+            if (subject) params.append('subject', subject);
+            const response = await fetch(`${this.baseURL}/analytics/subjects/trend?${params.toString()}`, {
+                method: 'GET',
+                headers: this.getAuthHeaders()
+            });
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return await response.json();
+        } catch (error) {
+            console.error('獲取趨勢圖資料失敗:', error);
+            return { window, metric, series: [] };
+        }
+    }
+
     // 獲取認證頭
     getAuthHeaders() {
         const token = localStorage.getItem('auth_token');
