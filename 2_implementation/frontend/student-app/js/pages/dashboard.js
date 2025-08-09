@@ -17,9 +17,10 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
 
         // Fetch radar and trend in parallel
-        const [radarData, trendData] = await Promise.all([
+        const [radarData, trendData, recentList] = await Promise.all([
             window.learningAPI.getSubjectRadar({ window: '30d' }),
-            window.learningAPI.getSubjectTrend({ metric: 'accuracy', window: '30d', limit: 100 })
+            window.learningAPI.getSubjectTrend({ metric: 'accuracy', window: '30d', limit: 100 }),
+            window.learningAPI.getRecentLearningRecords(5)
         ]);
 
         // Render charts
@@ -28,6 +29,65 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
         if (trendContainer) {
             await window.renderSubjectTrend('trendChart', trendData);
+        }
+
+        // 同步最近練習記錄到 dashboard（若存在相同樣式區塊）
+        const recentSessions = document.getElementById('recentSessions');
+        if (recentSessions && recentList && recentList.data && recentList.data.sessions) {
+            const records = recentList.data.sessions || [];
+            if (!records.length) {
+                recentSessions.innerHTML = '<div class="flex items-center justify-center py-8 text-gray-500"><span class="material-icons mr-2">history</span>暫無練習記錄</div>';
+            } else {
+                recentSessions.innerHTML = records.map(record => {
+                    const startTime = new Date(record.start_time);
+                    const minutes = record.time_spent ? Math.floor(record.time_spent / 60) : 0;
+                    const seconds = record.time_spent ? record.time_spent % 60 : 0;
+                    const duration = record.time_spent ? `${minutes}分${seconds}秒` : '未記錄';
+                    const correct = record.correct_count || 0;
+                    const total = record.question_count || 0;
+                    const acc = total > 0 ? Math.round(record.accuracy_rate || 0) : 0;
+                    return `
+            <div class="p-4 bg-white rounded-lg border hover:bg-gray-50">
+              <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-3">
+                  <div class="w-10 h-10 bg-blue-100 text-blue-600 rounded-lg flex items-center justify-center">
+                    <span class="material-icons">quiz</span>
+                  </div>
+                  <div>
+                    <div class="text-sm font-medium text-gray-900">${record.session_name || `${record.subject || '未分類'} 練習測驗`}</div>
+                    <div class="text-xs text-gray-500">${startTime.toLocaleString('zh-TW')} · ${duration} · ${total} 題</div>
+                  </div>
+                </div>
+                <div class="text-right">
+                  <div class="text-sm font-medium text-gray-900">${correct}/${total}</div>
+                  <div class="text-xs text-gray-500">正確率 ${acc}%</div>
+                </div>
+              </div>
+            </div>`;
+                }).join('');
+            }
+        }
+
+        // 將統計卡片與 history 頁一致的欄位同步
+        const totalSessionsEl = document.getElementById('totalSessions');
+        const totalQuestionsEl = document.getElementById('totalQuestions');
+        const avgAccuracyEl = document.getElementById('avgAccuracy');
+        const totalTimeEl = document.getElementById('totalTime');
+
+        // 從 radar 或 trend 不易直接得到總統計，這裡優先從 recentList 內的彙總（若後端有 statistics API 可改用）
+        if (recentList && recentList.data) {
+            const sessions = recentList.data.sessions || [];
+            const totalSessions = recentList.data.total || sessions.length;
+            const totalQuestions = sessions.reduce((sum, s) => sum + (s.question_count || 0), 0);
+            const correct = sessions.reduce((sum, s) => sum + (s.correct_count || 0), 0);
+            const accuracy = totalQuestions > 0 ? Math.round((correct / totalQuestions) * 100) : 0;
+            const timeSpent = sessions.reduce((sum, s) => sum + (s.time_spent || 0), 0);
+            const hours = Math.round((timeSpent / 3600) * 10) / 10;
+
+            if (totalSessionsEl) totalSessionsEl.textContent = totalSessions;
+            if (totalQuestionsEl) totalQuestionsEl.textContent = totalQuestions;
+            if (avgAccuracyEl) avgAccuracyEl.textContent = `${accuracy}%`;
+            if (totalTimeEl) totalTimeEl.textContent = `${hours}h`;
         }
     } catch (err) {
         console.error('Dashboard init error:', err);

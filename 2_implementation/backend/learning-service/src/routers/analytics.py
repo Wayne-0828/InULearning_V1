@@ -12,7 +12,7 @@ from datetime import datetime, timedelta
 
 from fastapi import APIRouter, Depends, HTTPException, Query, status
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import select, func, distinct, cast, Float, Integer, case
+from sqlalchemy import select, func, distinct, cast, Float, Integer, case, text
 
 from ..utils.auth import get_current_user
 from ..utils.database import get_db_session
@@ -57,23 +57,25 @@ async def get_subjects_radar(
     if user_id_int is None:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Invalid user id in token")
 
-    # 聚合每科目資料
-    # - accuracy_pct = AVG(CASE WHEN is_correct THEN 1 ELSE 0 END) * 100
+    # 聚合每科目資料（基礎 + 新指標）
+    # - accuracy_ratio = AVG(is_correct::int) 0..1
     # - avg_time_spent_s = AVG(er.time_spent)
     # - qpm = 60 / avg_time_spent_s
-    # - dwell_min = AVG(ls.time_spent) / 60
-    # - questions_count = COUNT(*)
-    # - sessions_count = COUNT(DISTINCT er.session_id)
+    # - dwell_min = AVG(ls.time_spent) / 60  (分鐘)
+    # - growth_rate = (recent_acc - past_acc) / past_acc  (以 window 對半切分)
+    # - time_stddev_s = stddev_samp(er.time_spent)
     try:
         window_start = datetime.utcnow() - timedelta(days=days)
+        window_mid = datetime.utcnow() - timedelta(days=max(1, days // 2))
         stmt = (
             select(
                 ExerciseRecord.subject.label("subject"),
-                (func.avg(cast(case((ExerciseRecord.is_correct == True, 1), else_=0), Float)) * 100.0).label("accuracy_pct"),
+                (func.avg(cast(case((ExerciseRecord.is_correct == True, 1), else_=0), Float))).label("accuracy_ratio"),
                 func.avg(ExerciseRecord.time_spent).label("avg_time_spent_s"),
-                func.count().label("questions_count"),
-                func.count(distinct(ExerciseRecord.session_id)).label("sessions_count"),
                 (func.avg(LearningSession.time_spent) / 60.0).label("dwell_min"),
+                func.avg(cast(case((ExerciseRecord.created_at >= window_mid, case((ExerciseRecord.is_correct == True, 1), else_=0)), else_=None), Float)).label("recent_acc"),
+                func.avg(cast(case((ExerciseRecord.created_at < window_mid, case((ExerciseRecord.is_correct == True, 1), else_=0)), else_=None), Float)).label("past_acc"),
+                func.stddev_samp(ExerciseRecord.time_spent).label("time_stddev_s"),
             )
             .join(LearningSession, LearningSession.id == ExerciseRecord.session_id)
             .where(
@@ -88,86 +90,120 @@ async def get_subjects_radar(
         logger.error(f"Radar aggregation failed: {e}")
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Radar aggregation failed")
 
-    # 整理 raw 指標，計算 qpm 與 avg_q_per_session
+    # 查詢知識點掌握率：對每個科目，平均每個知識點的正確率
+    knowledge_mastery_map: Dict[str, float] = {}
+    try:
+        kp_sql = text(
+            """
+            WITH per_kp AS (
+              SELECT er.subject AS subject,
+                     kp AS kp,
+                     AVG(CASE WHEN er.is_correct THEN 1.0 ELSE 0.0 END) AS kp_acc
+              FROM exercise_records er, UNNEST(er.knowledge_points) AS kp
+              WHERE er.user_id = :user_id
+                AND er.created_at >= :window_start
+              GROUP BY er.subject, kp
+            )
+            SELECT subject, AVG(kp_acc) AS knowledge_mastery
+            FROM per_kp
+            GROUP BY subject
+            """
+        )
+        result = await db_session.execute(kp_sql, {"user_id": user_id_int, "window_start": window_start})
+        for subject, km in result.fetchall():
+            knowledge_mastery_map[subject] = float(km or 0.0)
+    except Exception as e:
+        logger.warning(f"Knowledge mastery aggregation failed, defaulting to accuracy: {e}")
+        # fallback: 使用 accuracy_ratio 當作掌握率
+
     subjects_raw: List[Dict[str, Any]] = []
-    for subject, accuracy_pct, avg_time_spent_s, questions_count, sessions_count, dwell_min in rows:
+    for subject, accuracy_ratio, avg_time_spent_s, dwell_min, recent_acc, past_acc, time_stddev_s in rows:
         avg_time_spent_s = float(avg_time_spent_s) if avg_time_spent_s is not None else None
         qpm = 60.0 / avg_time_spent_s if (avg_time_spent_s and avg_time_spent_s > 0) else 0.0
-        questions_count = int(questions_count or 0)
-        sessions_count = int(sessions_count or 0)
-        avg_q_per_session = (questions_count / sessions_count) if sessions_count > 0 else 0.0
         dwell_min = float(dwell_min or 0.0)
+        accuracy_ratio = float(accuracy_ratio or 0.0)
+        recent_acc = float(recent_acc or 0.0)
+        past_acc = float(past_acc or 0.0)
+        growth_rate = ((recent_acc - past_acc) / past_acc) if past_acc > 0 else 0.0
+        time_stddev_s = float(time_stddev_s or 0.0)
+        knowledge_mastery = knowledge_mastery_map.get(subject, accuracy_ratio)
         subjects_raw.append(
             {
                 "subject": subject or "未知科目",
                 "raw": {
-                    "accuracy_pct": float(accuracy_pct or 0.0),
+                    "accuracy": accuracy_ratio,         # 0..1
                     "qpm": float(qpm),
-                    "dwell_min": dwell_min,
-                    "questions_count": questions_count,
-                    "avg_q_per_session": float(avg_q_per_session),
-                    "sessions_count": sessions_count,
+                    "dwell_min": dwell_min,             # minutes
+                    "growth_rate": growth_rate,         # can be negative
+                    "knowledge_mastery": knowledge_mastery, # 0..1
+                    "time_stability": time_stddev_s,    # seconds (stddev)
                 },
             }
         )
 
-    # 正規化到 0-100
+    # 統一尺度鍵（0..1，前端顯示百分率）
     metric_keys = [
-        "accuracy_pct",
-        "qpm",
-        "dwell_min",  # lower is better
-        "questions_count",
-        "avg_q_per_session",
-        "sessions_count",
+        "accuracy",           # higher better (0..1)
+        "qpm",                # higher better (min-max)
+        "dwell_min",          # lower better (invert then min-max)
+        "growth_rate",        # can be negative, min-max across subjects
+        "knowledge_mastery",  # higher better (0..1)
+        "time_stability",     # lower better (invert then min-max)
     ]
 
-    def min_max(values: List[float]) -> List[float]:
-        if not values:
-            return []
-        vmin = min(values)
-        vmax = max(values)
-        if vmax == vmin:
-            return [50.0 for _ in values]
-        return [((v - vmin) / (vmax - vmin)) * 100.0 for v in values]
+    # 絕對尺度正規化（不依賴其他科目）
+    def clamp01(x: float) -> float:
+        if x is None:
+            return 0.0
+        if x < 0.0:
+            return 0.0
+        if x > 1.0:
+            return 1.0
+        return x
 
-    # 準備每個指標的值列表
-    metric_to_values: Dict[str, List[float]] = {k: [] for k in metric_keys}
+    QPM_MAX = 3.0            # 期望上限(題/分)
+    DWELL_MAX_MIN = 30.0     # 期望上限(分鐘)
+    STD_MAX = 60.0           # 作答時間標準差上限(秒)
+
+    subjects_out: List[Dict[str, Any]] = []
     for item in subjects_raw:
         r = item["raw"]
-        metric_to_values["accuracy_pct"].append(r["accuracy_pct"])  # higher better
-        metric_to_values["qpm"].append(r["qpm"])  # higher better
-        # invert dwell for normalization: use reciprocal to turn lower-better into higher-better
-        inv_dwell = 1.0 / r["dwell_min"] if r["dwell_min"] and r["dwell_min"] > 0 else 0.0
-        metric_to_values["dwell_min"].append(inv_dwell)
-        metric_to_values["questions_count"].append(float(r["questions_count"]))
-        metric_to_values["avg_q_per_session"].append(r["avg_q_per_session"]) 
-        metric_to_values["sessions_count"].append(float(r["sessions_count"]))
+        acc_norm = clamp01(r.get("accuracy", 0.0))
+        qpm_norm = clamp01((r.get("qpm", 0.0) or 0.0) / QPM_MAX)
+        dwell_raw = r.get("dwell_min", 0.0) or 0.0
+        dwell_norm = clamp01(1.0 - (dwell_raw / DWELL_MAX_MIN))
+        growth_raw = r.get("growth_rate", 0.0) or 0.0  # -inf..+inf,常見在[-1,1]
+        growth_norm = clamp01((growth_raw + 1.0) / 2.0)
+        km_norm = clamp01(r.get("knowledge_mastery", 0.0))
+        std_raw = r.get("time_stability", 0.0) or 0.0
+        time_stability_norm = clamp01(1.0 - (std_raw / STD_MAX))
 
-    # 計算 normalized
-    normalized_map: Dict[str, List[float]] = {}
-    for key, values in metric_to_values.items():
-        normalized_map[key] = min_max(values)
-
-    # 組裝輸出
-    subjects_out: List[Dict[str, Any]] = []
-    for idx, item in enumerate(subjects_raw):
-        r = item["raw"]
         subjects_out.append(
             {
                 "subject_id": item["subject"],
                 "label": item["subject"],
                 "raw": r,
                 "normalized": {
-                    "accuracy_pct": normalized_map["accuracy_pct"][idx] if subjects_raw else 0.0,
-                    "qpm": normalized_map["qpm"][idx] if subjects_raw else 0.0,
-                    # note: dwell_min normalized is computed from inverse dwell for higher-better scaling
-                    "dwell_min": normalized_map["dwell_min"][idx] if subjects_raw else 0.0,
-                    "questions_count": normalized_map["questions_count"][idx] if subjects_raw else 0.0,
-                    "avg_q_per_session": normalized_map["avg_q_per_session"][idx] if subjects_raw else 0.0,
-                    "sessions_count": normalized_map["sessions_count"][idx] if subjects_raw else 0.0,
+                    "accuracy": acc_norm,
+                    "qpm": qpm_norm,
+                    "dwell_min": dwell_norm,
+                    "growth_rate": growth_norm,
+                    "knowledge_mastery": km_norm,
+                    "time_stability": time_stability_norm,
                 },
             }
         )
+
+    # 固定科目順序
+    subject_order = ["國文", "英文", "數學", "自然", "地理", "歷史", "公民"]
+    def sort_key(item):
+        name = item.get("label") or item.get("subject_id") or ""
+        try:
+            idx = subject_order.index(name)
+        except ValueError:
+            idx = 999
+        return (idx, name)
+    subjects_out.sort(key=sort_key)
 
     return {
         "window": f"{days}d",
@@ -234,12 +270,22 @@ async def get_subjects_trend(
         y_value = float(y) if y is not None else 0.0
         series_map[subj].append({"x": x.isoformat() if x else None, "y": y_value})
 
-    # 依每科目限制點數
+    # 依每科目限制點數，並固定科目順序
     out_series: List[Dict[str, Any]] = []
     for subj, points in series_map.items():
         if limit and len(points) > limit:
             points = points[-limit:]  # 取最新的 limit 筆
         out_series.append({"subject_id": subj, "label": subj, "points": points})
+
+    subject_order = ["國文", "英文", "數學", "自然", "地理", "歷史", "公民"]
+    def srt_key(s):
+        name = s.get("label") or s.get("subject_id") or ""
+        try:
+            idx = subject_order.index(name)
+        except ValueError:
+            idx = 999
+        return (idx, name)
+    out_series.sort(key=srt_key)
 
     return {
         "window": f"{days}d",
