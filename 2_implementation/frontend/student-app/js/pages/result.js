@@ -443,6 +443,27 @@ class ResultPage {
                 button.classList.remove('ring-2', 'ring-blue-500');
             }
         });
+
+        // 確保當前題號在可視範圍（當題數很多時）
+        const activeButton = navButtons[this.currentDetailIndex];
+        if (activeButton) {
+            const container = questionNav.parentElement || questionNav;
+            const needsScroll = container.scrollWidth > container.clientWidth;
+            if (needsScroll) {
+                const containerLeft = container.scrollLeft;
+                const containerRight = containerLeft + container.clientWidth;
+                const btnLeft = activeButton.offsetLeft;
+                const btnRight = btnLeft + activeButton.offsetWidth;
+                const padding = 12;
+
+                if (btnRight + padding > containerRight) {
+                    container.scrollTo({ left: containerLeft + (btnRight + padding - containerRight), behavior: 'smooth' });
+                } else if (btnLeft - padding < containerLeft) {
+                    const delta = containerLeft - (btnLeft - padding);
+                    container.scrollTo({ left: Math.max(0, containerLeft - delta), behavior: 'smooth' });
+                }
+            }
+        }
     }
 
     /**

@@ -149,6 +149,7 @@ class ExamPage {
             const navButton = document.createElement('button');
             navButton.className = 'w-8 h-8 rounded border-2 border-gray-300 text-sm font-medium hover:bg-gray-100 transition-colors';
             navButton.textContent = index + 1;
+            navButton.setAttribute('data-index', String(index));
             navButton.addEventListener('click', () => this.goToQuestion(index));
 
             this.questionNav.appendChild(navButton);
@@ -202,7 +203,7 @@ class ExamPage {
 
         // 更新提交按鈕狀態
         this.updateSubmitButton();
-        
+
         // 觸發 MathJax 重新渲染
         this.renderMath();
     }
@@ -253,7 +254,7 @@ class ExamPage {
 
             this.optionsContainer.appendChild(optionElement);
         });
-        
+
         // 觸發 MathJax 重新渲染選項中的數學公式
         this.renderMath();
     }
@@ -336,6 +337,29 @@ class ExamPage {
                 button.classList.add('border-gray-300', 'text-gray-600', 'hover:bg-gray-100');
             }
         });
+
+        // 確保當前題目按鈕在可視範圍（當題數超過可視寬度，如第22題時自動水平滾動）
+        const activeButton = navButtons[this.currentQuestionIndex];
+        if (activeButton) {
+            const container = this.questionNav.parentElement || this.questionNav;
+            const needsScroll = container.scrollWidth > container.clientWidth;
+            if (needsScroll) {
+                const containerLeft = container.scrollLeft;
+                const containerRight = containerLeft + container.clientWidth;
+                const btnLeft = activeButton.offsetLeft;
+                const btnRight = btnLeft + activeButton.offsetWidth;
+                const padding = 12; // 視覺餘量
+
+                // 僅在當前題目完全超出可視範圍時才滾動，且以最小位移讓其剛好可見，避免「亂跳」
+                if (btnRight + padding > containerRight) {
+                    const delta = btnRight + padding - containerRight;
+                    container.scrollTo({ left: containerLeft + delta, behavior: 'smooth' });
+                } else if (btnLeft - padding < containerLeft) {
+                    const delta = containerLeft - (btnLeft - padding);
+                    container.scrollTo({ left: Math.max(0, containerLeft - delta), behavior: 'smooth' });
+                }
+            }
+        }
     }
 
     /**

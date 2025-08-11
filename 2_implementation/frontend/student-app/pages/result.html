@@ -1,14 +1,15 @@
 <!DOCTYPE html>
 <html lang="zh-TW">
+
 <head>
-    <meta charset="utf-8"/>
-    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
     <title>練習結果 - InU Learning【因你而學】</title>
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet"/>
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
     <link rel="stylesheet" href="../css/main.css">
-    
+
     <!-- MathJax 配置和載入 -->
     <script>
         window.MathJax = {
@@ -25,26 +26,29 @@
     </script>
     <script async src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
     <script async id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-    
+
     <style>
         body {
             font-family: 'Noto Sans TC', sans-serif;
         }
+
         .scrollbar-hide::-webkit-scrollbar {
             display: none;
         }
+
         .scrollbar-hide {
             -ms-overflow-style: none;
             scrollbar-width: none;
         }
     </style>
 </head>
+
 <body class="bg-gray-100 flex">
     <!-- 側邊欄 -->
     <aside class="w-64 h-screen bg-blue-800 text-white flex flex-col fixed">
         <div class="p-6 text-center">
             <div class="bg-yellow-400 rounded-full w-20 h-20 flex items-center justify-center mx-auto mb-4">
-                <span class="text-blue-800 font-bold text-lg">InU<br/>Learning</span>
+                <span class="text-blue-800 font-bold text-lg">InU<br />Learning</span>
             </div>
             <h1 class="text-xl font-bold">InU Learning</h1>
             <p class="text-sm text-blue-300">【因你而學】</p>
@@ -78,7 +82,8 @@
             </ul>
         </nav>
         <div class="p-4 border-t border-blue-700">
-            <button id="logoutBtn" class="w-full flex items-center px-4 py-2 text-gray-100 hover:bg-blue-700 rounded-lg">
+            <button id="logoutBtn"
+                class="w-full flex items-center px-4 py-2 text-gray-100 hover:bg-blue-700 rounded-lg">
                 <span class="material-icons">logout</span>
                 <span class="ml-3">登出</span>
             </button>
@@ -101,8 +106,10 @@
                     <span id="userName" class="text-sm font-medium text-blue-600"></span>
                 </div>
                 <div id="authButtons">
-                    <a class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors" href="login.html">登入</a>
-                    <a class="bg-gray-200 text-gray-800 px-4 py-2 rounded-lg hover:bg-gray-300 transition-colors" href="register.html">註冊</a>
+                    <a class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors"
+                        href="login.html">登入</a>
+                    <a class="bg-gray-200 text-gray-800 px-4 py-2 rounded-lg hover:bg-gray-300 transition-colors"
+                        href="register.html">註冊</a>
                 </div>
             </div>
         </header>
@@ -112,7 +119,7 @@
             <!-- 結果摘要 -->
             <div class="bg-white rounded-2xl shadow-lg p-8 mb-8">
                 <h2 class="text-3xl font-bold text-center mb-6">練習結果</h2>
-                
+
                 <!-- 成績統計 -->
                 <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
                     <div class="bg-blue-50 p-6 rounded-lg text-center">
@@ -135,15 +142,18 @@
 
                 <!-- 操作按鈕 -->
                 <div class="flex justify-center space-x-4 mb-8">
-                    <button onclick="location.href='exercise.html'" class="bg-blue-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-700 flex items-center">
+                    <button onclick="location.href='exercise.html'"
+                        class="bg-blue-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-700 flex items-center">
                         <span class="material-icons mr-2">refresh</span>
                         再次練習
                     </button>
-                    <button onclick="location.href='dashboard.html'" class="bg-green-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-green-700 flex items-center">
+                    <button onclick="location.href='dashboard.html'"
+                        class="bg-green-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-green-700 flex items-center">
                         <span class="material-icons mr-2">dashboard</span>
                         查看分析
                     </button>
-                    <button onclick="location.href='history.html'" class="bg-gray-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-gray-700 flex items-center">
+                    <button onclick="location.href='history.html'"
+                        class="bg-gray-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-gray-700 flex items-center">
                         <span class="material-icons mr-2">history</span>
                         學習歷程
                     </button>
@@ -155,7 +165,7 @@
                 <h3 class="text-xl font-bold mb-4">題目導航</h3>
                 <div class="relative mb-6">
                     <div class="overflow-x-auto scrollbar-hide pb-4">
-                        <div id="questionNav" class="flex space-x-2 w-max mx-auto">
+                        <div id="questionNav" class="flex space-x-2 w-max">
                             <!-- 題目導航將由 JavaScript 動態生成 -->
                         </div>
                     </div>
@@ -167,11 +177,13 @@
                 <div class="flex justify-between items-center mb-6">
                     <h3 class="text-xl font-bold">題目詳解</h3>
                     <div class="flex space-x-2">
-                        <button id="prevQuestionBtn" class="bg-gray-200 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-300 flex items-center">
+                        <button id="prevQuestionBtn"
+                            class="bg-gray-200 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-300 flex items-center">
                             <span class="material-icons mr-1">arrow_back</span>
                             上一題
                         </button>
-                        <button id="nextQuestionBtn" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 flex items-center">
+                        <button id="nextQuestionBtn"
+                            class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 flex items-center">
                             下一題
                             <span class="material-icons ml-1">arrow_forward</span>
                         </button>
@@ -184,7 +196,8 @@
                 </div>
 
                 <!-- 選項與答案 -->
-                <div id="currentOptions" class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                <div id="currentOptions"
+                    class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6 max-h-[50vh] overflow-y-auto pr-2">
                     <!-- 選項將由 JavaScript 動態生成 -->
                 </div>
 
@@ -201,7 +214,9 @@
                         <div class="flex items-center p-4 bg-yellow-100 border border-yellow-300 rounded-lg">
                             <div class="flex-shrink-0">
                                 <svg class="w-5 h-5 text-yellow-600" fill="currentColor" viewBox="0 0 20 20">
-                                    <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path>
+                                    <path fill-rule="evenodd"
+                                        d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z"
+                                        clip-rule="evenodd"></path>
                                 </svg>
                             </div>
                             <div class="ml-3">
@@ -221,7 +236,9 @@
                         <div class="flex items-center p-4 bg-yellow-100 border border-yellow-300 rounded-lg">
                             <div class="flex-shrink-0">
                                 <svg class="w-5 h-5 text-yellow-600" fill="currentColor" viewBox="0 0 20 20">
-                                    <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path>
+                                    <path fill-rule="evenodd"
+                                        d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z"
+                                        clip-rule="evenodd"></path>
                                 </svg>
                             </div>
                             <div class="ml-3">
@@ -243,4 +260,5 @@
     <script src="../js/api/ai-analysis.js"></script>
     <script src="../js/pages/result.js"></script>
 </body>
-</html> 
+
+</html>
