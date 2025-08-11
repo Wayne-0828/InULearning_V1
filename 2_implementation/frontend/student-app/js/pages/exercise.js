@@ -14,7 +14,7 @@ class ExerciseManager {
         this.isSubmitted = false;
         this.selectedCriteria = {};
         this.chapterData = null; // 儲存章節資料
-        
+
         // 延遲初始化，確保 DOM 已載入
         if (document.readyState === 'loading') {
             document.addEventListener('DOMContentLoaded', () => this.init());
@@ -47,7 +47,7 @@ class ExerciseManager {
         if (setupDiv) {
             setupDiv.classList.remove('hidden');
         }
-        
+
         // 初始化默認值
         const questionCountInput = document.getElementById('questionCountInput');
         if (questionCountInput) {
@@ -93,7 +93,7 @@ class ExerciseManager {
         // 導航按鈕
         const prevBtn = document.getElementById('prevQuestionBtn');
         const nextBtn = document.getElementById('nextQuestionBtn');
-        
+
         if (prevBtn) prevBtn.addEventListener('click', () => this.previousQuestion());
         if (nextBtn) nextBtn.addEventListener('click', () => this.nextQuestion());
 
@@ -134,17 +134,17 @@ class ExerciseManager {
         }
 
         // 查找對應的章節資料
-        const matchingData = this.chapterData.find(item => 
+        const matchingData = this.chapterData.find(item =>
             item.出版社 === edition && item.科目 === subject
         );
 
         if (matchingData && matchingData.年級章節[grade]) {
             const chapters = matchingData.年級章節[grade];
             chapterSelect.disabled = false;
-            
+
             // 添加"全部章節"選項
             chapterSelect.innerHTML = '<option value="">全部章節</option>';
-            
+
             // 添加各章節選項
             chapters.forEach((chapter, index) => {
                 const option = document.createElement('option');
@@ -161,11 +161,11 @@ class ExerciseManager {
     validateQuestionCount() {
         const input = document.getElementById('questionCountInput');
         const hint = document.getElementById('questionCountHint');
-        
+
         if (!input || !hint) return;
 
         const value = parseInt(input.value);
-        
+
         if (isNaN(value) || value < 1) {
             input.value = 1;
             hint.textContent = '題數不能少於1題';
@@ -199,9 +199,9 @@ class ExerciseManager {
     async checkQuestionBank() {
         try {
             this.showLoading('正在檢查題庫...');
-            
+
             this.selectedCriteria = this.getSelectedCriteria();
-            
+
             // 檢查必填欄位
             if (!this.selectedCriteria.grade) {
                 this.showError('請選擇年級');
@@ -229,7 +229,7 @@ class ExerciseManager {
             if (result.success && result.data.count > 0) {
                 const availableCount = result.data.count;
                 const requestedCount = this.selectedCriteria.question_count;
-                
+
                 // 簡化邏輯：如果有題目就顯示成功
                 this.showQuestionBankInfo(availableCount, requestedCount);
                 this.enableStartButton();
@@ -356,7 +356,7 @@ class ExerciseManager {
     async startExercise() {
         try {
             this.showLoading('正在載入題目...');
-            
+
             // 獲取題目
             const questionsResult = await learningAPI.getQuestionsByConditions({
                 grade: this.selectedCriteria.grade,
@@ -392,7 +392,7 @@ class ExerciseManager {
 
             // 將會話資料存儲到 sessionStorage
             sessionStorage.setItem('examSession', JSON.stringify(sessionData));
-            
+
             console.log('跳轉到考試頁面');
             // 跳轉到考試頁面
             window.location.href = 'exam.html';
@@ -414,7 +414,7 @@ class ExerciseManager {
                 question: `模擬題目 ${i}：這是一個測試題目，用於驗證系統功能。`,
                 options: {
                     A: "選項 A",
-                    B: "選項 B", 
+                    B: "選項 B",
                     C: "選項 C",
                     D: "選項 D"
                 },
@@ -431,10 +431,10 @@ class ExerciseManager {
     showExerciseInterface() {
         const setupDiv = document.getElementById('exerciseSetup');
         const interfaceDiv = document.getElementById('exerciseInterface');
-        
+
         if (setupDiv) setupDiv.classList.add('hidden');
         if (interfaceDiv) interfaceDiv.classList.remove('hidden');
-        
+
         this.updateProgress();
     }
 
@@ -466,15 +466,15 @@ class ExerciseManager {
                 
                 <div class="space-y-3">
                     ${optionsArray.map((option, index) => {
-                        const optionKey = String.fromCharCode(65 + index);
-                        const isSelected = this.userAnswers[question.id] === optionKey;
-                        return `
+            const optionKey = String.fromCharCode(65 + index);
+            const isSelected = this.userAnswers[question.id] === optionKey;
+            return `
                             <label class="flex items-center p-3 border rounded-lg cursor-pointer hover:bg-gray-50 ${isSelected ? 'bg-blue-50 border-blue-300' : 'border-gray-200'}">
                                 <input type="radio" name="answer" value="${optionKey}" class="mr-3" ${isSelected ? 'checked' : ''}>
                                 <span>${option}</span>
                             </label>
                         `;
-                    }).join('')}
+        }).join('')}
                 </div>
             </div>
         `;
@@ -505,11 +505,11 @@ class ExerciseManager {
     updateNavigationButtons() {
         const prevBtn = document.getElementById('prevQuestionBtn');
         const nextBtn = document.getElementById('nextQuestionBtn');
-        
+
         if (prevBtn) {
             prevBtn.disabled = this.currentQuestionIndex === 0;
         }
-        
+
         if (nextBtn) {
             nextBtn.disabled = this.currentQuestionIndex === this.questions.length - 1;
         }
@@ -518,14 +518,14 @@ class ExerciseManager {
     updateProgress() {
         const progressBar = document.getElementById('exerciseProgress');
         const progressText = document.getElementById('progressText');
-        
+
         const answeredCount = Object.keys(this.userAnswers).length;
         const progress = (answeredCount / this.questions.length) * 100;
-        
+
         if (progressBar) {
             progressBar.style.width = `${progress}%`;
         }
-        
+
         if (progressText) {
             progressText.textContent = `已完成 ${answeredCount} / ${this.questions.length} 題`;
         }
@@ -580,12 +580,12 @@ class ExerciseManager {
         // 計算結果統計
         let correctCount = 0;
         const detailedResults = [];
-        
+
         this.questions.forEach((question, index) => {
             const userAnswer = this.userAnswers[question.id];
             const correctAnswer = question.answer;
             const isCorrect = userAnswer === correctAnswer;
-            
+
             if (isCorrect) {
                 correctCount++;
             }
@@ -652,7 +652,7 @@ class ExerciseManager {
 
         // 保存結果到 sessionStorage
         sessionStorage.setItem('examResults', JSON.stringify(examResults));
-        
+
         // 清除之前的保存標記，確保新練習能夠保存
         sessionStorage.removeItem('savedSessionId');
 
@@ -688,11 +688,11 @@ class ExerciseManager {
                 <h4 class="text-lg font-semibold mb-4">詳細結果</h4>
                 <div class="space-y-4">
                     ${this.questions.map((question, index) => {
-                        const userAnswer = this.userAnswers[question.id];
-                        const correctAnswer = question.answer;
-                        const isCorrect = userAnswer === correctAnswer;
-                        
-                        return `
+            const userAnswer = this.userAnswers[question.id];
+            const correctAnswer = question.answer;
+            const isCorrect = userAnswer === correctAnswer;
+
+            return `
                             <div class="border rounded-lg p-4 ${isCorrect ? 'border-green-200 bg-green-50' : 'border-red-200 bg-red-50'}">
                                 <div class="flex items-center mb-2">
                                     <span class="font-semibold">題目 ${index + 1}</span>
@@ -707,7 +707,7 @@ class ExerciseManager {
                                 </div>
                             </div>
                         `;
-                    }).join('')}
+        }).join('')}
                 </div>
             </div>
         `;
@@ -743,7 +743,7 @@ class ExerciseManager {
 
         // 重置按鈕狀態
         this.disableStartButton();
-        
+
         // 重置章節選項
         const chapterSelect = document.getElementById('chapterSelect');
         if (chapterSelect) {
@@ -775,7 +775,7 @@ class ExerciseManager {
         if (errorDiv) {
             errorDiv.textContent = message;
             errorDiv.classList.remove('hidden');
-            
+
             // 5秒後自動隱藏
             setTimeout(() => {
                 errorDiv.classList.add('hidden');

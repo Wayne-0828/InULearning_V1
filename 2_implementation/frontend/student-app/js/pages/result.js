@@ -82,6 +82,19 @@ class ResultPage {
             const exerciseRecords = sessionDetail.exercise_records || [];
 
             // 轉換為 examResults 格式
+            // 修正 publisher：以 session.publisher 優先，其次看題目記錄多數值
+            const publisherFromSession = session.publisher;
+            let chosenPublisher = publisherFromSession;
+            if (!chosenPublisher || chosenPublisher === '南一') {
+                const counts = {};
+                exerciseRecords.forEach(r => {
+                    const p = r.publisher;
+                    if (!p) return;
+                    counts[p] = (counts[p] || 0) + 1;
+                });
+                const top = Object.entries(counts).sort((a, b) => b[1] - a[1])[0];
+                if (top) chosenPublisher = top[0];
+            }
             this.examResults = {
                 score: Math.round(session.total_score || 0),
                 accuracy: Math.round(session.accuracy_rate || 0),
@@ -94,7 +107,7 @@ class ResultPage {
                     sessionId: session.session_id,
                     sessionName: session.session_name,
                     grade: session.grade,
-                    publisher: session.publisher,
+                    publisher: chosenPublisher || session.publisher,
                     subject: session.subject,
                     chapter: session.chapter,
                     difficulty: session.difficulty,
@@ -521,13 +534,13 @@ class ResultPage {
             // 檢查是否已經保存過（避免重複保存）
             const savedSessionId = sessionStorage.getItem('savedSessionId');
             const currentExamResults = sessionStorage.getItem('examResults');
-            
+
             // 如果有保存標記且當前沒有新的練習結果，則跳過保存
             if (savedSessionId && !currentExamResults) {
                 console.log('練習結果已保存，會話ID:', savedSessionId);
                 return;
             }
-            
+
             // 如果有新的練習結果，清除舊的保存標記
             if (currentExamResults) {
                 console.log('發現新的練習結果，清除舊的保存標記');
@@ -560,6 +573,11 @@ class ResultPage {
 
             // 轉換數據格式為後端API格式
             const requestData = this.convertToAPIFormat();
+            // 確保 metadata 中帶上原始選擇（含 publisher/edition），方便後端回填
+            requestData.session_metadata = {
+                ...(requestData.session_metadata || {}),
+                original_session_data: this.examResults?.sessionData || {}
+            };
 
             // 調用API保存結果
             const result = await learningAPI.submitExerciseResult(requestData);
@@ -568,7 +586,7 @@ class ResultPage {
                 console.log('練習結果保存成功:', result.data);
                 // 保存會話ID，避免重複保存
                 sessionStorage.setItem('savedSessionId', result.data.session_id);
-                
+
                 // 清除 sessionStorage 中的練習結果，避免重複處理
                 sessionStorage.removeItem('examResults');
 
