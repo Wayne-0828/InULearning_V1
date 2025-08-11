@@ -5,7 +5,7 @@
 """
 
 import logging
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import Optional
 from fastapi import APIRouter, Depends, HTTPException, status, Query
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -246,6 +246,18 @@ async def get_learning_records(
     try:
         logger.info(f"Getting learning records for user {current_user.user_id}")
         
+        # 正規化時間參數：資料庫欄位為 TIMESTAMP WITHOUT TIME ZONE
+        # 若收到帶時區的時間，轉成 UTC 並去除 tzinfo，避免 naive/aware 衝突
+        def to_naive_utc(dt: Optional[datetime]) -> Optional[datetime]:
+            if dt is None:
+                return None
+            if dt.tzinfo is not None:
+                return dt.astimezone(timezone.utc).replace(tzinfo=None)
+            return dt
+
+        start_date = to_naive_utc(start_date)
+        end_date = to_naive_utc(end_date)
+
         # 構建查詢條件
         user_id_int = int(current_user.user_id)
         conditions = [LearningSession.user_id == user_id_int]

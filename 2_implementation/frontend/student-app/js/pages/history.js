@@ -23,7 +23,7 @@ class HistoryManager {
         console.log('learningAPI 狀態:', typeof learningAPI, learningAPI);
 
         this.bindEvents();
-        this.loadRecentRecords(); // 先載入最近5筆記錄
+        this.loadLearningRecords(); // 載入學習記錄（預設 10 筆）
         this.loadStatistics();
 
         console.log('HistoryManager 初始化完成');
@@ -118,6 +118,7 @@ class HistoryManager {
                 ...this.getFilterParams()
             };
 
+            console.debug('[History] loadLearningRecords params =', params);
             const result = await learningAPI.getLearningRecords(params);
 
             if (result.success && result.data) {
@@ -129,6 +130,7 @@ class HistoryManager {
                 // 隱藏「最近5筆記錄」標題
                 this.hideRecentRecordsHeader();
             } else {
+                console.error('[History] API returned failure:', result);
                 throw new Error(result.error || '載入學習記錄失敗');
             }
         } catch (error) {
@@ -177,10 +179,13 @@ class HistoryManager {
         if (gradeFilter) params.grade = gradeFilter;
         if (editionFilter) params.publisher = editionFilter; // 更新為 publisher
         if (dateFilter && dateFilter !== 'all') {
-            const days = parseInt(dateFilter);
+            const days = parseInt(dateFilter, 10);
             const endDate = new Date();
+            endDate.setHours(23, 59, 59, 999);
             const startDate = new Date();
-            startDate.setDate(endDate.getDate() - days);
+            startDate.setHours(0, 0, 0, 0);
+            // 最近 N 天（含今天）→ 往回推 N-1 天
+            startDate.setDate(startDate.getDate() - (days - 1));
 
             params.start_date = startDate.toISOString();
             params.end_date = endDate.toISOString();
@@ -278,8 +283,9 @@ class HistoryManager {
             if (record.grade) {
                 tags.push(`<span class="px-2 py-1 text-xs bg-blue-100 text-blue-600 rounded-full">${this.getGradeDisplayName(record.grade)}</span>`);
             }
-            if (record.publisher) {
-                tags.push(`<span class="px-2 py-1 text-xs bg-green-100 text-green-600 rounded-full">${record.publisher}</span>`);
+            const publisherName = record.publisher || record.edition;
+            if (publisherName) {
+                tags.push(`<span class="px-2 py-1 text-xs bg-green-100 text-green-600 rounded-full">${publisherName}</span>`);
             }
             if (record.chapter) {
                 tags.push(`<span class="px-2 py-1 text-xs bg-purple-100 text-purple-600 rounded-full">${this.truncateText(record.chapter, 10)}</span>`);

@@ -340,11 +340,16 @@ class LearningAPI {
             if (filters.start_date) params.append('start_date', filters.start_date);
             if (filters.end_date) params.append('end_date', filters.end_date);
 
-            const response = await fetch(`${this.baseURL}/records?${params}`, {
+            const requestUrl = `${this.baseURL}/records?${params.toString()}`;
+            console.debug('[LearningAPI] GET /records URL =', requestUrl);
+            const response = await fetch(requestUrl, {
                 headers: this.getAuthHeaders()
             });
 
             if (!response.ok) {
+                let errorBody = '';
+                try { errorBody = await response.text(); } catch { }
+                console.error('[LearningAPI] /records failed', response.status, errorBody);
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
 
