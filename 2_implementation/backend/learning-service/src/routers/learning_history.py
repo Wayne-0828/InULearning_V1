@@ -5,7 +5,7 @@
 """
 
 import logging
-from datetime import datetime, timezone
+from datetime import datetime
 from typing import Optional
 from fastapi import APIRouter, Depends, HTTPException, status, Query
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -46,34 +46,6 @@ async def complete_exercise(
         total_score = sum(result.score for result in request.exercise_results) / total_questions if total_questions > 0 else 0
         accuracy_rate = (correct_count / total_questions * 100) if total_questions > 0 else 0
         
-        # 決定會話使用的出版社：
-        # 1) 優先使用請求中的 publisher
-        # 2) 若請求 publisher 缺失或為預設值「南一」，則以練習題目中出現最多次的 publisher 作為回填
-        chosen_publisher = (request.publisher or '').strip() if request.publisher else ''
-        logger.info(f"complete_exercise: request.publisher='{request.publisher}' (normalized='{chosen_publisher}')")
-        if not chosen_publisher or chosen_publisher == '南一':
-            # 嘗試從 session_metadata.original_session_data 抓取 edition/publisher
-            try:
-                meta = request.session_metadata or {}
-                original = (meta.get('original_session_data') or {}) if isinstance(meta, dict) else {}
-                meta_pub = (original.get('publisher') or original.get('edition') or '').strip()
-                if meta_pub:
-                    chosen_publisher = meta_pub
-            except Exception:
-                pass
-
-        if not chosen_publisher or chosen_publisher == '南一':
-            from collections import Counter
-            pub_counter = Counter([ (res.publisher or '').strip() for res in request.exercise_results if res.publisher ])
-            if pub_counter:
-                most_common_pub, _ = pub_counter.most_common(1)[0]
-                if most_common_pub:
-                    chosen_publisher = most_common_pub
-        logger.info(f"complete_exercise: chosen_publisher='{chosen_publisher}'")
-        # 最終仍無值則使用預設
-        if not chosen_publisher:
-            chosen_publisher = '南一'
-        
         # 創建學習會話
         session = LearningSession(
             user_id=int(current_user.user_id),
@@ -81,7 +53,7 @@ async def complete_exercise(
             subject=request.subject,
             grade=request.grade,
             chapter=request.chapter,
-            publisher=chosen_publisher,
+            publisher=request.publisher,
             difficulty=request.difficulty,
             knowledge_points=request.knowledge_points,
             question_count=total_questions,
@@ -101,9 +73,6 @@ async def complete_exercise(
         # 創建練習記錄
         exercise_records = []
         for result in request.exercise_results:
-            per_record_publisher = (result.publisher or '').strip()
-            if not per_record_publisher:
-                per_record_publisher = chosen_publisher
             record = ExerciseRecord(
                 session_id=session.id,
                 user_id=int(current_user.user_id),
@@ -111,7 +80,7 @@ async def complete_exercise(
                 subject=result.subject,
                 grade=result.grade,
                 chapter=result.chapter,
-                publisher=per_record_publisher,
+                publisher=result.publisher,
                 knowledge_points=result.knowledge_points,
                 question_content=result.question_content,
                 answer_choices=result.answer_choices,
@@ -221,43 +190,16 @@ async def get_recent_learning_records(
         )
         sessions = result.scalars().all()
         
-        # 嘗試糾正 Publisher：若資料庫中為預設值「南一」或為空，
-        # 以該會話的練習記錄中出現次數最多的 publisher 作為回填
+        # 轉換為響應格式
         session_summaries = []
-        sessions_needing_fix = [s for s in sessions if not s.publisher or s.publisher == '南一']
-        publisher_by_session: dict[str, str] = {}
-        if sessions_needing_fix:
-            from collections import Counter
-            session_ids = [str(s.id) for s in sessions_needing_fix]
-            records_result = await db_session.execute(
-                select(ExerciseRecord.session_id, ExerciseRecord.publisher)
-                .where(ExerciseRecord.session_id.in_(session_ids))
-            )
-            rows = records_result.all()
-            counter_map: dict[str, Counter] = {}
-            for sess_id, pub in rows:
-                if not pub:
-                    continue
-                counter = counter_map.setdefault(sess_id, Counter())
-                counter[pub] += 1
-            for sess_id, counter in counter_map.items():
-                most_common = counter.most_common(1)
-                if most_common:
-                    publisher_by_session[sess_id] = most_common[0][0]
-
         for session in sessions:
-            sess_id_str = str(session.id)
-            publisher = session.publisher
-            if (not publisher or publisher == '南一') and sess_id_str in publisher_by_session:
-                publisher = publisher_by_session[sess_id_str]
-
             summary = LearningSessionSummary(
-                session_id=sess_id_str,
+                session_id=str(session.id),
                 session_name=session.session_name,
                 subject=session.subject,
                 grade=session.grade,
                 chapter=session.chapter,
-                publisher=publisher,
+                publisher=session.publisher,
                 difficulty=session.difficulty,
                 knowledge_points=session.knowledge_points or [],
                 question_count=session.question_count,
@@ -304,18 +246,6 @@ async def get_learning_records(
     try:
         logger.info(f"Getting learning records for user {current_user.user_id}")
         
-        # 正規化時間參數：資料庫欄位為 TIMESTAMP WITHOUT TIME ZONE
-        # 若收到帶時區的時間，轉成 UTC 並去除 tzinfo，避免 naive/aware 衝突
-        def to_naive_utc(dt: Optional[datetime]) -> Optional[datetime]:
-            if dt is None:
-                return None
-            if dt.tzinfo is not None:
-                return dt.astimezone(timezone.utc).replace(tzinfo=None)
-            return dt
-
-        start_date = to_naive_utc(start_date)
-        end_date = to_naive_utc(end_date)
-
         # 構建查詢條件
         user_id_int = int(current_user.user_id)
         conditions = [LearningSession.user_id == user_id_int]

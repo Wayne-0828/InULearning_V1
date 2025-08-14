@@ -6,7 +6,9 @@
 // AI 分析 API 客戶端
 class AIAnalysisAPI {
     constructor() {
-        this.baseURL = 'http://localhost:8004/api/v1/ai'; // AI分析服務（暫未實現）
+        // 經由 Nginx 反向代理，統一走同源 /api/v1/ai
+        this.baseURL = '/api/v1';
+        this.aiBase = '/api/v1/ai';
     }
 
     // 獲取認證頭
@@ -18,83 +20,249 @@ class AIAnalysisAPI {
         };
     }
 
+    // 單題 AI 弱點分析
+    async analyzeQuestionWeakness(question, studentAnswer, temperature = 1.0, maxOutputTokens = 512) {
+        try {
+            const response = await fetch(`${this.baseURL}/weakness-analysis/question-analysis`, {
+                method: 'POST',
+                headers: this.getAuthHeaders(),
+                body: JSON.stringify({
+                    question: question,
+                    student_answer: studentAnswer,
+                    temperature: temperature,
+                    max_output_tokens: maxOutputTokens
+                })
+            });
+
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+
+            const result = await response.json();
+            return result;
+        } catch (error) {
+            console.error('AI 弱點分析失敗:', error);
+            return {
+                success: false,
+                error: error.message,
+                data: {
+                    "學生學習狀況評估": "AI 分析暫時無法使用，請稍後再試。"
+                }
+            };
+        }
+    }
+
+    // 單題學習建議
+    async getQuestionGuidance(question, studentAnswer, temperature = 1.0, maxOutputTokens = 512) {
+        try {
+            const response = await fetch(`${this.baseURL}/learning-recommendation/question-guidance`, {
+                method: 'POST',
+                headers: this.getAuthHeaders(),
+                body: JSON.stringify({
+                    question: question,
+                    student_answer: studentAnswer,
+                    temperature: temperature,
+                    max_output_tokens: maxOutputTokens
+                })
+            });
+
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+
+            const result = await response.json();
+            return result;
+        } catch (error) {
+            console.error('學習建議生成失敗:', error);
+            return {
+                success: false,
+                error: error.message,
+                data: {
+                    "題目詳解與教學建議": "學習建議暫時無法生成，請稍後再試。"
+                }
+            };
+        }
+    }
+
     // 獲取學習分析報告
     async getLearningAnalysis(userId, options = {}) {
-        // 暫時返回"開發中"訊息
-        return {
-            success: false,
-            message: "AI分析功能正在開發中，敬請期待！",
-            status: "under_development",
-            data: {
-                title: "AI學習分析",
-                description: "這個功能將提供個性化的學習分析和建議",
-                features: [
-                    "學習弱點識別",
-                    "個性化學習路徑推薦", 
-                    "學習效率分析",
-                    "知識點掌握度評估",
-                    "學習習慣分析"
-                ],
-                expectedDate: "2024年第二季"
+        try {
+            const response = await fetch(`${this.baseURL}/weakness-analysis/analyze`, {
+                method: 'POST',
+                headers: this.getAuthHeaders(),
+                body: JSON.stringify({
+                    user_id: userId,
+                    ...options
+                })
+            });
+
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
             }
-        };
+
+            const result = await response.json();
+            return result;
+        } catch (error) {
+            console.error('學習分析失敗:', error);
+            return {
+                success: false,
+                message: "AI分析功能暫時無法使用，請稍後再試！",
+                status: "error",
+                error: error.message
+            };
+        }
     }
 
     // 獲取學習建議
     async getLearningRecommendations(userId, subject = null) {
-        return {
-            success: false,
-            message: "AI學習建議功能正在開發中",
-            status: "under_development",
-            data: {
-                title: "智能學習建議",
-                description: "基於您的學習表現，AI將提供個性化學習建議",
-                features: [
-                    "難度調整建議",
-                    "學習時間規劃",
-                    "複習重點提醒",
-                    "學習方法推薦"
-                ]
+        try {
+            const response = await fetch(`${this.baseURL}/learning-recommendation/generate`, {
+                method: 'POST',
+                headers: this.getAuthHeaders(),
+                body: JSON.stringify({
+                    user_id: userId,
+                    subject: subject
+                })
+            });
+
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
             }
-        };
+
+            const result = await response.json();
+            return result;
+        } catch (error) {
+            console.error('學習建議獲取失敗:', error);
+            return {
+                success: false,
+                message: "AI學習建議功能暫時無法使用，請稍後再試！",
+                status: "error",
+                error: error.message
+            };
+        }
     }
 
     // 獲取錯題分析
     async getErrorAnalysis(userId, timeRange = 30) {
-        return {
-            success: false,
-            message: "AI錯題分析功能正在開發中",
-            status: "under_development",
-            data: {
-                title: "智能錯題分析",
-                description: "AI將深度分析您的錯題模式，提供針對性改進建議",
-                features: [
-                    "錯題類型分析",
-                    "知識點薄弱環節識別",
-                    "錯誤原因分析",
-                    "改進策略建議"
-                ]
+        try {
+            const response = await fetch(`${this.baseURL}/weakness-analysis/user/${userId}/history?limit=${timeRange}`, {
+                method: 'GET',
+                headers: this.getAuthHeaders()
+            });
+
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
             }
-        };
+
+            const result = await response.json();
+            return result;
+        } catch (error) {
+            console.error('錯題分析失敗:', error);
+            return {
+                success: false,
+                message: "AI錯題分析功能暫時無法使用，請稍後再試！",
+                status: "error",
+                error: error.message
+            };
+        }
     }
 
     // 獲取學習進度預測
     async getLearningProgress(userId, targetGoals = []) {
-        return {
-            success: false,
-            message: "AI學習進度預測功能正在開發中",
-            status: "under_development",
-            data: {
-                title: "學習進度預測",
-                description: "基於當前學習狀況，預測學習目標達成時間",
-                features: [
-                    "學習進度追蹤",
-                    "目標達成預測",
-                    "學習計劃調整建議",
-                    "學習效率優化建議"
-                ]
+        try {
+            const response = await fetch(`${this.baseURL}/trend-analysis/progress/${userId}`, {
+                method: 'POST',
+                headers: this.getAuthHeaders(),
+                body: JSON.stringify({
+                    target_goals: targetGoals
+                })
+            });
+
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
             }
-        };
+
+            const result = await response.json();
+            return result;
+        } catch (error) {
+            console.error('學習進度預測失敗:', error);
+            return {
+                success: false,
+                message: "AI學習進度預測功能暫時無法使用，請稍後再試！",
+                status: "error",
+                error: error.message
+            };
+        }
+    }
+
+    // ================= 新增：基於 exercise_record 的非同步任務 API =================
+
+    // 觸發 AI 分析任務（以 exercise_record_id 為來源）
+    async triggerAnalysisByRecord(exerciseRecordId) {
+        try {
+            const response = await fetch(`${this.aiBase}/analysis`, {
+                method: 'POST',
+                headers: this.getAuthHeaders(),
+                body: JSON.stringify({ exercise_record_id: exerciseRecordId })
+            });
+
+            if (!response.ok) {
+                const txt = await response.text();
+                throw new Error(`HTTP ${response.status}: ${txt}`);
+            }
+
+            const result = await response.json();
+            return {
+                success: true,
+                task_id: result.task_id,
+                message: result.message
+            };
+        } catch (error) {
+            console.error('觸發 AI 分析任務失敗:', error);
+            return { success: false, error: error.message };
+        }
+    }
+
+    // 查詢任務狀態
+    async getAnalysisStatus(taskId) {
+        try {
+            const response = await fetch(`${this.aiBase}/analysis/${taskId}`, {
+                method: 'GET',
+                headers: this.getAuthHeaders()
+            });
+
+            if (!response.ok) {
+                const txt = await response.text();
+                throw new Error(`HTTP ${response.status}: ${txt}`);
+            }
+
+            const result = await response.json();
+            return { success: true, ...result };
+        } catch (error) {
+            console.error('查詢 AI 任務狀態失敗:', error);
+            return { success: false, error: error.message };
+        }
+    }
+
+    // 依據 exercise_record_id 查詢最新結果
+    async getLatestAnalysisByRecord(exerciseRecordId) {
+        try {
+            const response = await fetch(`${this.aiBase}/analysis/by-record/${exerciseRecordId}`, {
+                method: 'GET',
+                headers: this.getAuthHeaders()
+            });
+
+            if (!response.ok) {
+                const txt = await response.text();
+                throw new Error(`HTTP ${response.status}: ${txt}`);
+            }
+
+            const result = await response.json();
+            return { success: true, ...result };
+        } catch (error) {
+            console.error('查詢最新 AI 分析結果失敗:', error);
+            return { success: false, error: error.message };
+        }
     }
 
     // 顯示開發中提示

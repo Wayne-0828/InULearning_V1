@@ -82,19 +82,6 @@ class ResultPage {
             const exerciseRecords = sessionDetail.exercise_records || [];
 
             // 轉換為 examResults 格式
-            // 修正 publisher：以 session.publisher 優先，其次看題目記錄多數值
-            const publisherFromSession = session.publisher;
-            let chosenPublisher = publisherFromSession;
-            if (!chosenPublisher || chosenPublisher === '南一') {
-                const counts = {};
-                exerciseRecords.forEach(r => {
-                    const p = r.publisher;
-                    if (!p) return;
-                    counts[p] = (counts[p] || 0) + 1;
-                });
-                const top = Object.entries(counts).sort((a, b) => b[1] - a[1])[0];
-                if (top) chosenPublisher = top[0];
-            }
             this.examResults = {
                 score: Math.round(session.total_score || 0),
                 accuracy: Math.round(session.accuracy_rate || 0),
@@ -107,13 +94,14 @@ class ResultPage {
                     sessionId: session.session_id,
                     sessionName: session.session_name,
                     grade: session.grade,
-                    publisher: chosenPublisher || session.publisher,
+                    publisher: session.publisher,
                     subject: session.subject,
                     chapter: session.chapter,
                     difficulty: session.difficulty,
                     knowledgePoints: session.knowledge_points || []
                 },
                 detailedResults: exerciseRecords.map(record => ({
+                    id: record.id,
                     questionId: record.question_id,
                     questionContent: record.question_content,
                     answerChoices: record.answer_choices,
@@ -399,6 +387,9 @@ class ResultPage {
             }
         }
 
+        // 呼叫 AI 分析（改為使用 DB 內的 exercise_record 觸發與輪詢）
+        this.loadAIAnalysis(result);
+
         // 更新導航按鈕狀態
         this.updateNavigationButtons();
 
@@ -443,27 +434,6 @@ class ResultPage {
                 button.classList.remove('ring-2', 'ring-blue-500');
             }
         });
-
-        // 確保當前題號在可視範圍（當題數很多時）
-        const activeButton = navButtons[this.currentDetailIndex];
-        if (activeButton) {
-            const container = questionNav.parentElement || questionNav;
-            const needsScroll = container.scrollWidth > container.clientWidth;
-            if (needsScroll) {
-                const containerLeft = container.scrollLeft;
-                const containerRight = containerLeft + container.clientWidth;
-                const btnLeft = activeButton.offsetLeft;
-                const btnRight = btnLeft + activeButton.offsetWidth;
-                const padding = 12;
-
-                if (btnRight + padding > containerRight) {
-                    container.scrollTo({ left: containerLeft + (btnRight + padding - containerRight), behavior: 'smooth' });
-                } else if (btnLeft - padding < containerLeft) {
-                    const delta = containerLeft - (btnLeft - padding);
-                    container.scrollTo({ left: Math.max(0, containerLeft - delta), behavior: 'smooth' });
-                }
-            }
-        }
     }
 
     /**
@@ -520,6 +490,192 @@ class ResultPage {
             errorElement.classList.remove('hidden');
         } else {
             alert(message);
+        }
+    }
+
+    /**
+     * 載入 AI 分析
+     */
+    async loadAIAnalysis(result) {
+        try {
+            console.log('開始載入 AI 分析（非同步任務），題目資料:', result);
+
+            // 顯示載入狀態
+            this.showAILoadingState();
+
+            if (!window.aiAnalysisAPI) {
+                console.error('AI Analysis API 未載入');
+                this.showAIErrorState();
+                return;
+            }
+
+            // 取得 exercise_record_id：從歷程模式的 record 結構
+            // 從 learning-service 來的 record 在 to_dict 中有 id 欄位
+            const exerciseRecordId = result.id || result.record_id || null;
+            if (!exerciseRecordId) {
+                console.log('尚未取得 exercise_record_id，可能為未保存狀態，等待保存後再觸發 AI');
+                this.showAILoadingState();
+                return;
+            }
+
+            // 先嘗試查詢是否已有最新結果
+            const latest = await window.aiAnalysisAPI.getLatestAnalysisByRecord(exerciseRecordId);
+            if (latest.success && latest.status === 'succeeded' && latest.data) {
+                console.log('找到已存在的 AI 分析結果，直接渲染');
+                this.updateWeaknessAnalysis({ status: 'fulfilled', value: { success: true, data: latest.data } });
+                this.updateLearningRecommendations({ status: 'fulfilled', value: { success: true, data: latest.data } });
+                return;
+            }
+
+            // 若已有進行中的任務，改為直接輪詢
+            let taskId = latest && latest.latest_task_id && (latest.status === 'pending' || latest.status === 'processing')
+                ? latest.latest_task_id
+                : null;
+
+            if (!taskId) {
+                // 觸發任務
+                const trigger = await window.aiAnalysisAPI.triggerAnalysisByRecord(exerciseRecordId);
+                if (!trigger.success || !trigger.task_id) {
+                    throw new Error(trigger.error || '無法觸發 AI 任務');
+                }
+                taskId = trigger.task_id;
+                console.log('AI 任務已觸發，taskId:', taskId);
+            } else {
+                console.log('已有進行中的任務，taskId:', taskId);
+            }
+
+            // 輪詢任務狀態
+            const pollIntervalMs = 2000;
+            const maxWaitMs = 20000; // 最長等 20 秒
+            const startTime = Date.now();
+
+            while (Date.now() - startTime < maxWaitMs) {
+                const status = await window.aiAnalysisAPI.getAnalysisStatus(taskId);
+                if (status.success) {
+                    if (status.status === 'succeeded' && status.data) {
+                        this.updateWeaknessAnalysis({ status: 'fulfilled', value: { success: true, data: status.data } });
+                        this.updateLearningRecommendations({ status: 'fulfilled', value: { success: true, data: status.data } });
+                        return;
+                    }
+                    if (status.status === 'failed') {
+                        throw new Error(status.message || 'AI 任務失敗');
+                    }
+                }
+                await new Promise(r => setTimeout(r, pollIntervalMs));
+            }
+
+            // 逾時處理
+            console.warn('AI 任務輪詢逾時');
+            this.showAIErrorState();
+
+        } catch (error) {
+            console.error('AI 分析載入失敗:', error);
+            this.showAIErrorState();
+        }
+    }
+
+    /**
+     * 顯示 AI 載入狀態
+     */
+    showAILoadingState() {
+        // 更新弱點分析載入狀態
+        const weaknessContent = document.getElementById('weaknessContent');
+        if (weaknessContent) {
+            weaknessContent.innerHTML = `
+                <div class="flex items-center justify-center p-4">
+                    <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+                    <span class="ml-3 text-gray-600">AI 正在分析您的作答情況...</span>
+                </div>
+            `;
+        }
+
+        // 更新學習建議載入狀態
+        const recommendationsContent = document.getElementById('recommendationsContent');
+        if (recommendationsContent) {
+            recommendationsContent.innerHTML = `
+                <div class="flex items-center justify-center p-4">
+                    <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-purple-600"></div>
+                    <span class="ml-3 text-gray-600">AI 正在生成學習建議...</span>
+                </div>
+            `;
+        }
+    }
+
+    /**
+     * 更新 AI 弱點分析
+     */
+    updateWeaknessAnalysis(weaknessResult) {
+        const weaknessContent = document.getElementById('recommendationsContent');
+        if (!weaknessContent) return;
+
+        if (weaknessResult.status === 'fulfilled' && weaknessResult.value.success) {
+            const analysis = weaknessResult.value.data;
+            weaknessContent.innerHTML = `
+                <div class="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                    <p class="text-gray-700 leading-relaxed">${analysis['學生學習狀況評估'] || 'AI 分析暫時無法使用'}</p>
+                </div>
+            `;
+        } else {
+            const errorMessage = weaknessResult.status === 'rejected'
+                ? weaknessResult.reason?.message || '分析失敗'
+                : weaknessResult.value?.error || '分析失敗';
+
+            weaknessContent.innerHTML = `
+                <div class="bg-red-50 border border-red-200 rounded-lg p-4">
+                    <p class="text-red-700">AI 弱點分析暫時無法使用：${errorMessage}</p>
+                </div>
+            `;
+        }
+    }
+
+    /**
+     * 更新學習建議
+     */
+    updateLearningRecommendations(guidanceResult) {
+        const recommendationsContent = document.getElementById('weaknessContent');
+        if (!recommendationsContent) return;
+
+        if (guidanceResult.status === 'fulfilled' && guidanceResult.value.success) {
+            const guidance = guidanceResult.value.data;
+            recommendationsContent.innerHTML = `
+                <div class="bg-purple-50 border border-purple-200 rounded-lg p-4">
+                    <p class="text-gray-700 leading-relaxed">${guidance['題目詳解與教學建議'] || '學習建議暫時無法生成'}</p>
+                </div>
+            `;
+        } else {
+            const errorMessage = guidanceResult.status === 'rejected'
+                ? guidanceResult.reason?.message || '建議生成失敗'
+                : guidanceResult.value?.error || '建議生成失敗';
+
+            recommendationsContent.innerHTML = `
+                <div class="bg-red-50 border border-red-200 rounded-lg p-4">
+                    <p class="text-red-700">學習建議暫時無法生成：${errorMessage}</p>
+                </div>
+            `;
+        }
+    }
+
+    /**
+     * 顯示 AI 錯誤狀態
+     */
+    showAIErrorState() {
+        const weaknessContent = document.getElementById('weaknessContent');
+        const recommendationsContent = document.getElementById('recommendationsContent');
+
+        if (weaknessContent) {
+            weaknessContent.innerHTML = `
+                <div class="bg-red-50 border border-red-200 rounded-lg p-4">
+                    <p class="text-red-700">AI 弱點分析暫時無法使用，請稍後再試。</p>
+                </div>
+            `;
+        }
+
+        if (recommendationsContent) {
+            recommendationsContent.innerHTML = `
+                <div class="bg-red-50 border border-red-200 rounded-lg p-4">
+                    <p class="text-red-700">學習建議暫時無法生成，請稍後再試。</p>
+                </div>
+            `;
         }
     }
 
@@ -594,11 +750,6 @@ class ResultPage {
 
             // 轉換數據格式為後端API格式
             const requestData = this.convertToAPIFormat();
-            // 確保 metadata 中帶上原始選擇（含 publisher/edition），方便後端回填
-            requestData.session_metadata = {
-                ...(requestData.session_metadata || {}),
-                original_session_data: this.examResults?.sessionData || {}
-            };
 
             // 調用API保存結果
             const result = await learningAPI.submitExerciseResult(requestData);
@@ -619,6 +770,11 @@ class ResultPage {
 
                 // 顯示保存成功提示
                 this.showSuccessMessage('練習結果已保存');
+
+                // 立即從資料庫重新取得帶有 exercise_record_id 的詳細資料，方便觸發 AI 分析
+                await this.refreshResultsFromDB(result.data.session_id);
+                // 重新渲染目前題目的 AI 區塊
+                this.displayQuestionDetail(this.currentDetailIndex || 0);
             } else {
                 throw new Error(result.error || '保存失敗');
             }
@@ -637,6 +793,82 @@ class ResultPage {
                 // 網絡錯誤或其他錯誤，不影響用戶查看結果
                 console.warn('保存練習結果時發生錯誤，但不影響結果查看:', error.message);
             }
+        }
+    }
+
+    /**
+     * 重新從資料庫取得結果（包含 exercise_record_id）
+     */
+    async refreshResultsFromDB(sessionId) {
+        try {
+            const res = await learningAPI.getSessionDetail(sessionId);
+            if (!res.success || !res.data) return;
+
+            const sessionDetail = res.data;
+            const session = sessionDetail.session;
+            const exerciseRecords = sessionDetail.exercise_records || [];
+
+            this.sessionId = sessionId;
+            this.isHistoryMode = true;
+
+            this.examResults = {
+                score: Math.round(session.total_score || 0),
+                accuracy: Math.round(session.accuracy_rate || 0),
+                totalQuestions: session.question_count || 0,
+                correctAnswers: session.correct_count || 0,
+                wrongAnswers: (session.question_count || 0) - (session.correct_count || 0),
+                timeSpent: session.time_spent || 0,
+                submittedAt: session.end_time || session.start_time,
+                sessionData: {
+                    sessionId: session.session_id,
+                    sessionName: session.session_name,
+                    grade: session.grade,
+                    publisher: session.publisher,
+                    subject: session.subject,
+                    chapter: session.chapter,
+                    difficulty: session.difficulty,
+                    knowledgePoints: session.knowledge_points || []
+                },
+                detailedResults: exerciseRecords.map(record => ({
+                    id: record.id,
+                    questionId: record.question_id,
+                    questionContent: record.question_content,
+                    answerChoices: record.answer_choices,
+                    userAnswer: record.user_answer,
+                    correctAnswer: record.correct_answer,
+                    isCorrect: record.is_correct,
+                    score: record.score,
+                    explanation: record.explanation,
+                    timeSpent: record.time_spent,
+                    knowledgePoints: record.knowledge_points || [],
+                    difficulty: record.difficulty,
+                    questionTopic: record.question_topic
+                })),
+                questions: exerciseRecords.map(record => ({
+                    id: record.question_id,
+                    content: record.question_content,
+                    choices: record.answer_choices,
+                    correctAnswer: record.correct_answer,
+                    explanation: record.explanation,
+                    knowledgePoints: record.knowledge_points || [],
+                    difficulty: record.difficulty,
+                    topic: record.question_topic
+                })),
+                userAnswers: exerciseRecords.map(record => ({
+                    questionId: record.question_id,
+                    answer: record.user_answer,
+                    isCorrect: record.is_correct,
+                    timeSpent: record.time_spent
+                }))
+            };
+
+            // 更新會話ID顯示
+            const sessionIdElement = document.getElementById('sessionId');
+            if (sessionIdElement) {
+                sessionIdElement.textContent = this.sessionId;
+            }
+        } catch (e) {
+            console.warn('刷新資料庫結果失敗:', e);
         }
     }
 

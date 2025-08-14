@@ -7,6 +7,20 @@ This module contains API routes for learning recommendations.
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from typing import List, Optional
+import sys
+import os
+
+# 添加專案根目錄到 Python 路徑
+current_dir = os.path.dirname(os.path.abspath(__file__))
+project_root = os.path.join(current_dir, '../../../../../')
+sys.path.insert(0, project_root)
+
+try:
+    from gemini_api import solution_guidance
+except ImportError:
+    # 如果無法導入，提供一個備用實現
+    def solution_guidance(question, student_answer, temperature=1.0, max_output_tokens=512):
+        return {"題目詳解與教學建議": "學習建議暫時無法生成，請稍後再試。"}
 
 from ..models.schemas import LearningRecommendationRequest, LearningRecommendationResponse
 from ..services.learning_recommendation_service import LearningRecommendationService
@@ -39,6 +53,40 @@ async def generate_recommendations(
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"生成建議過程中發生錯誤: {str(e)}"
+        )
+
+
+@router.post("/question-guidance")
+async def get_question_guidance(
+    question: dict,
+    student_answer: str,
+    temperature: float = 1.0,
+    max_output_tokens: int = 512
+):
+    """
+    單題學習建議
+    
+    根據單一題目和學生答案提供學習建議。
+    """
+    try:
+        # 使用 Gemini API 生成學習建議
+        guidance_result = solution_guidance(
+            question=question,
+            student_answer=student_answer,
+            temperature=temperature,
+            max_output_tokens=max_output_tokens
+        )
+        
+        return {
+            "success": True,
+            "data": guidance_result,
+            "message": "學習建議生成完成"
+        }
+        
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"學習建議生成失敗: {str(e)}"
         )
 
 

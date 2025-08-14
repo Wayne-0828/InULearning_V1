@@ -175,6 +175,29 @@ services:
     volumes:
       - ./logs:/app/logs
 
+  # AI 分析服務
+  ai-analysis-service:
+    build:
+      context: ./2_implementation/backend/ai-analysis-service
+      dockerfile: Dockerfile
+    container_name: inulearning_ai_analysis_service
+    environment:
+      - POSTGRES_HOST=postgres
+      - POSTGRES_PORT=5432
+      - POSTGRES_USER=aipe-tester
+      - POSTGRES_PASSWORD=aipe-tester
+      - POSTGRES_DB=inulearning
+      - GEMINI_API_KEY=${GEMINI_API_KEY}
+    ports:
+      - "8004:8004"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - inulearning_network
+    volumes:
+      - ./logs:/app/logs
+
   # Nginx API Gateway
   nginx:
     image: nginx:alpine
@@ -193,6 +216,7 @@ services:
       - auth-service
       - question-bank-service
       - learning-service
+      - ai-analysis-service
     networks:
       - inulearning_network
 

@@ -279,7 +279,7 @@ check_network() {
 check_ports() {
     log_step "檢查端口占用..."
     
-    local ports=(80 5432 6379 8001 8002 8003 8080 8081 8082 8083 9000 9001 27017)
+    local ports=(80 5432 6379 8001 8002 8003 8004 8080 8081 8082 8083 9000 9001 27017)
     local occupied_ports=()
     
     for port in "${ports[@]}"; do
@@ -480,6 +480,10 @@ wait_for_services() {
         if ! curl -s -f http://localhost:8001/health > /dev/null 2>&1; then
             services_ready=false
         fi
+        # 檢查 AI 分析服務
+        if ! curl -s -f http://localhost:8004/health > /dev/null 2>&1; then
+            services_ready=false
+        fi
         
         if [ "$services_ready" = true ]; then
             log_success "所有關鍵服務已就緒"
@@ -566,7 +570,7 @@ create_basic_users() {
 health_check() {
     log_step "執行系統健康檢查..."
     
-    local services=("postgres" "mongodb" "redis" "minio" "auth-service" "question-bank-service" "learning-service" "nginx")
+    local services=("postgres" "mongodb" "redis" "minio" "auth-service" "question-bank-service" "learning-service" "ai-analysis-service" "nginx")
     local frontend_services=("student-frontend" "admin-frontend" "teacher-frontend" "parent-frontend")
     local failed_services=()
     
@@ -612,6 +616,7 @@ test_connectivity() {
         "http://localhost:8002/health|題庫服務健康檢查"
         "http://localhost:8003/health|學習服務健康檢查"
         "http://localhost/|Nginx代理服務"
+        "http://localhost:8004/health|AI 分析服務健康檢查"
     )
     
     local failed_endpoints=()
@@ -654,6 +659,7 @@ show_system_info() {
     echo "  認證服務: http://localhost:8001"
     echo "  題庫服務: http://localhost:8002"
     echo "  學習服務: http://localhost:8003"
+    echo "  AI 分析服務: http://localhost:8004"
     echo ""
     log_highlight "🗄️ 資料庫服務："
     echo "  PostgreSQL: localhost:5432"
