@@ -509,8 +509,7 @@ class ResultPage {
                 return;
             }
 
-            // 取得 exercise_record_id：從歷程模式的 record 結構
-            // 從 learning-service 來的 record 在 to_dict 中有 id 欄位
+            // 取得 exercise_record_id
             const exerciseRecordId = result.id || result.record_id || null;
             if (!exerciseRecordId) {
                 console.log('尚未取得 exercise_record_id，可能為未保存狀態，等待保存後再觸發 AI');
@@ -518,37 +517,64 @@ class ResultPage {
                 return;
             }
 
-            // 先嘗試查詢是否已有最新結果
+            // 1) 優先查詢是否已有最新結果（快取優先）
             const latest = await window.aiAnalysisAPI.getLatestAnalysisByRecord(exerciseRecordId);
             if (latest.success && latest.status === 'succeeded' && latest.data) {
-                console.log('找到已存在的 AI 分析結果，直接渲染');
+                console.log('找到既有 AI 分析結果，直接渲染');
                 this.updateWeaknessAnalysis({ status: 'fulfilled', value: { success: true, data: latest.data } });
                 this.updateLearningRecommendations({ status: 'fulfilled', value: { success: true, data: latest.data } });
                 return;
             }
 
-            // 若已有進行中的任務，改為直接輪詢
+            // 2) 若未命中，使用單一整合端點一次生成並落地（帶題目與作答）
+            const question = {
+                grade: this.examResults?.sessionData?.grade,
+                subject: this.examResults?.sessionData?.subject,
+                publisher: this.examResults?.sessionData?.publisher,
+                chapter: this.examResults?.sessionData?.chapter,
+                topic: result.questionTopic,
+                knowledge_point: result.knowledgePoints || [],
+                difficulty: result.difficulty,
+                question: result.questionContent,
+                options: result.answerChoices || {},
+                answer: result.correctAnswer,
+                explanation: result.explanation
+            };
+            const studentAnswer = result.userAnswer;
+
+            const generated = await window.aiAnalysisAPI.generateCombinedAnalysis(
+                question,
+                studentAnswer,
+                exerciseRecordId,
+                1.0,
+                512
+            );
+
+            if (generated.success && generated.data) {
+                // 直接渲染生成的內容
+                this.updateWeaknessAnalysis({ status: 'fulfilled', value: { success: true, data: generated.data } });
+                this.updateLearningRecommendations({ status: 'fulfilled', value: { success: true, data: generated.data } });
+                return;
+            }
+
+            // 3) 若生成失敗，回退到非同步任務機制（保底）
             let taskId = latest && latest.latest_task_id && (latest.status === 'pending' || latest.status === 'processing')
                 ? latest.latest_task_id
                 : null;
 
             if (!taskId) {
-                // 觸發任務
                 const trigger = await window.aiAnalysisAPI.triggerAnalysisByRecord(exerciseRecordId);
                 if (!trigger.success || !trigger.task_id) {
                     throw new Error(trigger.error || '無法觸發 AI 任務');
                 }
                 taskId = trigger.task_id;
-                console.log('AI 任務已觸發，taskId:', taskId);
-            } else {
-                console.log('已有進行中的任務，taskId:', taskId);
+                console.log('AI 任務已觸發(保底方案)，taskId:', taskId);
             }
 
-            // 輪詢任務狀態
+            // 輪詢任務狀態（保底）
             const pollIntervalMs = 2000;
-            const maxWaitMs = 20000; // 最長等 20 秒
+            const maxWaitMs = 20000;
             const startTime = Date.now();
-
             while (Date.now() - startTime < maxWaitMs) {
                 const status = await window.aiAnalysisAPI.getAnalysisStatus(taskId);
                 if (status.success) {
@@ -564,7 +590,6 @@ class ResultPage {
                 await new Promise(r => setTimeout(r, pollIntervalMs));
             }
 
-            // 逾時處理
             console.warn('AI 任務輪詢逾時');
             this.showAIErrorState();
 
@@ -602,10 +627,10 @@ class ResultPage {
     }
 
     /**
-     * 更新 AI 弱點分析
+     * 修正：弱點分析渲染到 weaknessContent（原本誤用 recommendationsContent）
      */
     updateWeaknessAnalysis(weaknessResult) {
-        const weaknessContent = document.getElementById('recommendationsContent');
+        const weaknessContent = document.getElementById('weaknessContent');
         if (!weaknessContent) return;
 
         if (weaknessResult.status === 'fulfilled' && weaknessResult.value.success) {
@@ -629,10 +654,10 @@ class ResultPage {
     }
 
     /**
-     * 更新學習建議
+     * 修正：學習建議渲染到 recommendationsContent（原本誤用 weaknessContent）
      */
     updateLearningRecommendations(guidanceResult) {
-        const recommendationsContent = document.getElementById('weaknessContent');
+        const recommendationsContent = document.getElementById('recommendationsContent');
         if (!recommendationsContent) return;
 
         if (guidanceResult.status === 'fulfilled' && guidanceResult.value.success) {

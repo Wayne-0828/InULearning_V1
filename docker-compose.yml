@@ -11,6 +11,7 @@ services:
       - postgres_data:/var/lib/postgresql/data
       - ./init-scripts/init-postgres.sql:/docker-entrypoint-initdb.d/01-init-postgres.sql
       - ./2_implementation/database/seeds/postgresql/knowledge_points_seed.sql:/docker-entrypoint-initdb.d/02-knowledge-points-seed.sql
+      - ./init-scripts/03-ai-analysis-results.sql:/docker-entrypoint-initdb.d/03-ai-analysis-results.sql
     ports:
       - "5432:5432"
     networks:
@@ -188,15 +189,23 @@ services:
       - POSTGRES_PASSWORD=aipe-tester
       - POSTGRES_DB=inulearning
       - GEMINI_API_KEY=${GEMINI_API_KEY}
+      - REDIS_URL=redis://redis:6379/0
     ports:
       - "8004:8004"
     depends_on:
       postgres:
         condition: service_healthy
+      redis:
+        condition: service_healthy
     networks:
       - inulearning_network
     volumes:
       - ./logs:/app/logs
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:8004/api/v1/ai/health" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
 
   # Nginx API Gateway
   nginx:

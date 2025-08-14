@@ -391,6 +391,12 @@ ENVIRONMENT=development
 # System Configuration
 SYSTEM_TYPE=${SYSTEM_TYPE}
 ARCH=${ARCH}
+
+# AI Analysis Configuration
+GEMINI_API_KEY=
+AI_ANALYSIS_MOCK=0
+AI_CACHE_PREFIX=ai:v1:
+AI_CACHE_TTL_SECONDS=604800
 EOF
         fi
         log_success ".env 檔案已建立"
@@ -441,7 +447,7 @@ start_services() {
     sleep 10
     
     log_info "啟動應用服務..."
-    $DOCKER_COMPOSE_CMD up -d auth-service question-bank-service learning-service
+    $DOCKER_COMPOSE_CMD up -d auth-service question-bank-service learning-service ai-analysis-service
     
     # 等待應用服務就緒
     log_info "等待應用服務啟動..."
@@ -481,7 +487,7 @@ wait_for_services() {
             services_ready=false
         fi
         # 檢查 AI 分析服務
-        if ! curl -s -f http://localhost:8004/health > /dev/null 2>&1; then
+        if ! curl -s -f http://localhost:8004/api/v1/ai/health > /dev/null 2>&1; then
             services_ready=false
         fi
         
@@ -616,7 +622,7 @@ test_connectivity() {
         "http://localhost:8002/health|題庫服務健康檢查"
         "http://localhost:8003/health|學習服務健康檢查"
         "http://localhost/|Nginx代理服務"
-        "http://localhost:8004/health|AI 分析服務健康檢查"
+        "http://localhost:8004/api/v1/ai/health|AI 分析服務健康檢查"
     )
     
     local failed_endpoints=()
