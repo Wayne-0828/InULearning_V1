@@ -129,6 +129,14 @@ async def on_startup():
         except Exception as e:
             print(f"啟動檢查 Redis 連線失敗: {e}")
 
+    # 偵測 JSONB 欄位是否可用（最後執行，避免阻斷啟動）
+    try:
+        global JSONB_COLUMNS_AVAILABLE
+        JSONB_COLUMNS_AVAILABLE = detect_jsonb_columns()
+        print(f"JSONB columns available: {JSONB_COLUMNS_AVAILABLE}")
+    except Exception:
+        pass
+
 # 請求模型
 class AIAnalysisRequest(BaseModel):
     question: Dict[str, Any]
@@ -173,6 +181,32 @@ POSTGRES_DB = os.getenv("POSTGRES_DB", "inulearning")
 REDIS_URL = os.getenv("REDIS_URL", "redis://localhost:6379/0")
 AI_CACHE_TTL_SECONDS = int(os.getenv("AI_CACHE_TTL_SECONDS", str(7 * 24 * 60 * 60)))
 AI_CACHE_PREFIX = os.getenv("AI_CACHE_PREFIX", "ai:v1:")
+
+# 是否可用 JSONB 欄位（啟動時偵測）
+JSONB_COLUMNS_AVAILABLE: bool = False
+
+
+def detect_jsonb_columns() -> bool:
+    """偵測 ai_analysis_results 是否存在 JSONB 欄位。"""
+    if not PSYCOPG2_AVAILABLE:
+        return False
+    conn = get_db_connection()
+    try:
+        with conn.cursor() as cur:
+            cur.execute(
+                """
+                SELECT COUNT(*)
+                FROM information_schema.columns
+                WHERE table_schema='public' AND table_name='ai_analysis_results'
+                  AND column_name IN ('weakness_analysis_json','learning_guidance_json')
+                """
+            )
+            cnt = cur.fetchone()[0]
+            return cnt >= 2
+    except Exception:
+        return False
+    finally:
+        conn.close()
 
 
 def get_db_connection():
@@ -349,13 +383,11 @@ def update_task_status(task_id: uuid.UUID, status: str, weakness: Optional[str] 
                 SET status = %s,
                     weakness_analysis = COALESCE(%s, weakness_analysis),
                     learning_guidance = COALESCE(%s, learning_guidance),
-                    weakness_analysis_json = CASE WHEN %s IS NOT NULL THEN jsonb_build_object('text', %s) ELSE weakness_analysis_json END,
-                    learning_guidance_json = CASE WHEN %s IS NOT NULL THEN jsonb_build_object('text', %s) ELSE learning_guidance_json END,
                     error = COALESCE(%s, error),
                     updated_at = NOW()
                 WHERE id = %s
                 """,
-                (status, weakness, guidance, weakness, weakness, guidance, guidance, error, str(task_id))
+                (status, weakness, guidance, error, str(task_id))
             )
         conn.commit()
     finally:
@@ -417,7 +449,7 @@ def get_latest_success_by_record(exercise_record_id: str) -> Optional[Dict[str, 
                 (exercise_record_id,)
             )
             row = cur.fetchone()
-            if row and (row.get("weakness_analysis") or row.get("learning_guidance")):
+            if row and row.get("weakness_analysis") and row.get("learning_guidance"):
                 return dict(row)
             return None
     finally:
@@ -449,6 +481,124 @@ def process_analysis_task(task_id: uuid.UUID, exercise_record_id: str, temperatu
     except Exception as e:
         update_task_status(task_id, status="failed", error=str(e))
         cache_set_task(str(task_id), exercise_record_id, status="failed", error=str(e))
+
+# 取得最新成功（不嚴格，可能只有部分欄位）
+def get_latest_succeeded_by_record_raw(exercise_record_id: str) -> Optional[Dict[str, Any]]:
+    conn = get_db_connection()
+    try:
+        with conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor) as cur:
+            cur.execute(
+                """
+                SELECT id, exercise_record_id, status, weakness_analysis, learning_guidance, error, created_at, updated_at
+                FROM ai_analysis_results
+                WHERE exercise_record_id = %s AND status = 'succeeded'
+                ORDER BY created_at DESC
+                LIMIT 1
+                """,
+                (exercise_record_id,),
+            )
+            row = cur.fetchone()
+            return dict(row) if row else None
+    finally:
+        conn.close()
+
+
+# 取得或生成兩欄，必要時僅補算缺失欄位，並同步 DB 與 Redis。
+def get_or_generate_both(question: Dict[str, Any], student_answer: str, exercise_record_id: str, temperature: float, max_output_tokens: int) -> Dict[str, Any]:
+    # 1) Redis 命中且兩欄齊
+    if REDIS_AVAILABLE:
+        try:
+            client = get_redis_client()
+            latest_key = f"{AI_CACHE_PREFIX}analysis:record:{exercise_record_id}:latest"
+            latest_task_id = client.get(latest_key)
+            if latest_task_id:
+                cache_key = f"{AI_CACHE_PREFIX}analysis:task:{latest_task_id}"
+                cached = client.get(cache_key)
+                if cached:
+                    obj = json.loads(cached)
+                    if (
+                        obj.get("status") == "succeeded"
+                        and obj.get("學生學習狀況評估")
+                        and obj.get("題目詳解與教學建議")
+                    ):
+                        return {
+                            "task_id": latest_task_id,
+                            "weakness": obj.get("學生學習狀況評估"),
+                            "guidance": obj.get("題目詳解與教學建議"),
+                            "message": "cached",
+                        }
+        except Exception:
+            pass
+
+    # 2) DB 命中（嚴格）
+    strict = get_latest_success_by_record(exercise_record_id)
+    if strict:
+        try:
+            cache_set_task(
+                strict.get("id"),
+                exercise_record_id,
+                status="succeeded",
+                weakness=strict.get("weakness_analysis"),
+                guidance=strict.get("learning_guidance"),
+            )
+            cache_set_record_latest(exercise_record_id, strict.get("id"))
+        except Exception:
+            pass
+        return {
+            "task_id": strict.get("id"),
+            "weakness": strict.get("weakness_analysis"),
+            "guidance": strict.get("learning_guidance"),
+            "message": "db_hit",
+        }
+
+    # 3) 可能有部分欄位：僅補缺
+    latest = get_latest_succeeded_by_record_raw(exercise_record_id)
+    weakness_text: Optional[str] = latest.get("weakness_analysis") if latest else None
+    guidance_text: Optional[str] = latest.get("learning_guidance") if latest else None
+
+    need_weakness = not bool(weakness_text)
+    need_guidance = not bool(guidance_text)
+
+    if need_weakness:
+        eval_result = do_student_learning_evaluation(
+            question=question,
+            student_answer=student_answer,
+            temperature=temperature,
+            max_output_tokens=max_output_tokens,
+        )
+        weakness_text = (
+            eval_result.get("學生學習狀況評估") if isinstance(eval_result, dict) else str(eval_result)
+        )
+
+    if need_guidance:
+        guide_result = do_solution_guidance(
+            question=question,
+            student_answer=student_answer,
+            temperature=temperature,
+            max_output_tokens=max_output_tokens,
+        )
+        guidance_text = (
+            guide_result.get("題目詳解與教學建議") if isinstance(guide_result, dict) else str(guide_result)
+        )
+
+    # 持久化為新的任務（確保單一任務同時擁有兩欄）
+    task_uuid = uuid.uuid4()
+    upsert_task_initial(task_uuid, exercise_record_id)
+    update_task_status(
+        task_uuid,
+        status="succeeded",
+        weakness=weakness_text,
+        guidance=guidance_text,
+    )
+    cache_set_task(str(task_uuid), exercise_record_id, status="succeeded", weakness=weakness_text, guidance=guidance_text)
+    cache_set_record_latest(exercise_record_id, str(task_uuid))
+
+    return {
+        "task_id": str(task_uuid),
+        "weakness": weakness_text,
+        "guidance": guidance_text,
+        "message": "generated_or_completed",
+    }
 
 # 根路徑
 @app.get("/")
@@ -579,7 +729,7 @@ async def trigger_ai_analysis(request: AIAnalysisTriggerRequest, background_task
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"讀取作答記錄失敗: {str(e)}")
 
-    # 若已有成功結果，直接返回（不重算）
+    # 若已有成功結果（兩欄齊備），直接返回（不重算）
     # 1) Redis
     if REDIS_AVAILABLE:
         try:
@@ -591,7 +741,7 @@ async def trigger_ai_analysis(request: AIAnalysisTriggerRequest, background_task
                 cached = client.get(cache_key)
                 if cached:
                     obj = json.loads(cached)
-                    if obj.get("status") == "succeeded":
+                    if obj.get("status") == "succeeded" and obj.get("學生學習狀況評估") and obj.get("題目詳解與教學建議"):
                         return {"success": True, "task_id": latest_task_id, "message": "exists"}
         except Exception:
             pass
@@ -626,95 +776,54 @@ async def generate_combined_analysis(request: AIAnalysisRequest):
     if not GEMINI_AVAILABLE:
         raise HTTPException(status_code=503, detail="Gemini API 不可用")
     try:
-        # 防重算：若帶 exercise_record_id，先查快取→資料庫
+        # 防重算：若帶 exercise_record_id，統一使用共用流程，確保兩欄齊備
         if request.exercise_record_id:
             try:
                 normalized_record_id = str(uuid.UUID(request.exercise_record_id))
             except Exception:
                 raise HTTPException(status_code=400, detail="exercise_record_id 需為有效的 UUID")
 
-            # 1) Redis 命中
-            if REDIS_AVAILABLE:
-                try:
-                    client = get_redis_client()
-                    latest_key = f"{AI_CACHE_PREFIX}analysis:record:{normalized_record_id}:latest"
-                    tid = client.get(latest_key)
-                    if tid:
-                        cache_key = f"{AI_CACHE_PREFIX}analysis:task:{tid}"
-                        cached = client.get(cache_key)
-                        if cached:
-                            obj = json.loads(cached)
-                            if obj.get("status") == "succeeded" and (obj.get("學生學習狀況評估") or obj.get("題目詳解與教學建議")):
-                                return {
-                                    "success": True,
-                                    "data": {
-                                        "學生學習狀況評估": obj.get("學生學習狀況評估"),
-                                        "題目詳解與教學建議": obj.get("題目詳解與教學建議")
-                                    },
-                                    "message": "cached",
-                                    "task_id": tid
-                                }
-                except Exception:
-                    pass
-
-            # 2) PG 命中
-            existing = get_latest_success_by_record(normalized_record_id)
-            if existing:
-                try:
-                    cache_set_task(existing.get("id"), normalized_record_id, status="succeeded",
-                                   weakness=existing.get("weakness_analysis"), guidance=existing.get("learning_guidance"))
-                    cache_set_record_latest(normalized_record_id, existing.get("id"))
-                except Exception:
-                    pass
-                return {
-                    "success": True,
-                    "data": {
-                        "學生學習狀況評估": existing.get("weakness_analysis"),
-                        "題目詳解與教學建議": existing.get("learning_guidance")
-                    },
-                    "message": "db_hit",
-                    "task_id": existing.get("id")
-                }
+            ensured = get_or_generate_both(
+                question=request.question,
+                student_answer=request.student_answer,
+                exercise_record_id=normalized_record_id,
+                temperature=request.temperature,
+                max_output_tokens=request.max_output_tokens,
+            )
+            return {
+                "success": True,
+                "data": {
+                    "學生學習狀況評估": ensured.get("weakness"),
+                    "題目詳解與教學建議": ensured.get("guidance"),
+                },
+                "message": ensured.get("message", "ok"),
+                "task_id": ensured.get("task_id"),
+            }
 
         eval_result = do_student_learning_evaluation(
             question=request.question,
             student_answer=request.student_answer,
             temperature=request.temperature,
-            max_output_tokens=request.max_output_tokens
+            max_output_tokens=request.max_output_tokens,
         )
         guide_result = do_solution_guidance(
             question=request.question,
             student_answer=request.student_answer,
             temperature=request.temperature,
-            max_output_tokens=request.max_output_tokens
+            max_output_tokens=request.max_output_tokens,
         )
-
-        weakness_text = eval_result.get("學生學習狀況評估") if isinstance(eval_result, dict) else str(eval_result)
-        guidance_text = guide_result.get("題目詳解與教學建議") if isinstance(guide_result, dict) else str(guide_result)
-
-        data = {
-            "學生學習狀況評估": weakness_text,
-            "題目詳解與教學建議": guidance_text
-        }
-
-        task_id: Optional[str] = None
-        if request.exercise_record_id:
-            try:
-                normalized_record_id = str(uuid.UUID(request.exercise_record_id))
-                task_uuid = uuid.uuid4()
-                task_id = str(task_uuid)
-                upsert_task_initial(task_uuid, normalized_record_id)
-                update_task_status(task_uuid, status="succeeded", weakness=weakness_text, guidance=guidance_text)
-                cache_set_task(task_id, normalized_record_id, status="succeeded", weakness=weakness_text, guidance=guidance_text)
-                cache_set_record_latest(normalized_record_id, task_id)
-            except Exception as e:
-                print(f"同步整合端點持久化失敗: {e}")
-
         return {
             "success": True,
-            "data": data,
+            "data": {
+                "學生學習狀況評估": (
+                    eval_result.get("學生學習狀況評估") if isinstance(eval_result, dict) else str(eval_result)
+                ),
+                "題目詳解與教學建議": (
+                    guide_result.get("題目詳解與教學建議") if isinstance(guide_result, dict) else str(guide_result)
+                ),
+            },
             "message": "AI 弱點分析與學習建議生成完成",
-            "task_id": task_id
+            "task_id": None,
         }
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"整合生成失敗: {str(e)}")
