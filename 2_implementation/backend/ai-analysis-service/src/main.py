@@ -4,20 +4,20 @@ AI Analysis Service Main Application
 This is the main entry point for the AI analysis service.
 """
 
-#1212
-
-import logging
-
-import uvicorn
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
+import uvicorn
+import logging
 
-from .routers import (learning_recommendation_router, trend_analysis_router,
-                      vector_search_router, weakness_analysis_router)
+from .routers import (
+    weakness_analysis_router,
+    learning_recommendation_router,
+    trend_analysis_router,
+    vector_search_router
+)
 from .utils.config import get_settings
-from .utils.database import (check_postgresql_connection,
-                             check_redis_connection, init_db)
+from .utils.database import init_db, check_redis_connection, check_postgresql_connection
 
 # 配置日誌
 logging.basicConfig(

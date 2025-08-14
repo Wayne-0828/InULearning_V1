@@ -235,6 +235,15 @@ services:
     volumes:
       - ./files:/usr/share/nginx/html/files
       - ./2_implementation/frontend/shared/auth/login.html:/usr/share/nginx/html/login.html
+    depends_on:
+      auth-service:
+        condition: service_started
+      question-bank-service:
+        condition: service_started
+      learning-service:
+        condition: service_started
+      ai-analysis-service:
+        condition: service_started
 
   # 管理員端前端
   admin-frontend:

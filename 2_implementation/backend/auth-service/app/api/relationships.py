@@ -80,6 +80,162 @@ class StudentClassRelationResponse(BaseModel):
     class_name: Optional[str] = None
 
 
+# === 方案B：以班級為資源的學生管理 ===
+class ClassStudentAdd(BaseModel):
+    student_id: int
+    student_number: Optional[str] = None
+
+
+def _ensure_teacher_can_access_class(db: Session, current_user: User, class_id: int):
+    if current_user.role == UserRole.admin:
+        return
+    if current_user.role != UserRole.teacher:
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="只有教師或管理員可操作班級學生")
+    bound = db.query(TeacherClassRelation).filter(
+        and_(
+            TeacherClassRelation.teacher_id == current_user.id,
+            TeacherClassRelation.class_id == class_id,
+            TeacherClassRelation.is_active == True,
+        )
+    ).first()
+    if not bound:
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="無權限操作此班級")
+
+
+@router.get("/classes/{class_id}/students", response_model=List[StudentClassRelationResponse])
+def list_class_students(
+    class_id: int,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    """列出班級學生（教師/Admin 可用）。"""
+    _ensure_teacher_can_access_class(db, current_user, class_id)
+    relations = db.query(StudentClassRelation).options(
+        joinedload(StudentClassRelation.student),
+        joinedload(StudentClassRelation.school_class),
+    ).filter(
+        and_(StudentClassRelation.class_id == class_id, StudentClassRelation.is_active == True)
+    ).all()
+    out: List[StudentClassRelationResponse] = []
+    for r in relations:
+        out.append(
+            StudentClassRelationResponse(
+                id=r.id,
+                student_id=r.student_id,
+                class_id=r.class_id,
+                student_number=r.student_number,
+                is_active=r.is_active,
+                student_name=f"{(r.student.first_name or '')} {(r.student.last_name or '')}".strip() if r.student else None,
+                class_name=r.school_class.class_name if r.school_class else None,
+            )
+        )
+    return out
+
+
+@router.post("/classes/{class_id}/students", response_model=StudentClassRelationResponse)
+def add_class_student(
+    class_id: int,
+    payload: ClassStudentAdd,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    """將學生加入班級（教師/Admin）。"""
+    _ensure_teacher_can_access_class(db, current_user, class_id)
+
+    # 檢查班級存在
+    school_class = db.query(SchoolClass).filter(SchoolClass.id == class_id).first()
+    if not school_class:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="班級不存在")
+
+    # 檢查學生存在
+    student = db.query(User).filter(and_(User.id == payload.student_id, User.role == UserRole.student)).first()
+    if not student:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="學生不存在")
+
+    # 已存在則報錯
+    existed = db.query(StudentClassRelation).filter(
+        and_(
+            StudentClassRelation.student_id == payload.student_id,
+            StudentClassRelation.class_id == class_id,
+            StudentClassRelation.is_active == True,
+        )
+    ).first()
+    if existed:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="學生已在此班級中")
+
+    rel = StudentClassRelation(
+        student_id=payload.student_id,
+        class_id=class_id,
+        student_number=payload.student_number,
+    )
+    db.add(rel)
+    db.commit()
+    db.refresh(rel)
+    return StudentClassRelationResponse(
+        id=rel.id,
+        student_id=rel.student_id,
+        class_id=rel.class_id,
+        student_number=rel.student_number,
+        is_active=rel.is_active,
+        student_name=f"{student.first_name or ''} {student.last_name or ''}".strip(),
+        class_name=school_class.class_name,
+    )
+
+
+@router.delete("/classes/{class_id}/students/{student_id}")
+def remove_class_student(
+    class_id: int,
+    student_id: int,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    """從班級移除學生（教師/Admin）。"""
+    _ensure_teacher_can_access_class(db, current_user, class_id)
+    rel = db.query(StudentClassRelation).filter(
+        and_(
+            StudentClassRelation.class_id == class_id,
+            StudentClassRelation.student_id == student_id,
+            StudentClassRelation.is_active == True,
+        )
+    ).first()
+    if not rel:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="學生不在此班級")
+    db.delete(rel)
+    db.commit()
+    return {"success": True}
+
+
+@router.get("/students/search")
+def search_students(
+    kw: str,
+    limit: int = 10,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    """簡易學生搜尋（email/姓/名模糊查），教師/Admin 可用。"""
+    if current_user.role not in [UserRole.teacher, UserRole.admin]:
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="無權限搜尋學生")
+    q = db.query(User).filter(
+        and_(
+            User.role == UserRole.student,
+            (
+                (User.email.ilike(f"%{kw}%")) |
+                (User.first_name.ilike(f"%{kw}%")) |
+                (User.last_name.ilike(f"%{kw}%"))
+            )
+        )
+    ).limit(min(50, max(1, limit)))
+    rows = q.all()
+    return [
+        {
+            "id": u.id,
+            "email": u.email,
+            "name": f"{u.first_name or ''} {u.last_name or ''}".strip(),
+        }
+        for u in rows
+    ]
+
+
 # 家長-學生關係管理
 @router.post("/parent-child", response_model=ParentChildRelationResponse)
 async def create_parent_child_relation(

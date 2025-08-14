@@ -605,7 +605,7 @@ class ResultPage {
      * 更新 AI 弱點分析
      */
     updateWeaknessAnalysis(weaknessResult) {
-        const weaknessContent = document.getElementById('recommendationsContent');
+        const weaknessContent = document.getElementById('weaknessContent');
         if (!weaknessContent) return;
 
         if (weaknessResult.status === 'fulfilled' && weaknessResult.value.success) {
@@ -616,10 +616,10 @@ class ResultPage {
                 </div>
             `;
         } else {
-            const errorMessage = weaknessResult.status === 'rejected'
+            const errorMessage = weaknessResult.status === 'rejected' 
                 ? weaknessResult.reason?.message || '分析失敗'
                 : weaknessResult.value?.error || '分析失敗';
-
+            
             weaknessContent.innerHTML = `
                 <div class="bg-red-50 border border-red-200 rounded-lg p-4">
                     <p class="text-red-700">AI 弱點分析暫時無法使用：${errorMessage}</p>
@@ -632,7 +632,7 @@ class ResultPage {
      * 更新學習建議
      */
     updateLearningRecommendations(guidanceResult) {
-        const recommendationsContent = document.getElementById('weaknessContent');
+        const recommendationsContent = document.getElementById('recommendationsContent');
         if (!recommendationsContent) return;
 
         if (guidanceResult.status === 'fulfilled' && guidanceResult.value.success) {
@@ -643,10 +643,10 @@ class ResultPage {
                 </div>
             `;
         } else {
-            const errorMessage = guidanceResult.status === 'rejected'
+            const errorMessage = guidanceResult.status === 'rejected' 
                 ? guidanceResult.reason?.message || '建議生成失敗'
                 : guidanceResult.value?.error || '建議生成失敗';
-
+            
             recommendationsContent.innerHTML = `
                 <div class="bg-red-50 border border-red-200 rounded-lg p-4">
                     <p class="text-red-700">學習建議暫時無法生成：${errorMessage}</p>
@@ -711,13 +711,13 @@ class ResultPage {
             // 檢查是否已經保存過（避免重複保存）
             const savedSessionId = sessionStorage.getItem('savedSessionId');
             const currentExamResults = sessionStorage.getItem('examResults');
-
+            
             // 如果有保存標記且當前沒有新的練習結果，則跳過保存
             if (savedSessionId && !currentExamResults) {
                 console.log('練習結果已保存，會話ID:', savedSessionId);
                 return;
             }
-
+            
             // 如果有新的練習結果，清除舊的保存標記
             if (currentExamResults) {
                 console.log('發現新的練習結果，清除舊的保存標記');
@@ -758,7 +758,7 @@ class ResultPage {
                 console.log('練習結果保存成功:', result.data);
                 // 保存會話ID，避免重複保存
                 sessionStorage.setItem('savedSessionId', result.data.session_id);
-
+                
                 // 清除 sessionStorage 中的練習結果，避免重複處理
                 sessionStorage.removeItem('examResults');
 

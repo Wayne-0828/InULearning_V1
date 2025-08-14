@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="InULearning 教師台 - 學生分析">
+    <title>學生分析 - InULearning 教師台</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/design-tokens.css">
+    <link rel="stylesheet" href="../css/main.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .grid { display:grid; grid-template-columns: 1fr 320px; gap: 1.5rem; }
+        .card { background:#fff; border-radius:12px; box-shadow: var(--shadow-sm); padding:1rem; }
+        .filter input, .filter select { width:100%; padding:0.6rem 0.8rem; border:1px solid var(--border); border-radius:8px; }
+        .table { width:100%; border-collapse: collapse; }
+        .table th, .table td { padding:0.75rem 0.9rem; border-bottom:1px solid var(--border); text-align:left; }
+        .tag { padding:0.2rem 0.5rem; border-radius:999px; font-size:0.8rem; background:#EFF6FF; color:#1E40AF; }
+        .toolbar { display:flex; gap:1rem; justify-content: space-between; align-items:center; margin-bottom:0.5rem; }
+        .pagination { display:flex; gap:0.5rem; align-items:center; margin-top:0.75rem; }
+        .btn { padding:0.4rem 0.7rem; border:1px solid var(--border); background:#fff; border-radius:6px; cursor:pointer; }
+        .btn[disabled] { opacity:0.5; cursor:not-allowed; }
+        .empty { padding:1rem; color:var(--text-light); text-align:center; }
+        .skeleton { background: linear-gradient(90deg, #f3f4f6 25%, #e5e7eb 37%, #f3f4f6 63%); background-size: 400% 100%; animation: shimmer 1.2s infinite; border-radius:8px; height:16px; }
+        @keyframes shimmer { 0% { background-position: 100% 0; } 100% { background-position: -100% 0; } }
+    </style>
+</head>
+<body>
+    <a href="#main" class="skip-link" style="position:absolute;left:-9999px;top:auto;width:1px;height:1px;overflow:hidden;">跳至主要內容</a>
+    <nav class="navbar">
+        <div class="navbar-container">
+            <div class="navbar-brand"><i class="fas fa-chalkboard-teacher"></i><span>學生分析</span></div>
+            <div class="navbar-menu">
+                <a href="../index.html" class="nav-link"><i class="fas fa-tachometer-alt"></i><span>儀表板</span></a>
+                <a href="classes.html" class="nav-link"><i class="fas fa-users"></i><span>班級管理</span></a>
+                <a href="students.html" class="nav-link active"><i class="fas fa-user-graduate"></i><span>學生分析</span></a>
+                <a href="questions.html" class="nav-link"><i class="fas fa-question-circle"></i><span>題目管理</span></a>
+            </div>
+        </div>
+    </nav>
+    <main id="main" class="main-content">
+        <div class="container grid">
+            <section class="card">
+                <div class="toolbar">
+                    <h2>學生列表</h2>
+                    <div style="display:flex; gap:0.5rem; align-items:center;">
+                        <input id="kw" type="text" placeholder="搜尋學生..." style="padding:0.5rem 0.8rem; border:1px solid var(--border); border-radius:8px;">
+                        <select id="sortBy" style="padding:0.5rem 0.8rem; border:1px solid var(--border); border-radius:8px;">
+                            <option value="name">姓名</option>
+                            <option value="class">班級</option>
+                            <option value="avg_desc">平均分數（高→低）</option>
+                            <option value="avg_asc">平均分數（低→高）</option>
+                        </select>
+                    </div>
+                </div>
+                <table class="table">
+                    <thead><tr><th>姓名</th><th>班級</th><th>平均分數</th><th>弱點</th></tr></thead>
+                    <tbody id="students-tbody"></tbody>
+                </table>
+                <div class="pagination">
+                    <button class="btn" id="prevPage">上一頁</button>
+                    <span id="pageInfo"></span>
+                    <button class="btn" id="nextPage">下一頁</button>
+                </div>
+            </section>
+            <aside class="card">
+                <h3 style="margin-bottom:0.5rem;">篩選</h3>
+                <div class="filter">
+                    <label>班級</label>
+                    <select id="classFilter"><option value="">全部班級</option><option>七年三班</option><option>七年四班</option></select>
+                </div>
+                <div class="filter" style="margin-top:0.75rem;">
+                    <label>分數門檻</label>
+                    <input id="scoreMin" type="number" min="0" max="100" placeholder=">= 分數">
+                </div>
+            </aside>
+        </div>
+    </main>
+    <script src="../js/utils.js"></script>
+    <script src="../js/api-client.js"></script>
+    <script src="../js/auth.js"></script>
+    <script>
+			let data = [];
+			let classId = null;
+        let page = 1; const pageSize = 10;
+			async function loadStudents(){
+            try {
+					const params = new URLSearchParams({ page: String(page), page_size: String(pageSize) }).toString();
+					if (classId){
+						// 從關係端點取指定班級學生
+						const res = await apiClient.get(`/relationships/classes/${classId}/students`);
+						const arr = res.data || res.items || res || [];
+						data = Array.isArray(arr) ? arr.map(r => ({ name: r.student_name || ('#'+r.student_id), class: '', avg: undefined, weak: [] })) : [];
+					} else {
+						// fallback：原老師學生列表端點（如存在）
+						const res = await apiClient.get(`/learning/teacher/students?${params}`);
+						data = res.data || res.items || res || [];
+					}
+            } catch (e) {
+                data = [
+                    { name:'王小明', class:'七年三班', avg:82, weak:['分數比較','分數四則'] },
+                    { name:'李小華', class:'七年四班', avg:67, weak:['分數比較'] },
+                ];
+            }
+        }
+        function render(){
+            const kw = document.getElementById('kw').value.trim();
+            const cls = document.getElementById('classFilter').value;
+            const min = parseInt(document.getElementById('scoreMin').value||'0');
+            let arr = data.filter(s => (!kw || (s.name||'').includes(kw)) && (!cls || s.class===cls) && (s.avg||0)>=min);
+            const sortBy = document.getElementById('sortBy').value;
+            if (sortBy === 'avg_desc') arr.sort((a,b)=> (b.avg||0)-(a.avg||0));
+            else if (sortBy === 'avg_asc') arr.sort((a,b)=> (a.avg||0)-(b.avg||0));
+            else if (sortBy === 'name') arr.sort((a,b)=> (a.name||'').localeCompare(b.name||''));
+            else if (sortBy === 'class') arr.sort((a,b)=> (a.class||'').localeCompare(b.class||''));
+            const total = arr.length; const totalPages = Math.max(1, Math.ceil(total / pageSize));
+            page = Math.min(page, totalPages);
+            const start = (page-1)*pageSize; const end = start + pageSize;
+            const rows = arr.slice(start, end)
+                .map(s=>`<tr><td>${s.name||'-'}</td><td>${s.class||'-'}</td><td>${s.avg??'-'}</td><td>${(s.weak||[]).map(w=>`<span class='tag'>${w}</span>`).join(' ')}</td></tr>`).join('');
+            document.getElementById('students-tbody').innerHTML = rows;
+            document.getElementById('pageInfo').textContent = `${page} / ${totalPages}`;
+            document.getElementById('prevPage').disabled = page<=1; document.getElementById('nextPage').disabled = page>=totalPages;
+            if (!total) document.getElementById('students-tbody').innerHTML = `<tr><td colspan="4"><div class="empty">尚無資料</div></td></tr>`;
+        }
+        document.addEventListener('input', render);
+        document.addEventListener('change', render);
+			document.addEventListener('DOMContentLoaded', async () => { 
+				const usp = new URLSearchParams(window.location.search);
+				classId = usp.get('classId');
+				const clsName = usp.get('class');
+				if (classId && clsName){
+					// 在頁面抬頭顯示班級名（簡單處理：替換 navbar-brand 文字）
+					const brand = document.querySelector('.navbar-brand span');
+					if (brand) brand.textContent = `學生分析 - ${clsName}`;
+				}
+            // 初始 skeleton
+            document.getElementById('students-tbody').innerHTML = Array.from({length:5}).map(()=>`<tr><td colspan="4"><div class="skeleton"></div></td></tr>`).join('');
+            await loadStudents(); render(); 
+            document.getElementById('prevPage').addEventListener('click', ()=>{ if(page>1){ page--; render(); }});
+            document.getElementById('nextPage').addEventListener('click', ()=>{ page++; render(); });
+        });
+    </script>
+</body>
+</html>
+

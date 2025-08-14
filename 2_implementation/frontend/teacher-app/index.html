@@ -4,12 +4,18 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>InULearning - 教師控制台</title>
+    <meta name="description" content="InULearning 教師控制台：管理班級、學生、題庫與作業，查看學習報告。">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="../shared/css/components.css">
     <link rel="stylesheet" href="../shared/css/responsive.css">
+    <link rel="stylesheet" href="css/design-tokens.css">
     <link rel="stylesheet" href="css/main.css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 </head>
 <body>
+    <a href="#main" class="skip-link" style="position:absolute;left:-9999px;top:auto;width:1px;height:1px;overflow:hidden;">跳至主要內容</a>
     <!-- 導航欄 -->
     <nav class="navbar">
         <div class="navbar-container">
@@ -18,7 +24,7 @@
                 <span>InULearning 教師台</span>
             </div>
             <div class="navbar-menu">
-                <a href="pages/dashboard.html" class="nav-link active">
+                <a href="index.html" class="nav-link active">
                     <i class="fas fa-tachometer-alt"></i>
                     <span>儀表板</span>
                 </a>
@@ -59,7 +65,7 @@
     </nav>
 
     <!-- 主要內容區域 -->
-    <main class="main-content">
+    <main id="main" class="main-content">
         <div class="container">
             <!-- 歡迎區塊 -->
             <div class="welcome-section">
@@ -150,8 +156,8 @@
     </div>
 
     <!-- 腳本 -->
-    <script src="../shared/js/utils.js"></script>
-    <script src="../shared/js/api-client.js"></script>
+    <script src="js/utils.js"></script>
+    <script src="js/api-client.js"></script>
     <script src="js/auth.js"></script>
     <script src="js/dashboard.js"></script>
     <script src="js/main.js"></script>
