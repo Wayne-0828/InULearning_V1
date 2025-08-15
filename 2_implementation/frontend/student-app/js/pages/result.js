@@ -326,8 +326,8 @@ class ResultPage {
                 if (Array.isArray(answerChoices)) {
                     options = answerChoices;
                 } else if (typeof answerChoices === 'object') {
-                    // 將對象格式轉為數組 {A: "選項1", B: "選項2"} -> ["選項1", "選項2"]
-                    options = Object.keys(answerChoices).sort().map(key => answerChoices[key]);
+                    // 將對象格式轉為數組，確保順序為 A, B, C, D
+                    options = ['A', 'B', 'C', 'D'].map(letter => answerChoices[letter]).filter(option => option !== undefined);
                 }
             }
 
