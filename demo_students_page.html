@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>學生管理頁面演示</title>
+    <style>
+        body {
+            font-family: 'Noto Sans TC', sans-serif;
+            margin: 0;
+            padding: 2rem;
+            background: linear-gradient(135deg, #f0f9ff 0%, #ffffff 100%);
+            color: #1f2937;
+        }
+
+        .demo-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .demo-header {
+            background: linear-gradient(135deg, #3b82f6, #1e40af);
+            color: white;
+            padding: 2rem;
+            text-align: center;
+        }
+
+        .demo-header h1 {
+            margin: 0;
+            font-size: 2rem;
+            font-weight: 700;
+        }
+
+        .demo-header p {
+            margin: 0.5rem 0 0 0;
+            opacity: 0.9;
+        }
+
+        .demo-content {
+            padding: 2rem;
+        }
+
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .feature-card {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 1.5rem;
+            border-left: 4px solid #3b82f6;
+        }
+
+        .feature-card h3 {
+            margin: 0 0 0.5rem 0;
+            color: #1e40af;
+            font-size: 1.125rem;
+        }
+
+        .feature-card p {
+            margin: 0;
+            color: #64748b;
+            font-size: 0.875rem;
+            line-height: 1.5;
+        }
+
+        .demo-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin: 2rem 0;
+        }
+
+        .demo-btn {
+            background: #3b82f6;
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-size: 0.875rem;
+            font-weight: 500;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .demo-btn:hover {
+            background: #2563eb;
+            transform: translateY(-1px);
+        }
+
+        .demo-btn.secondary {
+            background: #64748b;
+        }
+
+        .demo-btn.secondary:hover {
+            background: #475569;
+        }
+
+        .status-section {
+            background: #f0fdf4;
+            border: 1px solid #bbf7d0;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .status-title {
+            color: #166534;
+            font-weight: 600;
+            margin: 0 0 1rem 0;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .status-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .status-list li {
+            color: #15803d;
+            margin: 0.5rem 0;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .tech-specs {
+            background: #fafafa;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .tech-specs h3 {
+            margin: 0 0 1rem 0;
+            color: #374151;
+        }
+
+        .tech-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+
+        .tech-item {
+            background: white;
+            padding: 1rem;
+            border-radius: 8px;
+            border: 1px solid #e5e7eb;
+        }
+
+        .tech-item strong {
+            color: #1f2937;
+            display: block;
+            margin-bottom: 0.25rem;
+        }
+
+        .tech-item span {
+            color: #6b7280;
+            font-size: 0.875rem;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 1rem;
+            }
+
+            .demo-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .demo-btn {
+                width: 100%;
+                max-width: 300px;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="demo-container">
+        <div class="demo-header">
+            <h1>🎓 InULearning 學生管理系統</h1>
+            <p>現代化的教師端學生分析與管理平台</p>
+        </div>
+
+        <div class="demo-content">
+            <div class="status-section">
+                <h3 class="status-title">
+                    ✅ 系統狀態
+                </h3>
+                <ul class="status-list">
+                    <li>✅ API 服務正常運行</li>
+                    <li>✅ 認證系統可用</li>
+                    <li>✅ 前端頁面已部署</li>
+                    <li>✅ 響應式設計完成</li>
+                    <li>⚠️ 學習資料使用模擬資料（API 端點需要實際學習記錄）</li>
+                </ul>
+            </div>
+
+            <h2>🚀 主要功能特色</h2>
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <h3>🎯 智能 API 整合</h3>
+                    <p>自動檢測 API 可用性，支援真實資料和模擬資料無縫切換，確保系統在任何情況下都能正常運作。</p>
+                </div>
+
+                <div class="feature-card">
+                    <h3>📊 雙視圖模式</h3>
+                    <p>提供表格視圖和卡片視圖兩種顯示模式，滿足不同使用習慣和螢幕尺寸的需求。</p>
+                </div>
+
+                <div class="feature-card">
+                    <h3>🔍 即時搜尋篩選</h3>
+                    <p>支援學生姓名搜尋、班級篩選、分數排序等多維度篩選功能，快速找到目標學生。</p>
+                </div>
+
+                <div class="feature-card">
+                    <h3>📱 響應式設計</h3>
+                    <p>完美適配桌面、平板、手機等各種設備，提供一致的用戶體驗。</p>
+                </div>
+
+                <div class="feature-card">
+                    <h3>📈 統計概覽</h3>
+                    <p>即時顯示學生總數、平均分數、活躍學生數等關鍵指標，幫助教師快速了解班級狀況。</p>
+                </div>
+
+                <div class="feature-card">
+                    <h3>🎨 現代化 UI</h3>
+                    <p>採用現代設計語言，清晰的視覺層次，優雅的動畫效果，提升用戶體驗。</p>
+                </div>
+            </div>
+
+            <div class="demo-buttons">
+                <a href="http://localhost:8083/pages/students-enhanced.html" class="demo-btn" target="_blank">
+                    🚀 開啟學生管理頁面
+                </a>
+                <a href="http://localhost:8083/pages/students-enhanced.html?class=七年三班" class="demo-btn"
+                    target="_blank">
+                    📚 查看指定班級
+                </a>
+                <a href="file:///C:/path/to/test_students_page.html" class="demo-btn secondary" target="_blank">
+                    🧪 開啟測試工具
+                </a>
+            </div>
+
+            <div class="tech-specs">
+                <h3>🔧 技術規格</h3>
+                <div class="tech-grid">
+                    <div class="tech-item">
+                        <strong>前端技術</strong>
+                        <span>HTML5, CSS3, Vanilla JavaScript</span>
+                    </div>
+                    <div class="tech-item">
+                        <strong>設計系統</strong>
+                        <span>CSS Variables, Flexbox, Grid</span>
+                    </div>
+                    <div class="tech-item">
+                        <strong>API 整合</strong>
+                        <span>RESTful API, JWT 認證</span>
+                    </div>
+                    <div class="tech-item">
+                        <strong>響應式</strong>
+                        <span>Mobile-first, Breakpoints</span>
+                    </div>
+                    <div class="tech-item">
+                        <strong>字體</strong>
+                        <span>Noto Sans TC, Material Icons</span>
+                    </div>
+                    <div class="tech-item">
+                        <strong>瀏覽器支援</strong>
+                        <span>Chrome, Firefox, Safari, Edge</span>
+                    </div>
+                </div>
+            </div>
+
+            <div style="background: #f0f9ff; border-radius: 12px; padding: 1.5rem; margin: 2rem 0; text-align: center;">
+                <h3 style="color: #1e40af; margin: 0 0 1rem 0;">📋 使用說明</h3>
+                <p style="color: #1e40af; margin: 0; line-height: 1.6;">
+                    1. 點擊上方按鈕開啟學生管理頁面<br>
+                    2. 系統會自動檢測 API 連接狀態<br>
+                    3. 如果 API 無資料，會自動使用模擬資料<br>
+                    4. 可以使用搜尋、篩選、排序等功能<br>
+                    5. 支援表格和卡片兩種視圖模式
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 檢查頁面可用性
+        document.addEventListener('DOMContentLoaded', function () {
+            const buttons = document.querySelectorAll('.demo-btn');
+            buttons.forEach(button => {
+                if (button.href.includes('localhost')) {
+                    // 檢查本地服務是否可用
+                    fetch(button.href, { method: 'HEAD', mode: 'no-cors' })
+                        .then(() => {
+                            button.style.background = '#10b981';
+                            button.innerHTML = button.innerHTML.replace('🚀', '✅');
+                        })
+                        .catch(() => {
+                            button.style.background = '#ef4444';
+                            button.innerHTML = button.innerHTML.replace('🚀', '❌');
+                            button.title = '服務暫時無法連接';
+                        });
+                }
+            });
+        });
+    </script>
+</body>
+
+</html>

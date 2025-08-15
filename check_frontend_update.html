@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>前端更新檢查</title>
+    <style>
+        body {
+            font-family: 'Noto Sans TC', sans-serif;
+            margin: 0;
+            padding: 2rem;
+            background: linear-gradient(135deg, #f0f9ff 0%, #ffffff 100%);
+            color: #1f2937;
+        }
+
+        .check-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 2rem;
+        }
+
+        .check-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .check-header h1 {
+            color: #1e40af;
+            margin-bottom: 0.5rem;
+        }
+
+        .check-item {
+            background: #f8fafc;
+            border-radius: 8px;
+            padding: 1rem;
+            margin: 1rem 0;
+            border-left: 4px solid #3b82f6;
+        }
+
+        .check-item h3 {
+            margin: 0 0 0.5rem 0;
+            color: #1e40af;
+        }
+
+        .check-item p {
+            margin: 0;
+            color: #64748b;
+        }
+
+        .test-button {
+            background: #3b82f6;
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            font-size: 1rem;
+            cursor: pointer;
+            margin: 0.5rem;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.3s ease;
+        }
+
+        .test-button:hover {
+            background: #2563eb;
+            transform: translateY(-1px);
+        }
+
+        .result {
+            background: #f0fdf4;
+            border: 1px solid #bbf7d0;
+            border-radius: 8px;
+            padding: 1rem;
+            margin: 1rem 0;
+            display: none;
+        }
+
+        .result.show {
+            display: block;
+        }
+
+        .result.error {
+            background: #fef2f2;
+            border-color: #fecaca;
+        }
+
+        .buttons-container {
+            text-align: center;
+            margin: 2rem 0;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="check-container">
+        <div class="check-header">
+            <h1>🔍 前端更新檢查工具</h1>
+            <p>檢查學生管理頁面是否已成功更新</p>
+        </div>
+
+        <div class="check-item">
+            <h3>📋 檢查清單</h3>
+            <p>以下是確認前端更新的方法：</p>
+            <ul style="margin: 0.5rem 0; padding-left: 1.5rem;">
+                <li>頁面標題應顯示 "Enhanced v2.0"</li>
+                <li>應該看到綠色的版本指示器</li>
+                <li>頁面應該有現代化的設計風格</li>
+                <li>應該有統計卡片和搜尋功能</li>
+                <li>支援表格和卡片兩種視圖</li>
+            </ul>
+        </div>
+
+        <div class="check-item">
+            <h3>🚀 快速測試</h3>
+            <p>點擊下方按鈕開啟學生管理頁面並檢查更新：</p>
+        </div>
+
+        <div class="buttons-container">
+            <a href="http://localhost:8083/pages/students-enhanced.html" class="test-button" target="_blank"
+                onclick="checkUpdate()">
+                🔗 開啟學生管理頁面
+            </a>
+            <button class="test-button" onclick="testAPI()">
+                🧪 測試 API 連接
+            </button>
+            <button class="test-button" onclick="clearCache()">
+                🗑️ 清除瀏覽器快取
+            </button>
+        </div>
+
+        <div id="result" class="result">
+            <h4>測試結果：</h4>
+            <p id="resultText">等待測試...</p>
+        </div>
+
+        <div class="check-item">
+            <h3>❓ 如果看不到更新</h3>
+            <p>請嘗試以下方法：</p>
+            <ol style="margin: 0.5rem 0; padding-left: 1.5rem;">
+                <li><strong>硬重新整理</strong>：按 Ctrl+F5 (Windows) 或 Cmd+Shift+R (Mac)</li>
+                <li><strong>清除快取</strong>：開啟開發者工具 (F12) → Network 標籤 → 勾選 "Disable cache"</li>
+                <li><strong>無痕模式</strong>：使用瀏覽器的無痕/私人瀏覽模式</li>
+                <li><strong>檢查服務</strong>：確認 Docker 容器正在運行</li>
+            </ol>
+        </div>
+
+        <div class="check-item">
+            <h3>🔧 故障排除</h3>
+            <p>如果頁面仍然沒有更新，請檢查：</p>
+            <ul style="margin: 0.5rem 0; padding-left: 1.5rem;">
+                <li>Docker 容器是否正在運行：<code>docker compose ps</code></li>
+                <li>教師端服務是否可訪問：<code>http://localhost:8083</code></li>
+                <li>文件是否已正確保存</li>
+                <li>瀏覽器控制台是否有錯誤訊息</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        function checkUpdate() {
+            const result = document.getElementById('result');
+            const resultText = document.getElementById('resultText');
+
+            result.classList.add('show');
+            resultText.textContent = '已開啟學生管理頁面。請檢查：\n1. 頁面標題是否包含 "Enhanced v2.0"\n2. 是否有綠色版本指示器\n3. 設計是否為現代化風格';
+        }
+
+        async function testAPI() {
+            const result = document.getElementById('result');
+            const resultText = document.getElementById('resultText');
+
+            result.classList.add('show');
+            resultText.textContent = '正在測試 API 連接...';
+
+            try {
+                // 測試教師端服務
+                const response = await fetch('http://localhost:8083/pages/students-enhanced.html', {
+                    method: 'HEAD',
+                    cache: 'no-cache'
+                });
+
+                if (response.ok) {
+                    resultText.textContent = '✅ 教師端服務正常運行\n✅ 學生管理頁面可訪問\n請開啟頁面檢查視覺更新';
+                    result.classList.remove('error');
+                } else {
+                    resultText.textContent = '❌ 教師端服務無法訪問\n請檢查 Docker 容器是否運行';
+                    result.classList.add('error');
+                }
+            } catch (error) {
+                resultText.textContent = '❌ 連接失敗: ' + error.message + '\n請檢查服務是否啟動';
+                result.classList.add('error');
+            }
+        }
+
+        function clearCache() {
+            const result = document.getElementById('result');
+            const resultText = document.getElementById('resultText');
+
+            result.classList.add('show');
+            resultText.textContent = '💡 清除快取的方法：\n1. 按 Ctrl+F5 強制重新整理\n2. 開啟開發者工具 (F12) → Network → 勾選 "Disable cache"\n3. 使用無痕模式瀏覽';
+        }
+
+        // 頁面載入時自動檢查
+        document.addEventListener('DOMContentLoaded', function () {
+            console.log('🔍 前端更新檢查工具已載入');
+            console.log('📝 請開啟學生管理頁面檢查更新狀態');
+        });
+    </script>
+</body>
+
+</html>

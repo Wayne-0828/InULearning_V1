@@ -1,0 +1,588 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="InULearning 教師台 - 作業管理增強版">
+    <title>作業管理 - InULearning 教師台</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/design-tokens.css">
+    <link rel="stylesheet" href="../css/main.css">
+    <link rel="stylesheet" href="../css/modern-design-system.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .assignments-container {
+            display: grid;
+            grid-template-columns: 1fr 380px;
+            gap: 1.5rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .main-panel {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .stat-card {
+            background: #fff;
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: var(--shadow-sm);
+            border-left: 4px solid var(--primary-blue);
+            transition: all 0.2s ease;
+        }
+
+        .stat-card:hover {
+            box-shadow: var(--shadow-md);
+            transform: translateY(-2px);
+        }
+
+        .stat-card.warning {
+            border-left-color: #F59E0B;
+        }
+
+        .stat-card.success {
+            border-left-color: #10B981;
+        }
+
+        .stat-card.danger {
+            border-left-color: #EF4444;
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--primary-blue);
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            color: var(--text-light);
+            font-size: 0.9rem;
+        }
+
+        .assignments-card {
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: var(--shadow-sm);
+            overflow: hidden;
+        }
+
+        .card-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .filters-toolbar {
+            display: flex;
+            gap: 0.75rem;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .search-box {
+            position: relative;
+            min-width: 250px;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 0.6rem 0.8rem 0.6rem 2.5rem;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-size: 0.9rem;
+        }
+
+        .search-box i {
+            position: absolute;
+            left: 0.8rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-light);
+        }
+
+        .filter-select {
+            padding: 0.6rem 0.8rem;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            background: #fff;
+            font-size: 0.9rem;
+            min-width: 120px;
+        }
+
+        .view-toggle {
+            display: flex;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .view-btn {
+            padding: 0.6rem 0.8rem;
+            border: none;
+            background: #fff;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .view-btn.active {
+            background: var(--primary-blue);
+            color: #fff;
+        }
+
+        .assignments-list {
+            max-height: 600px;
+            overflow-y: auto;
+        }
+
+        .assignment-item {
+            padding: 1.5rem;
+            border-bottom: 1px solid var(--border);
+            transition: background-color 0.2s ease;
+        }
+
+        .assignment-item:hover {
+            background: #F8FAFC;
+        }
+
+        .assignment-item:last-child {
+            border-bottom: none;
+        }
+
+        .assignment-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 0.75rem;
+        }
+
+        .assignment-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--text-dark);
+            margin-bottom: 0.25rem;
+        }
+
+        .assignment-meta {
+            display: flex;
+            gap: 1rem;
+            color: var(--text-light);
+            font-size: 0.9rem;
+        }
+
+        .assignment-status {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+
+        .status-active {
+            background: #DBEAFE;
+            color: #1E40AF;
+        }
+
+        .status-draft {
+            background: #F3F4F6;
+            color: #6B7280;
+        }
+
+        .status-closed {
+            background: #FEE2E2;
+            color: #DC2626;
+        }
+
+        .status-grading {
+            background: #FEF3C7;
+            color: #D97706;
+        }
+
+        .assignment-progress {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+        }
+
+        .progress-bar {
+            flex: 1;
+            height: 6px;
+            background: #E5E7EB;
+            border-radius: 3px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: var(--primary-blue);
+            transition: width 0.3s ease;
+        }
+
+        .progress-text {
+            font-size: 0.8rem;
+            color: var(--text-light);
+            white-space: nowrap;
+        }
+
+        .assignment-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .action-btn {
+            padding: 0.5rem;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-size: 0.9rem;
+        }
+
+        .action-btn.primary {
+            background: var(--primary-blue);
+            color: #fff;
+        }
+
+        .action-btn.secondary {
+            background: #F3F4F6;
+            color: var(--text-dark);
+        }
+
+        .action-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .sidebar-panel {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .quick-actions-card {
+            background: #fff;
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .quick-actions-card h3 {
+            margin-bottom: 1rem;
+            color: var(--text-dark);
+            font-size: 1.1rem;
+        }
+
+        .quick-action-btn {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            width: 100%;
+            padding: 0.75rem;
+            border: none;
+            border-radius: 8px;
+            background: #F8FAFC;
+            color: var(--text-dark);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            margin-bottom: 0.5rem;
+            text-align: left;
+        }
+
+        .quick-action-btn:hover {
+            background: var(--primary-blue);
+            color: #fff;
+        }
+
+        .calendar-widget {
+            background: #fff;
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .calendar-header {
+            display: flex;
+            justify-content: between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 0.25rem;
+        }
+
+        .calendar-day {
+            aspect-ratio: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .calendar-day:hover {
+            background: #F3F4F6;
+        }
+
+        .calendar-day.has-deadline {
+            background: #FEE2E2;
+            color: #DC2626;
+            font-weight: 600;
+        }
+
+        .calendar-day.today {
+            background: var(--primary-blue);
+            color: #fff;
+        }
+
+        .grid-view {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1rem;
+            padding: 1.5rem;
+        }
+
+        .assignment-card {
+            background: #fff;
+            border-radius: 8px;
+            padding: 1.5rem;
+            box-shadow: var(--shadow-sm);
+            border-left: 4px solid var(--primary-blue);
+            transition: all 0.2s ease;
+        }
+
+        .assignment-card:hover {
+            box-shadow: var(--shadow-md);
+            transform: translateY(-2px);
+        }
+
+        .assignment-card.warning {
+            border-left-color: #F59E0B;
+        }
+
+        .assignment-card.danger {
+            border-left-color: #EF4444;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        @media (max-width: 768px) {
+            .assignments-container {
+                grid-template-columns: 1fr;
+            }
+
+            .filters-toolbar {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .search-box {
+                min-width: auto;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-brand">
+                <img src="../assets/logo.png" alt="InULearning" class="nav-logo">
+                <span class="nav-title">InULearning 教師台</span>
+            </div>
+            <div class="nav-menu">
+                <a href="../index.html" class="nav-link">
+                    <i class="fas fa-home"></i>
+                    首頁
+                </a>
+                <a href="students-enhanced.html" class="nav-link">
+                    <i class="fas fa-users"></i>
+                    學生管理
+                </a>
+                <a href="assignments-enhanced.html" class="nav-link active">
+                    <i class="fas fa-tasks"></i>
+                    作業管理
+                </a>
+                <a href="grades.html" class="nav-link">
+                    <i class="fas fa-chart-bar"></i>
+                    成績管理
+                </a>
+                <a href="analytics.html" class="nav-link">
+                    <i class="fas fa-analytics"></i>
+                    學習分析
+                </a>
+            </div>
+            <div class="nav-user">
+                <div class="user-info">
+                    <span class="user-name">王老師</span>
+                    <span class="user-role">數學科教師</span>
+                </div>
+                <img src="../assets/avatar.jpg" alt="用戶頭像" class="user-avatar">
+            </div>
+        </div>
+    </nav>
+
+    <main class="main-content">
+        <div class="page-header">
+            <div class="header-content">
+                <h1 class="page-title">
+                    <i class="fas fa-tasks"></i>
+                    作業管理
+                </h1>
+                <p class="page-subtitle">管理和追蹤學生作業進度</p>
+            </div>
+            <div class="header-actions">
+                <button class="btn btn-secondary" onclick="exportAssignments()">
+                    <i class="fas fa-download"></i>
+                    匯出報告
+                </button>
+                <button class="btn btn-primary" onclick="createAssignment()">
+                    <i class="fas fa-plus"></i>
+                    新增作業
+                </button>
+            </div>
+        </div>
+
+        <div class="assignments-container">
+            <div class="main-panel">
+                <!-- 統計卡片 -->
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-number" id="totalAssignments">12</div>
+                        <div class="stat-label">總作業數</div>
+                    </div>
+                    <div class="stat-card warning">
+                        <div class="stat-number" id="activeAssignments">5</div>
+                        <div class="stat-label">進行中作業</div>
+                    </div>
+                    <div class="stat-card success">
+                        <div class="stat-number" id="completedAssignments">7</div>
+                        <div class="stat-label">已完成作業</div>
+                    </div>
+                    <div class="stat-card danger">
+                        <div class="stat-number" id="overdueAssignments">2</div>
+                        <div class="stat-label">逾期作業</div>
+                    </div>
+                </div>
+
+                <!-- 作業列表 -->
+                <div class="assignments-card">
+                    <div class="card-header">
+                        <h2>作業列表</h2>
+                        <div class="filters-toolbar">
+                            <div class="search-box">
+                                <i class="fas fa-search"></i>
+                                <input type="text" id="searchInput" placeholder="搜尋作業名稱或描述...">
+                            </div>
+                            <select class="filter-select" id="statusFilter">
+                                <option value="">所有狀態</option>
+                                <option value="active">進行中</option>
+                                <option value="draft">草稿</option>
+                                <option value="closed">已結束</option>
+                                <option value="grading">批改中</option>
+                            </select>
+                            <select class="filter-select" id="subjectFilter">
+                                <option value="">所有科目</option>
+                                <option value="math">數學</option>
+                                <option value="chinese">國文</option>
+                                <option value="english">英文</option>
+                                <option value="science">自然</option>
+                            </select>
+                            <div class="view-toggle">
+                                <button class="view-btn active" data-view="list">
+                                    <i class="fas fa-list"></i>
+                                </button>
+                                <button class="view-btn" data-view="grid">
+                                    <i class="fas fa-th"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 列表視圖 -->
+                    <div id="listView" class="assignments-list">
+                        <!-- 作業項目將由 JavaScript 動態生成 -->
+                    </div>
+
+                    <!-- 網格視圖 -->
+                    <div id="gridView" class="grid-view hidden">
+                        <!-- 作業卡片將由 JavaScript 動態生成 -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- 側邊欄 -->
+            <div class="sidebar-panel">
+                <!-- 快速操作 -->
+                <div class="quick-actions-card">
+                    <h3>快速操作</h3>
+                    <button class="quick-action-btn" onclick="createAssignment()">
+                        <i class="fas fa-plus"></i>
+                        新增作業
+                    </button>
+                    <button class="quick-action-btn" onclick="importAssignments()">
+                        <i class="fas fa-upload"></i>
+                        匯入作業
+                    </button>
+                    <button class="quick-action-btn" onclick="bulkGrade()">
+                        <i class="fas fa-edit"></i>
+                        批量批改
+                    </button>
+                    <button class="quick-action-btn" onclick="sendReminders()">
+                        <i class="fas fa-bell"></i>
+                        發送提醒
+                    </button>
+                    <button class="quick-action-btn" onclick="viewAnalytics()">
+                        <i class="fas fa-chart-line"></i>
+                        查看分析
+                    </button>
+                </div>
+
+                <!-- 截止日期日曆 -->
+                <div class="calendar-widget">
+                    <div class="calendar-header">
+                        <h3>截止日期</h3>
+                        <div>
+                            <button onclick="previousMonth()">&lt;</button>
+                            <span id="currentMonth">2024年2月</span>
+                            <button onclick="nextMonth()">&gt;</button>
+                        </div>
+                    </div>
+                    <div class="calendar-grid" id="calendarGrid">
+                        <!-- 日曆將由 JavaScript 動態生成 -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="../js/api-health-check.js"></script>
+    <script src="../js/modern-navigation.js"></script>
+    <script src="../js/assignments-enhanced.js"></script>
+</body>
+
+</html>

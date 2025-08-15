@@ -38,13 +38,25 @@
             transform: translateY(-1px);
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
         }
+
+        /* 與教師端首頁一致的藍色漸層 */
+        .login-aside {
+            background: linear-gradient(135deg, #3B82F6 0%, #1E40AF 100%) !important;
+        }
+
+        .login-header {
+            background: linear-gradient(135deg, #3B82F6 0%, #1E40AF 100%) !important;
+            color: #fff !important;
+            border-bottom: none !important;
+        }
+        .login-header h1 { color: #fff !important; }
     </style>
 </head>
 
 <body class="bg-gray-100">
     <div class="flex h-screen bg-white">
         <!-- 側邊欄 -->
-        <aside class="w-64 bg-blue-800 text-white flex-col hidden lg:flex">
+        <aside class="w-64 login-aside text-white flex-col hidden lg:flex">
             <div class="flex items-center justify-center p-6">
                 <img alt="InU Learning Logo" class="w-24 h-24 rounded-full"
                     src="https://lh3.googleusercontent.com/aida-public/AB6AXuBkUkYI-c0qBm9BcHamuWBs9ebu6mgGni1SlXL6giHvgu2WnHxHaQYkRoAlzI_OZ8yNf6Rn90d73q13vLeMoBfFP0mQHcxlf2YHE9__XhpOUl-OvECBnRad91AKcE4dKkTJtEoAm_alktSTzu_Aw9Fah_2IQ6YeqBALwAqrLNP2oghwOkLSyBMdfpOrW24nKk3dnl3z6piT9-S0cISDfJ5rhAlBYvIzoAhypgUHvJCzxlSG9ag8QMkltK1Hu_rX4jqdQgGuOD2JLzo">
@@ -77,7 +89,7 @@
         <!-- 主內容區 -->
         <div class="flex-1 flex flex-col overflow-hidden">
             <!-- 頂部導航 -->
-            <header class="flex justify-between items-center p-4 bg-white border-b">
+            <header class="flex justify-between items-center p-4 login-header">
                 <div class="flex items-center flex-1">
                     <button class="text-gray-500 focus:outline-none lg:hidden">
                         <span class="material-icons">menu</span>

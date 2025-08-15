@@ -65,6 +65,19 @@ class TeacherClassRelationResponse(BaseModel):
     class_name: Optional[str] = None
 
 
+# 供教師建立/更新自己班級用
+class TeacherCreateClassRequest(BaseModel):
+    class_name: str
+    subject: str
+    grade: Optional[str] = "7"
+    school_year: Optional[str] = "2024-2025"
+
+
+class TeacherUpdateClassRequest(BaseModel):
+    class_name: Optional[str] = None
+    subject: Optional[str] = None
+
+
 class StudentClassRelationCreate(BaseModel):
     class_id: int
     student_number: Optional[str] = None
@@ -452,6 +465,49 @@ async def create_teacher_class_relation(
     )
 
 
+@router.post("/teacher-class/create-class", response_model=TeacherClassRelationResponse)
+def teacher_create_class(
+    payload: TeacherCreateClassRequest,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    """教師一鍵建立班級並綁定教學科目。"""
+    if current_user.role not in [UserRole.teacher, UserRole.admin]:
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="只有教師或管理員可建立班級")
+
+    # 建立或取得班級
+    school_class = SchoolClass(
+        class_name=payload.class_name,
+        grade=payload.grade or "7",
+        school_year=payload.school_year or "2024-2025",
+        is_active=True,
+    )
+    db.add(school_class)
+    db.commit()
+    db.refresh(school_class)
+
+    # 建立教學關係
+    relation = TeacherClassRelation(
+        teacher_id=current_user.id,
+        class_id=school_class.id,
+        subject=payload.subject,
+        is_active=True,
+    )
+    db.add(relation)
+    db.commit()
+    db.refresh(relation)
+
+    return TeacherClassRelationResponse(
+        id=relation.id,
+        teacher_id=relation.teacher_id,
+        class_id=relation.class_id,
+        subject=relation.subject,
+        is_active=relation.is_active,
+        teacher_name=f"{current_user.first_name or ''} {current_user.last_name or ''}".strip(),
+        class_name=school_class.class_name,
+    )
+
+
 @router.get("/teacher-class", response_model=List[TeacherClassRelationResponse])
 async def get_teacher_class_relations(
     current_user: User = Depends(get_current_user),
@@ -486,6 +542,84 @@ async def get_teacher_class_relations(
         )
         for relation in relations
     ]
+
+
+@router.put("/teacher-class/{class_id}", response_model=TeacherClassRelationResponse)
+def teacher_update_class(
+    class_id: int,
+    payload: TeacherUpdateClassRequest,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    """教師更新自己授課班級的基本資訊或科目。"""
+    if current_user.role not in [UserRole.teacher, UserRole.admin]:
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="只有教師或管理員可更新班級")
+
+    # 先確認該班級屬於該教師
+    relation = db.query(TeacherClassRelation).filter(
+        and_(
+            TeacherClassRelation.class_id == class_id,
+            TeacherClassRelation.is_active == True,
+            (TeacherClassRelation.teacher_id == current_user.id) if current_user.role == UserRole.teacher else True,
+        )
+    ).first()
+    if not relation:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="找不到班級或無權限")
+
+    # 更新班級名稱
+    school_class = db.query(SchoolClass).filter(SchoolClass.id == class_id).first()
+    if not school_class:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="班級不存在")
+
+    if payload.class_name is not None:
+        school_class.class_name = payload.class_name
+    if payload.subject is not None:
+        relation.subject = payload.subject
+
+    db.commit()
+    db.refresh(school_class)
+    db.refresh(relation)
+
+    return TeacherClassRelationResponse(
+        id=relation.id,
+        teacher_id=relation.teacher_id,
+        class_id=relation.class_id,
+        subject=relation.subject,
+        is_active=relation.is_active,
+        teacher_name=f"{current_user.first_name or ''} {current_user.last_name or ''}".strip(),
+        class_name=school_class.class_name,
+    )
+
+
+@router.delete("/teacher-class/{class_id}")
+def teacher_delete_class(
+    class_id: int,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    """教師刪除自己授課班級（軟刪除關係與班級停用）。"""
+    if current_user.role not in [UserRole.teacher, UserRole.admin]:
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="只有教師或管理員可刪除班級")
+
+    relation = db.query(TeacherClassRelation).filter(
+        and_(
+            TeacherClassRelation.class_id == class_id,
+            TeacherClassRelation.is_active == True,
+            (TeacherClassRelation.teacher_id == current_user.id) if current_user.role == UserRole.teacher else True,
+        )
+    ).first()
+    if not relation:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="找不到班級或無權限")
+
+    school_class = db.query(SchoolClass).filter(SchoolClass.id == class_id).first()
+    if not school_class:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="班級不存在")
+
+    # 軟刪除：關係失效，班級停用
+    relation.is_active = False
+    school_class.is_active = False
+    db.commit()
+    return {"success": True}
 
 
 # 學生-班級關係管理

@@ -1,0 +1,627 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>📱 新頁面預覽 - 學生管理系統</title>
+    <style>
+        body {
+            font-family: 'Noto Sans TC', sans-serif;
+            margin: 0;
+            padding: 2rem;
+            background: linear-gradient(135deg, #f0f9ff 0%, #ffffff 100%);
+            color: #1f2937;
+        }
+
+        .preview-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .preview-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .preview-header h1 {
+            font-size: 2.5rem;
+            color: #1e40af;
+            margin-bottom: 1rem;
+        }
+
+        .preview-header p {
+            font-size: 1.125rem;
+            color: #64748b;
+        }
+
+        .mockup-container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            margin-bottom: 3rem;
+        }
+
+        .mockup-browser {
+            background: #f1f5f9;
+            padding: 1rem;
+            border-bottom: 1px solid #e2e8f0;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .browser-dots {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+
+        .dot.red {
+            background: #ef4444;
+        }
+
+        .dot.yellow {
+            background: #f59e0b;
+        }
+
+        .dot.green {
+            background: #10b981;
+        }
+
+        .address-bar {
+            flex: 1;
+            background: white;
+            border-radius: 6px;
+            padding: 0.5rem 1rem;
+            margin-left: 1rem;
+            font-size: 0.875rem;
+            color: #64748b;
+        }
+
+        .mockup-content {
+            padding: 0;
+        }
+
+        /* 模擬頁面樣式 */
+        .mock-navbar {
+            background: white;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .mock-brand {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #3b82f6;
+        }
+
+        .mock-nav-menu {
+            display: flex;
+            gap: 2rem;
+        }
+
+        .mock-nav-link {
+            color: #6b7280;
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .mock-nav-link.active {
+            color: #3b82f6;
+            background: #f3f4f6;
+        }
+
+        .mock-main {
+            padding: 2rem;
+            background: linear-gradient(135deg, #f9fafb 0%, #ffffff 100%);
+        }
+
+        .mock-header {
+            margin-bottom: 2rem;
+        }
+
+        .mock-title {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #111827;
+            margin-bottom: 0.5rem;
+        }
+
+        .mock-subtitle {
+            color: #6b7280;
+            font-size: 1.125rem;
+        }
+
+        .mock-success-banner {
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: white;
+            padding: 1rem;
+            border-radius: 12px;
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+
+        .mock-stats {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .mock-stat-card {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .mock-stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #3b82f6;
+            margin-bottom: 0.5rem;
+        }
+
+        .mock-stat-label {
+            color: #6b7280;
+            font-size: 0.875rem;
+        }
+
+        .mock-controls {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            margin-bottom: 2rem;
+        }
+
+        .mock-controls-row {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .mock-search {
+            flex: 1;
+            min-width: 250px;
+            position: relative;
+        }
+
+        .mock-search input {
+            width: 100%;
+            padding: 0.75rem 1rem 0.75rem 2.5rem;
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            font-size: 0.875rem;
+        }
+
+        .mock-search::before {
+            content: "🔍";
+            position: absolute;
+            left: 0.75rem;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+
+        .mock-select {
+            padding: 0.75rem 1rem;
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            background: white;
+            font-size: 0.875rem;
+            min-width: 150px;
+        }
+
+        .mock-view-toggle {
+            display: flex;
+            background: #f3f4f6;
+            border-radius: 8px;
+            padding: 0.25rem;
+        }
+
+        .mock-view-btn {
+            padding: 0.5rem 1rem;
+            border: none;
+            background: transparent;
+            border-radius: 6px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.875rem;
+            color: #6b7280;
+        }
+
+        .mock-view-btn.active {
+            background: white;
+            color: #3b82f6;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .mock-table-container {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .mock-table-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .mock-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .mock-table th {
+            background: #f9fafb;
+            padding: 1rem;
+            text-align: left;
+            font-weight: 600;
+            color: #374151;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .mock-table td {
+            padding: 1rem;
+            border-bottom: 1px solid #f3f4f6;
+        }
+
+        .mock-student {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .mock-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #3b82f6, #1e40af);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            font-size: 0.875rem;
+        }
+
+        .mock-score {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .mock-score-bar {
+            width: 60px;
+            height: 6px;
+            background: #e5e7eb;
+            border-radius: 3px;
+            overflow: hidden;
+        }
+
+        .mock-score-fill {
+            height: 100%;
+            background: #10b981;
+            border-radius: 3px;
+        }
+
+        .mock-tag {
+            display: inline-block;
+            padding: 0.25rem 0.5rem;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 500;
+            margin: 0.125rem;
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .feature-card {
+            background: white;
+            border-radius: 16px;
+            padding: 2rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .feature-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .feature-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #1f2937;
+            margin-bottom: 1rem;
+        }
+
+        .feature-desc {
+            color: #6b7280;
+            line-height: 1.6;
+        }
+
+        @media (max-width: 768px) {
+            .mock-stats {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .mock-controls-row {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .mock-search {
+                min-width: auto;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="preview-container">
+        <div class="preview-header">
+            <h1>📱 新版學生管理頁面預覽</h1>
+            <p>Enhanced v2.0 - 現代化 UI/UX 設計</p>
+        </div>
+
+        <div class="mockup-container">
+            <div class="mockup-browser">
+                <div class="browser-dots">
+                    <div class="dot red"></div>
+                    <div class="dot yellow"></div>
+                    <div class="dot green"></div>
+                </div>
+                <div class="address-bar">http://localhost:8083/pages/students-enhanced.html</div>
+            </div>
+
+            <div class="mockup-content">
+                <!-- 導航欄 -->
+                <nav class="mock-navbar">
+                    <div class="mock-brand">
+                        <i class="fas fa-user-graduate"></i>
+                        <span>學生分析</span>
+                    </div>
+                    <div class="mock-nav-menu">
+                        <a href="#" class="mock-nav-link">儀表板</a>
+                        <a href="#" class="mock-nav-link">班級管理</a>
+                        <a href="#" class="mock-nav-link active">學生分析</a>
+                        <a href="#" class="mock-nav-link">題目管理</a>
+                    </div>
+                </nav>
+
+                <!-- 主要內容 -->
+                <main class="mock-main">
+                    <!-- 頁面標題 -->
+                    <div class="mock-header">
+                        <h1 class="mock-title">🎓 學生分析 (Enhanced v2.0)</h1>
+                        <p class="mock-subtitle">管理和分析學生的學習表現 - 現代化 UI/UX 設計</p>
+                    </div>
+
+                    <!-- 版本指示器 -->
+                    <div class="mock-success-banner">
+                        <strong>✅ 頁面已更新！</strong> Enhanced v2.0 - 現代化設計已啟用
+                        <br><small>如果看到這個訊息，表示前端已成功更新</small>
+                    </div>
+
+                    <!-- 統計概覽 -->
+                    <div class="mock-stats">
+                        <div class="mock-stat-card">
+                            <div class="mock-stat-value">20</div>
+                            <div class="mock-stat-label">總學生數</div>
+                        </div>
+                        <div class="mock-stat-card">
+                            <div class="mock-stat-value">85</div>
+                            <div class="mock-stat-label">平均分數</div>
+                        </div>
+                        <div class="mock-stat-card">
+                            <div class="mock-stat-value">18</div>
+                            <div class="mock-stat-label">活躍學生</div>
+                        </div>
+                        <div class="mock-stat-card">
+                            <div class="mock-stat-value">2</div>
+                            <div class="mock-stat-label">需要幫助</div>
+                        </div>
+                    </div>
+
+                    <!-- 控制面板 -->
+                    <div class="mock-controls">
+                        <div class="mock-controls-row">
+                            <div class="mock-search">
+                                <input type="text" placeholder="搜尋學生姓名...">
+                            </div>
+                            <select class="mock-select">
+                                <option>全部班級</option>
+                                <option>七年三班</option>
+                            </select>
+                            <select class="mock-select">
+                                <option>按姓名排序</option>
+                                <option>按分數排序</option>
+                            </select>
+                            <div class="mock-view-toggle">
+                                <button class="mock-view-btn active">
+                                    📋 列表
+                                </button>
+                                <button class="mock-view-btn">
+                                    🎴 卡片
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 學生列表 -->
+                    <div class="mock-table-container">
+                        <div class="mock-table-header">
+                            <h2>學生列表</h2>
+                        </div>
+                        <table class="mock-table">
+                            <thead>
+                                <tr>
+                                    <th>學生</th>
+                                    <th>班級</th>
+                                    <th>平均分數</th>
+                                    <th>弱點科目</th>
+                                    <th>最後活動</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        <div class="mock-student">
+                                            <div class="mock-avatar">王</div>
+                                            <div>
+                                                <div style="font-weight: 600;">王小明</div>
+                                                <div style="font-size: 0.75rem; color: #6b7280;">ID: student_1</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>七年三班</td>
+                                    <td>
+                                        <div class="mock-score">
+                                            <span style="font-weight: 600; color: #10b981;">92</span>
+                                            <div class="mock-score-bar">
+                                                <div class="mock-score-fill" style="width: 92%"></div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <span class="mock-tag">數學</span>
+                                    </td>
+                                    <td>今天</td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <div class="mock-student">
+                                            <div class="mock-avatar">李</div>
+                                            <div>
+                                                <div style="font-weight: 600;">李小華</div>
+                                                <div style="font-size: 0.75rem; color: #6b7280;">ID: student_2</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>七年三班</td>
+                                    <td>
+                                        <div class="mock-score">
+                                            <span style="font-weight: 600; color: #3b82f6;">78</span>
+                                            <div class="mock-score-bar">
+                                                <div class="mock-score-fill" style="width: 78%; background: #3b82f6;">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <span class="mock-tag">英文</span>
+                                        <span class="mock-tag">自然</span>
+                                    </td>
+                                    <td>昨天</td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <div class="mock-student">
+                                            <div class="mock-avatar">張</div>
+                                            <div>
+                                                <div style="font-weight: 600;">張小美</div>
+                                                <div style="font-size: 0.75rem; color: #6b7280;">ID: student_3</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>七年三班</td>
+                                    <td>
+                                        <div class="mock-score">
+                                            <span style="font-weight: 600; color: #10b981;">88</span>
+                                            <div class="mock-score-bar">
+                                                <div class="mock-score-fill" style="width: 88%"></div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <span style="color: #10b981; font-size: 0.75rem;">表現良好</span>
+                                    </td>
+                                    <td>2 天前</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </main>
+            </div>
+        </div>
+
+        <!-- 功能特色 -->
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="feature-icon">🎨</div>
+                <h3 class="feature-title">現代化設計</h3>
+                <p class="feature-desc">採用現代設計語言，清晰的視覺層次，優雅的動畫效果，提升用戶體驗。</p>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">📊</div>
+                <h3 class="feature-title">統計概覽</h3>
+                <p class="feature-desc">即時顯示學生總數、平均分數、活躍學生數等關鍵指標，幫助教師快速了解班級狀況。</p>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">🔍</div>
+                <h3 class="feature-title">智能搜尋</h3>
+                <p class="feature-desc">支援學生姓名搜尋、班級篩選、分數排序等多維度篩選功能，快速找到目標學生。</p>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">📱</div>
+                <h3 class="feature-title">響應式設計</h3>
+                <p class="feature-desc">完美適配桌面、平板、手機等各種設備，提供一致的用戶體驗。</p>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">🔄</div>
+                <h3 class="feature-title">雙視圖模式</h3>
+                <p class="feature-desc">提供表格視圖和卡片視圖兩種顯示模式，滿足不同使用習慣和螢幕尺寸的需求。</p>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">⚡</div>
+                <h3 class="feature-title">智能 API</h3>
+                <p class="feature-desc">自動檢測 API 可用性，支援真實資料和模擬資料無縫切換，確保系統穩定運行。</p>
+            </div>
+        </div>
+
+        <div
+            style="text-align: center; margin: 3rem 0; padding: 2rem; background: white; border-radius: 16px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+            <h2 style="color: #1e40af; margin-bottom: 1rem;">🚀 立即體驗</h2>
+            <p style="color: #6b7280; margin-bottom: 2rem;">重新構建 Docker 容器後，訪問以下地址查看新頁面：</p>
+            <div
+                style="background: #f1f5f9; padding: 1rem; border-radius: 8px; font-family: monospace; color: #1e40af;">
+                http://localhost:8083/pages/students-enhanced.html
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

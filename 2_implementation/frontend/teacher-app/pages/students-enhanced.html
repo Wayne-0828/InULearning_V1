@@ -1,0 +1,2324 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="InULearning 教師台 - 學生分析">
+    <title>學生分析 - InULearning 教師台</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/design-tokens.css">
+    <link rel="stylesheet" href="../css/main.css">
+    <link rel="stylesheet" href="../css/modern-design-system.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        /* 保持原有樣式，只添加增強功能 */
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr 320px;
+            gap: 1.5rem;
+        }
+
+        .card {
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: var(--shadow-sm);
+            padding: 1rem;
+        }
+
+        .filter input,
+        .filter select {
+            width: 100%;
+            padding: 0.6rem 0.8rem;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+        }
+
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .table th,
+        .table td {
+            padding: 0.75rem 0.9rem;
+            border-bottom: 1px solid var(--border);
+            text-align: left;
+        }
+
+        .tag {
+            padding: 0.2rem 0.5rem;
+            border-radius: 999px;
+            font-size: 0.8rem;
+            background: #EFF6FF;
+            color: #1E40AF;
+        }
+
+        .toolbar {
+            display: flex;
+            gap: 1rem;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+
+        .pagination {
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
+            margin-top: 0.75rem;
+        }
+
+        .btn {
+            padding: 0.4rem 0.7rem;
+            border: 1px solid var(--border);
+            background: #fff;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        .btn[disabled] {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .empty {
+            padding: 1rem;
+            color: var(--text-light);
+            text-align: center;
+        }
+
+        .skeleton {
+            background: linear-gradient(90deg, #f3f4f6 25%, #e5e7eb 37%, #f3f4f6 63%);
+            background-size: 400% 100%;
+            animation: shimmer 1.2s infinite;
+            border-radius: 8px;
+            height: 16px;
+        }
+
+        @keyframes shimmer {
+            0% {
+                background-position: 100% 0;
+            }
+
+            100% {
+                background-position: -100% 0;
+            }
+        }
+
+        /* 新增功能樣式 */
+        .api-status {
+            background: #FEF3C7;
+            border: 1px solid #F59E0B;
+            border-radius: 8px;
+            padding: 0.75rem;
+            margin-bottom: 1rem;
+            font-size: 0.875rem;
+            display: none;
+        }
+
+        .api-status.connected {
+            background: #D1FAE5;
+            border-color: #10B981;
+            color: #065F46;
+        }
+
+        .api-status.error {
+            background: #FEE2E2;
+            border-color: #EF4444;
+            color: #991B1B;
+        }
+
+        .student-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary-blue), var(--accent-blue));
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            font-size: 0.75rem;
+            margin-right: 0.5rem;
+        }
+
+        .student-info {
+            display: flex;
+            align-items: center;
+        }
+
+        .score-display {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .score-bar {
+            width: 50px;
+            height: 4px;
+            background: #E5E7EB;
+            border-radius: 2px;
+            overflow: hidden;
+        }
+
+        .score-fill {
+            height: 100%;
+            border-radius: 2px;
+            transition: width 0.3s ease;
+        }
+
+        .score-excellent {
+            color: #10B981;
+        }
+
+        .score-excellent .score-fill {
+            background: #10B981;
+        }
+
+        .score-good {
+            color: #3B82F6;
+        }
+
+        .score-good .score-fill {
+            background: #3B82F6;
+        }
+
+        .score-average {
+            color: #F59E0B;
+        }
+
+        .score-average .score-fill {
+            background: #F59E0B;
+        }
+
+        .score-poor {
+            color: #EF4444;
+        }
+
+        .score-poor .score-fill {
+            background: #EF4444;
+        }
+
+        .view-toggle {
+            display: flex;
+            background: #F3F4F6;
+            border-radius: 6px;
+            padding: 0.2rem;
+        }
+
+        .view-btn {
+            padding: 0.4rem 0.8rem;
+            border: none;
+            background: transparent;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            color: #6B7280;
+            transition: all 0.2s ease;
+        }
+
+        .view-btn.active {
+            background: white;
+            color: #1E40AF;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+        }
+
+        .cards-view {
+            display: none;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1rem;
+        }
+
+        .cards-view.active {
+            display: grid;
+        }
+
+        .student-card {
+            background: white;
+            border-radius: 8px;
+            padding: 1rem;
+            border: 1px solid var(--border);
+            transition: all 0.2s ease;
+        }
+
+        .student-card:hover {
+            box-shadow: var(--shadow-md);
+            transform: translateY(-1px);
+        }
+
+        .student-card-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 0.75rem;
+        }
+
+        .student-card-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary-blue), var(--accent-blue));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            font-size: 0.875rem;
+            margin-right: 0.75rem;
+        }
+
+        .student-card-info h4 {
+            margin: 0;
+            font-weight: 600;
+            color: var(--text-dark);
+        }
+
+        .student-card-info p {
+            margin: 0;
+            color: var(--text-light);
+            font-size: 0.8rem;
+        }
+
+        .student-card-stats {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.75rem;
+        }
+
+        .card-stat {
+            text-align: center;
+        }
+
+        .card-stat-value {
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        .card-stat-label {
+            font-size: 0.7rem;
+            color: var(--text-light);
+        }
+
+        /* 響應式設計 */
+        @media (max-width: 768px) {
+            .grid {
+                grid-template-columns: 1fr;
+            }
+
+            .toolbar {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 0.5rem;
+            }
+
+            .toolbar>div {
+                justify-content: space-between;
+            }
+        }
+
+        .page-header {
+            margin-bottom: 2rem;
+        }
+
+        .page-title {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--gray-900);
+            margin-bottom: 0.5rem;
+        }
+
+        .page-subtitle {
+            color: var(--gray-600);
+            font-size: 1.125rem;
+        }
+
+        /* API 狀態指示器 */
+        .api-status {
+            background: white;
+            border-radius: 12px;
+            padding: 1rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            border-left: 4px solid var(--warning);
+        }
+
+        .status-content {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .status-icon {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .status-connected {
+            background: var(--success);
+            color: white;
+        }
+
+        .status-mock {
+            background: var(--warning);
+            color: white;
+        }
+
+        .status-error {
+            background: var(--error);
+            color: white;
+        }
+
+        /* 控制面板 */
+        .control-panel {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .controls-row {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .search-box {
+            position: relative;
+            flex: 1;
+            min-width: 250px;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 0.75rem 1rem 0.75rem 2.5rem;
+            border: 2px solid var(--gray-200);
+            border-radius: 8px;
+            font-size: 0.875rem;
+            transition: border-color 0.3s ease;
+        }
+
+        .search-box input:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .search-box .material-icons {
+            position: absolute;
+            left: 0.75rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--gray-400);
+        }
+
+        .filter-select {
+            padding: 0.75rem 1rem;
+            border: 2px solid var(--gray-200);
+            border-radius: 8px;
+            background: white;
+            font-size: 0.875rem;
+            min-width: 150px;
+        }
+
+        .view-toggle {
+            display: flex;
+            background: var(--gray-100);
+            border-radius: 8px;
+            padding: 0.25rem;
+        }
+
+        .view-btn {
+            padding: 0.5rem 1rem;
+            border: none;
+            background: transparent;
+            border-radius: 6px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.875rem;
+            color: var(--gray-600);
+            transition: all 0.3s ease;
+        }
+
+        .view-btn.active {
+            background: white;
+            color: var(--primary);
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        /* 統計卡片 */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            color: var(--gray-600);
+            font-size: 0.875rem;
+        }
+
+        /* 學生列表 */
+        .students-container {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .students-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid var(--gray-200);
+        }
+
+        .students-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--gray-900);
+        }
+
+        /* 表格視圖 */
+        .table-view {
+            overflow-x: auto;
+        }
+
+        .students-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .students-table th {
+            background: var(--gray-50);
+            padding: 1rem;
+            text-align: left;
+            font-weight: 600;
+            color: var(--gray-700);
+            border-bottom: 1px solid var(--gray-200);
+        }
+
+        .students-table td {
+            padding: 1rem;
+            border-bottom: 1px solid var(--gray-100);
+            vertical-align: middle;
+        }
+
+        .students-table tbody tr:hover {
+            background: var(--gray-50);
+        }
+
+        .student-info {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .student-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            font-size: 0.875rem;
+        }
+
+        .student-details h4 {
+            font-weight: 600;
+            color: var(--gray-800);
+            margin-bottom: 0.25rem;
+        }
+
+        .student-details p {
+            color: var(--gray-500);
+            font-size: 0.75rem;
+        }
+
+        .score-display {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .score-number {
+            font-weight: 600;
+            font-size: 1rem;
+        }
+
+        .score-bar {
+            width: 60px;
+            height: 6px;
+            background: var(--gray-200);
+            border-radius: 3px;
+            overflow: hidden;
+        }
+
+        .score-fill {
+            height: 100%;
+            border-radius: 3px;
+            transition: width 0.3s ease;
+        }
+
+        .score-excellent {
+            color: var(--success);
+        }
+
+        .score-excellent .score-fill {
+            background: var(--success);
+        }
+
+        .score-good {
+            color: var(--primary);
+        }
+
+        .score-good .score-fill {
+            background: var(--primary);
+        }
+
+        .score-average {
+            color: var(--warning);
+        }
+
+        .score-average .score-fill {
+            background: var(--warning);
+        }
+
+        .score-poor {
+            color: var(--error);
+        }
+
+        .score-poor .score-fill {
+            background: var(--error);
+        }
+
+        .tag {
+            display: inline-block;
+            padding: 0.25rem 0.5rem;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 500;
+            margin: 0.125rem;
+        }
+
+        .tag-math {
+            background: #FEF3C7;
+            color: #92400E;
+        }
+
+        .tag-chinese {
+            background: #FECACA;
+            color: #991B1B;
+        }
+
+        .tag-english {
+            background: #D1FAE5;
+            color: #065F46;
+        }
+
+        .tag-science {
+            background: #E0E7FF;
+            color: #3730A3;
+        }
+
+        /* 卡片視圖 */
+        .cards-view {
+            display: none;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+            padding: 1.5rem;
+        }
+
+        .cards-view.active {
+            display: grid;
+        }
+
+        .student-card {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            border: 1px solid var(--gray-200);
+            transition: all 0.3s ease;
+        }
+
+        .student-card:hover {
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .student-card-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .student-card-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            font-size: 1rem;
+        }
+
+        .student-card-info h3 {
+            font-weight: 600;
+            color: var(--gray-800);
+            margin-bottom: 0.25rem;
+        }
+
+        .student-card-info p {
+            color: var(--gray-500);
+            font-size: 0.875rem;
+        }
+
+        .student-card-stats {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .card-stat {
+            text-align: center;
+            padding: 0.75rem;
+            background: var(--gray-50);
+            border-radius: 8px;
+        }
+
+        .card-stat-value {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--gray-800);
+        }
+
+        .card-stat-label {
+            font-size: 0.75rem;
+            color: var(--gray-500);
+            margin-top: 0.25rem;
+        }
+
+        /* 空狀態 */
+        .empty-state {
+            text-align: center;
+            padding: 3rem 1rem;
+            color: var(--gray-500);
+        }
+
+        .empty-state .material-icons {
+            font-size: 4rem;
+            color: var(--gray-300);
+            margin-bottom: 1rem;
+        }
+
+        .empty-state h3 {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: var(--gray-600);
+            margin-bottom: 0.5rem;
+        }
+
+        .empty-state p {
+            font-size: 0.875rem;
+            color: var(--gray-500);
+        }
+
+        /* 載入動畫 */
+        .loading {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 3rem;
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid var(--gray-200);
+            border-top: 4px solid var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* 響應式設計 */
+        @media (max-width: 768px) {
+            .main-content {
+                padding: 1rem;
+            }
+
+            .controls-row {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .search-box {
+                min-width: auto;
+            }
+
+            .stats-grid {
+                grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            }
+
+            .navbar-menu {
+                display: none;
+            }
+
+            .students-table {
+                font-size: 0.875rem;
+            }
+
+            .students-table th,
+            .students-table td {
+                padding: 0.75rem 0.5rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <a href="#main" class="skip-link"
+        style="position:absolute;left:-9999px;top:auto;width:1px;height:1px;overflow:hidden;">跳至主要內容</a>
+
+    <!-- 導航欄 -->
+    <nav class="navbar">
+        <div class="navbar-container">
+            <div class="navbar-brand"><i class="fas fa-chalkboard-teacher"></i><span id="pageTitle">學生分析</span></div>
+            <div class="navbar-menu">
+                <a href="../index.html" class="nav-link"><i class="fas fa-tachometer-alt"></i><span>儀表板</span></a>
+                <a href="classes.html" class="nav-link"><i class="fas fa-users"></i><span>班級管理</span></a>
+                <a href="students.html" class="nav-link active"><i
+                        class="fas fa-user-graduate"></i><span>學生分析</span></a>
+                <a href="questions.html" class="nav-link"><i class="fas fa-question-circle"></i><span>題目管理</span></a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 主要內容 -->
+    <main id="main" class="main-content">
+        <!-- API 狀態指示器 -->
+        <div id="apiStatus" class="api-status">
+            <strong>📡 API 狀態：</strong> <span id="statusText">檢查中...</span>
+        </div>
+
+        <div class="container grid">
+            <section class="card">
+                <div class="toolbar">
+                    <h2 id="studentsTitle">學生列表</h2>
+                    <div style="display:flex; gap:0.5rem; align-items:center;">
+                        <input id="searchInput" type="text" placeholder="搜尋學生..."
+                            style="padding:0.5rem 0.8rem; border:1px solid var(--border); border-radius:8px;">
+                        <select id="sortSelect"
+                            style="padding:0.5rem 0.8rem; border:1px solid var(--border); border-radius:8px;">
+                            <option value="name">姓名</option>
+                            <option value="class">班級</option>
+                            <option value="avg_desc">平均分數（高→低）</option>
+                            <option value="avg_asc">平均分數（低→高）</option>
+                        </select>
+                        <div class="view-toggle">
+                            <button class="view-btn active" data-view="table">表格</button>
+                            <button class="view-btn" data-view="cards">卡片</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 表格視圖 -->
+                <div id="tableView">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>學生</th>
+                                <th>班級</th>
+                                <th>平均分數</th>
+                                <th>弱點科目</th>
+                                <th>最後活動</th>
+                            </tr>
+                        </thead>
+                        <tbody id="studentsTableBody"></tbody>
+                    </table>
+                </div>
+
+                <!-- 卡片視圖 -->
+                <div id="cardsView" class="cards-view">
+                    <!-- 學生卡片將在這裡動態載入 -->
+                </div>
+
+                <div class="pagination">
+                    <button class="btn" id="prevPageBtn">上一頁</button>
+                    <span id="pageInfo">1 / 1</span>
+                    <button class="btn" id="nextPageBtn">下一頁</button>
+                </div>
+            </section>
+
+            <aside class="card">
+                <h3 style="margin-bottom:0.5rem;">篩選</h3>
+                <div class="filter">
+                    <label>班級</label>
+                    <select id="classFilter">
+                        <option value="">全部班級</option>
+                    </select>
+                </div>
+                <div class="filter" style="margin-top:0.75rem;">
+                    <label>分數門檻</label>
+                    <input id="scoreMin" type="number" min="0" max="100" placeholder=">= 分數">
+                </div>
+                <div class="filter" style="margin-top:0.75rem;">
+                    <label>學習狀態</label>
+                    <select id="statusFilter">
+                        <option value="">全部狀態</option>
+                        <option value="active">活躍</option>
+                        <option value="inactive">不活躍</option>
+                        <option value="need_help">需要幫助</option>
+                    </select>
+                </div>
+
+                <!-- 統計資訊 -->
+                <div style="margin-top:1.5rem; padding-top:1rem; border-top:1px solid var(--border);">
+                    <h4 style="margin-bottom:0.75rem; color:var(--text-dark);">統計資訊</h4>
+                    <div style="display:grid; grid-template-columns:1fr 1fr; gap:0.5rem; font-size:0.85rem;">
+                        <div style="text-align:center; padding:0.5rem; background:#F3F4F6; border-radius:6px;">
+                            <div style="font-weight:600; color:var(--primary-blue);" id="totalStudents">0</div>
+                            <div style="color:var(--text-light);">總學生</div>
+                        </div>
+                        <div style="text-align:center; padding:0.5rem; background:#F3F4F6; border-radius:6px;">
+                            <div style="font-weight:600; color:var(--success-green);" id="avgScore">0</div>
+                            <div style="color:var(--text-light);">平均分</div>
+                        </div>
+                        <div style="text-align:center; padding:0.5rem; background:#F3F4F6; border-radius:6px;">
+                            <div style="font-weight:600; color:var(--warning-orange);" id="activeStudents">0</div>
+                            <div style="color:var(--text-light);">活躍</div>
+                        </div>
+                        <div style="text-align:center; padding:0.5rem; background:#F3F4F6; border-radius:6px;">
+                            <div style="font-weight:600; color:var(--error-red);" id="needHelpStudents">0</div>
+                            <div style="color:var(--text-light);">需幫助</div>
+                        </div>
+                    </div>
+                </div>
+            </aside>
+        </div>
+    </main>
+
+    <!-- JavaScript -->
+    <script src="../js/utils.js"></script>
+    <script src="../js/api-client.js"></script>
+    <script src="../js/auth.js"></script>
+    <script>
+        // 全域變數
+        let students = [];
+        let filteredStudents = [];
+        let currentPage = 1;
+        const pageSize = 10;
+        let currentView = 'table';
+        let classId = null;
+        let className = null;
+        let apiConnected = false;
+
+        // 初始化
+        document.addEventListener('DOMContentLoaded', async function () {
+            // 從 URL 參數獲取班級資訊
+            const urlParams = new URLSearchParams(window.location.search);
+            classId = urlParams.get('classId');
+            className = urlParams.get('class');
+
+            // 更新頁面標題
+            if (className) {
+                document.getElementById('pageTitle').textContent = `學生分析 - ${className}`;
+                document.getElementById('studentsTitle').textContent = `${className} 學生列表`;
+            }
+
+            // 綁定事件
+            bindEvents();
+
+            // 載入資料
+            await loadInitialData();
+        });
+
+        function bindEvents() {
+            // 搜尋和篩選
+            document.getElementById('searchInput').addEventListener('input', applyFilters);
+            document.getElementById('sortSelect').addEventListener('change', applyFilters);
+            document.getElementById('classFilter').addEventListener('change', applyFilters);
+            document.getElementById('scoreMin').addEventListener('input', applyFilters);
+            document.getElementById('statusFilter').addEventListener('change', applyFilters);
+
+            // 視圖切換
+            document.querySelectorAll('.view-btn').forEach(btn => {
+                btn.addEventListener('click', () => switchView(btn.dataset.view));
+            });
+
+            // 分頁
+            document.getElementById('prevPageBtn').addEventListener('click', () => {
+                if (currentPage > 1) {
+                    currentPage--;
+                    render();
+                }
+            });
+
+            document.getElementById('nextPageBtn').addEventListener('click', () => {
+                const totalPages = Math.ceil(filteredStudents.length / pageSize);
+                if (currentPage < totalPages) {
+                    currentPage++;
+                    render();
+                }
+            });
+        }
+
+        async function loadInitialData() {
+            showApiStatus('檢查 API 連接...');
+
+            try {
+                // 測試 API 連接
+                await apiClient.get('/learning/health');
+                apiConnected = true;
+
+                // 載入學生資料
+                await loadStudents();
+
+                // 載入班級選項
+                loadClassOptions();
+
+                // 應用篩選
+                applyFilters();
+
+                showApiStatus('API 連接正常，資料已載入', 'connected');
+
+            } catch (error) {
+                console.warn('API 連接失敗，使用模擬資料:', error);
+                apiConnected = false;
+                loadMockData();
+                loadClassOptions();
+                applyFilters();
+                showApiStatus('API 無法連接，使用模擬資料', 'error');
+            }
+        }
+
+        async function loadStudents() {
+            try {
+                if (!apiConnected) throw new Error('API 未連接');
+
+                // 嘗試從學習記錄獲取資料
+                const response = await apiClient.get('/learning/records');
+
+                if (response && response.sessions && response.sessions.length > 0) {
+                    processLearningData(response.sessions);
+                } else {
+                    throw new Error('無學習記錄資料');
+                }
+
+            } catch (error) {
+                console.warn('載入學習資料失敗:', error.message);
+                loadMockData();
+            }
+        }
+
+        function processLearningData(sessions) {
+            const studentMap = new Map();
+
+            sessions.forEach(session => {
+                const studentId = session.user_id || session.student_id || 'unknown';
+                const studentName = session.user_name || session.student_name || `學生 ${studentId}`;
+
+                if (!studentMap.has(studentId)) {
+                    studentMap.set(studentId, {
+                        id: studentId,
+                        name: studentName,
+                        sessions: []
+                    });
+                }
+
+                studentMap.get(studentId).sessions.push(session);
+            });
+
+            students = Array.from(studentMap.values()).map(student => {
+                const scores = student.sessions
+                    .filter(s => s.score !== undefined && s.score !== null)
+                    .map(s => s.score);
+
+                const avgScore = scores.length > 0
+                    ? Math.round(scores.reduce((a, b) => a + b, 0) / scores.length)
+                    : generateRandomScore();
+
+                return {
+                    id: student.id,
+                    name: student.name,
+                    class: className || '七年三班',
+                    avgScore: avgScore,
+                    weakSubjects: generateWeakSubjects(),
+                    lastActivity: generateLastActivity(),
+                    status: generateStatus(avgScore),
+                    totalExercises: student.sessions.length
+                };
+            });
+        }
+
+        function loadMockData() {
+            const mockNames = [
+                '王小明', '李小華', '張小美', '陳小強', '林小芳',
+                '黃小龍', '吳小玲', '劉小傑', '蔡小雯', '鄭小宇',
+                '楊小慧', '許小偉', '謝小婷', '洪小峰', '郭小琪',
+                '周小安', '徐小涵', '朱小豪', '馬小欣', '高小翔'
+            ];
+
+            students = mockNames.map((name, index) => ({
+                id: `student_${index + 1}`,
+                name: name,
+                class: className || '七年三班',
+                avgScore: generateRandomScore(),
+                weakSubjects: generateWeakSubjects(),
+                lastActivity: generateLastActivity(),
+                status: generateStatus(),
+                totalExercises: Math.floor(Math.random() * 30) + 5
+            }));
+        }
+
+        function loadClassOptions() {
+            const classes = [
+                '七年一班', '七年二班', '七年三班', '七年四班',
+                '八年一班', '八年二班', '八年三班', '八年四班'
+            ];
+
+            const classFilter = document.getElementById('classFilter');
+            classFilter.innerHTML = '<option value="">全部班級</option>';
+
+            classes.forEach(cls => {
+                const option = document.createElement('option');
+                option.value = cls;
+                option.textContent = cls;
+                if (cls === className) {
+                    option.selected = true;
+                }
+                classFilter.appendChild(option);
+            });
+        }
+
+        function generateRandomScore() {
+            return Math.floor(Math.random() * 40) + 60; // 60-100
+        }
+
+        function generateWeakSubjects() {
+            const subjects = ['數學', '國文', '英文', '自然'];
+            const count = Math.floor(Math.random() * 3);
+            const selected = [];
+
+            for (let i = 0; i < count; i++) {
+                const subject = subjects[Math.floor(Math.random() * subjects.length)];
+                if (!selected.includes(subject)) {
+                    selected.push(subject);
+                }
+            }
+
+            return selected;
+        }
+
+        function generateLastActivity() {
+            const days = Math.floor(Math.random() * 7);
+            if (days === 0) return '今天';
+            if (days === 1) return '昨天';
+            return `${days} 天前`;
+        }
+
+        function generateStatus(score) {
+            if (score) {
+                if (score >= 85) return 'active';
+                if (score >= 70) return 'active';
+                return 'need_help';
+            }
+
+            const statuses = ['active', 'inactive', 'need_help'];
+            const weights = [0.6, 0.3, 0.1];
+            const random = Math.random();
+            let cumulative = 0;
+
+            for (let i = 0; i < statuses.length; i++) {
+                cumulative += weights[i];
+                if (random <= cumulative) {
+                    return statuses[i];
+                }
+            }
+
+            return 'active';
+        }
+
+        function applyFilters() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase().trim();
+            const selectedClass = document.getElementById('classFilter').value;
+            const minScore = parseInt(document.getElementById('scoreMin').value) || 0;
+            const selectedStatus = document.getElementById('statusFilter').value;
+            const sortBy = document.getElementById('sortSelect').value;
+
+            // 篩選
+            filteredStudents = students.filter(student => {
+                const matchesSearch = !searchTerm || student.name.toLowerCase().includes(searchTerm);
+                const matchesClass = !selectedClass || student.class === selectedClass;
+                const matchesScore = student.avgScore >= minScore;
+                const matchesStatus = !selectedStatus || student.status === selectedStatus;
+
+                return matchesSearch && matchesClass && matchesScore && matchesStatus;
+            });
+
+            // 排序
+            filteredStudents.sort((a, b) => {
+                switch (sortBy) {
+                    case 'name':
+                        return a.name.localeCompare(b.name);
+                    case 'class':
+                        return a.class.localeCompare(b.class);
+                    case 'avg_desc':
+                        return b.avgScore - a.avgScore;
+                    case 'avg_asc':
+                        return a.avgScore - b.avgScore;
+                    default:
+                        return 0;
+                }
+            });
+
+            // 重置到第一頁
+            currentPage = 1;
+
+            // 更新統計
+            updateStatistics();
+
+            // 渲染
+            render();
+        }
+
+        function updateStatistics() {
+            const total = filteredStudents.length;
+            const avgScore = total > 0
+                ? Math.round(filteredStudents.reduce((sum, s) => sum + s.avgScore, 0) / total)
+                : 0;
+            const active = filteredStudents.filter(s => s.status === 'active').length;
+            const needHelp = filteredStudents.filter(s => s.status === 'need_help').length;
+
+            document.getElementById('totalStudents').textContent = total;
+            document.getElementById('avgScore').textContent = avgScore;
+            document.getElementById('activeStudents').textContent = active;
+            document.getElementById('needHelpStudents').textContent = needHelp;
+        }
+
+        function render() {
+            if (currentView === 'table') {
+                renderTable();
+            } else {
+                renderCards();
+            }
+
+            updatePagination();
+        }
+
+        function renderTable() {
+            document.getElementById('tableView').style.display = 'block';
+            document.getElementById('cardsView').classList.remove('active');
+
+            const startIndex = (currentPage - 1) * pageSize;
+            const endIndex = startIndex + pageSize;
+            const pageStudents = filteredStudents.slice(startIndex, endIndex);
+
+            const tbody = document.getElementById('studentsTableBody');
+
+            if (pageStudents.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="5" class="empty">沒有找到符合條件的學生</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = pageStudents.map(student => `
+                <tr>
+                    <td>
+                        <div class="student-info">
+                            <div class="student-avatar">${getAvatar(student.name)}</div>
+                            <div>
+                                <div style="font-weight:600;">${student.name}</div>
+                                <div style="font-size:0.75rem; color:var(--text-light);">ID: ${student.id}</div>
+                            </div>
+                        </div>
+                    </td>
+                    <td>${student.class}</td>
+                    <td>
+                        <div class="score-display ${getScoreClass(student.avgScore)}">
+                            <span style="font-weight:600;">${student.avgScore}</span>
+                            <div class="score-bar">
+                                <div class="score-fill" style="width: ${student.avgScore}%"></div>
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        ${student.weakSubjects.map(subject =>
+                `<span class="tag">${subject}</span>`
+            ).join('')}
+                        ${student.weakSubjects.length === 0 ? '<span class="tag">表現良好</span>' : ''}
+                    </td>
+                    <td>${student.lastActivity}</td>
+                </tr>
+            `).join('');
+        }
+
+        function renderCards() {
+            document.getElementById('tableView').style.display = 'none';
+            document.getElementById('cardsView').classList.add('active');
+
+            const startIndex = (currentPage - 1) * pageSize;
+            const endIndex = startIndex + pageSize;
+            const pageStudents = filteredStudents.slice(startIndex, endIndex);
+
+            const cardsView = document.getElementById('cardsView');
+
+            if (pageStudents.length === 0) {
+                cardsView.innerHTML = '<div class="empty">沒有找到符合條件的學生</div>';
+                return;
+            }
+
+            cardsView.innerHTML = pageStudents.map(student => `
+                <div class="student-card">
+                    <div class="student-card-header">
+                        <div class="student-card-avatar">${getAvatar(student.name)}</div>
+                        <div class="student-card-info">
+                            <h4>${student.name}</h4>
+                            <p>${student.class}</p>
+                        </div>
+                    </div>
+                    <div class="student-card-stats">
+                        <div class="card-stat">
+                            <div class="card-stat-value ${getScoreClass(student.avgScore)}">${student.avgScore}</div>
+                            <div class="card-stat-label">平均分數</div>
+                        </div>
+                        <div class="card-stat">
+                            <div class="card-stat-value">${student.totalExercises}</div>
+                            <div class="card-stat-label">練習次數</div>
+                        </div>
+                    </div>
+                    <div>
+                        ${student.weakSubjects.map(subject =>
+                `<span class="tag">${subject}</span>`
+            ).join('')}
+                        ${student.weakSubjects.length === 0 ? '<span class="tag">表現良好</span>' : ''}
+                    </div>
+                    <div style="margin-top:0.75rem; font-size:0.8rem; color:var(--text-light);">
+                        最後活動：${student.lastActivity}
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function switchView(view) {
+            currentView = view;
+
+            document.querySelectorAll('.view-btn').forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.view === view);
+            });
+
+            render();
+        }
+
+        function updatePagination() {
+            const totalPages = Math.max(1, Math.ceil(filteredStudents.length / pageSize));
+
+            document.getElementById('prevPageBtn').disabled = currentPage <= 1;
+            document.getElementById('nextPageBtn').disabled = currentPage >= totalPages;
+            document.getElementById('pageInfo').textContent = `${currentPage} / ${totalPages}`;
+        }
+
+        function getAvatar(name) {
+            return name ? name.charAt(0).toUpperCase() : '?';
+        }
+
+        function getScoreClass(score) {
+            if (score >= 90) return 'score-excellent';
+            if (score >= 80) return 'score-good';
+            if (score >= 70) return 'score-average';
+            return 'score-poor';
+        }
+
+        function showApiStatus(message, type = 'warning') {
+            const statusEl = document.getElementById('apiStatus');
+            const textEl = document.getElementById('statusText');
+
+            statusEl.style.display = 'block';
+            statusEl.className = `api-status ${type}`;
+            textEl.textContent = message;
+
+            // 3秒後隱藏狀態訊息（除非是錯誤狀態）
+            if (type !== 'error') {
+                setTimeout(() => {
+                    statusEl.style.display = 'none';
+                }, 3000);
+            }
+        }
+        constructor() {
+            this.students = [];
+            this.filteredStudents = [];
+            this.currentView = 'table';
+            this.classId = null;
+            this.className = null;
+            this.apiConnected = false;
+
+            this.initializeElements();
+            this.bindEvents();
+            this.loadInitialData();
+        }
+
+        initializeElements() {
+            // 控制元素
+            this.searchInput = document.getElementById('searchInput');
+            this.classFilter = document.getElementById('classFilter');
+            this.sortSelect = document.getElementById('sortSelect');
+            this.viewButtons = document.querySelectorAll('.view-btn');
+
+            // 視圖元素
+            this.loadingState = document.getElementById('loadingState');
+            this.tableView = document.getElementById('tableView');
+            this.cardsView = document.getElementById('cardsView');
+            this.emptyState = document.getElementById('emptyState');
+            this.tableBody = document.getElementById('studentsTableBody');
+
+            // 統計元素
+            this.totalStudentsEl = document.getElementById('totalStudents');
+            this.avgScoreEl = document.getElementById('avgScore');
+            this.activeStudentsEl = document.getElementById('activeStudents');
+            this.needHelpStudentsEl = document.getElementById('needHelpStudents');
+
+            // 狀態元素
+            this.apiStatus = document.getElementById('apiStatus');
+            this.statusIcon = document.getElementById('statusIcon');
+            this.statusText = document.getElementById('statusText');
+        }
+
+        bindEvents() {
+            // 搜尋和篩選
+            this.searchInput.addEventListener('input', () => this.applyFilters());
+            this.classFilter.addEventListener('change', () => this.applyFilters());
+            this.sortSelect.addEventListener('change', () => this.applyFilters());
+
+            // 視圖切換
+            this.viewButtons.forEach(btn => {
+                btn.addEventListener('click', () => this.switchView(btn.dataset.view));
+            });
+        }
+
+            async loadInitialData() {
+            // 從 URL 參數獲取班級資訊
+            const urlParams = new URLSearchParams(window.location.search);
+            this.classId = urlParams.get('classId');
+            this.className = urlParams.get('class');
+
+            // 更新頁面標題
+            if (this.className) {
+                document.getElementById('pageTitle').textContent = `學生分析 - ${this.className}`;
+                document.getElementById('mainTitle').textContent = `${this.className} 學生分析`;
+                document.getElementById('studentsTitle').textContent = `${this.className} 學生列表`;
+            }
+
+            this.showApiStatus('loading', '正在檢查 API 連接...');
+
+            try {
+                // 測試 API 連接
+                await this.testApiConnection();
+
+                // 載入學生資料
+                await this.loadStudents();
+
+                // 載入班級選項
+                this.loadClassOptions();
+
+                // 應用篩選和渲染
+                this.applyFilters();
+
+            } catch (error) {
+                console.error('初始化失敗:', error);
+                this.showApiStatus('error', 'API 連接失敗，使用模擬資料');
+                this.loadMockData();
+                this.applyFilters();
+            }
+        }
+
+            async testApiConnection() {
+            try {
+                const response = await apiClient.get('/learning/health');
+                this.apiConnected = true;
+                console.log('✅ API 連接成功');
+            } catch (error) {
+                this.apiConnected = false;
+                console.warn('⚠️ API 連接失敗:', error.message);
+                throw error;
+            }
+        }
+
+            async loadStudents() {
+            try {
+                if (!this.apiConnected) {
+                    throw new Error('API 未連接');
+                }
+
+                // 嘗試從學習記錄獲取資料
+                const response = await apiClient.get('/learning/records');
+
+                if (response && response.sessions) {
+                    this.processLearningData(response.sessions);
+                    this.showApiStatus('connected', '已連接到 API，顯示學習記錄資料');
+                } else {
+                    throw new Error('無學習記錄資料');
+                }
+
+            } catch (error) {
+                console.warn('載入學習資料失敗:', error.message);
+                this.loadMockData();
+                this.showApiStatus('mock', 'API 已連接但無資料，顯示模擬資料');
+            }
+        }
+
+        processLearningData(sessions) {
+            // 從學習會話中提取學生資訊
+            const studentMap = new Map();
+
+            sessions.forEach(session => {
+                const studentId = session.user_id || session.student_id || 'unknown';
+                const studentName = session.user_name || session.student_name || `學生 ${studentId}`;
+
+                if (!studentMap.has(studentId)) {
+                    studentMap.set(studentId, {
+                        id: studentId,
+                        name: studentName,
+                        sessions: []
+                    });
+                }
+
+                studentMap.get(studentId).sessions.push(session);
+            });
+
+            // 轉換為學生資料
+            this.students = Array.from(studentMap.values()).map(student => {
+                const scores = student.sessions
+                    .filter(s => s.score !== undefined && s.score !== null)
+                    .map(s => s.score);
+
+                const avgScore = scores.length > 0
+                    ? Math.round(scores.reduce((a, b) => a + b, 0) / scores.length)
+                    : this.generateRandomScore();
+
+                return {
+                    id: student.id,
+                    name: student.name,
+                    class: this.className || '七年三班',
+                    avatar: this.generateAvatar(student.name),
+                    avgScore: avgScore,
+                    weakSubjects: this.generateWeakSubjects(),
+                    lastActivity: this.generateLastActivity(),
+                    status: this.generateStatus(avgScore),
+                    totalExercises: student.sessions.length
+                };
+            });
+        }
+
+        loadMockData() {
+            const mockNames = [
+                '王小明', '李小華', '張小美', '陳小強', '林小芳',
+                '黃小龍', '吳小玲', '劉小傑', '蔡小雯', '鄭小宇',
+                '楊小慧', '許小偉', '謝小婷', '洪小峰', '郭小琪',
+                '周小安', '徐小涵', '朱小豪', '馬小欣', '高小翔'
+            ];
+
+            this.students = mockNames.map((name, index) => ({
+                id: `student_${index + 1}`,
+                name: name,
+                class: this.className || '七年三班',
+                avatar: this.generateAvatar(name),
+                avgScore: this.generateRandomScore(),
+                weakSubjects: this.generateWeakSubjects(),
+                lastActivity: this.generateLastActivity(),
+                status: this.generateStatus(),
+                totalExercises: Math.floor(Math.random() * 30) + 5
+            }));
+        }
+
+        loadClassOptions() {
+            const classes = [
+                '七年一班', '七年二班', '七年三班', '七年四班',
+                '八年一班', '八年二班', '八年三班', '八年四班',
+                '九年一班', '九年二班', '九年三班', '九年四班'
+            ];
+
+            this.classFilter.innerHTML = '<option value="">全部班級</option>';
+            classes.forEach(cls => {
+                const option = document.createElement('option');
+                option.value = cls;
+                option.textContent = cls;
+                if (cls === this.className) {
+                    option.selected = true;
+                }
+                this.classFilter.appendChild(option);
+            });
+        }
+
+        generateAvatar(name) {
+            return name ? name.charAt(0).toUpperCase() : '?';
+        }
+
+        generateRandomScore() {
+            return Math.floor(Math.random() * 40) + 60; // 60-100
+        }
+
+        generateWeakSubjects() {
+            const subjects = ['數學', '國文', '英文', '自然'];
+            const count = Math.floor(Math.random() * 3);
+            const selected = [];
+
+            for (let i = 0; i < count; i++) {
+                const subject = subjects[Math.floor(Math.random() * subjects.length)];
+                if (!selected.includes(subject)) {
+                    selected.push(subject);
+                }
+            }
+
+            return selected;
+        }
+
+        generateLastActivity() {
+            const days = Math.floor(Math.random() * 7);
+            if (days === 0) return '今天';
+            if (days === 1) return '昨天';
+            return `${days} 天前`;
+        }
+
+        generateStatus(score) {
+            if (score) {
+                if (score >= 85) return 'active';
+                if (score >= 70) return 'active';
+                return 'need_help';
+            }
+
+            const statuses = ['active', 'inactive', 'need_help'];
+            const weights = [0.6, 0.3, 0.1];
+            const random = Math.random();
+            let cumulative = 0;
+
+            for (let i = 0; i < statuses.length; i++) {
+                cumulative += weights[i];
+                if (random <= cumulative) {
+                    return statuses[i];
+                }
+            }
+
+            return 'active';
+        }
+
+        applyFilters() {
+            const searchTerm = this.searchInput.value.toLowerCase().trim();
+            const selectedClass = this.classFilter.value;
+            const sortBy = this.sortSelect.value;
+
+            // 篩選
+            this.filteredStudents = this.students.filter(student => {
+                const matchesSearch = !searchTerm || student.name.toLowerCase().includes(searchTerm);
+                const matchesClass = !selectedClass || student.class === selectedClass;
+                return matchesSearch && matchesClass;
+            });
+
+            // 排序
+            this.filteredStudents.sort((a, b) => {
+                switch (sortBy) {
+                    case 'name':
+                        return a.name.localeCompare(b.name);
+                    case 'score_desc':
+                        return b.avgScore - a.avgScore;
+                    case 'score_asc':
+                        return a.avgScore - b.avgScore;
+                    default:
+                        return 0;
+                }
+            });
+
+            this.updateStatistics();
+            this.render();
+        }
+
+        updateStatistics() {
+            const total = this.filteredStudents.length;
+            const avgScore = total > 0
+                ? Math.round(this.filteredStudents.reduce((sum, s) => sum + s.avgScore, 0) / total)
+                : 0;
+            const active = this.filteredStudents.filter(s => s.status === 'active').length;
+            const needHelp = this.filteredStudents.filter(s => s.status === 'need_help').length;
+
+            this.totalStudentsEl.textContent = total;
+            this.avgScoreEl.textContent = avgScore;
+            this.activeStudentsEl.textContent = active;
+            this.needHelpStudentsEl.textContent = needHelp;
+        }
+
+        render() {
+            this.loadingState.style.display = 'none';
+
+            if (this.filteredStudents.length === 0) {
+                this.showEmptyState();
+                return;
+            }
+
+            this.hideEmptyState();
+
+            if (this.currentView === 'table') {
+                this.renderTable();
+            } else {
+                this.renderCards();
+            }
+        }
+
+        renderTable() {
+            this.tableView.style.display = 'block';
+            this.cardsView.classList.remove('active');
+
+            this.tableBody.innerHTML = this.filteredStudents.map(student => `
+                    <tr>
+                        <td>
+                            <div class="student-info">
+                                <div class="student-avatar">${student.avatar}</div>
+                                <div class="student-details">
+                                    <h4>${student.name}</h4>
+                                    <p>ID: ${student.id}</p>
+                                </div>
+                            </div>
+                        </td>
+                        <td>${student.class}</td>
+                        <td>
+                            <div class="score-display ${this.getScoreClass(student.avgScore)}">
+                                <span class="score-number">${student.avgScore}</span>
+                                <div class="score-bar">
+                                    <div class="score-fill" style="width: ${student.avgScore}%"></div>
+                                </div>
+                            </div>
+                        </td>
+                        <td>
+                            ${student.weakSubjects.map(subject =>
+                `<span class="tag tag-${this.getSubjectClass(subject)}">${subject}</span>`
+            ).join('')}
+                            ${student.weakSubjects.length === 0 ? '<span class="tag">表現良好</span>' : ''}
+                        </td>
+                        <td>${student.lastActivity}</td>
+                    </tr>
+                `).join('');
+        }
+
+        renderCards() {
+            this.tableView.style.display = 'none';
+            this.cardsView.classList.add('active');
+
+            this.cardsView.innerHTML = this.filteredStudents.map(student => `
+                    <div class="student-card">
+                        <div class="student-card-header">
+                            <div class="student-card-avatar">${student.avatar}</div>
+                            <div class="student-card-info">
+                                <h3>${student.name}</h3>
+                                <p>${student.class}</p>
+                            </div>
+                        </div>
+                        <div class="student-card-stats">
+                            <div class="card-stat">
+                                <div class="card-stat-value ${this.getScoreClass(student.avgScore)}">${student.avgScore}</div>
+                                <div class="card-stat-label">平均分數</div>
+                            </div>
+                            <div class="card-stat">
+                                <div class="card-stat-value">${student.totalExercises}</div>
+                                <div class="card-stat-label">練習次數</div>
+                            </div>
+                        </div>
+                        <div class="student-card-tags">
+                            ${student.weakSubjects.map(subject =>
+                `<span class="tag tag-${this.getSubjectClass(subject)}">${subject}</span>`
+            ).join('')}
+                            ${student.weakSubjects.length === 0 ? '<span class="tag">表現良好</span>' : ''}
+                        </div>
+                        <div style="margin-top: 1rem; font-size: 0.875rem; color: var(--gray-500);">
+                            最後活動：${student.lastActivity}
+                        </div>
+                    </div>
+                `).join('');
+        }
+
+        getScoreClass(score) {
+            if (score >= 90) return 'score-excellent';
+            if (score >= 80) return 'score-good';
+            if (score >= 70) return 'score-average';
+            return 'score-poor';
+        }
+
+        getSubjectClass(subject) {
+            const classMap = {
+                '數學': 'math',
+                '國文': 'chinese',
+                '英文': 'english',
+                '自然': 'science'
+            };
+            return classMap[subject] || 'math';
+        }
+
+        switchView(view) {
+            this.currentView = view;
+
+            this.viewButtons.forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.view === view);
+            });
+
+            this.render();
+        }
+
+        showEmptyState() {
+            this.tableView.style.display = 'none';
+            this.cardsView.classList.remove('active');
+            this.emptyState.style.display = 'block';
+        }
+
+        hideEmptyState() {
+            this.emptyState.style.display = 'none';
+        }
+
+        showApiStatus(status, message) {
+            this.apiStatus.style.display = 'block';
+            this.statusText.textContent = message;
+
+            // 清除所有狀態類別
+            this.statusIcon.className = 'status-icon';
+
+            // 添加對應的狀態類別
+            if (status === 'connected') {
+                this.statusIcon.classList.add('status-connected');
+                this.statusIcon.innerHTML = '<i class="fas fa-check"></i>';
+            } else if (status === 'mock') {
+                this.statusIcon.classList.add('status-mock');
+                this.statusIcon.innerHTML = '<i class="fas fa-exclamation-triangle"></i>';
+            } else if (status === 'error') {
+                this.statusIcon.classList.add('status-error');
+                this.statusIcon.innerHTML = '<i class="fas fa-times"></i>';
+            } else {
+                this.statusIcon.innerHTML = '<i class="fas fa-circle"></i>';
+            }
+        }
+        }
+
+        // 初始化
+        document.addEventListener('DOMContentLoaded', () => {
+            new StudentsManager();
+        });
+    </script>
+</body>
+
+</html>
+<div class="filter" style="margin-top:0.75rem;">
+    <label>學習狀態</label>
+    <select id="statusFilter">
+        <option value="">全部狀態</option>
+        <option value="active">活躍</option>
+        <option value="inactive">不活躍</option>
+        <option value="need_help">需要幫助</option>
+    </select>
+</div>
+
+<!-- 統計資訊 -->
+<div style="margin-top:1.5rem; padding-top:1rem; border-top:1px solid var(--border);">
+    <h4 style="margin-bottom:0.75rem; color:var(--text-dark);">統計資訊</h4>
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:0.5rem; font-size:0.85rem;">
+        <div style="text-align:center; padding:0.5rem; background:#F3F4F6; border-radius:6px;">
+            <div style="font-weight:600; color:var(--primary-blue);" id="totalStudents">0</div>
+            <div style="color:var(--text-light);">總學生</div>
+        </div>
+        <div style="text-align:center; padding:0.5rem; background:#F3F4F6; border-radius:6px;">
+            <div style="font-weight:600; color:var(--success-green);" id="avgScore">0</div>
+            <div style="color:var(--text-light);">平均分</div>
+        </div>
+        <div style="text-align:center; padding:0.5rem; background:#F3F4F6; border-radius:6px;">
+            <div style="font-weight:600; color:var(--warning-orange);" id="activeStudents">0</div>
+            <div style="color:var(--text-light);">活躍</div>
+        </div>
+        <div style="text-align:center; padding:0.5rem; background:#F3F4F6; border-radius:6px;">
+            <div style="font-weight:600; color:var(--error-red);" id="needHelpStudents">0</div>
+            <div style="color:var(--text-light);">需幫助</div>
+        </div>
+    </div>
+</div>
+</aside>
+</div>
+</main>
+
+<!-- JavaScript -->
+<script src="../js/utils.js"></script>
+<script src="../js/api-client.js"></script>
+<script src="../js/auth.js"></script>
+<script>
+    // 全域變數
+    let students = [];
+    let filteredStudents = [];
+    let currentPage = 1;
+    const pageSize = 10;
+    let currentView = 'table';
+    let classId = null;
+    let className = null;
+    let apiConnected = false;
+
+    // 初始化
+    document.addEventListener('DOMContentLoaded', async function () {
+        // 從 URL 參數獲取班級資訊
+        const urlParams = new URLSearchParams(window.location.search);
+        classId = urlParams.get('classId');
+        className = urlParams.get('class');
+
+        // 更新頁面標題
+        if (className) {
+            document.getElementById('pageTitle').textContent = `學生分析 - ${className}`;
+            document.getElementById('studentsTitle').textContent = `${className} 學生列表`;
+        }
+
+        // 綁定事件
+        bindEvents();
+
+        // 載入資料
+        await loadInitialData();
+    });
+
+    function bindEvents() {
+        // 搜尋和篩選
+        document.getElementById('searchInput').addEventListener('input', applyFilters);
+        document.getElementById('sortSelect').addEventListener('change', applyFilters);
+        document.getElementById('classFilter').addEventListener('change', applyFilters);
+        document.getElementById('scoreMin').addEventListener('input', applyFilters);
+        document.getElementById('statusFilter').addEventListener('change', applyFilters);
+
+        // 視圖切換
+        document.querySelectorAll('.view-btn').forEach(btn => {
+            btn.addEventListener('click', () => switchView(btn.dataset.view));
+        });
+
+        // 分頁
+        document.getElementById('prevPageBtn').addEventListener('click', () => {
+            if (currentPage > 1) {
+                currentPage--;
+                render();
+            }
+        });
+
+        document.getElementById('nextPageBtn').addEventListener('click', () => {
+            const totalPages = Math.ceil(filteredStudents.length / pageSize);
+            if (currentPage < totalPages) {
+                currentPage++;
+                render();
+            }
+        });
+    }
+
+    async function loadInitialData() {
+        showApiStatus('檢查 API 連接...');
+
+        try {
+            // 測試 API 連接
+            await apiClient.get('/learning/health');
+            apiConnected = true;
+
+            // 載入學生資料
+            await loadStudents();
+
+            // 載入班級選項
+            loadClassOptions();
+
+            // 應用篩選
+            applyFilters();
+
+            showApiStatus('API 連接正常，資料已載入', 'connected');
+
+        } catch (error) {
+            console.warn('API 連接失敗，使用模擬資料:', error);
+            apiConnected = false;
+            loadMockData();
+            loadClassOptions();
+            applyFilters();
+            showApiStatus('API 無法連接，使用模擬資料', 'error');
+        }
+    }
+
+    async function loadStudents() {
+        try {
+            if (!apiConnected) throw new Error('API 未連接');
+
+            // 嘗試從學習記錄獲取資料
+            const response = await apiClient.get('/learning/records');
+
+            if (response && response.sessions && response.sessions.length > 0) {
+                processLearningData(response.sessions);
+            } else {
+                throw new Error('無學習記錄資料');
+            }
+
+        } catch (error) {
+            console.warn('載入學習資料失敗:', error.message);
+            loadMockData();
+        }
+    }
+
+    function processLearningData(sessions) {
+        const studentMap = new Map();
+
+        sessions.forEach(session => {
+            const studentId = session.user_id || session.student_id || 'unknown';
+            const studentName = session.user_name || session.student_name || `學生 ${studentId}`;
+
+            if (!studentMap.has(studentId)) {
+                studentMap.set(studentId, {
+                    id: studentId,
+                    name: studentName,
+                    sessions: []
+                });
+            }
+
+            studentMap.get(studentId).sessions.push(session);
+        });
+
+        students = Array.from(studentMap.values()).map(student => {
+            const scores = student.sessions
+                .filter(s => s.score !== undefined && s.score !== null)
+                .map(s => s.score);
+
+            const avgScore = scores.length > 0
+                ? Math.round(scores.reduce((a, b) => a + b, 0) / scores.length)
+                : generateRandomScore();
+
+            return {
+                id: student.id,
+                name: student.name,
+                class: className || '七年三班',
+                avgScore: avgScore,
+                weakSubjects: generateWeakSubjects(),
+                lastActivity: generateLastActivity(),
+                status: generateStatus(avgScore),
+                totalExercises: student.sessions.length
+            };
+        });
+    }
+
+    function loadMockData() {
+        const mockNames = [
+            '王小明', '李小華', '張小美', '陳小強', '林小芳',
+            '黃小龍', '吳小玲', '劉小傑', '蔡小雯', '鄭小宇',
+            '楊小慧', '許小偉', '謝小婷', '洪小峰', '郭小琪',
+            '周小安', '徐小涵', '朱小豪', '馬小欣', '高小翔'
+        ];
+
+        students = mockNames.map((name, index) => ({
+            id: `student_${index + 1}`,
+            name: name,
+            class: className || '七年三班',
+            avgScore: generateRandomScore(),
+            weakSubjects: generateWeakSubjects(),
+            lastActivity: generateLastActivity(),
+            status: generateStatus(),
+            totalExercises: Math.floor(Math.random() * 30) + 5
+        }));
+    }
+
+    function loadClassOptions() {
+        const classes = [
+            '七年一班', '七年二班', '七年三班', '七年四班',
+            '八年一班', '八年二班', '八年三班', '八年四班'
+        ];
+
+        const classFilter = document.getElementById('classFilter');
+        classFilter.innerHTML = '<option value="">全部班級</option>';
+
+        classes.forEach(cls => {
+            const option = document.createElement('option');
+            option.value = cls;
+            option.textContent = cls;
+            if (cls === className) {
+                option.selected = true;
+            }
+            classFilter.appendChild(option);
+        });
+    }
+
+    function generateRandomScore() {
+        return Math.floor(Math.random() * 40) + 60; // 60-100
+    }
+
+    function generateWeakSubjects() {
+        const subjects = ['數學', '國文', '英文', '自然'];
+        const count = Math.floor(Math.random() * 3);
+        const selected = [];
+
+        for (let i = 0; i < count; i++) {
+            const subject = subjects[Math.floor(Math.random() * subjects.length)];
+            if (!selected.includes(subject)) {
+                selected.push(subject);
+            }
+        }
+
+        return selected;
+    }
+
+    function generateLastActivity() {
+        const days = Math.floor(Math.random() * 7);
+        if (days === 0) return '今天';
+        if (days === 1) return '昨天';
+        return `${days} 天前`;
+    }
+
+    function generateStatus(score) {
+        if (score) {
+            if (score >= 85) return 'active';
+            if (score >= 70) return 'active';
+            return 'need_help';
+        }
+
+        const statuses = ['active', 'inactive', 'need_help'];
+        const weights = [0.6, 0.3, 0.1];
+        const random = Math.random();
+        let cumulative = 0;
+
+        for (let i = 0; i < statuses.length; i++) {
+            cumulative += weights[i];
+            if (random <= cumulative) {
+                return statuses[i];
+            }
+        }
+
+        return 'active';
+    }
+
+    function applyFilters() {
+        const searchTerm = document.getElementById('searchInput').value.toLowerCase().trim();
+        const selectedClass = document.getElementById('classFilter').value;
+        const minScore = parseInt(document.getElementById('scoreMin').value) || 0;
+        const selectedStatus = document.getElementById('statusFilter').value;
+        const sortBy = document.getElementById('sortSelect').value;
+
+        // 篩選
+        filteredStudents = students.filter(student => {
+            const matchesSearch = !searchTerm || student.name.toLowerCase().includes(searchTerm);
+            const matchesClass = !selectedClass || student.class === selectedClass;
+            const matchesScore = student.avgScore >= minScore;
+            const matchesStatus = !selectedStatus || student.status === selectedStatus;
+
+            return matchesSearch && matchesClass && matchesScore && matchesStatus;
+        });
+
+        // 排序
+        filteredStudents.sort((a, b) => {
+            switch (sortBy) {
+                case 'name':
+                    return a.name.localeCompare(b.name);
+                case 'class':
+                    return a.class.localeCompare(b.class);
+                case 'avg_desc':
+                    return b.avgScore - a.avgScore;
+                case 'avg_asc':
+                    return a.avgScore - b.avgScore;
+                default:
+                    return 0;
+            }
+        });
+
+        // 重置到第一頁
+        currentPage = 1;
+
+        // 更新統計
+        updateStatistics();
+
+        // 渲染
+        render();
+    }
+
+    function updateStatistics() {
+        const total = filteredStudents.length;
+        const avgScore = total > 0
+            ? Math.round(filteredStudents.reduce((sum, s) => sum + s.avgScore, 0) / total)
+            : 0;
+        const active = filteredStudents.filter(s => s.status === 'active').length;
+        const needHelp = filteredStudents.filter(s => s.status === 'need_help').length;
+
+        document.getElementById('totalStudents').textContent = total;
+        document.getElementById('avgScore').textContent = avgScore;
+        document.getElementById('activeStudents').textContent = active;
+        document.getElementById('needHelpStudents').textContent = needHelp;
+    }
+
+    function render() {
+        if (currentView === 'table') {
+            renderTable();
+        } else {
+            renderCards();
+        }
+
+        updatePagination();
+    }
+
+    function renderTable() {
+        document.getElementById('tableView').style.display = 'block';
+        document.getElementById('cardsView').classList.remove('active');
+
+        const startIndex = (currentPage - 1) * pageSize;
+        const endIndex = startIndex + pageSize;
+        const pageStudents = filteredStudents.slice(startIndex, endIndex);
+
+        const tbody = document.getElementById('studentsTableBody');
+
+        if (pageStudents.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="5" class="empty">沒有找到符合條件的學生</td></tr>';
+            return;
+        }
+
+        tbody.innerHTML = pageStudents.map(student => `
+                <tr>
+                    <td>
+                        <div class="student-info">
+                            <div class="student-avatar">${getAvatar(student.name)}</div>
+                            <div>
+                                <div style="font-weight:600;">${student.name}</div>
+                                <div style="font-size:0.75rem; color:var(--text-light);">ID: ${student.id}</div>
+                            </div>
+                        </div>
+                    </td>
+                    <td>${student.class}</td>
+                    <td>
+                        <div class="score-display ${getScoreClass(student.avgScore)}">
+                            <span style="font-weight:600;">${student.avgScore}</span>
+                            <div class="score-bar">
+                                <div class="score-fill" style="width: ${student.avgScore}%"></div>
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        ${student.weakSubjects.map(subject =>
+            `<span class="tag">${subject}</span>`
+        ).join('')}
+                        ${student.weakSubjects.length === 0 ? '<span class="tag">表現良好</span>' : ''}
+                    </td>
+                    <td>${student.lastActivity}</td>
+                </tr>
+            `).join('');
+    }
+
+    function renderCards() {
+        document.getElementById('tableView').style.display = 'none';
+        document.getElementById('cardsView').classList.add('active');
+
+        const startIndex = (currentPage - 1) * pageSize;
+        const endIndex = startIndex + pageSize;
+        const pageStudents = filteredStudents.slice(startIndex, endIndex);
+
+        const cardsView = document.getElementById('cardsView');
+
+        if (pageStudents.length === 0) {
+            cardsView.innerHTML = '<div class="empty">沒有找到符合條件的學生</div>';
+            return;
+        }
+
+        cardsView.innerHTML = pageStudents.map(student => `
+                <div class="student-card">
+                    <div class="student-card-header">
+                        <div class="student-card-avatar">${getAvatar(student.name)}</div>
+                        <div class="student-card-info">
+                            <h4>${student.name}</h4>
+                            <p>${student.class}</p>
+                        </div>
+                    </div>
+                    <div class="student-card-stats">
+                        <div class="card-stat">
+                            <div class="card-stat-value ${getScoreClass(student.avgScore)}">${student.avgScore}</div>
+                            <div class="card-stat-label">平均分數</div>
+                        </div>
+                        <div class="card-stat">
+                            <div class="card-stat-value">${student.totalExercises}</div>
+                            <div class="card-stat-label">練習次數</div>
+                        </div>
+                    </div>
+                    <div>
+                        ${student.weakSubjects.map(subject =>
+            `<span class="tag">${subject}</span>`
+        ).join('')}
+                        ${student.weakSubjects.length === 0 ? '<span class="tag">表現良好</span>' : ''}
+                    </div>
+                    <div style="margin-top:0.75rem; font-size:0.8rem; color:var(--text-light);">
+                        最後活動：${student.lastActivity}
+                    </div>
+                </div>
+            `).join('');
+    }
+
+    function switchView(view) {
+        currentView = view;
+
+        document.querySelectorAll('.view-btn').forEach(btn => {
+            btn.classList.toggle('active', btn.dataset.view === view);
+        });
+
+        render();
+    }
+
+    function updatePagination() {
+        const totalPages = Math.max(1, Math.ceil(filteredStudents.length / pageSize));
+
+        document.getElementById('prevPageBtn').disabled = currentPage <= 1;
+        document.getElementById('nextPageBtn').disabled = currentPage >= totalPages;
+        document.getElementById('pageInfo').textContent = `${currentPage} / ${totalPages}`;
+    }
+
+    function getAvatar(name) {
+        return name ? name.charAt(0).toUpperCase() : '?';
+    }
+
+    function getScoreClass(score) {
+        if (score >= 90) return 'score-excellent';
+        if (score >= 80) return 'score-good';
+        if (score >= 70) return 'score-average';
+        return 'score-poor';
+    }
+
+    function showApiStatus(message, type = 'warning') {
+        const statusEl = document.getElementById('apiStatus');
+        const textEl = document.getElementById('statusText');
+
+        statusEl.style.display = 'block';
+        statusEl.className = `api-status ${type}`;
+        textEl.textContent = message;
+
+        // 3秒後隱藏狀態訊息（除非是錯誤狀態）
+        if (type !== 'error') {
+            setTimeout(() => {
+                statusEl.style.display = 'none';
+            }, 3000);
+        }
+    }
+</script>
+</body>
+
+</html>

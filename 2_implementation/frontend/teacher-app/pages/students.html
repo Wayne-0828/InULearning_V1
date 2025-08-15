@@ -96,12 +96,10 @@
 						const res = await apiClient.get(`/learning/teacher/students?${params}`);
 						data = res.data || res.items || res || [];
 					}
-            } catch (e) {
-                data = [
-                    { name:'王小明', class:'七年三班', avg:82, weak:['分數比較','分數四則'] },
-                    { name:'李小華', class:'七年四班', avg:67, weak:['分數比較'] },
-                ];
-            }
+				} catch (e) {
+					console.warn('載入學生失敗', e);
+					data = [];
+				}
         }
         function render(){
             const kw = document.getElementById('kw').value.trim();
@@ -134,7 +132,42 @@
 					const brand = document.querySelector('.navbar-brand span');
 					if (brand) brand.textContent = `學生分析 - ${clsName}`;
 				}
-            // 初始 skeleton
+
+				// 若 classId 非數字，嘗試以班級名稱解析實際 ID（教師-班級清單）
+				if (!classId || isNaN(Number(classId))) {
+					try {
+						if (clsName) {
+							const res = await apiClient.get('/relationships/teacher-class');
+							const list = res.data || res.items || res || [];
+							const found = list.find(r => (r.class_name||'') === clsName);
+							if (found && found.class_id) {
+								classId = String(found.class_id);
+							}
+						}
+					} catch (_) { /* ignore */ }
+				}
+				// 若 classId 非數字，嘗試解析
+				const isNumericId = (v) => v && String(parseInt(v,10)) === String(v);
+				if (!isNumericId(classId)) {
+					try {
+						if (clsName) {
+							// 1) 從教師-班級關係找
+							const tcr = await apiClient.get('/relationships/teacher-class');
+							const list1 = tcr.data || tcr.items || tcr || [];
+							const found1 = list1.find(r => (r.class_name||'') === clsName);
+							if (found1 && found1.class_id) classId = String(found1.class_id);
+							// 2) 若仍找不到，從所有班級列表找
+							if (!isNumericId(classId)) {
+								const allc = await apiClient.get('/relationships/classes');
+								const list2 = allc.data || allc.items || allc || [];
+								const found2 = list2.find(c => (c.class_name||'') === clsName);
+								if (found2 && found2.id) classId = String(found2.id);
+							}
+						}
+					} catch (_) { /* ignore */ }
+				}
+
+				// 初始 skeleton
             document.getElementById('students-tbody').innerHTML = Array.from({length:5}).map(()=>`<tr><td colspan="4"><div class="skeleton"></div></td></tr>`).join('');
             await loadStudents(); render(); 
             document.getElementById('prevPage').addEventListener('click', ()=>{ if(page>1){ page--; render(); }});

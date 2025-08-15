@@ -62,18 +62,18 @@
             <div class="toolbar">
                 <div class="controls">
                     <div class="search-box"><input id="kw" type="text" placeholder="搜尋班級..."></div>
-                    <select id="statusFilter" aria-label="狀態篩選">
-                        <option value="">全部狀態</option>
-                        <option value="進行中">進行中</option>
-                        <option value="準備中">準備中</option>
-                        <option value="已結束">已結束</option>
-                    </select>
+					<select id="subjectFilter" aria-label="科目篩選">
+						<option value="">全部科目</option>
+						<option value="數學">數學</option>
+						<option value="國文">國文</option>
+						<option value="英文">英文</option>
+						<option value="自然">自然</option>
+						<option value="社會">社會</option>
+					</select>
                     <select id="sortBy" aria-label="排序">
                         <option value="updated_desc">更新時間（新→舊）</option>
                         <option value="updated_asc">更新時間（舊→新）</option>
                         <option value="name">名稱</option>
-                        <option value="students_desc">學生數（多→少）</option>
-                        <option value="students_asc">學生數（少→多）</option>
                     </select>
                 </div>
                 <div>
@@ -113,15 +113,13 @@
 								<input id="className" required placeholder="例如：七年三班">
 							</div>
 							<div class="field">
-								<label for="classStudents">學生數（可選）</label>
-								<input id="classStudents" type="number" min="0" placeholder="例如：32">
-							</div>
-							<div class="field">
-								<label for="classStatus">狀態</label>
-								<select id="classStatus" required>
-									<option value="進行中">進行中</option>
-									<option value="準備中">準備中</option>
-									<option value="已結束">已結束</option>
+								<label for="classSubject">科目</label>
+								<select id="classSubject" required>
+									<option value="數學">數學</option>
+									<option value="國文">國文</option>
+									<option value="英文">英文</option>
+									<option value="自然">自然</option>
+									<option value="社會">社會</option>
 								</select>
 							</div>
 						</form>
@@ -205,7 +203,7 @@
             try {
                 const updated = await Promise.all(classes.map(async (c) => {
                     try {
-                        const res = await apiClient.get(`/classes/${c.id}/students`);
+							const res = await apiClient.get(`/relationships/classes/${c.id}/students`);
                         const arr = res.data || res.items || res || [];
                         const count = Array.isArray(arr) ? arr.length : (typeof arr.count === 'number' ? arr.count : undefined);
                         return Object.assign({}, c, { students: count });
@@ -217,16 +215,14 @@
             } catch (_) { /* ignore counts failure */ }
         }
 
-        function sortAndFilter(list){
+			function sortAndFilter(list){
             const kw = document.getElementById('kw').value.trim();
-            const status = document.getElementById('statusFilter').value;
+				const subject = document.getElementById('subjectFilter').value;
             const sortBy = document.getElementById('sortBy').value;
-            let arr = list.filter(c => (!kw || (c.name||'').includes(kw)) && (!status || c.status===status));
+				let arr = list.filter(c => (!kw || (c.name||'').includes(kw)) && (!subject || c.subject===subject));
             if (sortBy === 'updated_desc') arr.sort((a,b)=> new Date(b.updated||b.updated_at||0) - new Date(a.updated||a.updated_at||0));
             else if (sortBy === 'updated_asc') arr.sort((a,b)=> new Date(a.updated||a.updated_at||0) - new Date(b.updated||b.updated_at||0));
             else if (sortBy === 'name') arr.sort((a,b)=> (a.name||'').localeCompare(b.name||''));
-            else if (sortBy === 'students_desc') arr.sort((a,b)=> (b.students||0)-(a.students||0));
-            else if (sortBy === 'students_asc') arr.sort((a,b)=> (a.students||0)-(b.students||0));
             return arr;
         }
 
@@ -270,14 +266,13 @@
             openModal();
         }
 
-        function onEdit(id){
+			function onEdit(id){
             const item = classes.find(c => (c.id||'')===id);
             if (!item) return;
             editingId = id;
             document.getElementById('classModalTitle').textContent = '編輯班級';
             document.getElementById('className').value = item.name || '';
-            document.getElementById('classStudents').value = item.students || '';
-            document.getElementById('classStatus').value = item.status || '進行中';
+				document.getElementById('classSubject').value = item.subject || '數學';
 				setActiveTab('info');
 				openModal();
 				// 載入班級內學生
@@ -292,16 +287,17 @@
         }
 
         async function saveClass(){
-            const payload = {
-                name: document.getElementById('className').value.trim(),
-                students: parseInt(document.getElementById('classStudents').value||'0') || 0,
-                status: document.getElementById('classStatus').value
-            };
-            if (!payload.name) { showAlert('請輸入班級名稱','warning'); return; }
+				const className = document.getElementById('className').value.trim();
+				if (!className) { showAlert('請輸入班級名稱','warning'); return; }
             try {
                 showLoading();
-                if (editingId) await apiClient.put(`/learning/teacher/classes/${editingId}`, payload);
-                else await apiClient.post('/learning/teacher/classes', payload);
+					const subject = document.getElementById('classSubject').value || '數學';
+					if (editingId) {
+						await apiClient.put(`/relationships/teacher-class/${editingId}`, { class_name: className, subject });
+					} else {
+						// 新增班級透過教師一鍵建立
+						await apiClient.post('/relationships/teacher-class/create-class', { class_name: className, subject });
+					}
                 await loadClasses();
                 closeModal();
                 render();
@@ -311,11 +307,11 @@
             } finally { hideLoading(); }
         }
 
-        async function confirmDelete(){
+			async function confirmDelete(){
             if (!pendingDeleteId) { closeConfirm(); return; }
             try {
                 showLoading();
-                await apiClient.delete(`/learning/teacher/classes/${pendingDeleteId}`);
+					await apiClient.delete(`/relationships/teacher-class/${pendingDeleteId}`);
                 await loadClasses();
                 render();
                 showAlert('已刪除','success');
@@ -402,8 +398,8 @@
 				finally{ hideLoading(); }
 			}
 
-        document.addEventListener('input', (e)=>{ if(['kw'].includes(e.target.id)) { page=1; render(); } });
-        document.addEventListener('change', (e)=>{ if(['statusFilter','sortBy'].includes(e.target.id)) { page=1; render(); } });
+			document.addEventListener('input', (e)=>{ if(['kw'].includes(e.target.id)) { page=1; render(); } });
+			document.addEventListener('change', (e)=>{ if(['subjectFilter','sortBy'].includes(e.target.id)) { page=1; render(); } });
         document.addEventListener('DOMContentLoaded', async ()=>{
             await loadClasses();
             render();

@@ -1,15 +1,18 @@
 /**
- * 教師儀表板模組
+ * 教師儀表板模組 - 增強版
  * 顯示課程統計、學生進度、最近活動等資訊
  */
 class TeacherDashboard {
     constructor() {
         this.statsData = {};
         this.recentActivities = [];
+        this.classes = [];
+        this.apiConnected = false;
         this.init();
     }
 
     init() {
+        this.setupCurrentDate();
         this.loadDashboardData();
         this.setupAutoRefresh();
         this.bindEvents();
@@ -21,7 +24,7 @@ class TeacherDashboard {
     async loadDashboardData() {
         try {
             showLoading();
-            
+
             // 並行載入各種資料
             const [statsResponse, activitiesResponse, upcomingResponse] = await Promise.all([
                 this.loadStats(),

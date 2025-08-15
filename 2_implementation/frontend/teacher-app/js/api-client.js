@@ -1,5 +1,5 @@
 const apiClient = {
-	baseUrl: 'http://localhost/api/v1',
+	baseUrl: window.location.hostname === 'localhost' ? 'http://localhost/api/v1' : '/api/v1',
 	async request(path, options = {}) {
 		const url = `${this.baseUrl}${path}`;
 		const headers = Object.assign({ 'Content-Type': 'application/json' }, options.headers || {});

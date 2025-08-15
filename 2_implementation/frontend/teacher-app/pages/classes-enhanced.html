@@ -1,0 +1,1160 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="InULearning 教師台 - 班級管理">
+    <title>班級管理 - InULearning 教師台</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="../css/design-tokens.css">
+    <link rel="stylesheet" href="../css/navigation.css">
+    <link rel="stylesheet" href="../css/main.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        /* ===== 班級管理專用樣式 ===== */
+        .page-header {
+            background: linear-gradient(135deg, var(--primary-blue-50) 0%, var(--primary-blue-100) 100%);
+            border-radius: var(--radius-2xl);
+            padding: var(--spacing-xl);
+            margin-bottom: var(--spacing-xl);
+            border: 1px solid var(--primary-blue-200);
+        }
+
+        .page-title {
+            font-size: var(--font-size-3xl);
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .page-subtitle {
+            font-size: var(--font-size-lg);
+            color: var(--text-secondary);
+            line-height: var(--leading-relaxed);
+        }
+
+        /* 工具欄優化 */
+        .toolbar {
+            display: flex;
+            gap: var(--spacing-lg);
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--spacing-xl);
+            padding: var(--spacing-lg);
+            background: var(--bg-primary);
+            border-radius: var(--radius-xl);
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--border-light);
+        }
+
+        .search-filters {
+            display: flex;
+            gap: var(--spacing-md);
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .search-box {
+            position: relative;
+            min-width: 280px;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: var(--spacing-md) var(--spacing-md) var(--spacing-md) 2.5rem;
+            border: 2px solid var(--border-light);
+            border-radius: var(--radius-lg);
+            font-size: var(--font-size-base);
+            transition: var(--transition-fast);
+            background: var(--bg-primary);
+        }
+
+        .search-box input:focus {
+            outline: none;
+            border-color: var(--primary-blue-500);
+            box-shadow: 0 0 0 3px var(--primary-blue-100);
+        }
+
+        .search-box i {
+            position: absolute;
+            left: var(--spacing-md);
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-tertiary);
+            font-size: var(--font-size-lg);
+        }
+
+        .filter-select {
+            padding: var(--spacing-md);
+            border: 2px solid var(--border-light);
+            border-radius: var(--radius-lg);
+            background: var(--bg-primary);
+            font-size: var(--font-size-base);
+            min-width: 140px;
+            transition: var(--transition-fast);
+        }
+
+        .filter-select:focus {
+            outline: none;
+            border-color: var(--primary-blue-500);
+            box-shadow: 0 0 0 3px var(--primary-blue-100);
+        }
+
+        /* 按鈕系統 */
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary-blue-500) 0%, var(--primary-blue-600) 100%);
+            color: var(--text-inverse);
+            border: none;
+            padding: var(--spacing-md) var(--spacing-lg);
+            border-radius: var(--radius-lg);
+            font-weight: 600;
+            font-size: var(--font-size-base);
+            cursor: pointer;
+            transition: var(--transition-fast);
+            display: inline-flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .btn-primary:hover {
+            background: linear-gradient(135deg, var(--primary-blue-600) 0%, var(--primary-blue-700) 100%);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .btn-primary:active {
+            transform: translateY(0);
+        }
+
+        /* 班級卡片網格 */
+        .classes-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: var(--spacing-xl);
+            margin-bottom: var(--spacing-xl);
+        }
+
+        .class-card {
+            background: var(--bg-primary);
+            border-radius: var(--radius-xl);
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--border-light);
+            overflow: hidden;
+            transition: var(--transition-normal);
+            position: relative;
+        }
+
+        .class-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-lg);
+            border-color: var(--primary-blue-200);
+        }
+
+        .class-card-header {
+            padding: var(--spacing-lg);
+            background: linear-gradient(135deg, var(--primary-blue-50) 0%, var(--primary-blue-100) 100%);
+            border-bottom: 1px solid var(--primary-blue-200);
+        }
+
+        .class-name {
+            font-size: var(--font-size-xl);
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: var(--spacing-xs);
+        }
+
+        .class-subject {
+            display: inline-flex;
+            align-items: center;
+            gap: var(--spacing-xs);
+            background: var(--primary-blue-500);
+            color: var(--text-inverse);
+            padding: var(--spacing-xs) var(--spacing-sm);
+            border-radius: var(--radius-full);
+            font-size: var(--font-size-sm);
+            font-weight: 500;
+        }
+
+        .class-card-body {
+            padding: var(--spacing-lg);
+        }
+
+        .class-stats {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: var(--spacing-md);
+            margin-bottom: var(--spacing-lg);
+        }
+
+        .stat-item {
+            text-align: center;
+            padding: var(--spacing-md);
+            background: var(--bg-secondary);
+            border-radius: var(--radius-lg);
+        }
+
+        .stat-number {
+            font-size: var(--font-size-2xl);
+            font-weight: 700;
+            color: var(--primary-blue-600);
+            margin-bottom: var(--spacing-xs);
+        }
+
+        .stat-label {
+            font-size: var(--font-size-sm);
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+
+        .class-actions {
+            display: flex;
+            gap: var(--spacing-sm);
+            justify-content: space-between;
+        }
+
+        .btn-secondary {
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            border: 1px solid var(--border-medium);
+            padding: var(--spacing-sm) var(--spacing-md);
+            border-radius: var(--radius-lg);
+            font-size: var(--font-size-sm);
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition-fast);
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: var(--spacing-xs);
+        }
+
+        .btn-secondary:hover {
+            background: var(--primary-blue-50);
+            color: var(--primary-blue-600);
+            border-color: var(--primary-blue-200);
+            transform: translateY(-1px);
+        }
+
+        .btn-danger {
+            background: var(--error-50);
+            color: var(--error);
+            border: 1px solid var(--error-100);
+            padding: var(--spacing-sm) var(--spacing-md);
+            border-radius: var(--radius-lg);
+            font-size: var(--font-size-sm);
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition-fast);
+        }
+
+        .btn-danger:hover {
+            background: var(--error);
+            color: var(--text-inverse);
+            transform: translateY(-1px);
+        }
+
+        /* 空狀態 */
+        .empty-state {
+            text-align: center;
+            padding: var(--spacing-2xl);
+            background: var(--bg-primary);
+            border-radius: var(--radius-xl);
+            border: 2px dashed var(--border-medium);
+        }
+
+        .empty-icon {
+            font-size: 4rem;
+            color: var(--text-tertiary);
+            margin-bottom: var(--spacing-lg);
+        }
+
+        .empty-title {
+            font-size: var(--font-size-xl);
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .empty-description {
+            font-size: var(--font-size-base);
+            color: var(--text-secondary);
+            margin-bottom: var(--spacing-lg);
+            line-height: var(--leading-relaxed);
+        }
+
+        /* 模態框優化 */
+        .modal-backdrop {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(4px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+            opacity: 0;
+            transition: var(--transition-normal);
+        }
+
+        .modal-backdrop.show {
+            display: flex;
+            opacity: 1;
+        }
+
+        .modal {
+            background: var(--bg-primary);
+            border-radius: var(--radius-2xl);
+            width: 100%;
+            max-width: 600px;
+            max-height: 90vh;
+            overflow: hidden;
+            box-shadow: var(--shadow-xl);
+            transform: scale(0.9) translateY(20px);
+            transition: var(--transition-normal);
+        }
+
+        .modal-backdrop.show .modal {
+            transform: scale(1) translateY(0);
+        }
+
+        .modal-header {
+            padding: var(--spacing-xl);
+            border-bottom: 1px solid var(--border-light);
+            background: var(--bg-secondary);
+        }
+
+        .modal-title {
+            font-size: var(--font-size-2xl);
+            font-weight: 700;
+            color: var(--text-primary);
+            margin: 0;
+        }
+
+        .modal-body {
+            padding: var(--spacing-xl);
+            max-height: 60vh;
+            overflow-y: auto;
+        }
+
+        .modal-footer {
+            padding: var(--spacing-xl);
+            border-top: 1px solid var(--border-light);
+            background: var(--bg-secondary);
+            display: flex;
+            gap: var(--spacing-md);
+            justify-content: flex-end;
+        }
+
+        /* 表單優化 */
+        .form-group {
+            margin-bottom: var(--spacing-lg);
+        }
+
+        .form-label {
+            display: block;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: var(--spacing-sm);
+            font-size: var(--font-size-base);
+        }
+
+        .form-control {
+            width: 100%;
+            padding: var(--spacing-md);
+            border: 2px solid var(--border-light);
+            border-radius: var(--radius-lg);
+            font-size: var(--font-size-base);
+            transition: var(--transition-fast);
+            background: var(--bg-primary);
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary-blue-500);
+            box-shadow: 0 0 0 3px var(--primary-blue-100);
+        }
+
+        /* 標籤頁 */
+        .tabs {
+            display: flex;
+            gap: var(--spacing-xs);
+            border-bottom: 2px solid var(--border-light);
+            margin-bottom: var(--spacing-lg);
+        }
+
+        .tab {
+            background: transparent;
+            border: none;
+            padding: var(--spacing-md) var(--spacing-lg);
+            border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+            cursor: pointer;
+            font-weight: 500;
+            color: var(--text-secondary);
+            transition: var(--transition-fast);
+            position: relative;
+        }
+
+        .tab.active {
+            background: var(--primary-blue-50);
+            color: var(--primary-blue-600);
+            font-weight: 600;
+        }
+
+        .tab.active::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: var(--primary-blue-500);
+        }
+
+        /* 響應式設計 */
+        @media (max-width: 768px) {
+            .toolbar {
+                flex-direction: column;
+                gap: var(--spacing-md);
+                align-items: stretch;
+            }
+
+            .search-filters {
+                flex-direction: column;
+                gap: var(--spacing-sm);
+            }
+
+            .search-box {
+                min-width: auto;
+            }
+
+            .classes-grid {
+                grid-template-columns: 1fr;
+                gap: var(--spacing-lg);
+            }
+
+            .class-stats {
+                grid-template-columns: 1fr;
+            }
+
+            .class-actions {
+                flex-direction: column;
+                gap: var(--spacing-sm);
+            }
+        }
+
+        /* 載入動畫 */
+        .loading-skeleton {
+            background: linear-gradient(90deg, var(--gray-200) 25%, var(--gray-100) 37%, var(--gray-200) 63%);
+            background-size: 400% 100%;
+            animation: shimmer 1.2s infinite;
+            border-radius: var(--radius-lg);
+        }
+
+        @keyframes shimmer {
+            0% {
+                background-position: 100% 0;
+            }
+
+            100% {
+                background-position: -100% 0;
+            }
+        }
+
+        .skeleton-card {
+            height: 280px;
+        }
+
+        .skeleton-text {
+            height: 16px;
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .skeleton-text.short {
+            width: 60%;
+        }
+
+        .skeleton-text.medium {
+            width: 80%;
+        }
+    </style>
+</head>
+
+<body>
+    <a href="#main" class="skip-link"
+        style="position:absolute;left:-9999px;top:auto;width:1px;height:1px;overflow:hidden;">跳至主要內容</a>
+
+    <!-- 導航欄 -->
+    <nav class="navbar">
+        <div class="navbar-container">
+            <div class="navbar-brand">
+                <i class="fas fa-chalkboard-teacher"></i>
+                <span>班級管理</span>
+            </div>
+            <div class="navbar-menu">
+                <a href="../index.html" class="nav-link">
+                    <i class="fas fa-tachometer-alt"></i>
+                    <span>儀表板</span>
+                </a>
+                <a href="classes-enhanced.html" class="nav-link active">
+                    <i class="fas fa-users"></i>
+                    <span>班級管理</span>
+                </a>
+                <a href="students.html" class="nav-link">
+                    <i class="fas fa-user-graduate"></i>
+                    <span>學生分析</span>
+                </a>
+                <a href="questions.html" class="nav-link">
+                    <i class="fas fa-question-circle"></i>
+                    <span>題目管理</span>
+                </a>
+            </div>
+            <div class="navbar-user">
+                <button class="user-dropdown-toggle">
+                    <i class="fas fa-user-circle"></i>
+                    <span id="teacher-name">教師</span>
+                    <i class="fas fa-chevron-down"></i>
+                </button>
+                <div class="user-dropdown-menu">
+                    <a href="profile.html" class="dropdown-item">
+                        <i class="fas fa-user"></i>
+                        <span>個人資料</span>
+                    </a>
+                    <div class="dropdown-divider"></div>
+                    <a href="#" class="dropdown-item" id="logout-btn">
+                        <i class="fas fa-sign-out-alt"></i>
+                        <span>登出</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 主要內容 -->
+    <main id="main" class="main-content">
+        <div class="container">
+            <!-- 頁面標題 -->
+            <div class="page-header">
+                <h1 class="page-title">班級管理</h1>
+                <p class="page-subtitle">管理您的班級，追蹤學生學習進度，建立良好的教學環境</p>
+            </div>
+
+            <!-- 工具欄 -->
+            <div class="toolbar">
+                <div class="search-filters">
+                    <div class="search-box">
+                        <i class="fas fa-search"></i>
+                        <input id="searchInput" type="text" placeholder="搜尋班級名稱...">
+                    </div>
+                    <select id="subjectFilter" class="filter-select" aria-label="科目篩選">
+                        <option value="">全部科目</option>
+                        <option value="數學">數學</option>
+                        <option value="國文">國文</option>
+                        <option value="英文">英文</option>
+                        <option value="自然">自然</option>
+                        <option value="社會">社會</option>
+                    </select>
+                    <select id="sortBy" class="filter-select" aria-label="排序方式">
+                        <option value="updated_desc">最近更新</option>
+                        <option value="name">班級名稱</option>
+                        <option value="students_desc">學生人數</option>
+                    </select>
+                </div>
+                <button class="btn-primary" id="createClassBtn">
+                    <i class="fas fa-plus"></i>
+                    新增班級
+                </button>
+            </div>
+
+            <!-- 班級網格 -->
+            <div class="classes-grid" id="classesGrid">
+                <!-- 班級卡片將在這裡動態生成 -->
+            </div>
+
+            <!-- 空狀態 -->
+            <div class="empty-state" id="emptyState" style="display: none;">
+                <div class="empty-icon">
+                    <i class="fas fa-users"></i>
+                </div>
+                <h3 class="empty-title">還沒有班級</h3>
+                <p class="empty-description">
+                    開始建立您的第一個班級，邀請學生加入，<br>
+                    開啟個人化學習之旅
+                </p>
+                <button class="btn-primary" onclick="document.getElementById('createClassBtn').click()">
+                    <i class="fas fa-plus"></i>
+                    建立第一個班級
+                </button>
+            </div>
+        </div>
+    </main>
+
+    <!-- 新增/編輯班級模態框 -->
+    <div class="modal-backdrop" id="classModal">
+        <div class="modal" role="dialog" aria-modal="true" aria-labelledby="classModalTitle">
+            <div class="modal-header">
+                <h3 id="classModalTitle" class="modal-title">新增班級</h3>
+            </div>
+            <div class="modal-body">
+                <div class="tabs">
+                    <button class="tab active" id="tabInfo">基本資訊</button>
+                    <button class="tab" id="tabStudents">學生管理</button>
+                </div>
+
+                <div id="panelInfo">
+                    <form id="classForm">
+                        <div class="form-group">
+                            <label for="className" class="form-label">班級名稱</label>
+                            <input id="className" class="form-control" required placeholder="例如：七年三班">
+                        </div>
+                        <div class="form-group">
+                            <label for="classSubject" class="form-label">科目</label>
+                            <select id="classSubject" class="form-control" required>
+                                <option value="">請選擇科目</option>
+                                <option value="數學">數學</option>
+                                <option value="國文">國文</option>
+                                <option value="英文">英文</option>
+                                <option value="自然">自然</option>
+                                <option value="社會">社會</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="classDescription" class="form-label">班級描述（選填）</label>
+                            <textarea id="classDescription" class="form-control" rows="3"
+                                placeholder="簡單描述這個班級的特色或目標..."></textarea>
+                        </div>
+                    </form>
+                </div>
+
+                <div id="panelStudents" style="display:none;">
+                    <div class="form-group">
+                        <label for="studentSearch" class="form-label">搜尋學生</label>
+                        <div style="display:flex; gap:var(--spacing-sm);">
+                            <input id="studentSearch" class="form-control" placeholder="輸入學生姓名或 Email...">
+                            <button class="btn-secondary" id="searchStudentBtn" type="button">
+                                <i class="fas fa-search"></i>
+                                搜尋
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">搜尋結果</label>
+                        <div id="studentSearchResults"
+                            style="max-height: 200px; overflow-y: auto; border: 1px solid var(--border-light); border-radius: var(--radius-lg); padding: var(--spacing-sm);">
+                            <p style="text-align: center; color: var(--text-tertiary); padding: var(--spacing-lg);">
+                                請輸入關鍵字搜尋學生
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">班級學生</label>
+                        <div id="classStudentsList"
+                            style="max-height: 200px; overflow-y: auto; border: 1px solid var(--border-light); border-radius: var(--radius-lg); padding: var(--spacing-sm);">
+                            <p style="text-align: center; color: var(--text-tertiary); padding: var(--spacing-lg);">
+                                尚無學生
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-secondary" id="cancelBtn" type="button">取消</button>
+                <button class="btn-primary" id="saveBtn" type="button">儲存</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 確認刪除模態框 -->
+    <div class="modal-backdrop" id="confirmModal">
+        <div class="modal" role="dialog" aria-modal="true" aria-labelledby="confirmTitle">
+            <div class="modal-header">
+                <h3 id="confirmTitle" class="modal-title">確認刪除</h3>
+            </div>
+            <div class="modal-body">
+                <div style="text-align: center; padding: var(--spacing-lg);">
+                    <div style="font-size: 3rem; color: var(--error); margin-bottom: var(--spacing-lg);">
+                        <i class="fas fa-exclamation-triangle"></i>
+                    </div>
+                    <p id="confirmText" style="font-size: var(--font-size-lg); margin-bottom: var(--spacing-md);">
+                        您確定要刪除此班級嗎？
+                    </p>
+                    <p style="color: var(--text-secondary); font-size: var(--font-size-sm);">
+                        此操作無法復原，班級內的所有資料將被永久刪除。
+                    </p>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-secondary" id="confirmCancel" type="button">取消</button>
+                <button class="btn-danger" id="confirmDelete" type="button">
+                    <i class="fas fa-trash"></i>
+                    確認刪除
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript -->
+    <script src="../js/utils.js"></script>
+    <script src="../js/api-client.js"></script>
+    <script src="../js/auth.js"></script>
+    <script>
+        // 班級管理邏輯
+        let classes = [];
+        let editingId = null;
+        let currentPage = 1;
+        const pageSize = 12;
+
+        // 初始化
+        document.addEventListener('DOMContentLoaded', async () => {
+            await loadClasses();
+            renderClasses();
+            bindEvents();
+        });
+
+        // 載入班級資料
+        async function loadClasses() {
+            showLoadingSkeletons();
+            try {
+                const res = await apiClient.get('/relationships/teacher-class');
+                const list = res.data || res.items || res || [];
+                classes = list.map(r => ({
+                    id: r.class_id,
+                    name: r.class_name || '未命名班級',
+                    subject: r.subject || '',
+                    description: r.description || '',
+                    students: 0,
+                    status: '進行中',
+                    updated: r.updated_at || new Date().toISOString(),
+                    created: r.created_at || new Date().toISOString()
+                }));
+
+                // 載入學生數量
+                await loadStudentCounts();
+            } catch (e) {
+                console.warn('載入班級失敗', e);
+                // 示例資料
+                classes = [
+                    { id: 'c1', name: '七年三班', subject: '數學', students: 32, status: '進行中', updated: '2025-08-10', description: '基礎數學班級' },
+                    { id: 'c2', name: '七年四班', subject: '國文', students: 28, status: '準備中', updated: '2025-08-08', description: '國文閱讀理解班' },
+                    { id: 'c3', name: '八年一班', subject: '英文', students: 30, status: '進行中', updated: '2025-08-12', description: '英文會話練習班' }
+                ];
+            }
+        }
+
+        // 載入學生數量
+        async function loadStudentCounts() {
+            try {
+                const updated = await Promise.all(classes.map(async (c) => {
+                    try {
+                        const res = await apiClient.get(`/relationships/classes/${c.id}/students`);
+                        const arr = res.data || res.items || res || [];
+                        const count = Array.isArray(arr) ? arr.length : (typeof arr.count === 'number' ? arr.count : 0);
+                        return { ...c, students: count };
+                    } catch (_) {
+                        return c;
+                    }
+                }));
+                classes = updated;
+            } catch (_) {
+                // 忽略載入失敗
+            }
+        }
+
+        // 顯示載入骨架
+        function showLoadingSkeletons() {
+            const grid = document.getElementById('classesGrid');
+            grid.innerHTML = Array.from({ length: 6 }).map(() => `
+                <div class="class-card">
+                    <div class="class-card-header">
+                        <div class="loading-skeleton skeleton-text medium"></div>
+                        <div class="loading-skeleton skeleton-text short"></div>
+                    </div>
+                    <div class="class-card-body">
+                        <div class="loading-skeleton skeleton-card"></div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // 渲染班級列表
+        function renderClasses() {
+            const grid = document.getElementById('classesGrid');
+            const emptyState = document.getElementById('emptyState');
+
+            let filteredClasses = filterAndSortClasses();
+
+            if (filteredClasses.length === 0) {
+                grid.style.display = 'none';
+                emptyState.style.display = 'block';
+                return;
+            }
+
+            grid.style.display = 'grid';
+            emptyState.style.display = 'none';
+
+            grid.innerHTML = filteredClasses.map(cls => `
+                <div class="class-card" data-class-id="${cls.id}">
+                    <div class="class-card-header">
+                        <h3 class="class-name">${cls.name}</h3>
+                        <span class="class-subject">
+                            <i class="fas fa-book"></i>
+                            ${cls.subject}
+                        </span>
+                    </div>
+                    <div class="class-card-body">
+                        <div class="class-stats">
+                            <div class="stat-item">
+                                <div class="stat-number">${cls.students}</div>
+                                <div class="stat-label">學生人數</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-number">${cls.status === '進行中' ? '進行中' : '準備中'}</div>
+                                <div class="stat-label">狀態</div>
+                            </div>
+                        </div>
+                        <div class="class-actions">
+                            <a href="students.html?classId=${cls.id}&class=${encodeURIComponent(cls.name)}" class="btn-secondary">
+                                <i class="fas fa-users"></i>
+                                查看學生
+                            </a>
+                            <button class="btn-secondary" onclick="editClass('${cls.id}')">
+                                <i class="fas fa-edit"></i>
+                                編輯
+                            </button>
+                            <button class="btn-danger" onclick="deleteClass('${cls.id}', '${cls.name}')">
+                                <i class="fas fa-trash"></i>
+                                刪除
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // 篩選和排序班級
+        function filterAndSortClasses() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            const subjectFilter = document.getElementById('subjectFilter').value;
+            const sortBy = document.getElementById('sortBy').value;
+
+            let filtered = classes.filter(cls => {
+                const matchesSearch = !searchTerm || cls.name.toLowerCase().includes(searchTerm);
+                const matchesSubject = !subjectFilter || cls.subject === subjectFilter;
+                return matchesSearch && matchesSubject;
+            });
+
+            // 排序
+            filtered.sort((a, b) => {
+                switch (sortBy) {
+                    case 'name':
+                        return a.name.localeCompare(b.name);
+                    case 'students_desc':
+                        return b.students - a.students;
+                    case 'updated_desc':
+                    default:
+                        return new Date(b.updated) - new Date(a.updated);
+                }
+            });
+
+            return filtered;
+        }
+
+        // 綁定事件
+        function bindEvents() {
+            // 搜尋和篩選
+            document.getElementById('searchInput').addEventListener('input', debounce(renderClasses, 300));
+            document.getElementById('subjectFilter').addEventListener('change', renderClasses);
+            document.getElementById('sortBy').addEventListener('change', renderClasses);
+
+            // 新增班級
+            document.getElementById('createClassBtn').addEventListener('click', createClass);
+
+            // 模態框控制
+            document.getElementById('cancelBtn').addEventListener('click', closeModal);
+            document.getElementById('saveBtn').addEventListener('click', saveClass);
+            document.getElementById('confirmCancel').addEventListener('click', closeConfirmModal);
+            document.getElementById('confirmDelete').addEventListener('click', confirmDelete);
+
+            // 標籤頁切換
+            document.getElementById('tabInfo').addEventListener('click', () => switchTab('info'));
+            document.getElementById('tabStudents').addEventListener('click', () => switchTab('students'));
+
+            // 學生搜尋
+            document.getElementById('searchStudentBtn').addEventListener('click', searchStudents);
+            document.getElementById('studentSearch').addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    searchStudents();
+                }
+            });
+        }
+
+        // 防抖函數
+        function debounce(func, wait) {
+            let timeout;
+            return function executedFunction(...args) {
+                const later = () => {
+                    clearTimeout(timeout);
+                    func(...args);
+                };
+                clearTimeout(timeout);
+                timeout = setTimeout(later, wait);
+            };
+        }
+
+        // 新增班級
+        function createClass() {
+            editingId = null;
+            document.getElementById('classModalTitle').textContent = '新增班級';
+            resetForm();
+            switchTab('info');
+            openModal();
+        }
+
+        // 編輯班級
+        function editClass(id) {
+            const cls = classes.find(c => c.id === id);
+            if (!cls) return;
+
+            editingId = id;
+            document.getElementById('classModalTitle').textContent = '編輯班級';
+            document.getElementById('className').value = cls.name;
+            document.getElementById('classSubject').value = cls.subject;
+            document.getElementById('classDescription').value = cls.description || '';
+
+            switchTab('info');
+            openModal();
+
+            // 載入班級學生
+            if (editingId) {
+                loadClassStudents(editingId);
+            }
+        }
+
+        // 刪除班級
+        function deleteClass(id, name) {
+            pendingDeleteId = id;
+            document.getElementById('confirmText').textContent = `您確定要刪除班級「${name}」嗎？`;
+            openConfirmModal();
+        }
+
+        // 儲存班級
+        async function saveClass() {
+            const name = document.getElementById('className').value.trim();
+            const subject = document.getElementById('classSubject').value;
+            const description = document.getElementById('classDescription').value.trim();
+
+            if (!name || !subject) {
+                showAlert('請填寫班級名稱和科目', 'warning');
+                return;
+            }
+
+            try {
+                showLoading();
+
+                const payload = {
+                    class_name: name,
+                    subject: subject,
+                    description: description
+                };
+
+                if (editingId) {
+                    await apiClient.put(`/relationships/teacher-class/${editingId}`, payload);
+                } else {
+                    await apiClient.post('/relationships/teacher-class/create-class', payload);
+                }
+
+                await loadClasses();
+                renderClasses();
+                closeModal();
+                showAlert('班級已儲存', 'success');
+            } catch (e) {
+                showAlert('儲存失敗：' + (e.message || ''), 'error');
+            } finally {
+                hideLoading();
+            }
+        }
+
+        // 確認刪除
+        let pendingDeleteId = null;
+        async function confirmDelete() {
+            if (!pendingDeleteId) return;
+
+            try {
+                showLoading();
+                await apiClient.delete(`/relationships/teacher-class/${pendingDeleteId}`);
+                await loadClasses();
+                renderClasses();
+                closeConfirmModal();
+                showAlert('班級已刪除', 'success');
+            } catch (e) {
+                showAlert('刪除失敗：' + (e.message || ''), 'error');
+            } finally {
+                hideLoading();
+                pendingDeleteId = null;
+            }
+        }
+
+        // 模態框控制
+        function openModal() {
+            document.getElementById('classModal').classList.add('show');
+        }
+
+        function closeModal() {
+            document.getElementById('classModal').classList.remove('show');
+        }
+
+        function openConfirmModal() {
+            document.getElementById('confirmModal').classList.add('show');
+        }
+
+        function closeConfirmModal() {
+            document.getElementById('confirmModal').classList.remove('show');
+        }
+
+        // 重置表單
+        function resetForm() {
+            document.getElementById('classForm').reset();
+            document.getElementById('studentSearchResults').innerHTML = '<p style="text-align: center; color: var(--text-tertiary); padding: var(--spacing-lg);">請輸入關鍵字搜尋學生</p>';
+            document.getElementById('classStudentsList').innerHTML = '<p style="text-align: center; color: var(--text-tertiary); padding: var(--spacing-lg);">尚無學生</p>';
+        }
+
+        // 標籤頁切換
+        function switchTab(tab) {
+            const infoTab = document.getElementById('tabInfo');
+            const studentsTab = document.getElementById('tabStudents');
+            const infoPanel = document.getElementById('panelInfo');
+            const studentsPanel = document.getElementById('panelStudents');
+
+            if (tab === 'students') {
+                infoTab.classList.remove('active');
+                studentsTab.classList.add('active');
+                infoPanel.style.display = 'none';
+                studentsPanel.style.display = 'block';
+            } else {
+                studentsTab.classList.remove('active');
+                infoTab.classList.add('active');
+                studentsPanel.style.display = 'none';
+                infoPanel.style.display = 'block';
+            }
+        }
+
+        // 搜尋學生
+        async function searchStudents() {
+            const keyword = document.getElementById('studentSearch').value.trim();
+            const resultsContainer = document.getElementById('studentSearchResults');
+
+            if (!keyword) {
+                resultsContainer.innerHTML = '<p style="text-align: center; color: var(--text-tertiary); padding: var(--spacing-lg);">請輸入關鍵字搜尋學生</p>';
+                return;
+            }
+
+            try {
+                resultsContainer.innerHTML = '<p style="text-align: center; color: var(--text-tertiary); padding: var(--spacing-lg);"><i class="fas fa-spinner fa-spin"></i> 搜尋中...</p>';
+
+                const res = await apiClient.get(`/relationships/students/search?kw=${encodeURIComponent(keyword)}&limit=10`);
+                const students = res.data || res.items || res || [];
+
+                if (students.length === 0) {
+                    resultsContainer.innerHTML = '<p style="text-align: center; color: var(--text-tertiary); padding: var(--spacing-lg);">找不到符合條件的學生</p>';
+                    return;
+                }
+
+                resultsContainer.innerHTML = students.map(student => `
+                    <div style="display: flex; justify-content: space-between; align-items: center; padding: var(--spacing-sm); border-bottom: 1px solid var(--border-light);">
+                        <div>
+                            <div style="font-weight: 500;">${student.name || student.email || '#' + student.id}</div>
+                            <div style="font-size: var(--font-size-sm); color: var(--text-secondary);">${student.email || ''}</div>
+                        </div>
+                        <button class="btn-secondary" onclick="addStudentToClass(${student.id}, '${student.name || student.email}')">
+                            <i class="fas fa-plus"></i>
+                            加入
+                        </button>
+                    </div>
+                `).join('');
+            } catch (e) {
+                resultsContainer.innerHTML = '<p style="text-align: center; color: var(--error); padding: var(--spacing-lg);">搜尋失敗，請稍後再試</p>';
+            }
+        }
+
+        // 載入班級學生
+        async function loadClassStudents(classId) {
+            const container = document.getElementById('classStudentsList');
+
+            try {
+                container.innerHTML = '<p style="text-align: center; color: var(--text-tertiary); padding: var(--spacing-lg);"><i class="fas fa-spinner fa-spin"></i> 載入中...</p>';
+
+                const res = await apiClient.get(`/relationships/classes/${classId}/students`);
+                const students = res.data || res.items || res || [];
+
+                if (students.length === 0) {
+                    container.innerHTML = '<p style="text-align: center; color: var(--text-tertiary); padding: var(--spacing-lg);">尚無學生</p>';
+                    return;
+                }
+
+                container.innerHTML = students.map(student => `
+                    <div style="display: flex; justify-content: space-between; align-items: center; padding: var(--spacing-sm); border-bottom: 1px solid var(--border-light);">
+                        <div>
+                            <div style="font-weight: 500;">${student.student_name || '#' + student.student_id}</div>
+                            <div style="font-size: var(--font-size-sm); color: var(--text-secondary);">學生 ID: ${student.student_id}</div>
+                        </div>
+                        <button class="btn-danger" onclick="removeStudentFromClass(${student.student_id}, '${student.student_name}')">
+                            <i class="fas fa-times"></i>
+                            移除
+                        </button>
+                    </div>
+                `).join('');
+            } catch (e) {
+                container.innerHTML = '<p style="text-align: center; color: var(--error); padding: var(--spacing-lg);">載入失敗，請稍後再試</p>';
+            }
+        }
+
+        // 將學生加入班級
+        async function addStudentToClass(studentId, studentName) {
+            if (!editingId) return;
+
+            try {
+                showLoading();
+                await apiClient.post(`/relationships/classes/${editingId}/students`, { student_id: studentId });
+                await loadClassStudents(editingId);
+                showAlert(`已將 ${studentName} 加入班級`, 'success');
+            } catch (e) {
+                showAlert('加入失敗：' + (e.message || ''), 'error');
+            } finally {
+                hideLoading();
+            }
+        }
+
+        // 將學生從班級移除
+        async function removeStudentFromClass(studentId, studentName) {
+            if (!editingId) return;
+
+            if (!confirm(`確定要將 ${studentName} 從班級中移除嗎？`)) {
+                return;
+            }
+
+            try {
+                showLoading();
+                await apiClient.delete(`/relationships/classes/${editingId}/students/${studentId}`);
+                await loadClassStudents(editingId);
+                showAlert(`已將 ${studentName} 從班級移除`, 'success');
+            } catch (e) {
+                showAlert('移除失敗：' + (e.message || ''), 'error');
+            } finally {
+                hideLoading();
+            }
+        }
+
+        // 全域函數（供 onclick 使用）
+        window.editClass = editClass;
+        window.deleteClass = deleteClass;
+        window.addStudentToClass = addStudentToClass;
+        window.removeStudentFromClass = removeStudentFromClass;
+    </script>
+</body>
+
+</html>
