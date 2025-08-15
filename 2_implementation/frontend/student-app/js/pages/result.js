@@ -637,7 +637,7 @@ class ResultPage {
             const analysis = weaknessResult.value.data;
             weaknessContent.innerHTML = `
                 <div class="bg-blue-50 border border-blue-200 rounded-lg p-4">
-                    <p class="text-gray-700 leading-relaxed">${analysis['學生學習狀況評估'] || 'AI 分析暫時無法使用'}</p>
+                    <p class="text-gray-700 leading-relaxed">${analysis['題目詳解與教學建議'] || 'AI 分析暫時無法使用'}</p>
                 </div>
             `;
         } else {
@@ -664,7 +664,7 @@ class ResultPage {
             const guidance = guidanceResult.value.data;
             recommendationsContent.innerHTML = `
                 <div class="bg-purple-50 border border-purple-200 rounded-lg p-4">
-                    <p class="text-gray-700 leading-relaxed">${guidance['題目詳解與教學建議'] || '學習建議暫時無法生成'}</p>
+                    <p class="text-gray-700 leading-relaxed">${guidance['學生學習狀況評估'] || '學習建議暫時無法生成'}</p>
                 </div>
             `;
         } else {
