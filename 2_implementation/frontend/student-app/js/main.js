@@ -36,6 +36,10 @@ class MainApp {
             // 儲存到localStorage
             localStorage.setItem('auth_token', token);
             localStorage.setItem('user_info', userInfo);
+            if (window.Utils) {
+                try { Utils.setStorageItem('auth_token', token); } catch (e) {}
+                try { Utils.setStorageItem('user_info', userInfo); } catch (e) {}
+            }
             
             // 清除URL參數
             const newURL = window.location.protocol + "//" + window.location.host + window.location.pathname;

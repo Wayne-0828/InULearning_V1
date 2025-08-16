@@ -219,42 +219,7 @@
     <script src="js/api/learning.js"></script>
     <script src="js/api/ai-analysis.js"></script>
     <script>
-        // 認證檢查
-        document.addEventListener('DOMContentLoaded', function() {
-            const authManager = new AuthManager();
-            
-            // 檢查是否已登入
-            if (!authManager.isLoggedIn()) {
-                console.log('用戶未登入，重定向到登入頁面');
-                window.location.href = '/login.html';
-                return;
-            }
-            
-            // 檢查用戶角色
-            const user = authManager.getUser();
-            if (user && user.role !== 'student') {
-                console.log('用戶角色不符，重定向到登入頁面');
-                window.location.href = '/login.html';
-                return;
-            }
-            
-            // 顯示用戶資訊
-            if (user) {
-                const userNameElement = document.getElementById('userName');
-                if (userNameElement) {
-                    userNameElement.textContent = user.name || user.email || '學生';
-                }
-            }
-            
-            // 登出按鈕事件
-            const logoutBtn = document.getElementById('logoutBtn');
-            if (logoutBtn) {
-                logoutBtn.addEventListener('click', function() {
-                    authManager.logout();
-                    window.location.href = '/login.html';
-                });
-            }
-        });
+        // 認證檢查改由共用模組與各頁 JS 處理，避免在 URL token 尚未處理前過早跳轉
     </script>
     <script src="js/main.js"></script>
 </body>

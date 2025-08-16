@@ -176,7 +176,7 @@
             // 檢查是否已登入
             if (!authManager.isLoggedIn()) {
                 console.log('用戶未登入，重定向到登入頁面');
-                window.location.href = '/login.html';
+                window.location.href = 'http://localhost/login.html';
                 return;
             }
             
@@ -184,7 +184,7 @@
             const user = authManager.getUser();
             if (user && user.role !== 'student') {
                 console.log('用戶角色不符，重定向到登入頁面');
-                window.location.href = '/login.html';
+                window.location.href = 'http://localhost/login.html';
                 return;
             }
             
@@ -201,7 +201,7 @@
             if (logoutBtn) {
                 logoutBtn.addEventListener('click', function() {
                     authManager.logout();
-                    window.location.href = '/login.html';
+                    // 不要再做二次導向，避免覆蓋 logout 內的正確路徑
                 });
             }
             

@@ -313,6 +313,10 @@
                     // 儲存認證資訊
                     localStorage.setItem('auth_token', response.access_token);
                     localStorage.setItem('user_info', JSON.stringify(userInfo));
+                    if (window.Utils) {
+                        try { Utils.setStorageItem('auth_token', response.access_token); } catch (e) {}
+                        try { Utils.setStorageItem('user_info', JSON.stringify(userInfo)); } catch (e) {}
+                    }
 
                     this.showSuccess('登入成功！正在跳轉...');
 
@@ -330,7 +334,7 @@
             }
 
             async callLoginAPI(email, password) {
-                const response = await fetch('/api/v1/auth/login', {
+                const response = await fetch('http://localhost/api/v1/auth/login', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
