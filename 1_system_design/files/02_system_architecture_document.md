@@ -4,7 +4,7 @@
 
 **文件版本 (Document Version):** `v1.0`
 
-**最後更新 (Last Updated):** `2024-07-26`
+**最後更新 (Last Updated):** `2025-08-15`
 
 **主要作者/架構師 (Lead Author/Architect):** `AIPE01_group2`
 
@@ -69,7 +69,7 @@
 ## 2. 架構概述與目標 (Architecture Overview and Goals)
 
 ### 2.1 系統願景與核心價值 (System Vision and Core Values)
-打造一個高效、精準、溫暖的個人化學習生態系，透過 AI 驅動的智慧分析，解決傳統教學模式的痛點，實現精準診斷學習弱點、提供個人化學習治療方案、完整記錄學習歷程，並優化親子溝通模式，將家長從「監督者」轉化為「支持者」。
+打造一個高效、精準、溫暖的個人化學習生態系，透過 AI 驅動的智慧分析，解決傳統教學模式的痛點，實現精準診斷學習弱點、提供個人化學習治療方案、完整記錄學習歷程，有效提升學生學習成效。
 
 ### 2.2 架構目標與原則 (Architectural Goals and Principles)
 *   **架構目標 (Goals):**

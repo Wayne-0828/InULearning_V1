@@ -9,9 +9,10 @@ services:
       POSTGRES_PASSWORD: aipe-tester
     volumes:
       - postgres_data:/var/lib/postgresql/data
-      - ./init-scripts/init-postgres.sql:/docker-entrypoint-initdb.d/01-init-postgres.sql
-      - ./2_implementation/database/seeds/postgresql/knowledge_points_seed.sql:/docker-entrypoint-initdb.d/02-knowledge-points-seed.sql
-      - ./init-scripts/03-ai-analysis-results.sql:/docker-entrypoint-initdb.d/03-ai-analysis-results.sql
+      - ./2_implementation/database/migrations/postgresql/001_init_learning_system.sql:/docker-entrypoint-initdb.d/01-init.sql
+      - ./2_implementation/database/migrations/postgresql/002_ai_analysis_results.sql:/docker-entrypoint-initdb.d/02-ai-analysis-results.sql
+      - ./2_implementation/database/migrations/postgresql/003_ai_results_jsonb.sql:/docker-entrypoint-initdb.d/03-ai-results-jsonb.sql
+      - ./2_implementation/database/seeds/postgresql/knowledge_points_seed.sql:/docker-entrypoint-initdb.d/04-knowledge-points-seed.sql
     ports:
       - "5432:5432"
     networks:
@@ -32,8 +33,8 @@ services:
       MONGO_INITDB_DATABASE: inulearning
     volumes:
       - mongodb_data:/data/db
-      - ./init-scripts/init-mongodb.js:/docker-entrypoint-initdb.d/init-mongodb.js
-      - ./init-scripts/init-chapters.js:/docker-entrypoint-initdb.d/init-chapters.js
+      - ./2_implementation/database/migrations/mongodb/init-mongodb.js:/docker-entrypoint-initdb.d/01_init-mongodb.js
+      - ./2_implementation/database/migrations/mongodb/init-chapters.js:/docker-entrypoint-initdb.d/02_init-chapters.js
       - ./rawdata:/docker-entrypoint-initdb.d/rawdata
     ports:
       - "27017:27017"
