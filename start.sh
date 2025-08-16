@@ -322,6 +322,8 @@ setup_directories() {
         "data/minio"
         "files"
         "2_implementation/database"
+        "2_implementation/database/seeds"
+        "2_implementation/database/seeds/全題庫"
     )
     
     for dir in "${directories[@]}"; do
@@ -341,6 +343,88 @@ setup_directories() {
     fi
 
     log_success "目錄結構建立完成"
+}
+
+# 題庫載入進度監控
+monitor_question_bank_loader_progress() {
+    log_step "監控題庫資料載入進度..."
+
+    local seeds_dir="2_implementation/database/seeds/全題庫"
+    local images_total=""
+    local questions_total=""
+
+    # 計算圖片總數
+    if [ -d "$seeds_dir" ]; then
+        images_total=$(find "$seeds_dir" -type f -name "*.jpg" 2>/dev/null | wc -l | tr -d ' \n')
+    fi
+
+    # 計算題目總數（若系統有 python3）
+    if command -v python3 &>/dev/null; then
+        questions_total=$(python3 - <<'PY'
+import os, json
+base = '2_implementation/database/seeds/全題庫'
+total = 0
+for root, dirs, files in os.walk(base):
+    if os.path.basename(root) == 'images':
+        continue
+    for f in files:
+        if f.endswith('.json'):
+            p = os.path.join(root, f)
+            try:
+                with open(p, 'r', encoding='utf-8') as fh:
+                    data = json.load(fh)
+                if isinstance(data, list):
+                    total += len(data)
+                elif isinstance(data, dict):
+                    total += 1
+            except Exception:
+                pass
+print(total)
+PY
+)
+        questions_total=$(echo "$questions_total" | tr -d ' \n')
+    fi
+
+    local images_done=0
+    local questions_done=0
+
+    # 追蹤載入容器日誌
+    $DOCKER_COMPOSE_CMD logs -f question-bank-loader 2>/dev/null | while IFS= read -r line; do
+        # 圖片進度
+        if [[ "$line" =~ 已上傳[[:space:]]+([0-9]+)[[:space:]]+張圖片 ]]; then
+            images_done="${BASH_REMATCH[1]}"
+        fi
+        # 題目進度
+        if [[ "$line" =~ 已載入[[:space:]]+([0-9]+)[[:space:]]+道題目 ]]; then
+            questions_done="${BASH_REMATCH[1]}"
+        fi
+
+        # 計算百分比
+        local img_pct="-"
+        local q_pct="-"
+        if [[ -n "$images_total" && "$images_total" =~ ^[0-9]+$ && $images_total -gt 0 ]]; then
+            img_pct=$(( images_done * 100 / images_total ))
+        fi
+        if [[ -n "$questions_total" && "$questions_total" =~ ^[0-9]+$ && $questions_total -gt 0 ]]; then
+            q_pct=$(( questions_done * 100 / questions_total ))
+        fi
+
+        # 顯示動態進度（覆蓋同一行）
+        printf "\r🖼️ 圖片: %s/%s (%s%%)  |  📚 題目: %s/%s (%s%%) " \
+            "$images_done" "${images_total:-?}" "${img_pct}" \
+            "$questions_done" "${questions_total:-?}" "${q_pct}"
+
+        # 完成通知（強制顯示 100%）
+        if [[ "$line" =~ 資料載入完成 ]]; then
+            echo
+            images_total="$images_done"
+            questions_total="$questions_done"
+            printf "\r🖼️ 圖片: %s/%s (100%%)  |  📚 題目: %s/%s (100%%) \n" \
+                "$images_done" "$images_total" "$questions_done" "$questions_total"
+            log_success "題庫資料載入完成！圖片: ${images_done}/${images_total}；題目: ${questions_done}/${questions_total}"
+            break
+        fi
+    done
 }
 
 # 檢查和建立環境變數檔案
@@ -448,6 +532,12 @@ start_services() {
     
     log_info "啟動應用服務..."
     $DOCKER_COMPOSE_CMD up -d auth-service question-bank-service learning-service ai-analysis-service
+
+    # 啟動題庫資料載入（一次性）
+    log_info "啟動題庫資料載入..."
+    $DOCKER_COMPOSE_CMD up -d question-bank-loader || true
+    # 進度監控（背景執行，不阻塞主流程）
+    monitor_question_bank_loader_progress &
     
     # 等待應用服務就緒
     log_info "等待應用服務啟動..."
