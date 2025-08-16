@@ -107,13 +107,21 @@
 
 ```mermaid
 classDiagram
+    class ILearningRepository {
+        <<interface>>
+        +save_session(session: ExerciseSession): str
+        +get_user_learning_history(user_id: str): List[LearningRecord]
+        +update_user_profile(profile: UserProfile): void
+        +get_performance_stats(user_id: str, period: TimePeriod): PerformanceStats
+    }
+
     class LearningController {
         +start_exercise_session(user_id: str, params: ExerciseParams): ExerciseSession
         +submit_answer(session_id: str, answers: List[Answer]): SubmissionResult
         +get_learning_history(user_id: str, filters: HistoryFilters): LearningHistory
         +get_recommendations(user_id: str): RecommendationResult
     }
-    
+
     class LearningService {
         -exercise_generator: ExerciseGenerator
         -grading_coordinator: GradingCoordinator
@@ -124,14 +132,14 @@ classDiagram
         +track_learning_progress(user_id: str, result: ProcessingResult): void
         +analyze_weaknesses(user_id: str): WeaknessAnalysis
     }
-    
+
     class ExerciseGenerator {
         -question_bank_client: QuestionBankClient
         -difficulty_adjuster: DifficultyAdjuster
         +generate_questions(criteria: SelectionCriteria): List[Question]
         +adjust_difficulty(user_profile: UserProfile, questions: List[Question]): List[Question]
     }
-    
+
     class GradingCoordinator {
         -auto_grader: AutoGrader
         -manual_grader: ManualGrader
@@ -140,7 +148,7 @@ classDiagram
         +provide_feedback(grading_result: GradingResult): Feedback
         +generate_explanations(questions: List[Question], answers: List[Answer]): List[Explanation]
     }
-    
+
     class LearningTracker {
         -learning_repository: ILearningRepository
         -progress_calculator: ProgressCalculator
@@ -148,21 +156,14 @@ classDiagram
         +calculate_progress(user_id: str, subject: str): ProgressReport
         +update_user_profile(user_id: str, performance: Performance): void
     }
-    
+
     class AIIntegrator {
         -weakness_analyzer: WeaknessAnalyzer
         -recommendation_engine: RecommendationEngine
         +analyze_learning_pattern(learning_data: LearningData): AnalysisResult
         +generate_recommendations(user_profile: UserProfile, weakness: WeaknessAnalysis): List[Recommendation]
     }
-    
-    interface ILearningRepository {
-        +save_session(session: ExerciseSession): str
-        +get_user_learning_history(user_id: str): List[LearningRecord]
-        +update_user_profile(profile: UserProfile): void
-        +get_performance_stats(user_id: str, period: TimePeriod): PerformanceStats
-    }
-    
+
     class ExerciseSession {
         +session_id: str
         +user_id: str
@@ -172,12 +173,12 @@ classDiagram
         +status: SessionStatus
         +metadata: dict
     }
-    
+
     LearningController ..> LearningService : uses
-    LearningService --> ExerciseGenerator : contains
-    LearningService --> GradingCoordinator : contains
-    LearningService --> LearningTracker : contains
-    LearningService --> AIIntegrator : contains
+    LearningService --* ExerciseGenerator : contains
+    LearningService --* GradingCoordinator : contains
+    LearningService --* LearningTracker : contains
+    LearningService --* AIIntegrator : contains
     LearningTracker ..> ILearningRepository : uses
     LearningService ..> ExerciseSession : manages
 ```

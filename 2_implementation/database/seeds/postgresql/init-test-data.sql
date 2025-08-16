@@ -177,4 +177,5 @@ ORDER BY
         WHEN 'teacher' THEN 2
         WHEN 'parent' THEN 3
         WHEN 'student' THEN 4
-    END, email; 
+    END, email;
+

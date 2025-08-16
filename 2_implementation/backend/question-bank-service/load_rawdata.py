@@ -41,9 +41,14 @@ class DataLoader:
         self.minio_client = None
         self.question_count = 0
         self.image_count = 0
+        self.image_lock = None
+        self.question_lock = None
         
     async def initialize(self):
         """初始化連接"""
+        # 初始化鎖
+        self.image_lock = asyncio.Lock()
+        self.question_lock = asyncio.Lock()
         # 連接 MongoDB
         self.mongodb_client = AsyncIOMotorClient(settings.mongodb_url)
         self.db = self.mongodb_client[settings.mongodb_database]
@@ -79,11 +84,28 @@ class DataLoader:
         """載入所有資料"""
         await self.initialize()
         
-        # 清空現有資料
-        await self.clear_existing_data()
+        # 若設定跳過（當資料已存在時）則直接返回
+        skip_if_exists = os.getenv("QB_SKIP_IF_EXISTS", "false").lower() == "true"
+        if skip_if_exists:
+            try:
+                existing = await self.db.questions.estimated_document_count()
+            except Exception:
+                existing = 0
+            if existing and existing > 0:
+                logger.info(f"⚠️ 檢測到現有題庫資料（{existing} 筆），依設定跳過載入")
+                if self.mongodb_client:
+                    self.mongodb_client.close()
+                return
         
-        # 載入題目資料和圖片
-        await self.load_questions_and_images()
+        # 清空現有資料（可選）
+        do_clear = os.getenv("QB_CLEAR", "false").lower() == "true"
+        if do_clear:
+            await self.clear_existing_data()
+        
+        # 並行載入題目資料與圖片
+        await asyncio.gather(
+            self.load_questions_and_images()
+        )
         
         # 關閉連接
         if self.mongodb_client:
@@ -113,67 +135,83 @@ class DataLoader:
             raise
     
     async def load_questions_and_images(self):
-        """載入題目資料和圖片"""
-        # 取得 seeds 目錄路徑
-        seeds_path = Path(__file__).parent.parent.parent / "database" / "seeds" / "全題庫"
+        """載入題目資料和圖片（並行）"""
+        # 取得 seeds 目錄路徑（可由環境變數覆寫）
+        seeds_env = os.getenv("QB_SEEDS_PATH")
+        if seeds_env:
+            seeds_path = Path(seeds_env)
+        else:
+            seeds_path = Path(__file__).parent.parent.parent / "database" / "seeds" / "全題庫"
         
         if not seeds_path.exists():
             logger.error(f"❌ seeds 目錄不存在: {seeds_path}")
             return
         
         logger.info(f"📂 開始載入資料，路徑: {seeds_path}")
-        
-        # 首先上傳所有圖片
-        await self.upload_all_images(seeds_path)
-        
-        # 然後載入題目資料
-        await self.load_all_questions(seeds_path)
+
+        # 週期性輸出進度，便於外部監控解析（每 2 秒一次）
+        stop_event = asyncio.Event()
+        progress_task = asyncio.create_task(self._periodic_progress(stop_event))
+
+        try:
+            await asyncio.gather(
+                self.upload_all_images(seeds_path),
+                self.load_all_questions(seeds_path)
+            )
+        finally:
+            stop_event.set()
+            await progress_task
     
     async def upload_all_images(self, seeds_path: Path):
-        """上傳所有圖片到 MinIO"""
+        """上傳所有圖片到 MinIO（並行，具併發上限）"""
         logger.info("🖼️ 開始上傳圖片...")
+        max_tasks = int(os.getenv("QB_MAX_IMAGE_TASKS", "8"))
+        sem = asyncio.Semaphore(max_tasks)
+        tasks: List[asyncio.Task] = []
         
-        # 尋找所有 images 目錄
         for images_dir in seeds_path.rglob("images"):
             if images_dir.is_dir():
                 logger.info(f"📁 處理圖片目錄: {images_dir}")
-                
                 for image_file in images_dir.glob("*.jpg"):
-                    try:
-                        await self.upload_image(image_file)
-                        self.image_count += 1
-                        
-                        if self.image_count % 50 == 0:
-                            logger.info(f"📊 已上傳 {self.image_count} 張圖片...")
-                            
-                    except Exception as e:
-                        logger.error(f"❌ 上傳圖片失敗 {image_file.name}: {e}")
+                    tasks.append(asyncio.create_task(self._upload_image_with_lock(image_file, sem)))
+        
+        if tasks:
+            await asyncio.gather(*tasks)
         
         logger.info(f"✅ 圖片上傳完成，共 {self.image_count} 張")
+
+    async def _upload_image_with_lock(self, image_path: Path, sem: asyncio.Semaphore):
+        async with sem:
+            try:
+                await self.upload_image(image_path)
+                async with self.image_lock:
+                    self.image_count += 1
+                    if self.image_count % 50 == 0:
+                        logger.info(f"📊 已上傳 {self.image_count} 張圖片...")
+            except Exception as e:
+                logger.error(f"❌ 上傳圖片失敗 {image_path.name}: {e}")
     
     async def upload_image(self, image_path: Path):
-        """上傳單張圖片到 MinIO"""
+        """上傳單張圖片到 MinIO（thread pool 避免阻塞）"""
         try:
-            # 使用原始檔名作為 MinIO 物件名稱
             object_name = f"images/{image_path.name}"
-            
-            # 上傳圖片
-            self.minio_client.fput_object(
+            await asyncio.to_thread(
+                self.minio_client.fput_object,
                 settings.minio_bucket_name,
                 object_name,
                 str(image_path),
                 content_type="image/jpeg"
             )
-            
             logger.debug(f"✅ 上傳圖片: {image_path.name}")
-            
         except S3Error as e:
             logger.error(f"❌ MinIO 上傳失敗 {image_path.name}: {e}")
             raise
     
     async def load_all_questions(self, seeds_path: Path):
-        """載入所有題目資料"""
+        """載入所有題目資料（並行，具併發上限）"""
         logger.info("📚 開始載入題目資料...")
+        max_tasks = int(os.getenv("QB_MAX_QUESTION_TASKS", "32"))
+        sem = asyncio.Semaphore(max_tasks)
         
         # 遍歷所有 JSON 檔案
         for json_file in seeds_path.rglob("*.json"):
@@ -189,19 +227,46 @@ class DataLoader:
                     data = json.loads(content)
                 
                 # 處理題目資料
+                tasks: List[asyncio.Task] = []
                 if isinstance(data, list):
                     for item in data:
-                        await self.process_question_item(item, json_file)
+                        tasks.append(asyncio.create_task(self._process_question_item_with_lock(item, json_file, sem)))
                 elif isinstance(data, dict):
-                    await self.process_question_item(data, json_file)
-                
-                if self.question_count % 100 == 0:
-                    logger.info(f"📊 已載入 {self.question_count} 道題目...")
+                    tasks.append(asyncio.create_task(self._process_question_item_with_lock(data, json_file, sem)))
+
+                if tasks:
+                    # 每個檔案內等待完成，避免無限制堆積
+                    await asyncio.gather(*tasks)
                     
             except Exception as e:
                 logger.error(f"❌ 載入檔案失敗 {json_file.name}: {e}")
         
         logger.info(f"✅ 題目載入完成，共 {self.question_count} 道")
+
+    async def _periodic_progress(self, stop_event: asyncio.Event):
+        """週期性輸出目前圖片/題目進度，讓外部進度監控能即時更新"""
+        try:
+            while not stop_event.is_set():
+                # 輕量讀取，不嚴格加鎖也可；為一致性仍加鎖
+                async with self.image_lock:
+                    img = self.image_count
+                async with self.question_lock:
+                    q = self.question_count
+                # 關鍵字不可變動，供 start.sh 監控解析
+                logger.info(f"📊 已上傳 {img} 張圖片...")
+                logger.info(f"📊 已載入 {q} 道題目...")
+                await asyncio.sleep(2)
+        except asyncio.CancelledError:
+            return
+
+    async def _process_question_item_with_lock(self, item: Dict[str, Any], source_file: Path, sem: asyncio.Semaphore):
+        async with sem:
+            ok = await self.process_question_item(item, source_file)
+            if ok:
+                async with self.question_lock:
+                    self.question_count += 1
+                    if self.question_count % 100 == 0:
+                        logger.info(f"📊 已載入 {self.question_count} 道題目...")
     
     async def process_question_item(self, item: Dict[str, Any], source_file: Path):
         """處理單個題目項目"""
@@ -215,7 +280,6 @@ class DataLoader:
             
             # 插入資料庫
             await self.db.questions.insert_one(question_doc)
-            self.question_count += 1
             
             return True
             
