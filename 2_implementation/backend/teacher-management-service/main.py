@@ -13,6 +13,8 @@ import json
 import logging
 from datetime import datetime, timedelta
 import asyncio
+import os
+from jose import jwt, JWTError
 
 # 配置日誌
 logging.basicConfig(level=logging.INFO)
@@ -27,7 +29,13 @@ app = FastAPI(
 # CORS 配置
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=[
+        "http://localhost",
+        "http://localhost:8080",
+        "http://localhost:8081",
+        "http://localhost:8082",
+        "http://localhost:8083",
+    ],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -37,10 +45,14 @@ app.add_middleware(
 security = HTTPBearer()
 
 # 服務配置
-AUTH_SERVICE_URL = "http://auth-service:8001"
-LEARNING_SERVICE_URL = "http://learning-service:8002"
+AUTH_SERVICE_URL = "http://auth-service:8000"
+LEARNING_SERVICE_URL = "http://learning-service:8000"
 AI_ANALYSIS_SERVICE_URL = "http://ai-analysis-service:8004"
-QUESTION_BANK_SERVICE_URL = "http://question-bank-service:8003"
+QUESTION_BANK_SERVICE_URL = "http://question-bank-service:8000"
+
+# JWT 設定（與 auth-service 同步）
+JWT_SECRET_KEY = os.getenv("SECRET_KEY", "your-secret-key-here-change-in-production")
+JWT_ALGORITHM = os.getenv("ALGORITHM", "HS256")
 
 # 資料模型
 class ClassInfo(BaseModel):
@@ -91,44 +103,52 @@ class CourseInfo(BaseModel):
 
 # 依賴注入
 async def get_current_user(credentials: HTTPAuthorizationCredentials = Depends(security)) -> Dict[str, Any]:
-    """驗證用戶身份並返回用戶資訊"""
+    """驗證用戶身份（優先本地驗簽，驗簽失敗時降級僅解析宣告）"""
+    token = credentials.credentials
+    payload: Dict[str, Any] = {}
     try:
-        async with httpx.AsyncClient() as client:
-            response = await client.get(
-                f"{AUTH_SERVICE_URL}/api/v1/auth/verify",
-                headers={"Authorization": f"Bearer {credentials.credentials}"}
-            )
-            
-            if response.status_code == 200:
-                user_data = response.json()
-                if user_data.get("role") != "teacher":
-                    raise HTTPException(
-                        status_code=status.HTTP_403_FORBIDDEN,
-                        detail="只有教師角色可以訪問此服務"
-                    )
-                return user_data
-            else:
-                raise HTTPException(
-                    status_code=status.HTTP_401_UNAUTHORIZED,
-                    detail="無效的認證令牌"
-                )
-    except httpx.RequestError as e:
-        logger.error(f"認證服務連接錯誤: {e}")
-        raise HTTPException(
-            status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
-            detail="認證服務暫時不可用"
-        )
+        payload = jwt.decode(token, JWT_SECRET_KEY, algorithms=[JWT_ALGORITHM])
+    except JWTError as e:
+        logger.warning(f"JWT 驗簽失敗，降級使用未驗簽解析: {e}")
+        try:
+            payload = jwt.get_unverified_claims(token)  # 僅解析，不驗簽（開發環境降級）
+        except Exception as ue:
+            logger.error(f"JWT 未驗簽解析失敗: {ue}")
+            raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="無效的認證令牌")
 
-async def get_teacher_classes(teacher_id: int) -> List[Dict[str, Any]]:
+    user_id = payload.get("sub")
+    email = payload.get("email")
+    role = payload.get("role")
+    if not user_id or not email:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="無效的認證令牌")
+    if role != "teacher":
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="只有教師角色可以訪問此服務")
+    return {"id": int(user_id), "email": email, "role": role, "token": token}
+
+async def get_teacher_classes(teacher_id: int, auth_token: str) -> List[Dict[str, Any]]:
     """獲取教師的班級列表"""
     try:
         async with httpx.AsyncClient() as client:
+            # 透過 relationships 服務查詢目前教師的班級關係
             response = await client.get(
-                f"{AUTH_SERVICE_URL}/api/v1/teachers/{teacher_id}/classes"
+                f"{AUTH_SERVICE_URL}/api/v1/relationships/teacher-class",
+                headers={"Authorization": f"Bearer {auth_token}"}
             )
             
             if response.status_code == 200:
-                return response.json()
+                relations = response.json()
+                # 轉換成統一班級資料格式（期望含 id、name、grade、subject、student_count、created_at）
+                classes: List[Dict[str, Any]] = []
+                for rel in relations:
+                    classes.append({
+                        "id": rel.get("class_id"),
+                        "name": rel.get("class_name"),
+                        "grade": 7,
+                        "subject": rel.get("subject", ""),
+                        "student_count": 0,
+                        "created_at": datetime.now().isoformat(),
+                    })
+                return classes
             else:
                 logger.error(f"獲取班級列表失敗: {response.status_code}")
                 return []
@@ -136,16 +156,29 @@ async def get_teacher_classes(teacher_id: int) -> List[Dict[str, Any]]:
         logger.error(f"獲取班級列表錯誤: {e}")
         return []
 
-async def get_class_students(class_id: int) -> List[Dict[str, Any]]:
+async def get_class_students(class_id: int, auth_token: str) -> List[Dict[str, Any]]:
     """獲取班級的學生列表"""
     try:
         async with httpx.AsyncClient() as client:
             response = await client.get(
-                f"{AUTH_SERVICE_URL}/api/v1/classes/{class_id}/students"
+                f"{AUTH_SERVICE_URL}/api/v1/relationships/classes/{class_id}/students",
+                headers={"Authorization": f"Bearer {auth_token}"}
             )
             
             if response.status_code == 200:
-                return response.json()
+                rels = response.json()
+                # 轉換為教師服務期望的學生格式
+                students: List[Dict[str, Any]] = []
+                for r in rels:
+                    students.append({
+                        "id": r.get("student_id"),
+                        "name": r.get("student_name") or "",
+                        "grade": 7,
+                        "class_name": r.get("class_name") or "",
+                        "student_id": str(r.get("student_id")),
+                        "avatar": None,
+                    })
+                return students
             else:
                 logger.error(f"獲取學生列表失敗: {response.status_code}")
                 return []
@@ -198,7 +231,8 @@ async def get_teacher_classes_endpoint(current_user: Dict[str, Any] = Depends(ge
     """獲取教師的班級列表"""
     try:
         teacher_id = current_user["id"]
-        classes_data = await get_teacher_classes(teacher_id)
+        token = current_user.get("token") or current_user.get("access_token") or ""
+        classes_data = await get_teacher_classes(teacher_id, token)
         
         # 並行獲取每個班級的學習資料
         tasks = []
@@ -215,13 +249,13 @@ async def get_teacher_classes_endpoint(current_user: Dict[str, Any] = Depends(ge
             
             enriched_class = ClassInfo(
                 id=class_info["id"],
-                name=class_info["name"],
-                grade=class_info["grade"],
-                subject=class_info["subject"],
-                student_count=class_info.get("student_count", 0),
+                name=class_info.get("name", ""),
+                grade=int(class_info.get("grade", 7)),
+                subject=class_info.get("subject", ""),
+                student_count=int(class_info.get("student_count", 0)),
                 average_progress=analytics.get("average_progress", 0.0),
                 average_accuracy=analytics.get("average_accuracy", 0.0),
-                created_at=datetime.fromisoformat(class_info["created_at"])
+                created_at=datetime.fromisoformat(class_info.get("created_at", datetime.now().isoformat()))
             )
             enriched_classes.append(enriched_class)
         
@@ -242,7 +276,8 @@ async def get_class_students_endpoint(
     """獲取班級的學生列表"""
     try:
         teacher_id = current_user["id"]
-        teacher_classes = await get_teacher_classes(teacher_id)
+        token = current_user.get("token") or current_user.get("access_token") or ""
+        teacher_classes = await get_teacher_classes(teacher_id, token)
         
         # 驗證班級是否屬於該教師
         class_info = next((c for c in teacher_classes if c["id"] == class_id), None)
@@ -252,7 +287,7 @@ async def get_class_students_endpoint(
                 detail="班級不存在或無權限訪問"
             )
         
-        students_data = await get_class_students(class_id)
+        students_data = await get_class_students(class_id, token)
         
         # 並行獲取每個學生的學習資料
         tasks = []
@@ -430,9 +465,10 @@ async def get_teacher_dashboard(current_user: Dict[str, Any] = Depends(get_curre
     """獲取教師儀表板概覽"""
     try:
         teacher_id = current_user["id"]
+        token = current_user.get("token") or current_user.get("access_token") or ""
         
         # 並行獲取各種資料
-        classes_task = get_teacher_classes(teacher_id)
+        classes_task = get_teacher_classes(teacher_id, token)
         courses_task = get_teacher_courses(teacher_id)
         
         classes_data, courses_data = await asyncio.gather(

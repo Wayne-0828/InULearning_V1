@@ -140,10 +140,10 @@
   - 管理員：`http://localhost:8081`
 
 ### 已完成的教師端功能（MVP 擴充）
-- 班級管理（`/pages/classes.html`）
+- 班級管理（`/pages/classes-enhanced.html`）
   - 功能：新增/編輯/刪除（Modal，驗證）、搜尋、科目篩選、排序（名稱/更新時間）、分頁（10/頁）
   - 學生管理：在「編輯」→「學生管理」分頁可搜尋、加入、移除學生
-  - 導覽：列表僅顯示班級與科目；點「查看學生」導至 `students.html?class=...&classId=...`
+  - 導覽：列表僅顯示班級與科目；點「查看學生」導至 `students-enhanced.html?class=...&classId=...`
   - API（實作於 auth-service/relationships）：
     - GET `/api/v1/relationships/teacher-class`（取得教師的授課班級）
     - POST `/api/v1/relationships/teacher-class/create-class`（教師一鍵建立班級並綁定科目）
@@ -154,8 +154,8 @@
     - DELETE `/api/v1/relationships/classes/{class_id}/students/{student_id}`（移除學生）
     - GET `/api/v1/relationships/students/search?kw=...&limit=10`（學生搜尋）
   - 前端交互重點：
-    - `classes.html` 改用科目篩選（`#subjectFilter`），學生數改為於細頁載入
-    - `students.html` 支援 `?classId=`：若帶入則改呼叫 `/relationships/classes/{id}/students`
+    - `classes-enhanced.html` 改用科目篩選（`#subjectFilter`），學生數改為於細頁載入
+    - `students-enhanced.html` 支援 `?classId=`：若帶入則改呼叫 `/relationships/classes/{id}/students`
 - 作業管理（`/pages/assignments.html`）
   - 列表搜尋/篩選/排序/分頁；快速建立與完整建立/編輯（Modal，含描述與題目 ID 列）、刪除
   - API（骨架）：

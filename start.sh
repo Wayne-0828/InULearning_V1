@@ -448,6 +448,9 @@ start_services() {
     sleep 15
     
     log_info "啟動前端和代理服務..."
+    # 先起教師聚合服務，避免教師前端/主 Nginx 參照不到 upstream
+    $DOCKER_COMPOSE_CMD up -d teacher-management-service
+    # 再起前端與主 Nginx（教師端依賴已就緒）
     $DOCKER_COMPOSE_CMD up -d student-frontend admin-frontend teacher-frontend parent-frontend nginx
     
     log_success "所有服務已啟動"

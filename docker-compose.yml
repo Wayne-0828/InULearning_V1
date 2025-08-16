@@ -217,6 +217,8 @@ services:
       - question-bank-service
       - learning-service
       - ai-analysis-service
+      - teacher-management-service
+      - teacher-frontend
     networks:
       - inulearning_network
 
@@ -289,12 +291,41 @@ services:
       - inulearning_network
     volumes:
       - ./files:/var/www/html/files
+      - ./2_implementation/frontend/shared:/usr/share/nginx/html/shared:ro
+    depends_on:
+      auth-service:
+        condition: service_started
+      question-bank-service:
+        condition: service_started
+      learning-service:
+        condition: service_started
+      teacher-management-service:
+        condition: service_started
   # ... existing code ...
 
   # 備註：以下服務暫時註釋，後續開發
   # ai-analysis-service:  # 備註 - Milvus/RAG 後續開發
   # notification-service: # 備註 - 後續開發
-  # teacher-management-service: # 備註 - 後續開發
+  teacher-management-service:
+    build:
+      context: ./2_implementation/backend/teacher-management-service
+      dockerfile: Dockerfile
+    container_name: inulearning_teacher_management_service
+    environment:
+      - PYTHONUNBUFFERED=1
+      - SECRET_KEY=your-secret-key-here-change-in-production
+      - ALGORITHM=HS256
+    ports:
+      - "8006:8006"
+    depends_on:
+      auth-service:
+        condition: service_started
+      learning-service:
+        condition: service_started
+    networks:
+      - inulearning_network
+    volumes:
+      - ./logs:/app/logs
   # parent-dashboard-service: # 備註 - 後續開發
   # report-service: # 備註 - 後續開發
 

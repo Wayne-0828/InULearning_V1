@@ -251,7 +251,7 @@ class TeacherDashboard {
                 window.location.href = 'pages/assignments.html?filter=pending';
                 break;
             case 'view-students':
-                window.location.href = 'pages/students.html';
+                window.location.href = 'pages/students-enhanced.html';
                 break;
             case 'create-announcement':
                 window.location.href = 'pages/announcements.html?action=create';

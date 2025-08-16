@@ -1,13 +1,31 @@
 const apiClient = {
-	baseUrl: window.location.hostname === 'localhost' ? 'http://localhost/api/v1' : '/api/v1',
+	baseUrl: 'http://localhost/api/v1',
+	getToken() {
+		return (
+			localStorage.getItem('auth_token') ||
+			sessionStorage.getItem('auth_token') ||
+			localStorage.getItem('teacher_token') ||
+			sessionStorage.getItem('teacher_token') ||
+			''
+		);
+	},
 	async request(path, options = {}) {
 		const url = `${this.baseUrl}${path}`;
-		const headers = Object.assign({ 'Content-Type': 'application/json' }, options.headers || {});
-		const token = localStorage.getItem('auth_token');
+		const headers = Object.assign({ 'Content-Type': 'application/json', 'Accept': 'application/json' }, options.headers || {});
+		const token = this.getToken();
 		if (token) headers['Authorization'] = `Bearer ${token}`;
 		const res = await fetch(url, { ...options, headers });
-		const data = await res.json().catch(() => ({}));
-		if (!res.ok) throw new Error(data.detail || data.message || 'Request failed');
+		let data = {};
+		try { data = await res.json(); } catch (_) {}
+		if (!res.ok) {
+			if (res.status === 401) {
+				localStorage.removeItem('auth_token');
+				sessionStorage.removeItem('auth_token');
+				localStorage.removeItem('teacher_token');
+				sessionStorage.removeItem('teacher_token');
+			}
+			throw new Error(data.detail || data.message || 'Request failed');
+		}
 		return data;
 	},
 	get(path) { return this.request(path, { method: 'GET' }); },

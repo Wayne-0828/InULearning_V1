@@ -21,7 +21,7 @@ class TeacherApp {
         const path = window.location.pathname;
         if (path.includes('login.html')) return 'login';
         if (path.includes('courses.html')) return 'courses';
-        if (path.includes('students.html')) return 'students';
+        if (path.includes('students.html') || path.includes('students-enhanced.html')) return 'students';
         if (path.includes('assignments.html')) return 'assignments';
         if (path.includes('announcements.html')) return 'announcements';
         if (path.includes('profile.html')) return 'profile';

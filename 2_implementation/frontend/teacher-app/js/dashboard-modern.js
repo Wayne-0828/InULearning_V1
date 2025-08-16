@@ -3,9 +3,9 @@ class ModernTeacherDashboard {
     constructor() {
         this.data = {
             teacher: {
-                name: '王老師',
-                displayName: '王老師',
-                subject: '數學',
+                name: '',
+                displayName: '',
+                subject: '',
                 classes: []
             },
             stats: {
@@ -22,11 +22,20 @@ class ModernTeacherDashboard {
             recentActivity: []
         };
 
+        this.previousStats = null;
+        this.trends = {
+            totalClasses: '+0',
+            totalStudents: '+0',
+            activeSessions: '+0',
+            avgScore: '+0%'
+        };
+
         this.init();
     }
 
     async init() {
         this.showLoading();
+        this.hydrateTeacherFromLocal();
         await this.loadDashboardData();
         this.setupEventListeners();
         this.renderDashboard();
@@ -37,125 +46,131 @@ class ModernTeacherDashboard {
 
     async loadDashboardData() {
         try {
-            // 嘗試從 API 載入真實資料
-            const [statsResponse, classesResponse, activityResponse] = await Promise.allSettled([
-                fetch('/api/teacher/stats'),
-                fetch('/api/teacher/classes'),
-                fetch('/api/teacher/activity')
-            ]);
+            const prev = { ...this.data.stats };
+            // 1) 教師儀表板聚合（真實 API）
+            const dashboard = await apiClient.get('/teacher/dashboard');
+            if (dashboard) {
+                // 對應教師聚合服務的欄位
+                const totalClasses = dashboard.total_classes || 0;
+                const totalStudents = dashboard.total_students || 0;
+                const activeClasses = (dashboard.overall_stats && dashboard.overall_stats.active_classes) || 0;
+                const avgAccuracy = (dashboard.overall_stats && dashboard.overall_stats.average_accuracy) || 0;
 
-            if (statsResponse.status === 'fulfilled' && statsResponse.value.ok) {
-                const stats = await statsResponse.value.json();
-                this.data.stats = { ...this.data.stats, ...stats };
-                console.log('✅ 成功載入統計資料');
+                this.data.stats = {
+                    totalClasses,
+                    totalStudents,
+                    activeSessions: activeClasses,
+                    avgScore: Math.round((typeof avgAccuracy === 'number' ? avgAccuracy : 0) * 10) / 10
+                };
+
+                this.computeTrends(prev, this.data.stats);
+
+                // 最近活動（如有）
+                if (Array.isArray(dashboard.recent_activities)) {
+                    this.data.recentActivity = dashboard.recent_activities.map((a) => ({
+                        type: a.type || 'system',
+                        icon: 'fas fa-bell',
+                        title: a.title || a.message || '活動',
+                        description: a.description || '',
+                        time: a.time || a.timestamp || ''
+                    }));
+                }
             }
 
-            if (classesResponse.status === 'fulfilled' && classesResponse.value.ok) {
-                const classes = await classesResponse.value.json();
-                this.data.teacher.classes = classes.classes || [];
-                console.log('✅ 成功載入班級資料');
-            }
-
-            if (activityResponse.status === 'fulfilled' && activityResponse.value.ok) {
-                const activity = await activityResponse.value.json();
-                this.data.recentActivity = activity.activities || [];
-                console.log('✅ 成功載入活動資料');
+            // 2) 教師班級列表（真實 API）
+            const classes = await apiClient.get('/teacher/classes');
+            if (Array.isArray(classes)) {
+                this.data.teacher.classes = classes.map(c => ({
+                    id: c.id,
+                    name: c.name,
+                    students: c.student_count || 0,
+                    avgScore: Math.round(((c.average_accuracy || 0)) * 10) / 10,
+                    activeStudents: Math.round(((c.average_progress || 0) / 100) * (c.student_count || 0)),
+                    lastActivity: ''
+                }));
             }
 
         } catch (error) {
-            console.log('⚠️ API 載入失敗，使用模擬資料:', error.message);
+            console.error('載入儀表板資料失敗（真實 API）:', error);
+            // 後備方案：直接從關係服務聚合教師班級與學生（真實 API）
+            await this.loadDashboardDataFallback();
+            this.showNotification('已使用後備資料來源', 'info');
         }
+    }
 
-        // 使用模擬資料補充
-        this.loadMockData();
+    async loadDashboardDataFallback() {
+        try {
+            // 教師的班級列表（關係服務）
+            const rels = await apiClient.get('/relationships/teacher-class');
+            const classes = Array.isArray(rels) ? rels.map(r => ({
+                id: r.class_id,
+                name: r.class_name || `班級 ${r.class_id}`,
+                subject: r.subject || '',
+            })) : [];
+
+            // 逐班級抓學生數
+            const results = await Promise.all(classes.map(c => (
+                apiClient.get(`/relationships/classes/${c.id}/students`).then(arr => ({ id: c.id, name: c.name, students: Array.isArray(arr) ? arr.length : 0 }))
+                    .catch(() => ({ id: c.id, name: c.name, students: 0 }))
+            )));
+
+            // 更新 UI 結構
+            const prev = { ...this.data.stats };
+            this.data.stats.totalClasses = classes.length;
+            this.data.stats.totalStudents = results.reduce((sum, r) => sum + (r.students || 0), 0);
+            this.data.stats.activeSessions = 0;
+            this.data.stats.avgScore = 0;
+
+            this.data.teacher.classes = results.map(r => ({
+                id: r.id,
+                name: r.name,
+                students: r.students,
+                avgScore: 0,
+                activeStudents: 0,
+                lastActivity: ''
+            }));
+
+            this.computeTrends(prev, this.data.stats);
+        } catch (e) {
+            console.error('後備資料來源載入失敗:', e);
+        }
+    }
+
+    computeTrends(prev, current) {
+        if (!prev || typeof prev !== 'object') {
+            this.trends = { totalClasses: '+0', totalStudents: '+0', activeSessions: '+0', avgScore: '+0%' };
+            this.previousStats = { ...current };
+            return;
+        }
+        const delta = (a, b) => (typeof a === 'number' && typeof b === 'number') ? (b - a) : 0;
+        const dc = delta(prev.totalClasses, current.totalClasses);
+        const ds = delta(prev.totalStudents, current.totalStudents);
+        const da = delta(prev.activeSessions, current.activeSessions);
+        const dscore = Math.round((delta(prev.avgScore, current.avgScore)) * 10) / 10;
+        this.trends = {
+            totalClasses: `${dc >= 0 ? '+' : ''}${dc}`,
+            totalStudents: `${ds >= 0 ? '+' : ''}${ds}`,
+            activeSessions: `${da >= 0 ? '+' : ''}${da}`,
+            avgScore: `${dscore >= 0 ? '+' : ''}${dscore}%`
+        };
+        this.previousStats = { ...current };
+    }
+
+    hydrateTeacherFromLocal() {
+        try {
+            const userStr = localStorage.getItem('user_info');
+            if (userStr) {
+                const user = JSON.parse(userStr);
+                const display = user.name || user.email || '';
+                this.data.teacher.name = display;
+                this.data.teacher.displayName = display;
+            }
+        } catch (_) {}
     }
 
     loadMockData() {
-        // 統計資料
-        this.data.stats = {
-            totalClasses: 3,
-            totalStudents: 96,
-            activeSessions: 24,
-            avgScore: 85.7
-        };
-
-        // 今日重點
-        this.data.highlights = {
-            todayClasses: [
-                { time: '09:00', class: '三年一班', subject: '數學' },
-                { time: '14:00', class: '三年二班', subject: '數學' },
-                { time: '15:30', class: '三年三班', subject: '數學' }
-            ],
-            pendingAssignments: 12,
-            attentionNeeded: 3
-        };
-
-        // 班級資料
-        this.data.teacher.classes = [
-            {
-                id: 1,
-                name: '三年一班',
-                students: 32,
-                avgScore: 87.5,
-                activeStudents: 28,
-                lastActivity: '2小時前'
-            },
-            {
-                id: 2,
-                name: '三年二班',
-                students: 30,
-                avgScore: 84.2,
-                activeStudents: 25,
-                lastActivity: '1小時前'
-            },
-            {
-                id: 3,
-                name: '三年三班',
-                students: 34,
-                avgScore: 85.8,
-                activeStudents: 30,
-                lastActivity: '30分鐘前'
-            }
-        ];
-
-        // 最近活動
-        this.data.recentActivity = [
-            {
-                type: 'assignment',
-                icon: 'fas fa-tasks',
-                title: '新作業已發布',
-                description: '三年一班 - 二次函數練習',
-                time: '10分鐘前'
-            },
-            {
-                type: 'grade',
-                icon: 'fas fa-star',
-                title: '成績已更新',
-                description: '李小華在數學測驗中獲得95分',
-                time: '25分鐘前'
-            },
-            {
-                type: 'student',
-                icon: 'fas fa-user-graduate',
-                title: '學生提問',
-                description: '王小明對三角函數有疑問',
-                time: '1小時前'
-            },
-            {
-                type: 'system',
-                icon: 'fas fa-bell',
-                title: '系統通知',
-                description: '本週學習報告已生成',
-                time: '2小時前'
-            },
-            {
-                type: 'achievement',
-                icon: 'fas fa-trophy',
-                title: '學習成就',
-                description: '三年二班整體進步顯著',
-                time: '3小時前'
-            }
-        ];
+        // 已停用模擬資料：保持真實數據為唯一來源
+        return;
     }
 
     setupEventListeners() {
@@ -213,10 +228,10 @@ class ModernTeacherDashboard {
     updateStats() {
         const stats = this.data.stats;
 
-        this.updateStatElement('total-classes', stats.totalClasses, '+2');
-        this.updateStatElement('total-students', stats.totalStudents, '+8');
-        this.updateStatElement('active-sessions', stats.activeSessions, '+5');
-        this.updateStatElement('avg-score', `${stats.avgScore}%`, '+2.3%');
+        this.updateStatElement('total-classes', stats.totalClasses, this.trends.totalClasses);
+        this.updateStatElement('total-students', stats.totalStudents, this.trends.totalStudents);
+        this.updateStatElement('active-sessions', stats.activeSessions || 0, this.trends.activeSessions);
+        this.updateStatElement('avg-score', `${stats.avgScore || 0}%`, this.trends.avgScore);
     }
 
     updateStatElement(id, value, trend) {
@@ -227,8 +242,12 @@ class ModernTeacherDashboard {
             this.animateNumber(element, value);
         }
 
-        if (trendElement) {
-            trendElement.innerHTML = `<i class="fas fa-arrow-up"></i> ${trend}`;
+        if (trendElement && typeof trend !== 'undefined') {
+            const isNegative = (typeof trend === 'string') && trend.trim().startsWith('-');
+            const icon = isNegative ? 'fa-arrow-down' : 'fa-arrow-up';
+            const color = isNegative ? '#EF4444' : '#10B981';
+            trendElement.style.color = color;
+            trendElement.innerHTML = `<i class="fas ${icon}"></i> ${trend}`;
         }
     }
 

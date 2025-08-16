@@ -58,15 +58,15 @@ class TeacherAuthManager {
         try {
             showLoading();
             
-            const response = await apiClient.post('/auth/teacher/login', {
-                email: email,
-                password: password
-            });
+            const response = await apiClient.post('/auth/login', { email, password });
 
             if (response.success) {
                 // 儲存 token 和用戶資訊
-                this.setToken(response.data.token);
-                this.setUser(response.data.user);
+                // 兼容不同回傳格式
+                const token = response.access_token || (response.data && response.data.token);
+                const user = response.user || (response.data && response.data.user);
+                if (token) this.setToken(token);
+                if (user) this.setUser(user);
                 
                 // 更新 UI
                 this.updateUI();

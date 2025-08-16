@@ -132,19 +132,20 @@
         /* 班級卡片網格 */
         .classes-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-            gap: var(--spacing-xl);
-            margin-bottom: var(--spacing-xl);
+            grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+            gap: var(--spacing-2xl);
+            margin-bottom: var(--spacing-2xl);
         }
 
         .class-card {
             background: var(--bg-primary);
-            border-radius: var(--radius-xl);
-            box-shadow: var(--shadow-sm);
+            border-radius: var(--radius-2xl);
+            box-shadow: var(--shadow-md);
             border: 1px solid var(--border-light);
             overflow: hidden;
             transition: var(--transition-normal);
             position: relative;
+            min-height: 360px;
         }
 
         .class-card:hover {
@@ -154,7 +155,7 @@
         }
 
         .class-card-header {
-            padding: var(--spacing-lg);
+            padding: var(--spacing-xl);
             background: linear-gradient(135deg, var(--primary-blue-50) 0%, var(--primary-blue-100) 100%);
             border-bottom: 1px solid var(--primary-blue-200);
         }
@@ -179,7 +180,7 @@
         }
 
         .class-card-body {
-            padding: var(--spacing-lg);
+            padding: var(--spacing-xl);
         }
 
         .class-stats {
@@ -210,9 +211,29 @@
         }
 
         .class-actions {
-            display: flex;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
             gap: var(--spacing-sm);
-            justify-content: space-between;
+            align-items: stretch;
+            margin-top: var(--spacing-md);
+        }
+
+        .class-actions .btn-secondary,
+        .class-actions .btn-danger {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: var(--spacing-xs);
+            width: 100%;
+            padding: var(--spacing-md) var(--spacing-lg);
+            border-radius: var(--radius-lg);
+            font-weight: 600;
+            text-decoration: none;
+        }
+
+        .class-actions .btn-secondary i,
+        .class-actions .btn-danger i {
+            font-size: 0.9rem;
         }
 
         .btn-secondary {
@@ -502,7 +523,7 @@
                     <i class="fas fa-users"></i>
                     <span>班級管理</span>
                 </a>
-                <a href="students.html" class="nav-link">
+                <a href="students-enhanced.html" class="nav-link">
                     <i class="fas fa-user-graduate"></i>
                     <span>學生分析</span>
                 </a>
@@ -638,6 +659,23 @@
                                 搜尋
                             </button>
                         </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">快速新增學生</label>
+                        <div style="display:grid; grid-template-columns: repeat(4, 1fr); gap: var(--spacing-sm);">
+                            <input id="newStuEmail" class="form-control" placeholder="Email (必填)">
+                            <input id="newStuFirst" class="form-control" placeholder="名 (first_name)">
+                            <input id="newStuLast" class="form-control" placeholder="姓 (last_name)">
+                            <input id="newStuNo" class="form-control" placeholder="學號 (student_number)">
+                        </div>
+                        <div style="margin-top: var(--spacing-sm); display:flex; gap: var(--spacing-sm);">
+                            <button class="btn-secondary" id="createStudentBtn" type="button">
+                                <i class="fas fa-user-plus"></i>
+                                建立並加入班級
+                            </button>
+                        </div>
+                        <p style="color: var(--text-tertiary); font-size: var(--font-size-sm); margin-top: var(--spacing-xs);">預設密碼採用系統預設規則（後端），建立後自動加入目前班級。</p>
                     </div>
 
                     <div class="form-group">
@@ -817,10 +855,14 @@
                             </div>
                         </div>
                         <div class="class-actions">
-                            <a href="students.html?classId=${cls.id}&class=${encodeURIComponent(cls.name)}" class="btn-secondary">
+                            <a href="students-enhanced.html?classId=${cls.id}&class=${encodeURIComponent(cls.name)}" class="btn-secondary">
                                 <i class="fas fa-users"></i>
                                 查看學生
                             </a>
+                            <button class="btn-secondary" onclick="manageStudents('${cls.id}','${cls.name}')">
+                                <i class="fas fa-user-plus"></i>
+                                管理學生
+                            </button>
                             <button class="btn-secondary" onclick="editClass('${cls.id}')">
                                 <i class="fas fa-edit"></i>
                                 編輯
@@ -891,6 +933,8 @@
                     searchStudents();
                 }
             });
+            const createBtn = document.getElementById('createStudentBtn');
+            if (createBtn) createBtn.addEventListener('click', createAndAddStudent);
         }
 
         // 防抖函數
@@ -956,27 +1000,55 @@
             try {
                 showLoading();
 
-                const payload = {
-                    class_name: name,
-                    subject: subject,
-                    description: description
-                };
-
                 if (editingId) {
-                    await apiClient.put(`/relationships/teacher-class/${editingId}`, payload);
+                    // 僅傳遞後端接受的欄位
+                    await apiClient.put(`/relationships/teacher-class/${editingId}`, {
+                        class_name: name,
+                        subject: subject
+                    });
                 } else {
-                    await apiClient.post('/relationships/teacher-class/create-class', payload);
+                    // 僅傳遞後端接受的欄位
+                    const created = await apiClient.post('/relationships/teacher-class/create-class', {
+                        class_name: name,
+                        subject: subject
+                    });
+                    // 嘗試立即進入學生管理
+                    const createdClassId = (created && (created.class_id || (created.data && created.data.class_id))) || null;
+                    // 先刷新列表再開啟管理
+                    await loadClasses();
+                    renderClasses();
+                    closeModal();
+                    if (createdClassId) {
+                        manageStudents(createdClassId, name);
+                        showAlert('班級已建立，請加入學生', 'success');
+                        return;
+                    }
                 }
 
                 await loadClasses();
                 renderClasses();
                 closeModal();
+                // 編輯完成後，直接帶到學生管理分頁
+                if (editingId) {
+                    manageStudents(editingId, name);
+                }
                 showAlert('班級已儲存', 'success');
             } catch (e) {
+                console.error('saveClass error', e);
                 showAlert('儲存失敗：' + (e.message || ''), 'error');
             } finally {
                 hideLoading();
             }
+        }
+
+        // 進入班級的學生管理（開啟模態並切到學生分頁）
+        function manageStudents(id, name) {
+            editingId = id;
+            const cls = classes.find(c => String(c.id) === String(id));
+            document.getElementById('classModalTitle').textContent = `管理學生 - ${name || (cls && cls.name) || ''}`;
+            switchTab('students');
+            openModal();
+            loadClassStudents(editingId);
         }
 
         // 確認刪除
@@ -1124,6 +1196,57 @@
                 showAlert(`已將 ${studentName} 加入班級`, 'success');
             } catch (e) {
                 showAlert('加入失敗：' + (e.message || ''), 'error');
+            } finally {
+                hideLoading();
+            }
+        }
+
+        // 依據資料庫欄位新增學生後加入班級
+        async function createAndAddStudent() {
+            if (!editingId) return;
+            const email = document.getElementById('newStuEmail').value.trim();
+            const first = document.getElementById('newStuFirst').value.trim();
+            const last = document.getElementById('newStuLast').value.trim();
+            const stuNo = document.getElementById('newStuNo').value.trim();
+            if (!email) {
+                showAlert('請輸入 Email', 'warning');
+                return;
+            }
+            try {
+                showLoading();
+                // 1) 建立學生帳號（依 schemas.UserCreate）
+                const username = email.split('@')[0];
+                const payload = {
+                    email: email,
+                    username: username,
+                    password: 'password123',
+                    role: 'student',
+                    first_name: first || null,
+                    last_name: last || null
+                };
+                let studentId = null;
+                try {
+                    const created = await apiClient.post('/users', payload);
+                    studentId = (created && (created.id || (created.data && created.data.id))) || null;
+                } catch (err) {
+                    // 若已存在則嘗試搜尋取得 id
+                    const found = await apiClient.get(`/relationships/students/search?kw=${encodeURIComponent(email)}&limit=1`);
+                    const arr = found && (found.data || found.items || found) || [];
+                    if (Array.isArray(arr) && arr.length > 0) studentId = arr[0].id;
+                }
+                if (!studentId) throw new Error('建立或取得學生資料失敗');
+                // 2) 加入班級
+                await apiClient.post(`/relationships/classes/${editingId}/students`, { student_id: studentId, student_number: stuNo || null });
+                await loadClassStudents(editingId);
+                showAlert('學生已建立並加入班級', 'success');
+                // 清空欄位
+                document.getElementById('newStuEmail').value = '';
+                document.getElementById('newStuFirst').value = '';
+                document.getElementById('newStuLast').value = '';
+                document.getElementById('newStuNo').value = '';
+            } catch (e) {
+                console.error('createAndAddStudent error', e);
+                showAlert('新增學生失敗：' + (e.message || ''), 'error');
             } finally {
                 hideLoading();
             }
