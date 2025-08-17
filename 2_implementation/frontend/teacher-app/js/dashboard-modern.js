@@ -47,52 +47,62 @@ class ModernTeacherDashboard {
     async loadDashboardData() {
         try {
             const prev = { ...this.data.stats };
-            // 1) 教師儀表板聚合（真實 API）
-            const dashboard = await apiClient.get('/teacher/dashboard');
-            if (dashboard) {
-                // 對應教師聚合服務的欄位
-                const totalClasses = dashboard.total_classes || 0;
-                const totalStudents = dashboard.total_students || 0;
-                const activeClasses = (dashboard.overall_stats && dashboard.overall_stats.active_classes) || 0;
-                const avgAccuracy = (dashboard.overall_stats && dashboard.overall_stats.average_accuracy) || 0;
 
-                this.data.stats = {
-                    totalClasses,
-                    totalStudents,
-                    activeSessions: activeClasses,
-                    avgScore: Math.round((typeof avgAccuracy === 'number' ? avgAccuracy : 0) * 10) / 10
-                };
+            // 並行抓取：教師聚合儀表板 + 關係服務（以關係服務為準以保證數值正確）
+            const [dashboard, rels] = await Promise.all([
+                apiClient.get('/teacher/dashboard').catch(() => null),
+                apiClient.get('/relationships/teacher-class').catch(() => [])
+            ]);
 
-                this.computeTrends(prev, this.data.stats);
+            // 標準化班級列表（以關係服務為準）
+            const relClasses = Array.isArray(rels)
+                ? rels.map(r => ({ id: r.class_id, name: r.class_name || `班級 ${r.class_id}`, subject: r.subject || '' }))
+                : [];
 
-                // 最近活動（如有）
-                if (Array.isArray(dashboard.recent_activities)) {
-                    this.data.recentActivity = dashboard.recent_activities.map((a) => ({
-                        type: a.type || 'system',
-                        icon: 'fas fa-bell',
-                        title: a.title || a.message || '活動',
-                        description: a.description || '',
-                        time: a.time || a.timestamp || ''
-                    }));
-                }
-            }
+            // 逐班級抓學生數，得到準確總學生數
+            const classWithCounts = await Promise.all(relClasses.map(c => (
+                apiClient.get(`/relationships/classes/${c.id}/students`)
+                    .then(arr => ({ id: c.id, name: c.name, students: Array.isArray(arr) ? arr.length : ((arr && typeof arr.count === 'number') ? arr.count : 0) }))
+                    .catch(() => ({ id: c.id, name: c.name, students: 0 }))
+            )));
 
-            // 2) 教師班級列表（真實 API）
-            const classes = await apiClient.get('/teacher/classes');
-            if (Array.isArray(classes)) {
-                this.data.teacher.classes = classes.map(c => ({
-                    id: c.id,
-                    name: c.name,
-                    students: c.student_count || 0,
-                    avgScore: Math.round(((c.average_accuracy || 0)) * 10) / 10,
-                    activeStudents: Math.round(((c.average_progress || 0) / 100) * (c.student_count || 0)),
-                    lastActivity: ''
+            // 儀表板額外數據（若有）
+            const activeClasses = (dashboard && dashboard.overall_stats && dashboard.overall_stats.active_classes) || 0;
+            const avgAccuracy = (dashboard && dashboard.overall_stats && dashboard.overall_stats.average_accuracy) || 0;
+
+            // 以關係服務聚合為準，覆蓋總班級與總學生數
+            this.data.stats = {
+                totalClasses: relClasses.length,
+                totalStudents: classWithCounts.reduce((sum, r) => sum + (r.students || 0), 0),
+                activeSessions: activeClasses || 0,
+                avgScore: Math.round((typeof avgAccuracy === 'number' ? avgAccuracy : 0) * 10) / 10
+            };
+
+            this.data.teacher.classes = classWithCounts.map(r => ({
+                id: r.id,
+                name: r.name,
+                students: r.students,
+                avgScore: 0,
+                activeStudents: 0,
+                lastActivity: ''
+            }));
+
+            // 最近活動（如有，僅裝飾性，不影響統計數值）
+            if (dashboard && Array.isArray(dashboard.recent_activities)) {
+                this.data.recentActivity = dashboard.recent_activities.map((a) => ({
+                    type: a.type || 'system',
+                    icon: 'fas fa-bell',
+                    title: a.title || a.message || '活動',
+                    description: a.description || '',
+                    time: a.time || a.timestamp || ''
                 }));
             }
 
+            this.computeTrends(prev, this.data.stats);
+
         } catch (error) {
-            console.error('載入儀表板資料失敗（真實 API）:', error);
-            // 後備方案：直接從關係服務聚合教師班級與學生（真實 API）
+            console.error('載入儀表板資料失敗（聚合+關係服務）:', error);
+            // 後備方案
             await this.loadDashboardDataFallback();
             this.showNotification('已使用後備資料來源', 'info');
         }
@@ -324,7 +334,7 @@ class ModernTeacherDashboard {
         }
 
         classesGrid.innerHTML = this.data.teacher.classes.map(classData => `
-            <div class="class-card fade-in-up" onclick="location.href='pages/students-enhanced.html?classId=${classData.id}&class=${encodeURIComponent(classData.name)}'">
+            <div class="class-card fade-in-up" onclick="location.href='pages/students-enhanced.html'">
                 <h4>${classData.name}</h4>
                 <p>${classData.students} 位學生</p>
                 <p>平均分數: ${classData.avgScore}%</p>

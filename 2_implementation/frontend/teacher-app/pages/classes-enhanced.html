@@ -8,10 +8,13 @@
     <title>班級管理 - InULearning 教師台</title>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;600;700&display=swap"
         rel="stylesheet">
+    <link rel="stylesheet" href="/shared/css/components.css">
+    <link rel="stylesheet" href="/shared/css/responsive.css">
     <link rel="stylesheet" href="../css/design-tokens.css">
     <link rel="stylesheet" href="../css/navigation.css">
     <link rel="stylesheet" href="../css/main.css">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="../css/navbar-unified.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <style>
         /* ===== 班級管理專用樣式 ===== */
         .page-header {
@@ -325,20 +328,32 @@
             opacity: 1;
         }
 
+        /* 覆寫 shared/components.css 的 .modal 定義，避免衝突並置中 */
+        .modal-backdrop .modal,
+        .modal-backdrop .modal.show {
+            display: block;
+            position: relative; /* 解除 shared 的 fixed，讓 flex 置中生效 */
+            left: auto;
+            top: auto;
+            height: auto;
+        }
+
         .modal {
             background: var(--bg-primary);
             border-radius: var(--radius-2xl);
-            width: 100%;
-            max-width: 600px;
+            width: 90vw;
+            max-width: 560px;
             max-height: 90vh;
             overflow: hidden;
             box-shadow: var(--shadow-xl);
-            transform: scale(0.9) translateY(20px);
+            transform: none;
             transition: var(--transition-normal);
+            margin: 0 auto;
+            align-self: center;
         }
 
         .modal-backdrop.show .modal {
-            transform: scale(1) translateY(0);
+            transform: none;
         }
 
         .modal-header {
@@ -356,7 +371,7 @@
 
         .modal-body {
             padding: var(--spacing-xl);
-            max-height: 60vh;
+            max-height: 70vh;
             overflow-y: auto;
         }
 
@@ -503,11 +518,11 @@
     </style>
 </head>
 
-<body>
+<body class="navbar-unified-reset">
     <a href="#main" class="skip-link"
         style="position:absolute;left:-9999px;top:auto;width:1px;height:1px;overflow:hidden;">跳至主要內容</a>
 
-    <!-- 導航欄 -->
+    <!-- 導航欄（與首頁一致，使用絕對路徑） -->
     <nav class="navbar">
         <div class="navbar-container">
             <div class="navbar-brand">
@@ -515,21 +530,33 @@
                 <span>班級管理</span>
             </div>
             <div class="navbar-menu">
-                <a href="../index.html" class="nav-link">
+                <a href="/index.html" class="nav-link">
                     <i class="fas fa-tachometer-alt"></i>
                     <span>儀表板</span>
                 </a>
-                <a href="classes-enhanced.html" class="nav-link active">
+                <a href="/pages/classes-enhanced.html" class="nav-link active">
                     <i class="fas fa-users"></i>
                     <span>班級管理</span>
                 </a>
-                <a href="students-enhanced.html" class="nav-link">
+                <a href="/pages/students-enhanced.html" class="nav-link">
                     <i class="fas fa-user-graduate"></i>
                     <span>學生分析</span>
                 </a>
-                <a href="questions.html" class="nav-link">
+                <a href="/pages/assignments-enhanced.html" class="nav-link">
+                    <i class="fas fa-tasks"></i>
+                    <span>作業管理</span>
+                </a>
+                <a href="/pages/questions-enhanced.html" class="nav-link">
                     <i class="fas fa-question-circle"></i>
                     <span>題目管理</span>
+                </a>
+                <a href="/pages/grades-enhanced.html" class="nav-link">
+                    <i class="fas fa-chart-bar"></i>
+                    <span>成績管理</span>
+                </a>
+                <a href="/pages/analytics-enhanced.html" class="nav-link">
+                    <i class="fas fa-analytics"></i>
+                    <span>學習分析</span>
                 </a>
             </div>
             <div class="navbar-user">
@@ -538,17 +565,6 @@
                     <span id="teacher-name">教師</span>
                     <i class="fas fa-chevron-down"></i>
                 </button>
-                <div class="user-dropdown-menu">
-                    <a href="profile.html" class="dropdown-item">
-                        <i class="fas fa-user"></i>
-                        <span>個人資料</span>
-                    </a>
-                    <div class="dropdown-divider"></div>
-                    <a href="#" class="dropdown-item" id="logout-btn">
-                        <i class="fas fa-sign-out-alt"></i>
-                        <span>登出</span>
-                    </a>
-                </div>
             </div>
         </div>
     </nav>
@@ -583,7 +599,7 @@
                         <option value="students_desc">學生人數</option>
                     </select>
                 </div>
-                <button class="btn-primary" id="createClassBtn">
+                <button class="btn-primary" id="createClassBtn" type="button">
                     <i class="fas fa-plus"></i>
                     新增班級
                 </button>
@@ -746,12 +762,28 @@
         let currentPage = 1;
         const pageSize = 12;
 
-        // 初始化
-        document.addEventListener('DOMContentLoaded', async () => {
-            await loadClasses();
-            renderClasses();
-            bindEvents();
-        });
+        // 初始化（DOM 若已完成則立即執行，避免錯過事件）
+        function initApp() {
+            try {
+                bindEvents();
+                showLoadingSkeletons();
+                // 背景載入資料，完成後再渲染
+                loadClasses()
+                    .then(() => renderClasses())
+                    .catch((e) => {
+                        console.warn('載入班級失敗', e);
+                        renderClasses();
+                    });
+            } catch (e) {
+                console.error('初始化失敗', e);
+            }
+        }
+
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initApp);
+        } else {
+            initApp();
+        }
 
         // 載入班級資料
         async function loadClasses() {
@@ -855,7 +887,7 @@
                             </div>
                         </div>
                         <div class="class-actions">
-                            <a href="students-enhanced.html?classId=${cls.id}&class=${encodeURIComponent(cls.name)}" class="btn-secondary">
+                            <a href="students-enhanced.html" class="btn-secondary">
                                 <i class="fas fa-users"></i>
                                 查看學生
                             </a>
@@ -913,7 +945,11 @@
             document.getElementById('sortBy').addEventListener('change', renderClasses);
 
             // 新增班級
-            document.getElementById('createClassBtn').addEventListener('click', createClass);
+            document.getElementById('createClassBtn').addEventListener('click', (e) => {
+                if (e && typeof e.preventDefault === 'function') e.preventDefault();
+                if (e && typeof e.stopPropagation === 'function') e.stopPropagation();
+                createClass();
+            });
 
             // 模態框控制
             document.getElementById('cancelBtn').addEventListener('click', closeModal);
@@ -1073,19 +1109,47 @@
 
         // 模態框控制
         function openModal() {
-            document.getElementById('classModal').classList.add('show');
+            const backdrop = document.getElementById('classModal');
+            if (!backdrop) return;
+            const modalEl = backdrop.querySelector('.modal');
+            backdrop.classList.add('show');
+            backdrop.style.display = 'flex';
+            if (modalEl) {
+                modalEl.style.display = 'block';
+            }
         }
 
         function closeModal() {
-            document.getElementById('classModal').classList.remove('show');
+            const backdrop = document.getElementById('classModal');
+            if (!backdrop) return;
+            const modalEl = backdrop.querySelector('.modal');
+            backdrop.classList.remove('show');
+            backdrop.style.display = 'none';
+            if (modalEl) {
+                modalEl.style.display = 'none';
+            }
         }
 
         function openConfirmModal() {
-            document.getElementById('confirmModal').classList.add('show');
+            const backdrop = document.getElementById('confirmModal');
+            if (!backdrop) return;
+            const modalEl = backdrop.querySelector('.modal');
+            backdrop.classList.add('show');
+            backdrop.style.display = 'flex';
+            if (modalEl) {
+                modalEl.style.display = 'block';
+            }
         }
 
         function closeConfirmModal() {
-            document.getElementById('confirmModal').classList.remove('show');
+            const backdrop = document.getElementById('confirmModal');
+            if (!backdrop) return;
+            const modalEl = backdrop.querySelector('.modal');
+            backdrop.classList.remove('show');
+            backdrop.style.display = 'none';
+            if (modalEl) {
+                modalEl.style.display = 'none';
+            }
         }
 
         // 重置表單

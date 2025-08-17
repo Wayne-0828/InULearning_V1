@@ -292,6 +292,9 @@ services:
     volumes:
       - ./files:/var/www/html/files
       - ./2_implementation/frontend/shared:/usr/share/nginx/html/shared:ro
+      - ./2_implementation/frontend/teacher-app/pages:/usr/share/nginx/html/pages:ro
+      - ./2_implementation/frontend/teacher-app/css:/usr/share/nginx/html/css:ro
+      - ./2_implementation/frontend/teacher-app/js:/usr/share/nginx/html/js:ro
     depends_on:
       auth-service:
         condition: service_started

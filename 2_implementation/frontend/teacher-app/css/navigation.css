@@ -1,18 +1,8 @@
 /* 教師端導航系統優化 */
 
 /* ===== 主導航欄 ===== */
-.navbar {
-    background: linear-gradient(135deg, var(--primary-blue-600) 0%, var(--primary-blue-700) 100%);
-    backdrop-filter: blur(10px);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-    box-shadow: var(--shadow-lg);
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    z-index: 1000;
-    transition: var(--transition-normal);
-}
+/* 使用 navbar-unified.css 的樣式，避免此檔覆蓋 */
+/* .navbar 樣式在 navbar-unified.css 內統一定義 */
 
 .navbar-container {
     display: flex;

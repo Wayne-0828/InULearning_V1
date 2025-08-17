@@ -7,9 +7,13 @@
     <meta name="description" content="InULearning 教師台 - 學生分析">
     <title>學生分析 - InULearning 教師台</title>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/shared/css/components.css">
+    <link rel="stylesheet" href="/shared/css/responsive.css">
     <link rel="stylesheet" href="../css/design-tokens.css">
+    <link rel="stylesheet" href="../css/navigation.css">
     <link rel="stylesheet" href="../css/main.css">
     <link rel="stylesheet" href="../css/modern-design-system.css">
+    <link rel="stylesheet" href="../css/navbar-unified.css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <style>
         /* 保持原有樣式，只添加增強功能 */
@@ -819,19 +823,31 @@
 </head>
 
 <body>
-    <a href="#main" class="skip-link"
-        style="position:absolute;left:-9999px;top:auto;width:1px;height:1px;overflow:hidden;">跳至主要內容</a>
-
-    <!-- 導航欄 -->
+    <!-- 導航欄（統一為首頁版本） -->
     <nav class="navbar">
         <div class="navbar-container">
-            <div class="navbar-brand"><i class="fas fa-chalkboard-teacher"></i><span id="pageTitle">學生分析</span></div>
+            <div class="navbar-brand">
+                <i class="fas fa-chalkboard-teacher"></i>
+                <span>InULearning 教師台</span>
+            </div>
             <div class="navbar-menu">
-                <a href="../index.html" class="nav-link"><i class="fas fa-tachometer-alt"></i><span>儀表板</span></a>
-                <a href="classes.html" class="nav-link"><i class="fas fa-users"></i><span>班級管理</span></a>
-                <a href="students-enhanced.html" class="nav-link active"><i
-                        class="fas fa-user-graduate"></i><span>學生分析</span></a>
-                <a href="questions.html" class="nav-link"><i class="fas fa-question-circle"></i><span>題目管理</span></a>
+                <a href="/index.html" class="nav-link"><i class="fas fa-tachometer-alt"></i><span>儀表板</span></a>
+                <a href="/pages/classes-enhanced.html" class="nav-link"><i class="fas fa-users"></i><span>班級管理</span></a>
+                <a href="/pages/students-enhanced.html" class="nav-link active"><i class="fas fa-user-graduate"></i><span>學生分析</span></a>
+                <a href="/pages/assignments-enhanced.html" class="nav-link"><i class="fas fa-tasks"></i><span>作業管理</span></a>
+                <a href="/pages/questions-enhanced.html" class="nav-link"><i class="fas fa-question-circle"></i><span>題目管理</span></a>
+                <a href="/pages/grades-enhanced.html" class="nav-link"><i class="fas fa-chart-bar"></i><span>成績管理</span></a>
+                <a href="/pages/analytics-enhanced.html" class="nav-link"><i class="fas fa-analytics"></i><span>學習分析</span></a>
+            </div>
+            <div class="navbar-user">
+                <div class="user-dropdown">
+                    <button class="user-dropdown-toggle"><i class="fas fa-user-circle"></i><span id="teacher-name">教師</span><i class="fas fa-chevron-down"></i></button>
+                    <div class="user-dropdown-menu">
+                        <a href="/pages/profile.html" class="dropdown-item"><i class="fas fa-user"></i><span>個人資料</span></a>
+                        <div class="dropdown-divider"></div>
+                        <a href="#" class="dropdown-item" id="logout-btn"><i class="fas fa-sign-out-alt"></i><span>登出</span></a>
+                    </div>
+                </div>
             </div>
         </div>
     </nav>
@@ -1391,6 +1407,8 @@
             }
         }
     </script>
+		</div>
+	</main>
 </body>
 
 </html>
