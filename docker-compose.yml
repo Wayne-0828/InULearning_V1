@@ -269,8 +269,7 @@ services:
       context: ./2_implementation/frontend/student-app
       dockerfile: Dockerfile
     container_name: inulearning_student_frontend
-    ports:
-      - "8080:80"
+    # ports removed in production; access via Nginx subpaths
     environment:
       - API_BASE_URL=/api
     networks:
@@ -286,8 +285,7 @@ services:
       context: ./2_implementation/frontend/admin-app
       dockerfile: Dockerfile
     container_name: inulearning_admin_frontend
-    ports:
-      - "8081:80"
+    # ports removed in production; access via Nginx subpaths
     environment:
       - API_BASE_URL=/api
     networks:
@@ -302,8 +300,7 @@ services:
       context: ./2_implementation/frontend/parent-app
       dockerfile: Dockerfile
     container_name: inulearning_parent_frontend
-    ports:
-      - "8082:80"
+    # ports removed in production; access via Nginx subpaths
     environment:
       - API_BASE_URL=/api
     networks:
@@ -318,8 +315,7 @@ services:
       context: ./2_implementation/frontend/teacher-app
       dockerfile: Dockerfile
     container_name: inulearning_teacher_frontend
-    ports:
-      - "8083:80"
+    # ports removed in production; access via Nginx subpaths
     environment:
       - API_BASE_URL=/api
     networks:
