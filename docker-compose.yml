@@ -138,6 +138,38 @@ services:
       timeout: 10s
       retries: 3
 
+  # 題庫資料載入（一次性執行）
+  question-bank-loader:
+    build:
+      context: ./2_implementation/backend/question-bank-service
+      dockerfile: Dockerfile
+    container_name: inulearning_question_bank_loader
+    command: ["python", "load_rawdata.py"]
+    environment:
+      - MONGODB_URL=mongodb://aipe-tester:aipe-tester@mongodb:27017/inulearning?authSource=admin
+      - MONGODB_DATABASE=inulearning
+      - MINIO_ENDPOINT=minio:9000
+      - MINIO_ACCESS_KEY=aipe-tester
+      - MINIO_SECRET_KEY=aipe-tester
+      - MINIO_BUCKET_NAME=question-bank
+      - MINIO_SECURE=false
+      - QB_SEEDS_PATH=/app/rawdata/全題庫
+      - QB_CLEAR=false
+      - QB_SKIP_IF_EXISTS=true
+      - QB_MAX_IMAGE_TASKS=12
+      - QB_MAX_QUESTION_TASKS=48
+      - QB_QUESTION_BATCH_SIZE=500
+    depends_on:
+      mongodb:
+        condition: service_healthy
+      minio:
+        condition: service_healthy
+    networks:
+      - inulearning_network
+    volumes:
+      - ./2_implementation/database/seeds:/app/rawdata:ro
+    restart: "no"
+
   # 學習服務
   learning-service:
     build:
@@ -207,6 +239,7 @@ services:
     volumes:
       - ./nginx/nginx.conf:/etc/nginx/nginx.conf
       - ./nginx/conf.d:/etc/nginx/conf.d
+      - ./2_implementation/frontend/shared:/usr/share/nginx/html/shared
       - ./2_implementation/frontend/shared/auth/login.html:/usr/share/nginx/html/login.html
       - ./2_implementation/frontend/shared/auth/register.html:/usr/share/nginx/html/register.html
       - ./2_implementation/frontend/shared/homepage/index.html:/usr/share/nginx/html/index.html
@@ -236,6 +269,7 @@ services:
       - inulearning_network
     volumes:
       - ./files:/usr/share/nginx/html/files
+      - ./2_implementation/frontend/shared:/usr/share/nginx/html/shared
       - ./2_implementation/frontend/shared/auth/login.html:/usr/share/nginx/html/login.html
     depends_on:
       auth-service:
@@ -261,6 +295,7 @@ services:
       - inulearning_network
     volumes:
       - ./files:/var/www/html/files
+      - ./2_implementation/frontend/shared:/usr/share/nginx/html/shared
 
   # 家長端前端
   parent-frontend:
@@ -276,6 +311,7 @@ services:
       - inulearning_network
     volumes:
       - ./files:/var/www/html/files
+      - ./2_implementation/frontend/shared:/usr/share/nginx/html/shared
 
   # 教師端前端
   teacher-frontend:
@@ -291,19 +327,6 @@ services:
       - inulearning_network
     volumes:
       - ./files:/var/www/html/files
-      - ./2_implementation/frontend/shared:/usr/share/nginx/html/shared:ro
-      - ./2_implementation/frontend/teacher-app/pages:/usr/share/nginx/html/pages:ro
-      - ./2_implementation/frontend/teacher-app/css:/usr/share/nginx/html/css:ro
-      - ./2_implementation/frontend/teacher-app/js:/usr/share/nginx/html/js:ro
-    depends_on:
-      auth-service:
-        condition: service_started
-      question-bank-service:
-        condition: service_started
-      learning-service:
-        condition: service_started
-      teacher-management-service:
-        condition: service_started
   # ... existing code ...
 
   # 備註：以下服務暫時註釋，後續開發
