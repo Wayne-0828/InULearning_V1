@@ -22,7 +22,7 @@ class Settings(BaseSettings):
     redis_url: str = "redis://redis:6379/0"
     
     # CORS settings
-    cors_origins: List[str] = ["http://localhost:3000", "http://localhost:8080", "http://localhost:8081", "http://localhost:8082"]
+    cors_origins: List[str] = ["http://localhost:3000", "http://localhost:8080", "http://localhost:8081", "http://localhost:8082", "http://localhost:8083"]
     
     # Security settings
     bcrypt_rounds: int = 12

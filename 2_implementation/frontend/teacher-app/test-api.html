@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API 測試頁面</title>
+</head>
+<body>
+    <h1>API 測試頁面</h1>
+    
+    <div>
+        <h2>測試創建班級</h2>
+        <input type="text" id="className" placeholder="班級名稱" value="測試班級3">
+        <select id="classSubject">
+            <option value="數學">數學</option>
+            <option value="國文">國文</option>
+            <option value="英文">英文</option>
+        </select>
+        <button onclick="testCreateClass()">測試創建班級</button>
+    </div>
+    
+    <div id="result"></div>
+
+    <script>
+        // 模擬 apiClient
+        const apiClient = {
+            baseUrl: 'http://localhost/api/v1',
+            getToken() {
+                return localStorage.getItem('auth_token') || sessionStorage.getItem('auth_token') || '';
+            },
+            async request(path, options = {}) {
+                const url = `${this.baseUrl}${path}`;
+                const headers = Object.assign({ 
+                    'Content-Type': 'application/json', 
+                    'Accept': 'application/json' 
+                }, options.headers || {});
+                
+                const token = this.getToken();
+                if (token) {
+                    headers['Authorization'] = `Bearer ${token}`;
+                    console.log('✅ 使用 token:', token.substring(0, 20) + '...');
+                } else {
+                    console.log('❌ 沒有找到 token');
+                }
+                
+                console.log('🌐 發送請求到:', url);
+                console.log('📋 請求頭:', headers);
+                console.log('📦 請求體:', options.body);
+                
+                try {
+                    const res = await fetch(url, { ...options, headers });
+                    console.log('📡 回應狀態:', res.status, res.statusText);
+                    
+                    let data = {};
+                    try { 
+                        data = await res.json(); 
+                        console.log('📄 回應數據:', data);
+                    } catch (_) {
+                        console.log('❌ 無法解析 JSON 回應');
+                    }
+                    
+                    if (!res.ok) {
+                        throw new Error(data.detail || data.message || 'Request failed');
+                    }
+                    
+                    return data;
+                } catch (error) {
+                    console.error('❌ 請求失敗:', error);
+                    throw error;
+                }
+            },
+            post(path, body) { 
+                return this.request(path, { 
+                    method: 'POST', 
+                    body: JSON.stringify(body) 
+                }); 
+            }
+        };
+
+        async function testCreateClass() {
+            const name = document.getElementById('className').value.trim();
+            const subject = document.getElementById('classSubject').value;
+            
+            if (!name || !subject) {
+                alert('請填寫班級名稱和科目');
+                return;
+            }
+            
+            try {
+                console.log('🚀 開始測試創建班級...');
+                
+                // 先嘗試設置一個測試 token
+                const testToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI5IiwiZW1haWwiOiJ0ZWFjaGVyMDFAdGVzdC5jb20iLCJyb2xlIjoidGVhY2hlciIsImV4cCI6MTc1NTQ0MjYwOH0.0oe6upILzVueUNb2YiQaz-gpAC0z1LRDuySM-xbbSyc';
+                localStorage.setItem('auth_token', testToken);
+                console.log('🔑 設置測試 token');
+                
+                const result = await apiClient.post('/relationships/teacher-class/create-class', {
+                    class_name: name,
+                    subject: subject
+                });
+                
+                console.log('✅ 創建成功:', result);
+                document.getElementById('result').innerHTML = `
+                    <div style="color: green; padding: 10px; border: 1px solid green;">
+                        ✅ 班級創建成功！<br>
+                        班級名稱: ${result.class_name}<br>
+                        科目: ${result.subject}<br>
+                        ID: ${result.id}
+                    </div>
+                `;
+                
+            } catch (error) {
+                console.error('❌ 創建失敗:', error);
+                document.getElementById('result').innerHTML = `
+                    <div style="color: red; padding: 10px; border: 1px solid red;">
+                        ❌ 班級創建失敗！<br>
+                        錯誤: ${error.message}
+                    </div>
+                `;
+            }
+        }
+    </script>
+</body>
+</html>
+

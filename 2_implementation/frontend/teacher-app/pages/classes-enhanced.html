@@ -765,31 +765,70 @@
         // 初始化（DOM 若已完成則立即執行，避免錯過事件）
         function initApp() {
             try {
-                bindEvents();
-                showLoadingSkeletons();
-                // 背景載入資料，完成後再渲染
-                loadClasses()
-                    .then(() => renderClasses())
-                    .catch((e) => {
-                        console.warn('載入班級失敗', e);
-                        renderClasses();
-                    });
+                console.log('🚀 開始初始化班級管理應用...');
+                
+                // 檢查認證狀態
+                if (!teacherAuth.isLoggedIn()) {
+                    console.log('❌ 用戶未登入，重定向到登入頁面');
+                    window.location.href = '../login.html';
+                    return;
+                }
+                
+                console.log('✅ 用戶已登入，開始載入班級資料...');
+                
+                // 確保 DOM 完全載入後再綁定事件
+                setTimeout(() => {
+                    bindEvents();
+                    showLoadingSkeletons();
+                    // 背景載入資料，完成後再渲染
+                    loadClasses()
+                        .then(() => renderClasses())
+                        .catch((e) => {
+                            console.warn('載入班級失敗', e);
+                            renderClasses();
+                        });
+                }, 100);
             } catch (e) {
                 console.error('初始化失敗', e);
             }
         }
 
+        // 確保 DOM 完全載入後再初始化
         if (document.readyState === 'loading') {
             document.addEventListener('DOMContentLoaded', initApp);
         } else {
-            initApp();
+            // 如果 DOM 已經載入，延遲一點執行以確保所有元素都存在
+            setTimeout(initApp, 100);
         }
 
         // 載入班級資料
         async function loadClasses() {
             showLoadingSkeletons();
             try {
-                const res = await apiClient.get('/relationships/teacher-class');
+                // 嘗試多個可能的 API 路徑
+                let res = null;
+                const apiPaths = [
+                    '/relationships/teacher-class',
+                    '/relationships/classes'
+                ];
+                
+                for (const path of apiPaths) {
+                    try {
+                        res = await apiClient.get(path);
+                        if (res && (res.data || res.items || res)) {
+                            console.log('✅ 成功載入班級資料，使用路徑:', path);
+                            break;
+                        }
+                    } catch (error) {
+                        console.log(`❌ API 路徑 ${path} 失敗:`, error.message);
+                        continue;
+                    }
+                }
+                
+                if (!res) {
+                    throw new Error('所有 API 路徑都失敗');
+                }
+                
                 const list = res.data || res.items || res || [];
                 classes = list.map(r => ({
                     id: r.class_id,
@@ -806,12 +845,17 @@
                 await loadStudentCounts();
             } catch (e) {
                 console.warn('載入班級失敗', e);
-                // 示例資料
-                classes = [
-                    { id: 'c1', name: '七年三班', subject: '數學', students: 32, status: '進行中', updated: '2025-08-10', description: '基礎數學班級' },
-                    { id: 'c2', name: '七年四班', subject: '國文', students: 28, status: '準備中', updated: '2025-08-08', description: '國文閱讀理解班' },
-                    { id: 'c3', name: '八年一班', subject: '英文', students: 30, status: '進行中', updated: '2025-08-12', description: '英文會話練習班' }
-                ];
+                // 只在開發環境使用示例資料
+                if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+                    classes = [
+                        { id: 'c1', name: '七年三班', subject: '數學', students: 32, status: '進行中', updated: '2025-08-10', description: '基礎數學班級' },
+                        { id: 'c2', name: '七年四班', subject: '國文', students: 28, status: '準備中', updated: '2025-08-08', description: '國文閱讀理解班' },
+                        { id: 'c3', name: '八年一班', subject: '英文', students: 30, status: '進行中', updated: '2025-08-12', description: '英文會話練習班' }
+                    ];
+                } else {
+                    classes = [];
+                    console.error('生產環境不應使用示例資料');
+                }
             }
         }
 
@@ -820,10 +864,33 @@
             try {
                 const updated = await Promise.all(classes.map(async (c) => {
                     try {
-                        const res = await apiClient.get(`/relationships/classes/${c.id}/students`);
-                        const arr = res.data || res.items || res || [];
-                        const count = Array.isArray(arr) ? arr.length : (typeof arr.count === 'number' ? arr.count : 0);
-                        return { ...c, students: count };
+                        // 嘗試多個可能的 API 路徑
+                        let res = null;
+                        const apiPaths = [
+                            `/relationships/classes/${c.id}/students`,
+                            `/api/v1/relationships/classes/${c.id}/students`,
+                            `/relationships/teacher-class/${c.id}/students`,
+                            `/api/v1/relationships/teacher-class/${c.id}/students`
+                        ];
+                        
+                        for (const path of apiPaths) {
+                            try {
+                                res = await apiClient.get(path);
+                                if (res && (res.data || res.items || res)) {
+                                    break;
+                                }
+                            } catch (error) {
+                                continue;
+                            }
+                        }
+                        
+                        if (res) {
+                            const arr = res.data || res.items || res || [];
+                            const count = Array.isArray(arr) ? arr.length : (typeof arr.count === 'number' ? arr.count : 0);
+                            return { ...c, students: count };
+                        }
+                        
+                        return c;
                     } catch (_) {
                         return c;
                     }
@@ -939,38 +1006,65 @@
 
         // 綁定事件
         function bindEvents() {
-            // 搜尋和篩選
-            document.getElementById('searchInput').addEventListener('input', debounce(renderClasses, 300));
-            document.getElementById('subjectFilter').addEventListener('change', renderClasses);
-            document.getElementById('sortBy').addEventListener('change', renderClasses);
+            try {
+                // 搜尋和篩選
+                const searchInput = document.getElementById('searchInput');
+                const subjectFilter = document.getElementById('subjectFilter');
+                const sortBy = document.getElementById('sortBy');
+                
+                if (searchInput) searchInput.addEventListener('input', debounce(renderClasses, 300));
+                if (subjectFilter) subjectFilter.addEventListener('change', renderClasses);
+                if (sortBy) sortBy.addEventListener('change', renderClasses);
 
-            // 新增班級
-            document.getElementById('createClassBtn').addEventListener('click', (e) => {
-                if (e && typeof e.preventDefault === 'function') e.preventDefault();
-                if (e && typeof e.stopPropagation === 'function') e.stopPropagation();
-                createClass();
-            });
-
-            // 模態框控制
-            document.getElementById('cancelBtn').addEventListener('click', closeModal);
-            document.getElementById('saveBtn').addEventListener('click', saveClass);
-            document.getElementById('confirmCancel').addEventListener('click', closeConfirmModal);
-            document.getElementById('confirmDelete').addEventListener('click', confirmDelete);
-
-            // 標籤頁切換
-            document.getElementById('tabInfo').addEventListener('click', () => switchTab('info'));
-            document.getElementById('tabStudents').addEventListener('click', () => switchTab('students'));
-
-            // 學生搜尋
-            document.getElementById('searchStudentBtn').addEventListener('click', searchStudents);
-            document.getElementById('studentSearch').addEventListener('keypress', (e) => {
-                if (e.key === 'Enter') {
-                    e.preventDefault();
-                    searchStudents();
+                // 新增班級
+                const createClassBtn = document.getElementById('createClassBtn');
+                if (createClassBtn) {
+                    createClassBtn.addEventListener('click', (e) => {
+                        if (e && typeof e.preventDefault === 'function') e.preventDefault();
+                        if (e && typeof e.stopPropagation === 'function') e.stopPropagation();
+                        createClass();
+                    });
                 }
-            });
-            const createBtn = document.getElementById('createStudentBtn');
-            if (createBtn) createBtn.addEventListener('click', createAndAddStudent);
+
+                // 模態框控制
+                const cancelBtn = document.getElementById('cancelBtn');
+                const saveBtn = document.getElementById('saveBtn');
+                const confirmCancel = document.getElementById('confirmCancel');
+                const confirmDelete = document.getElementById('confirmDelete');
+                
+                if (cancelBtn) cancelBtn.addEventListener('click', closeModal);
+                if (saveBtn) saveBtn.addEventListener('click', saveClass);
+                if (confirmCancel) confirmCancel.addEventListener('click', closeConfirmModal);
+                if (confirmDelete) confirmDelete.addEventListener('click', confirmDelete);
+
+                // 標籤頁切換
+                const tabInfo = document.getElementById('tabInfo');
+                const tabStudents = document.getElementById('tabStudents');
+                
+                if (tabInfo) tabInfo.addEventListener('click', () => switchTab('info'));
+                if (tabStudents) tabStudents.addEventListener('click', () => switchTab('students'));
+
+                // 學生搜尋
+                const searchStudentBtn = document.getElementById('searchStudentBtn');
+                const studentSearch = document.getElementById('studentSearch');
+                
+                if (searchStudentBtn) searchStudentBtn.addEventListener('click', searchStudents);
+                if (studentSearch) {
+                    studentSearch.addEventListener('keypress', (e) => {
+                        if (e.key === 'Enter') {
+                            e.preventDefault();
+                            searchStudents();
+                        }
+                    });
+                }
+                
+                const createBtn = document.getElementById('createStudentBtn');
+                if (createBtn) createBtn.addEventListener('click', createAndAddStudent);
+                
+                console.log('✅ 事件綁定完成');
+            } catch (error) {
+                console.error('❌ 事件綁定失敗:', error);
+            }
         }
 
         // 防抖函數
@@ -1037,19 +1131,63 @@
                 showLoading();
 
                 if (editingId) {
-                    // 僅傳遞後端接受的欄位
-                    await apiClient.put(`/relationships/teacher-class/${editingId}`, {
-                        class_name: name,
-                        subject: subject
-                    });
+                    // 嘗試多個可能的 API 路徑進行更新
+                    let updated = false;
+                    const updatePaths = [
+                        `/relationships/teacher-class/${editingId}`,
+                        `/api/v1/relationships/teacher-class/${editingId}`,
+                        `/relationships/classes/${editingId}`,
+                        `/api/v1/relationships/classes/${editingId}`
+                    ];
+                    
+                    for (const path of updatePaths) {
+                        try {
+                            await apiClient.put(path, {
+                                class_name: name,
+                                subject: subject
+                            });
+                            updated = true;
+                            console.log('✅ 班級更新成功，使用路徑:', path);
+                            break;
+                        } catch (error) {
+                            console.log(`❌ 更新路徑 ${path} 失敗:`, error.message);
+                            continue;
+                        }
+                    }
+                    
+                    if (!updated) {
+                        throw new Error('所有更新路徑都失敗');
+                    }
                 } else {
-                    // 僅傳遞後端接受的欄位
-                    const created = await apiClient.post('/relationships/teacher-class/create-class', {
-                        class_name: name,
-                        subject: subject
-                    });
+                    // 嘗試多個可能的 API 路徑進行創建
+                    let created = null;
+                    const createPaths = [
+                        '/relationships/teacher-class/create-class',
+                        '/relationships/classes'
+                    ];
+                    
+                    for (const path of createPaths) {
+                        try {
+                            created = await apiClient.post(path, {
+                                class_name: name,
+                                subject: subject
+                            });
+                            if (created && (created.class_id || created.data || created.id)) {
+                                console.log('✅ 班級創建成功，使用路徑:', path);
+                                break;
+                            }
+                        } catch (error) {
+                            console.log(`❌ 創建路徑 ${path} 失敗:`, error.message);
+                            continue;
+                        }
+                    }
+                    
+                    if (!created) {
+                        throw new Error('所有創建路徑都失敗');
+                    }
+                    
                     // 嘗試立即進入學生管理
-                    const createdClassId = (created && (created.class_id || (created.data && created.data.class_id))) || null;
+                    const createdClassId = (created && (created.class_id || (created.data && created.data.class_id) || created.id)) || null;
                     // 先刷新列表再開啟管理
                     await loadClasses();
                     renderClasses();
@@ -1094,7 +1232,29 @@
 
             try {
                 showLoading();
-                await apiClient.delete(`/relationships/teacher-class/${pendingDeleteId}`);
+                // 嘗試多個可能的 API 路徑進行刪除
+                let deleted = false;
+                const deletePaths = [
+                    `/relationships/teacher-class/${pendingDeleteId}`,
+                    `/relationships/classes/${pendingDeleteId}`
+                ];
+                
+                for (const path of deletePaths) {
+                    try {
+                        await apiClient.delete(path);
+                        deleted = true;
+                        console.log('✅ 班級刪除成功，使用路徑:', path);
+                        break;
+                    } catch (error) {
+                        console.log(`❌ 刪除路徑 ${path} 失敗:`, error.message);
+                        continue;
+                    }
+                }
+                
+                if (!deleted) {
+                    throw new Error('所有刪除路徑都失敗');
+                }
+                
                 await loadClasses();
                 renderClasses();
                 closeConfirmModal();
@@ -1192,7 +1352,32 @@
             try {
                 resultsContainer.innerHTML = '<p style="text-align: center; color: var(--text-tertiary); padding: var(--spacing-lg);"><i class="fas fa-spinner fa-spin"></i> 搜尋中...</p>';
 
-                const res = await apiClient.get(`/relationships/students/search?kw=${encodeURIComponent(keyword)}&limit=10`);
+                // 嘗試多個可能的 API 路徑
+                let res = null;
+                const searchPaths = [
+                    `/relationships/students/search?kw=${encodeURIComponent(keyword)}&limit=10`,
+                    `/api/v1/relationships/students/search?kw=${encodeURIComponent(keyword)}&limit=10`,
+                    `/users/search?kw=${encodeURIComponent(keyword)}&limit=10`,
+                    `/api/v1/users/search?kw=${encodeURIComponent(keyword)}&limit=10`
+                ];
+                
+                for (const path of searchPaths) {
+                    try {
+                        res = await apiClient.get(path);
+                        if (res && (res.data || res.items || res)) {
+                            console.log('✅ 學生搜尋成功，使用路徑:', path);
+                            break;
+                        }
+                    } catch (error) {
+                        console.log(`❌ 搜尋路徑 ${path} 失敗:`, error.message);
+                        continue;
+                    }
+                }
+                
+                if (!res) {
+                    throw new Error('所有搜尋路徑都失敗');
+                }
+                
                 const students = res.data || res.items || res || [];
 
                 if (students.length === 0) {
@@ -1224,7 +1409,32 @@
             try {
                 container.innerHTML = '<p style="text-align: center; color: var(--text-tertiary); padding: var(--spacing-lg);"><i class="fas fa-spinner fa-spin"></i> 載入中...</p>';
 
-                const res = await apiClient.get(`/relationships/classes/${classId}/students`);
+                // 嘗試多個可能的 API 路徑
+                let res = null;
+                const loadPaths = [
+                    `/relationships/classes/${classId}/students`,
+                    `/api/v1/relationships/classes/${classId}/students`,
+                    `/relationships/teacher-class/${classId}/students`,
+                    `/api/v1/relationships/teacher-class/${classId}/students`
+                ];
+                
+                for (const path of loadPaths) {
+                    try {
+                        res = await apiClient.get(path);
+                        if (res && (res.data || res.items || res)) {
+                            console.log('✅ 班級學生載入成功，使用路徑:', path);
+                            break;
+                        }
+                    } catch (error) {
+                        console.log(`❌ 載入路徑 ${path} 失敗:`, error.message);
+                        continue;
+                    }
+                }
+                
+                if (!res) {
+                    throw new Error('所有載入路徑都失敗');
+                }
+                
                 const students = res.data || res.items || res || [];
 
                 if (students.length === 0) {
@@ -1255,7 +1465,31 @@
 
             try {
                 showLoading();
-                await apiClient.post(`/relationships/classes/${editingId}/students`, { student_id: studentId });
+                // 嘗試多個可能的 API 路徑
+                let added = false;
+                const addPaths = [
+                    `/relationships/classes/${editingId}/students`,
+                    `/api/v1/relationships/classes/${editingId}/students`,
+                    `/relationships/teacher-class/${editingId}/students`,
+                    `/api/v1/relationships/teacher-class/${editingId}/students`
+                ];
+                
+                for (const path of addPaths) {
+                    try {
+                        await apiClient.post(path, { student_id: studentId });
+                        added = true;
+                        console.log('✅ 學生加入班級成功，使用路徑:', path);
+                        break;
+                    } catch (error) {
+                        console.log(`❌ 加入路徑 ${path} 失敗:`, error.message);
+                        continue;
+                    }
+                }
+                
+                if (!added) {
+                    throw new Error('所有加入路徑都失敗');
+                }
+                
                 await loadClassStudents(editingId);
                 showAlert(`已將 ${studentName} 加入班級`, 'success');
             } catch (e) {
@@ -1290,17 +1524,83 @@
                 };
                 let studentId = null;
                 try {
-                    const created = await apiClient.post('/users', payload);
-                    studentId = (created && (created.id || (created.data && created.data.id))) || null;
+                    // 嘗試多個可能的 API 路徑進行創建
+                    let created = null;
+                    const createPaths = [
+                        '/users',
+                        '/api/v1/users',
+                        '/relationships/users',
+                        '/api/v1/relationships/users'
+                    ];
+                    
+                    for (const path of createPaths) {
+                        try {
+                            created = await apiClient.post(path, payload);
+                            if (created && (created.id || created.data || created.data?.id)) {
+                                console.log('✅ 學生創建成功，使用路徑:', path);
+                                break;
+                            }
+                        } catch (error) {
+                            console.log(`❌ 創建路徑 ${path} 失敗:`, error.message);
+                            continue;
+                        }
+                    }
+                    
+                    if (created) {
+                        studentId = (created && (created.id || (created.data && created.data.id))) || null;
+                    } else {
+                        // 若創建失敗，嘗試搜尋取得 id
+                        const searchPaths = [
+                            `/relationships/students/search?kw=${encodeURIComponent(email)}&limit=1`,
+                            `/api/v1/relationships/students/search?kw=${encodeURIComponent(email)}&limit=1`,
+                            `/users/search?kw=${encodeURIComponent(email)}&limit=1`,
+                            `/api/v1/users/search?kw=${encodeURIComponent(email)}&limit=1`
+                        ];
+                        
+                        for (const path of searchPaths) {
+                            try {
+                                const found = await apiClient.get(path);
+                                const arr = found && (found.data || found.items || found) || [];
+                                if (Array.isArray(arr) && arr.length > 0) {
+                                    studentId = arr[0].id;
+                                    console.log('✅ 學生搜尋成功，使用路徑:', path);
+                                    break;
+                                }
+                            } catch (error) {
+                                console.log(`❌ 搜尋路徑 ${path} 失敗:`, error.message);
+                                continue;
+                            }
+                        }
+                    }
                 } catch (err) {
-                    // 若已存在則嘗試搜尋取得 id
-                    const found = await apiClient.get(`/relationships/students/search?kw=${encodeURIComponent(email)}&limit=1`);
-                    const arr = found && (found.data || found.items || found) || [];
-                    if (Array.isArray(arr) && arr.length > 0) studentId = arr[0].id;
+                    console.error('學生創建或搜尋失敗:', err);
                 }
                 if (!studentId) throw new Error('建立或取得學生資料失敗');
                 // 2) 加入班級
-                await apiClient.post(`/relationships/classes/${editingId}/students`, { student_id: studentId, student_number: stuNo || null });
+                let added = false;
+                const addPaths = [
+                    `/relationships/classes/${editingId}/students`,
+                    `/api/v1/relationships/classes/${editingId}/students`,
+                    `/relationships/teacher-class/${editingId}/students`,
+                    `/api/v1/relationships/teacher-class/${editingId}/students`
+                ];
+                
+                for (const path of addPaths) {
+                    try {
+                        await apiClient.post(path, { student_id: studentId, student_number: stuNo || null });
+                        added = true;
+                        console.log('✅ 學生加入班級成功，使用路徑:', path);
+                        break;
+                    } catch (error) {
+                        console.log(`❌ 加入路徑 ${path} 失敗:`, error.message);
+                        continue;
+                    }
+                }
+                
+                if (!added) {
+                    throw new Error('所有加入路徑都失敗');
+                }
+                
                 await loadClassStudents(editingId);
                 showAlert('學生已建立並加入班級', 'success');
                 // 清空欄位
@@ -1326,7 +1626,31 @@
 
             try {
                 showLoading();
-                await apiClient.delete(`/relationships/classes/${editingId}/students/${studentId}`);
+                // 嘗試多個可能的 API 路徑
+                let removed = false;
+                const removePaths = [
+                    `/relationships/classes/${editingId}/students/${studentId}`,
+                    `/api/v1/relationships/classes/${editingId}/students/${studentId}`,
+                    `/relationships/teacher-class/${editingId}/students/${studentId}`,
+                    `/api/v1/relationships/teacher-class/${editingId}/students/${studentId}`
+                ];
+                
+                for (const path of removePaths) {
+                    try {
+                        await apiClient.delete(path);
+                        removed = true;
+                        console.log('✅ 學生移除成功，使用路徑:', path);
+                        break;
+                    } catch (error) {
+                        console.log(`❌ 移除路徑 ${path} 失敗:`, error.message);
+                        continue;
+                    }
+                }
+                
+                if (!removed) {
+                    throw new Error('所有移除路徑都失敗');
+                }
+                
                 await loadClassStudents(editingId);
                 showAlert(`已將 ${studentName} 從班級移除`, 'success');
             } catch (e) {

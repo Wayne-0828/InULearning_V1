@@ -60,23 +60,25 @@ class TeacherAuthManager {
             
             const response = await apiClient.post('/auth/login', { email, password });
 
-            if (response.success) {
+            if (response.access_token) {
                 // 儲存 token 和用戶資訊
-                // 兼容不同回傳格式
-                const token = response.access_token || (response.data && response.data.token);
-                const user = response.user || (response.data && response.data.user);
-                if (token) this.setToken(token);
-                if (user) this.setUser(user);
+                const token = response.access_token;
+                const user = response.user || { email: email, name: email.split('@')[0] };
+                
+                this.setToken(token);
+                this.setUser(user);
+                
+                console.log('✅ 登入成功，token 已保存:', token.substring(0, 20) + '...');
                 
                 // 更新 UI
                 this.updateUI();
                 
-                // 重定向到儀表板
-                window.location.href = 'index.html';
+                // 重定向到班級管理頁面
+                window.location.href = 'pages/classes-enhanced.html';
                 
                 return { success: true, message: '登入成功' };
             } else {
-                return { success: false, message: response.message || '登入失敗' };
+                return { success: false, message: response.detail || '登入失敗' };
             }
         } catch (error) {
             console.error('登入錯誤:', error);

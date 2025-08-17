@@ -7,33 +7,68 @@ class AssignmentsManager {
         this.currentMonth = new Date();
         // 與 apiClient 統一，由 apiClient.baseUrl 決定 domain；此處只偵測 path
         this.apiPathCandidates = [
-            '/assignments',
-            '/learning/assignments'
+            '/learning/assignments/'
         ];
-        this.apiPath = '/assignments';
+        this.apiPath = '/learning/assignments/';
         this.editingId = null;
 
         this.init();
     }
 
     async init() {
-        await this.detectApiPath();
-        await this.loadAssignments();
-        this.setupEventListeners();
-        this.renderAssignments();
-        this.updateStats();
-        this.renderCalendar();
+        try {
+            // 延遲初始化以確保 DOM 完全載入
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', () => this.initApp());
+            } else {
+                // 如果 DOM 已經載入，延遲一點執行以確保所有元素都存在
+                setTimeout(() => this.initApp(), 100);
+            }
+        } catch (error) {
+            console.error('❌ 初始化失敗:', error);
+        }
+    }
+
+    async initApp() {
+        try {
+            // 檢查認證狀態
+            if (!teacherAuth.isLoggedIn()) {
+                console.log('❌ 用戶未登入，重定向到登入頁面');
+                window.location.href = '../login.html';
+                return;
+            }
+            
+            console.log('✅ 用戶已登入，開始初始化作業管理...');
+            
+            await this.detectApiPath();
+            await this.loadAssignments();
+            this.setupEventListeners();
+            this.renderAssignments();
+            this.updateStats();
+            this.renderCalendar();
+            console.log('✅ 作業管理初始化完成');
+        } catch (error) {
+            console.error('❌ 作業管理初始化失敗:', error);
+        }
     }
 
     async detectApiPath() {
         for (const p of this.apiPathCandidates) {
             try {
-                await apiClient.get(p);
-                this.apiPath = p;
-                return;
-            } catch (_) { /* try next */ }
+                const response = await apiClient.get(p);
+                // 檢查回應是否有效
+                if (response && (Array.isArray(response) || response.items || response.assignments || response.results)) {
+                    this.apiPath = p;
+                    console.log('✅ 檢測到有效 API 路徑:', p);
+                    return;
+                }
+            } catch (error) { 
+                console.log(`❌ API 路徑 ${p} 檢測失敗:`, error.message);
+                continue;
+            }
         }
-        // 若都失敗，維持預設 '/assignments'，後續會回退到模擬資料
+        // 若都失敗，維持預設路徑，後續會回退到模擬資料
+        console.warn('⚠️ 所有 API 路徑檢測失敗，使用預設路徑:', this.apiPath);
     }
 
     async loadAssignments() {
@@ -41,10 +76,16 @@ class AssignmentsManager {
             const data = await apiClient.get(this.apiPath);
             this.assignments = Array.isArray(data) ? data : (data.items || data.assignments || data.results || []);
             if (!Array.isArray(this.assignments)) this.assignments = [];
-                console.log('✅ 成功載入真實作業資料');
+            console.log('✅ 成功載入真實作業資料');
         } catch (error) {
             console.log('⚠️ API 載入失敗，使用模擬資料:', error.message);
-            this.assignments = this.getMockAssignments();
+            // 只在開發環境使用模擬資料，生產環境應該顯示錯誤
+            if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+                this.assignments = this.getMockAssignments();
+            } else {
+                this.assignments = [];
+                console.error('生產環境不應使用模擬資料');
+            }
         }
         this.filteredAssignments = [...this.assignments];
     }
@@ -97,25 +138,41 @@ class AssignmentsManager {
     }
 
     setupEventListeners() {
-        // 搜尋/篩選
-        document.getElementById('searchInput')?.addEventListener('input', () => this.filterAssignments());
-        document.getElementById('statusFilter')?.addEventListener('change', () => this.filterAssignments());
-        document.getElementById('subjectFilter')?.addEventListener('change', () => this.filterAssignments());
+        try {
+            // 搜尋/篩選
+            const searchInput = document.getElementById('searchInput');
+            const statusFilter = document.getElementById('statusFilter');
+            const subjectFilter = document.getElementById('subjectFilter');
+            
+            if (searchInput) searchInput.addEventListener('input', () => this.filterAssignments());
+            if (statusFilter) statusFilter.addEventListener('change', () => this.filterAssignments());
+            if (subjectFilter) subjectFilter.addEventListener('change', () => this.filterAssignments());
 
-        // 視圖切換
-        document.querySelectorAll('.view-btn').forEach(btn => {
-            btn.addEventListener('click', (e) => {
-                this.switchView(e.currentTarget.dataset.view);
+            // 視圖切換
+            const viewButtons = document.querySelectorAll('.view-btn');
+            viewButtons.forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    this.switchView(e.currentTarget.dataset.view);
+                });
             });
-        });
 
-        // Modal 綁定
-        // 將原本 HTML onclick 之外，再補強事件委派，避免某些按鈕無效
-        const openBtn = document.querySelector('.btn.btn-primary[onclick="createAssignment()"]');
-        if (openBtn) openBtn.addEventListener('click', (e) => { e.preventDefault(); this.openModal(); });
-        document.getElementById('assignmentModalClose')?.addEventListener('click', () => this.closeModal());
-        document.getElementById('assignmentCancelBtn')?.addEventListener('click', () => this.closeModal());
-        document.getElementById('assignmentSaveBtn')?.addEventListener('click', () => this.handleSave());
+            // Modal 綁定
+            // 將原本 HTML onclick 之外，再補強事件委派，避免某些按鈕無效
+            const openBtn = document.querySelector('.btn.btn-primary[onclick="createAssignment()"]');
+            if (openBtn) openBtn.addEventListener('click', (e) => { e.preventDefault(); this.openModal(); });
+            
+            const modalClose = document.getElementById('assignmentModalClose');
+            const cancelBtn = document.getElementById('assignmentCancelBtn');
+            const saveBtn = document.getElementById('assignmentSaveBtn');
+            
+            if (modalClose) modalClose.addEventListener('click', () => this.closeModal());
+            if (cancelBtn) cancelBtn.addEventListener('click', () => this.closeModal());
+            if (saveBtn) saveBtn.addEventListener('click', () => this.handleSave());
+            
+            console.log('✅ 作業管理事件綁定完成');
+        } catch (error) {
+            console.error('❌ 作業管理事件綁定失敗:', error);
+        }
     }
 
     openModal(title = '新增作業', assignment = null) {
@@ -470,10 +527,13 @@ class QuizBuilder {
             qPage: 1,
             qPageSize: 10,
             qTotal: 0,
-            qFilters: { q: '', difficulty: '', knowledge: '' }
+            qFilters: { q: '', difficulty: '', knowledge: '' },
+            grade: '',
+            publisher: '',
+            chapter: ''
         };
         this.assignmentsPath = '/assignments';
-        this.questionsPath = '/questions';
+        this.questionsPath = '/api/v1/questions';
         this.classesPath = '/relationships/teacher-class';
         this.maxQuestions = 50;
         this.init();
@@ -485,6 +545,11 @@ class QuizBuilder {
         document.getElementById('quizPrevBtn')?.addEventListener('click', () => this.prev());
         document.getElementById('quizNextBtn')?.addEventListener('click', () => this.next());
         document.getElementById('quizPublishBtn')?.addEventListener('click', () => this.publish());
+
+        // 年級、出版社和章節選擇事件
+        document.getElementById('quizGrade')?.addEventListener('change', () => this.onGradeChange());
+        document.getElementById('quizPublisher')?.addEventListener('change', () => this.onPublisherChange());
+        document.getElementById('quizChapter')?.addEventListener('change', () => this.onChapterChange());
 
         // 條件與清單的事件
         document.getElementById('qSearch')?.addEventListener('input', this.debounce(() => { this.state.qPage = 1; this.loadQuestionList(); }, 300));
@@ -498,18 +563,25 @@ class QuizBuilder {
         this.open();
         // 並行載入資料（不阻塞 UI）
         this.loadClasses();
-        this.loadQuestionList();
+        // 不立即載入題目，等待版本和單元選擇
+        this.renderQuestionList([]);
     }
 
     open() {
         const m = document.getElementById('quizModal');
-        if (m) { m.style.display = 'flex'; }
+        if (m) { 
+            m.style.display = 'flex';
+            m.classList.add('show');
+        }
         this.toStep(1);
     }
 
     close() {
         const m = document.getElementById('quizModal');
-        if (m) { m.style.display = 'none'; }
+        if (m) { 
+            m.style.display = 'none';
+            m.classList.remove('show');
+        }
     }
 
     toStep(n) {
@@ -518,13 +590,27 @@ class QuizBuilder {
             const el = document.getElementById(id);
             if (el) el.style.display = (idx + 1 === n) ? 'block' : 'none';
         });
-        document.getElementById('quizPrevBtn').disabled = (n === 1);
-        document.getElementById('quizNextBtn').style.display = (n < 3) ? 'inline-block' : 'none';
-        document.getElementById('quizPublishBtn').style.display = (n === 3) ? 'inline-block' : 'none';
-        // 指示器
-        document.getElementById('quizStep1Dot').className = 'badge' + (n===1?'':'');
-        document.getElementById('quizStep2Dot').className = 'badge' + (n===2?'':'');
-        document.getElementById('quizStep3Dot').className = 'badge' + (n===3?'':'');
+        
+        // 安全地設置按鈕狀態
+        const prevBtn = document.getElementById('quizPrevBtn');
+        if (prevBtn) prevBtn.disabled = (n === 1);
+        
+        const nextBtn = document.getElementById('quizNextBtn');
+        if (nextBtn) nextBtn.style.display = (n < 3) ? 'inline-block' : 'none';
+        
+        const publishBtn = document.getElementById('quizPublishBtn');
+        if (publishBtn) publishBtn.style.display = (n === 3) ? 'inline-block' : 'none';
+        
+        // 安全地設置指示器
+        const step1Dot = document.getElementById('quizStep1Dot');
+        if (step1Dot) step1Dot.className = 'badge' + (n===1?'':'');
+        
+        const step2Dot = document.getElementById('quizStep2Dot');
+        if (step2Dot) step2Dot.className = 'badge' + (n===2?'':'');
+        
+        const step3Dot = document.getElementById('quizStep3Dot');
+        if (step3Dot) step3Dot.className = 'badge' + (n===3?'':'');
+        
         if (n === 3) this.renderPreview();
     }
 
@@ -546,9 +632,131 @@ class QuizBuilder {
             if (this.state.timeLimit < 5 || this.state.timeLimit > 180) return alert('限時需介於 5-180 分鐘');
         }
         if (this.state.step === 2) {
+            // 檢查年級、出版社和章節是否已選擇
+            if (!this.state.grade) return alert('請選擇年級');
+            if (!this.state.publisher) return alert('請選擇出版社');
+            if (!this.state.chapter) return alert('請選擇章節');
             if (this.state.selectedQuestions.length === 0) return alert('請至少選擇 1 題');
         }
         this.toStep(this.state.step + 1);
+    }
+
+    // 年級變更處理
+    onGradeChange() {
+        const grade = document.getElementById('quizGrade').value;
+        this.state.grade = grade;
+        
+        // 清空出版社和章節選擇
+        const publisherSelect = document.getElementById('quizPublisher');
+        const chapterSelect = document.getElementById('quizChapter');
+        publisherSelect.value = '';
+        chapterSelect.innerHTML = '<option value="">請先選擇年級和出版社</option>';
+        
+        // 清空題目列表
+        this.state.selectedQuestions = [];
+        this.renderSelected();
+        this.renderQuestionList([]);
+    }
+
+    // 出版社變更處理
+    onPublisherChange() {
+        const publisher = document.getElementById('quizPublisher').value;
+        this.state.publisher = publisher;
+        
+        // 清空章節選擇
+        const chapterSelect = document.getElementById('quizChapter');
+        chapterSelect.innerHTML = '<option value="">請選擇章節</option>';
+        
+        if (publisher && this.state.grade) {
+            // 根據年級和出版社載入對應的章節
+            this.loadChaptersByGradeAndPublisher(this.state.grade, publisher);
+        }
+        
+        // 清空題目列表
+        this.state.selectedQuestions = [];
+        this.renderSelected();
+        this.renderQuestionList([]);
+    }
+
+    // 章節變更處理
+    onChapterChange() {
+        const chapter = document.getElementById('quizChapter').value;
+        this.state.chapter = chapter;
+        
+        if (chapter) {
+            // 載入該章節的題目
+            this.state.qPage = 1;
+            this.loadQuestionList();
+        } else {
+            // 清空題目列表
+            this.renderQuestionList([]);
+        }
+    }
+
+    // 根據年級和出版社載入章節
+    async loadChaptersByGradeAndPublisher(grade, publisher) {
+        const chapterSelect = document.getElementById('quizChapter');
+        
+        try {
+            // 從資料庫查詢該年級和出版社的章節
+            const params = new URLSearchParams();
+            params.append('grade', grade);
+            params.append('publisher', publisher);
+            params.append('page_size', 100); // 獲取較多章節
+            
+            const data = await apiClient.get(`${this.questionsPath}?${params.toString()}`);
+            const questions = Array.isArray(data) ? data : (data.items || data.results || data.questions || []);
+            
+            // 提取唯一的章節
+            const chapters = [...new Set(questions.map(q => q.chapter).filter(Boolean))];
+            
+            // 排序章節
+            chapters.sort();
+            
+            // 清空並重新填充章節選項
+            chapterSelect.innerHTML = '<option value="">請選擇章節</option>';
+            chapters.forEach(chapter => {
+                const option = document.createElement('option');
+                option.value = chapter;
+                option.textContent = chapter;
+                chapterSelect.appendChild(option);
+            });
+            
+            console.log(`✅ 載入章節成功: ${grade} ${publisher}, 共 ${chapters.length} 個章節`);
+            
+        } catch (error) {
+            console.error('❌ 載入章節失敗:', error);
+            // 如果 API 失敗，使用靜態數據作為備用
+            this.loadStaticChapters(grade, publisher);
+        }
+    }
+
+    // 靜態章節數據作為備用
+    loadStaticChapters(grade, publisher) {
+        const chapterSelect = document.getElementById('quizChapter');
+        
+        // 根據年級和出版社提供靜態章節選項
+        const staticChapters = {
+            '7A': {
+                '康軒': ['第一章 數與式', '第二章 多項式', '第三章 二次函數'],
+                '翰林': ['第一單元 數與式', '第二單元 多項式', '第三單元 二次函數'],
+                '南一': ['單元一 數與式', '單元二 多項式', '單元三 二次函數']
+            },
+            '7B': {
+                '康軒': ['第四章 指數與對數', '第五章 統計', '第六章 機率'],
+                '翰林': ['第四單元 指數與對數', '第五單元 統計', '第六單元 機率'],
+                '南一': ['單元四 指數與對數', '單元五 統計', '單元六 機率']
+            }
+            // 可以繼續添加其他年級的章節
+        };
+        
+        const chapters = staticChapters[grade]?.[publisher] || [];
+        chapters.forEach(chapter => {
+            const option = document.createElement('option');
+            option.value = chapter;
+            option.textContent = chapter;
+            chapterSelect.appendChild(option);
+        });
     }
 
     async loadClasses() {
@@ -561,6 +769,12 @@ class QuizBuilder {
     }
 
     async loadQuestionList() {
+        // 檢查是否已選擇年級、出版社和章節
+        if (!this.state.grade || !this.state.publisher || !this.state.chapter) {
+            this.renderQuestionList([]);
+            return;
+        }
+
         const params = new URLSearchParams();
         const q = document.getElementById('qSearch')?.value.trim() || '';
         const diff = document.getElementById('qDifficulty')?.value || '';
@@ -571,6 +785,10 @@ class QuizBuilder {
         params.append('page', String(this.state.qPage));
         params.append('page_size', String(this.state.qPageSize));
         if (this.state.subject) params.append('subject', this.state.subject);
+        if (this.state.grade) params.append('grade', this.state.grade);
+        if (this.state.publisher) params.append('publisher', this.state.publisher);
+        if (this.state.chapter) params.append('chapter', this.state.chapter);
+        
         let list = [];
         try {
             const data = await apiClient.get(`${this.questionsPath}?${params.toString()}`);
@@ -588,7 +806,8 @@ class QuizBuilder {
         if (!wrap) return;
         if (!list.length) {
             wrap.innerHTML = `<div style="color:var(--text-light);text-align:center;padding:2rem;">沒有符合條件的題目</div>`;
-            document.getElementById('qPagerHint').textContent = '';
+            const pagerHint = document.getElementById('qPagerHint');
+            if (pagerHint) pagerHint.textContent = '';
             return;
         }
         const selectedSet = new Set(this.state.selectedQuestions.map(q => q.id));
@@ -622,7 +841,8 @@ class QuizBuilder {
             });
         });
         const maxPage = Math.max(1, Math.ceil(this.state.qTotal / this.state.qPageSize));
-        document.getElementById('qPagerHint').textContent = `第 ${this.state.qPage}/${maxPage} 頁，共 ${this.state.qTotal} 題`;
+        const pagerHint = document.getElementById('qPagerHint');
+        if (pagerHint) pagerHint.textContent = `第 ${this.state.qPage}/${maxPage} 頁，共 ${this.state.qTotal} 題`;
     }
 
     renderSelected() {

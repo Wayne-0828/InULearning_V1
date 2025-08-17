@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>測試出考卷功能</title>
+</head>
+<body>
+    <h1>測試出考卷功能</h1>
+    
+    <div>
+        <h2>測試步驟</h2>
+        <ol>
+            <li>點擊「測試認證檢查」按鈕</li>
+            <li>點擊「測試 API 路徑檢測」按鈕</li>
+            <li>點擊「測試載入作業」按鈕</li>
+            <li>點擊「測試出考卷按鈕」按鈕</li>
+        </ol>
+    </div>
+    
+    <div style="margin: 20px 0;">
+        <button onclick="testAuth()">測試認證檢查</button>
+        <button onclick="testApiPath()">測試 API 路徑檢測</button>
+        <button onclick="testLoadAssignments()">測試載入作業</button>
+        <button onclick="testQuizBuilder()">測試出考卷按鈕</button>
+    </div>
+    
+    <div id="result"></div>
+
+    <script>
+        // 模擬 apiClient
+        const apiClient = {
+            baseUrl: 'http://localhost/api/v1',
+            getToken() {
+                return localStorage.getItem('auth_token') || sessionStorage.getItem('auth_token') || '';
+            },
+            async request(path, options = {}) {
+                const url = `${this.baseUrl}${path}`;
+                const headers = Object.assign({ 
+                    'Content-Type': 'application/json', 
+                    'Accept': 'application/json' 
+                }, options.headers || {});
+                
+                const token = this.getToken();
+                if (token) {
+                    headers['Authorization'] = `Bearer ${token}`;
+                    console.log('✅ 使用 token:', token.substring(0, 20) + '...');
+                } else {
+                    console.log('❌ 沒有找到 token');
+                }
+                
+                console.log('🌐 發送請求到:', url);
+                console.log('📋 請求頭:', headers);
+                
+                try {
+                    const res = await fetch(url, { ...options, headers });
+                    console.log('📡 回應狀態:', res.status, res.statusText);
+                    
+                    let data = {};
+                    try { 
+                        data = await res.json(); 
+                        console.log('📄 回應數據:', data);
+                    } catch (_) {
+                        console.log('❌ 無法解析 JSON 回應');
+                    }
+                    
+                    if (!res.ok) {
+                        throw new Error(data.detail || data.message || 'Request failed');
+                    }
+                    
+                    return data;
+                } catch (error) {
+                    console.error('❌ 請求失敗:', error);
+                    throw error;
+                }
+            },
+            get(path) { return this.request(path, { method: 'GET' }); },
+            post(path, body) { return this.request(path, { method: 'POST', body: JSON.stringify(body) }); }
+        };
+
+        // 模擬 teacherAuth
+        const teacherAuth = {
+            isLoggedIn() {
+                const token = this.getToken();
+                return token && !this.isTokenExpired(token);
+            },
+            getToken() {
+                return localStorage.getItem('auth_token') || sessionStorage.getItem('auth_token') || '';
+            },
+            isTokenExpired(token) {
+                try {
+                    const payload = JSON.parse(atob(token.split('.')[1]));
+                    return payload.exp * 1000 < Date.now();
+                } catch (error) {
+                    return true;
+                }
+            }
+        };
+
+        // 測試認證檢查
+        async function testAuth() {
+            try {
+                console.log('🔐 測試認證檢查...');
+                
+                // 設置測試 token
+                const testToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI5IiwiZW1haWwiOiJ0ZWFjaGVyMDFAdGVzdC5jb20iLCJyb2xlIjoidGVhY2hlciIsImV4cCI6MTc1NTQ0MzM4MX0.aku3XAS5TLZ_oX-BrM169PvqKZ2pGbSp__WffgcikeM';
+                localStorage.setItem('auth_token', testToken);
+                
+                const isLoggedIn = teacherAuth.isLoggedIn();
+                console.log('✅ 認證狀態:', isLoggedIn);
+                
+                document.getElementById('result').innerHTML = `
+                    <div style="color: green; padding: 10px; border: 1px solid green;">
+                        ✅ 認證檢查成功<br>
+                        登入狀態: ${isLoggedIn ? '已登入' : '未登入'}<br>
+                        Token: ${testToken.substring(0, 20)}...
+                    </div>
+                `;
+                
+            } catch (error) {
+                console.error('❌ 認證檢查失敗:', error);
+                document.getElementById('result').innerHTML = `
+                    <div style="color: red; padding: 10px; border: 1px solid red;">
+                        ❌ 認證檢查失敗<br>
+                        錯誤: ${error.message}
+                    </div>
+                `;
+            }
+        }
+
+        // 測試 API 路徑檢測
+        async function testApiPath() {
+            try {
+                console.log('🔍 測試 API 路徑檢測...');
+                
+                const apiPath = '/learning/assignments/';
+                const response = await apiClient.get(apiPath);
+                
+                if (response && (Array.isArray(response) || response.items || response.assignments || response.results)) {
+                    console.log('✅ API 路徑檢測成功:', apiPath);
+                    document.getElementById('result').innerHTML = `
+                        <div style="color: green; padding: 10px; border: 1px solid green;">
+                            ✅ API 路徑檢測成功<br>
+                            路徑: ${apiPath}<br>
+                            回應類型: ${Array.isArray(response) ? 'Array' : 'Object'}<br>
+                            數據長度: ${Array.isArray(response) ? response.length : 'N/A'}
+                        </div>
+                    `;
+                } else {
+                    throw new Error('回應格式不正確');
+                }
+                
+            } catch (error) {
+                console.error('❌ API 路徑檢測失敗:', error);
+                document.getElementById('result').innerHTML = `
+                    <div style="color: red; padding: 10px; border: 1px solid red;">
+                        ❌ API 路徑檢測失敗<br>
+                        錯誤: ${error.message}
+                    </div>
+                `;
+            }
+        }
+
+        // 測試載入作業
+        async function testLoadAssignments() {
+            try {
+                console.log('📚 測試載入作業...');
+                
+                const data = await apiClient.get('/learning/assignments/');
+                const assignments = Array.isArray(data) ? data : (data.items || data.assignments || data.results || []);
+                
+                if (Array.isArray(assignments)) {
+                    console.log('✅ 載入作業成功:', assignments.length, '個作業');
+                    document.getElementById('result').innerHTML = `
+                        <div style="color: green; padding: 10px; border: 1px solid green;">
+                            ✅ 載入作業成功<br>
+                            作業數量: ${assignments.length}<br>
+                            第一個作業: ${assignments[0] ? assignments[0].title : '無'}
+                        </div>
+                    `;
+                } else {
+                    throw new Error('作業數據格式不正確');
+                }
+                
+            } catch (error) {
+                console.error('❌ 載入作業失敗:', error);
+                document.getElementById('result').innerHTML = `
+                    <div style="color: red; padding: 10px; border: 1px solid red;">
+                        ❌ 載入作業失敗<br>
+                        錯誤: ${error.message}
+                    </div>
+                `;
+            }
+        }
+
+        // 測試出考卷按鈕
+        function testQuizBuilder() {
+            try {
+                console.log('📝 測試出考卷按鈕...');
+                
+                // 檢查是否所有必要的函數都存在
+                if (typeof openQuizBuilder === 'function') {
+                    console.log('✅ openQuizBuilder 函數存在');
+                } else {
+                    console.log('❌ openQuizBuilder 函數不存在');
+                }
+                
+                document.getElementById('result').innerHTML = `
+                    <div style="color: green; padding: 10px; border: 1px solid green;">
+                        ✅ 出考卷按鈕測試完成<br>
+                        注意：這只是函數存在性檢查，實際功能需要在真實頁面中測試
+                    </div>
+                `;
+                
+            } catch (error) {
+                console.error('❌ 出考卷按鈕測試失敗:', error);
+                document.getElementById('result').innerHTML = `
+                    <div style="color: red; padding: 10px; border: 1px solid red;">
+                        ❌ 出考卷按鈕測試失敗<br>
+                        錯誤: ${error.message}
+                    </div>
+                `;
+            }
+        }
+    </script>
+</body>
+</html>
