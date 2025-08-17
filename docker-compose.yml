@@ -96,7 +96,7 @@ services:
       - SECRET_KEY=your-secret-key-here-change-in-production
       - ALGORITHM=HS256
       - ACCESS_TOKEN_EXPIRE_MINUTES=30
-      - CORS_ORIGINS=["http://localhost:3000","http://localhost:8080","http://localhost:8081","http://localhost:8082"]
+      - CORS_ORIGINS=["http://localhost:3000","http://localhost:8080","http://localhost:8081","http://localhost:8082","http://202.5.251.48"]
     ports:
       - "8001:8000"
     depends_on:
@@ -121,7 +121,7 @@ services:
       - MINIO_ACCESS_KEY=aipe-tester
       - MINIO_SECRET_KEY=aipe-tester
       - MINIO_BUCKET_NAME=question-bank
-      - CORS_ORIGINS=["http://localhost:3000","http://localhost:8080","http://localhost:8081","http://localhost:8082"]
+      - CORS_ORIGINS=["http://localhost:3000","http://localhost:8080","http://localhost:8081","http://localhost:8082","http://202.5.251.48"]
     ports:
       - "8002:8000"
     depends_on:
@@ -184,7 +184,7 @@ services:
       REDIS_URL: redis://redis:6379/0
       AUTH_SERVICE_URL: http://auth-service:8000
       QUESTION_BANK_SERVICE_URL: http://question-bank-service:8000
-      CORS_ORIGINS: '["http://localhost","http://localhost:3000","http://localhost:8080","http://localhost:8081","http://localhost:8082","http://localhost:8083"]'
+      CORS_ORIGINS: '["http://localhost","http://localhost:3000","http://localhost:8080","http://localhost:8081","http://localhost:8082","http://localhost:8083","http://202.5.251.48"]'
       SECRET_KEY: your-secret-key-change-in-production
       ALGORITHM: HS256
       JWT_SECRET_KEY: your-secret-key-change-in-production
@@ -272,7 +272,7 @@ services:
     ports:
       - "8080:80"
     environment:
-      - API_BASE_URL=http://localhost/api
+      - API_BASE_URL=${PUBLIC_BASE_URL}/api
     networks:
       - inulearning_network
     volumes:
@@ -289,7 +289,7 @@ services:
     ports:
       - "8081:80"
     environment:
-      - API_BASE_URL=http://localhost/api
+      - API_BASE_URL=${PUBLIC_BASE_URL}/api
     networks:
       - inulearning_network
     volumes:
@@ -305,7 +305,7 @@ services:
     ports:
       - "8082:80"
     environment:
-      - API_BASE_URL=http://localhost/api
+      - API_BASE_URL=${PUBLIC_BASE_URL}/api
     networks:
       - inulearning_network
     volumes:
@@ -321,7 +321,7 @@ services:
     ports:
       - "8083:80"
     environment:
-      - API_BASE_URL=http://localhost/api
+      - API_BASE_URL=${PUBLIC_BASE_URL}/api
     networks:
       - inulearning_network
     volumes:
