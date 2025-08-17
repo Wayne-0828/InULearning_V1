@@ -272,7 +272,7 @@ services:
     ports:
       - "8080:80"
     environment:
-      - API_BASE_URL=${PUBLIC_BASE_URL}/api
+      - API_BASE_URL=/api
     networks:
       - inulearning_network
     volumes:
@@ -289,7 +289,7 @@ services:
     ports:
       - "8081:80"
     environment:
-      - API_BASE_URL=${PUBLIC_BASE_URL}/api
+      - API_BASE_URL=/api
     networks:
       - inulearning_network
     volumes:
@@ -305,7 +305,7 @@ services:
     ports:
       - "8082:80"
     environment:
-      - API_BASE_URL=${PUBLIC_BASE_URL}/api
+      - API_BASE_URL=/api
     networks:
       - inulearning_network
     volumes:
@@ -321,7 +321,7 @@ services:
     ports:
       - "8083:80"
     environment:
-      - API_BASE_URL=${PUBLIC_BASE_URL}/api
+      - API_BASE_URL=/api
     networks:
       - inulearning_network
     volumes:
