@@ -260,14 +260,20 @@
             font-size: 0.9rem;
         }
 
-        .action-btn.primary {
-            background: var(--primary-blue);
+        /* 統一綠色按鈕樣式（右側快速操作除外） */
+        .action-btn.primary,
+        .action-btn.secondary,
+        .btn.btn-primary,
+        .view-btn.active {
+            background: #10B981; /* 綠色 */
             color: #fff;
+            border: none;
         }
 
-        .action-btn.secondary {
-            background: #F3F4F6;
-            color: var(--text-dark);
+        .btn.btn-secondary { /* 次要按鈕也改為綠色，保持一致 */
+            background: #10B981;
+            color: #fff;
+            border: none;
         }
 
         .action-btn:hover {
@@ -294,26 +300,40 @@
             font-size: 1.1rem;
         }
 
-        .quick-action-btn {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            width: 100%;
-            padding: 0.75rem;
-            border: none;
-            border-radius: 8px;
-            background: #F8FAFC;
-            color: var(--text-dark);
-            cursor: pointer;
-            transition: all 0.2s ease;
-            margin-bottom: 0.5rem;
-            text-align: left;
+        .action-btn:hover,
+        .btn:hover,
+        .view-btn.active:hover {
+            filter: brightness(0.95);
+            transform: translateY(-1px);
+            box-shadow: var(--shadow-sm);
         }
 
-        .quick-action-btn:hover {
-            background: var(--primary-blue);
-            color: #fff;
+        /* 刪除按鈕保留紅色警示色 */
+        .action-btn[data-action="delete"] {
+            background: #EF4444 !important;
+            color: #fff !important;
+            border: none !important;
         }
+        .action-btn[data-action="delete"]:hover { filter: brightness(0.95); }
+
+        /* 右側快速操作恢復為條列式外觀 */
+        .quick-actions-card .quick-action-btn {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            width: 100%;
+            padding: 0.5rem 0;
+            border: none;
+            border-radius: 0;
+            background: transparent;
+            color: var(--text-dark);
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+            text-align: left;
+        }
+        .quick-actions-card .quick-action-btn + .quick-action-btn { border-top: 1px solid var(--border); }
+        .quick-actions-card .quick-action-btn i { color: var(--text-light); }
+        .quick-actions-card .quick-action-btn:hover { background: #F8FAFC; color: var(--text-dark); transform: none; box-shadow: none; }
 
         .calendar-widget {
             background: #fff;
@@ -486,9 +506,9 @@
                     <i class="fas fa-download"></i>
                     匯出報告
                 </button>
-                <button class="btn btn-primary" onclick="createAssignment()">
+                <button class="btn btn-primary" type="button" onclick="openQuizBuilder()">
                     <i class="fas fa-plus"></i>
-                    新增作業
+                    出考卷
                 </button>
             </div>
         </div>
@@ -566,9 +586,9 @@
                 <!-- 快速操作 -->
                 <div class="quick-actions-card">
                     <h3>快速操作</h3>
-                    <button class="quick-action-btn" onclick="createAssignment()">
+                    <button class="quick-action-btn" onclick="openQuizBuilder()">
                         <i class="fas fa-plus"></i>
-                        新增作業
+                        出考卷
                     </button>
                     <button class="quick-action-btn" onclick="importAssignments()">
                         <i class="fas fa-upload"></i>
@@ -606,6 +626,169 @@
         </div>
         </div>
     </main>
+
+    <!-- 作業建立/編輯 Modal -->
+    <div id="assignmentModal" class="modal-backdrop" style="display:none;">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 id="assignmentModalTitle">新增作業</h3>
+                <button id="assignmentModalClose" style="background:none;border:none;font-size:1.5rem;cursor:pointer;">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="assignmentForm">
+                    <input type="hidden" id="assignmentId">
+                    <div class="form-group">
+                        <label for="assignmentTitle">標題</label>
+                        <input id="assignmentTitle" type="text" required class="form-control" placeholder="請輸入作業標題">
+                    </div>
+                    <div class="form-group">
+                        <label for="assignmentSubject">科目</label>
+                        <select id="assignmentSubject" required class="form-control">
+                            <option value="">請選擇科目</option>
+                            <option value="math">數學</option>
+                            <option value="chinese">國文</option>
+                            <option value="english">英文</option>
+                            <option value="science">自然</option>
+                            <option value="history">歷史</option>
+                            <option value="geography">地理</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="assignmentDueDate">截止日期</label>
+                        <input id="assignmentDueDate" type="date" required class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label for="assignmentStatus">狀態</label>
+                        <select id="assignmentStatus" required class="form-control">
+                            <option value="draft">草稿</option>
+                            <option value="active">進行中</option>
+                            <option value="grading">批改中</option>
+                            <option value="closed">已結束</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="assignmentDescription">說明</label>
+                        <textarea id="assignmentDescription" rows="4" class="form-control" placeholder="作業說明（可選）"></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer" style="display:flex;gap:.5rem;justify-content:flex-end;">
+                <button id="assignmentCancelBtn" class="btn btn-secondary" type="button">取消</button>
+                <button id="assignmentSaveBtn" class="btn btn-primary" type="button">儲存</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 出考卷（Quiz Builder）Stepper Modal -->
+    <div id="quizModal" class="modal-backdrop" style="display:none;">
+        <div class="modal" style="max-width: 960px; width: 96vw;">
+            <div class="modal-header">
+                <h3>出考卷</h3>
+                <button id="quizModalClose" style="background:none;border:none;font-size:1.5rem;cursor:pointer;">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div id="quizStepIndicators" style="display:flex;gap:.5rem;margin-bottom:1rem;">
+                    <span id="quizStep1Dot" class="badge" style="background:#10B981;color:#fff;">1 設定</span>
+                    <span id="quizStep2Dot" class="badge">2 挑題</span>
+                    <span id="quizStep3Dot" class="badge">3 預覽</span>
+                </div>
+
+                <!-- Step 1: 基本設定 -->
+                <section id="quizStep1">
+                    <div class="form-group">
+                        <label for="quizTitle">標題</label>
+                        <input id="quizTitle" type="text" class="form-control" placeholder="例如：二次函數小測驗" required>
+                    </div>
+                    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:1rem;">
+                        <div class="form-group">
+                            <label for="quizSubject">科目</label>
+                            <select id="quizSubject" class="form-control" required>
+                                <option value="">請選擇科目</option>
+                                <option value="math">數學</option>
+                                <option value="chinese">國文</option>
+                                <option value="english">英文</option>
+                                <option value="science">自然</option>
+                                <option value="history">歷史</option>
+                                <option value="geography">地理</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="quizDueDate">截止日期</label>
+                            <input id="quizDueDate" type="date" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="quizTimeLimit">限時（分鐘）</label>
+                            <input id="quizTimeLimit" type="number" min="5" max="180" class="form-control" placeholder="30" required>
+                        </div>
+                        <div class="form-group">
+                            <label>作答次數</label>
+                            <input type="text" class="form-control" value="只能作答 1 次" disabled>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="quizClasses">指派班級（可多選）</label>
+                        <select id="quizClasses" class="form-control" multiple size="4" style="min-height:96px;"></select>
+                        <small id="quizClassesHint" style="color:var(--text-light);">將自動載入您的班級</small>
+                    </div>
+                    <div style="display:flex;gap:1rem;align-items:center;">
+                        <label style="display:flex;align-items:center;gap:.5rem;">
+                            <input id="quizShuffleQuestions" type="checkbox" checked>
+                            題目亂序
+                        </label>
+                        <label style="display:flex;align-items:center;gap:.5rem;">
+                            <input id="quizShuffleOptions" type="checkbox" checked>
+                            選項亂序
+                        </label>
+                    </div>
+                </section>
+
+                <!-- Step 2: 挑題 -->
+                <section id="quizStep2" style="display:none;">
+                    <div style="display:grid;grid-template-columns:2fr 1fr;gap:1rem;">
+                        <div>
+                            <div style="display:flex;gap:.5rem;align-items:center;margin-bottom:.5rem;">
+                                <input id="qSearch" class="form-control" placeholder="搜尋題幹/關鍵字" style="flex:1;">
+                                <select id="qDifficulty" class="form-control" style="max-width:140px;">
+                                    <option value="">所有難度</option>
+                                    <option value="easy">簡單</option>
+                                    <option value="medium">中等</option>
+                                    <option value="hard">困難</option>
+                                </select>
+                                <input id="qKnowledge" class="form-control" placeholder="知識點（可選）" style="max-width:200px;">
+                            </div>
+                            <div id="qList" style="border:1px solid var(--border);border-radius:8px;height:360px;overflow:auto;padding:.5rem;">
+                                <div style="color:var(--text-light);text-align:center;padding:2rem;">載入中...</div>
+                            </div>
+                            <div style="display:flex;justify-content:space-between;align-items:center;margin-top:.5rem;">
+                                <small id="qPagerHint" style="color:var(--text-light);"></small>
+                                <div style="display:flex;gap:.5rem;">
+                                    <button id="qPrev" class="btn btn-secondary" type="button">上一頁</button>
+                                    <button id="qNext" class="btn btn-primary" type="button">下一頁</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div>
+                            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.5rem;">
+                                <h4 style="margin:0;">已選題目 <span id="qSelectedCount">0</span>/50</h4>
+                                <button id="qClear" class="btn btn-secondary" type="button">清空</button>
+                            </div>
+                            <div id="qSelected" style="border:1px solid var(--border);border-radius:8px;height:360px;overflow:auto;padding:.5rem;"></div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Step 3: 預覽與發布 -->
+                <section id="quizStep3" style="display:none;">
+                    <div id="quizPreview"></div>
+                </section>
+            </div>
+            <div class="modal-footer" style="display:flex;gap:.5rem;justify-content:flex-end;">
+                <button id="quizPrevBtn" class="btn btn-secondary" type="button" disabled>上一步</button>
+                <button id="quizNextBtn" class="btn btn-primary" type="button">下一步</button>
+                <button id="quizPublishBtn" class="btn btn-primary" type="button" style="display:none;">發布</button>
+            </div>
+        </div>
+    </div>
 
     <script src="../js/utils.js"></script>
     <script src="../js/api-client.js"></script>
