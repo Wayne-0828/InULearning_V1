@@ -14,7 +14,7 @@ class MainApp {
     init() {
         // 處理從統一登入頁面傳來的認證資訊
         this.handleAuthFromURL();
-        
+
         this.bindEvents();
         // 延遲載入儀表板資料，確保認證狀態已初始化
         setTimeout(() => {
@@ -32,15 +32,15 @@ class MainApp {
 
         if (token && userInfo) {
             console.log('從URL接收到認證資訊');
-            
+
             // 儲存到localStorage
             localStorage.setItem('auth_token', token);
             localStorage.setItem('user_info', userInfo);
-            
+
             // 清除URL參數
             const newURL = window.location.protocol + "//" + window.location.host + window.location.pathname;
             window.history.replaceState({}, document.title, newURL);
-            
+
             // 更新認證狀態
             if (typeof authManager !== 'undefined') {
                 authManager.updateAuthUI();
@@ -81,10 +81,10 @@ class MainApp {
      */
     handleSearch(query) {
         if (!query.trim()) return;
-        
+
         // 儲存搜尋查詢到 localStorage
         localStorage.setItem('searchQuery', query);
-        
+
         // 導向搜尋結果頁面或練習頁面
         window.location.href = `pages/exercise.html?search=${encodeURIComponent(query)}`;
     }
@@ -94,7 +94,7 @@ class MainApp {
      */
     handleQuickCardClick(card) {
         const title = card.querySelector('h3')?.textContent;
-        
+
         switch (title) {
             case '客製化題庫練習':
                 window.location.href = 'pages/exercise.html';
@@ -126,10 +126,10 @@ class MainApp {
         try {
             // 載入學習統計
             await this.loadLearningStats();
-            
+
             // 載入推薦練習
             await this.loadRecommendedExercises();
-            
+
         } catch (error) {
             console.error('載入儀表板資料錯誤:', error);
         }
@@ -250,7 +250,7 @@ class MainApp {
     createRecommendationCard(recommendation) {
         const card = document.createElement('div');
         card.className = 'bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow cursor-pointer card-hover';
-        
+
         const difficultyColor = {
             '簡單': 'text-green-600',
             '中等': 'text-yellow-600',
@@ -314,11 +314,10 @@ class MainApp {
      */
     showNotification(message, type = 'info') {
         const notification = document.createElement('div');
-        notification.className = `fixed top-4 right-4 p-4 rounded-lg shadow-lg z-50 ${
-            type === 'success' ? 'bg-green-500 text-white' :
-            type === 'error' ? 'bg-red-500 text-white' :
-            'bg-blue-500 text-white'
-        }`;
+        notification.className = `fixed top-4 right-4 p-4 rounded-lg shadow-lg z-50 ${type === 'success' ? 'bg-green-500 text-white' :
+                type === 'error' ? 'bg-red-500 text-white' :
+                    'bg-blue-500 text-white'
+            }`;
         notification.textContent = message;
 
         document.body.appendChild(notification);

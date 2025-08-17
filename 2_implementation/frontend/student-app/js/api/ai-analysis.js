@@ -270,7 +270,7 @@ class AIAnalysisAPI {
         const modal = document.createElement('div');
         modal.className = 'fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50';
         modal.id = 'aiAnalysisModal';
-        
+
         modal.innerHTML = `
             <div class="relative top-20 mx-auto p-5 border w-11/12 md:w-1/2 shadow-lg rounded-md bg-white">
                 <div class="mt-3 text-center">
@@ -308,15 +308,15 @@ class AIAnalysisAPI {
                 </div>
             </div>
         `;
-        
+
         document.body.appendChild(modal);
-        
+
         // 綁定關閉事件
         const closeBtn = document.getElementById('closeAIModal');
         const closeModal = () => {
             document.body.removeChild(modal);
         };
-        
+
         closeBtn.addEventListener('click', closeModal);
         modal.addEventListener('click', (e) => {
             if (e.target === modal) {

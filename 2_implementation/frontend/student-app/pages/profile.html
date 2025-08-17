@@ -1,12 +1,13 @@
 <!DOCTYPE html>
 <html lang="zh-TW">
+
 <head>
-    <meta charset="utf-8"/>
-    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
     <title>個人資料 - InU Learning【因你而學】</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet"/>
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
     <link rel="stylesheet" href="../css/main.css">
     <style>
         body {
@@ -14,13 +15,15 @@
         }
     </style>
 </head>
+
 <body class="bg-gray-100">
     <div class="flex h-screen bg-white">
         <!-- 側邊欄 -->
         <aside class="w-64 bg-blue-800 text-white flex flex-col">
             <a class="block" href="../index.html">
                 <div class="flex items-center justify-center p-6 hover:bg-blue-700">
-                    <img alt="InU Learning Logo" class="w-24 h-24 rounded-full" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBkUkYI-c0qBm9BcHamuWBs9ebu6mgGni1SlXL6giHvgu2WnHxHaQYkRoAlzI_OZ8yNf6Rn90d73q13vLeMoBfFP0mQHcxlf2YHE9__XhpOUl-OvECBnRad91AKcE4dKkTJtEoAm_alktSTzu_Aw9Fah_2IQ6YeqBALwAqrLNP2oghwOkLSyBMdfpOrW24nKk3dnl3z6piT9-S0cISDfJ5rhAlBYvIzoAhypgUHvJCzxlSG9ag8QMkltK1Hu_rX4jqdQgGuOD2JLzo"/>
+                    <img alt="InU Learning Logo" class="w-24 h-24 rounded-full"
+                        src="https://lh3.googleusercontent.com/aida-public/AB6AXuBkUkYI-c0qBm9BcHamuWBs9ebu6mgGni1SlXL6giHvgu2WnHxHaQYkRoAlzI_OZ8yNf6Rn90d73q13vLeMoBfFP0mQHcxlf2YHE9__XhpOUl-OvECBnRad91AKcE4dKkTJtEoAm_alktSTzu_Aw9Fah_2IQ6YeqBALwAqrLNP2oghwOkLSyBMdfpOrW24nKk3dnl3z6piT9-S0cISDfJ5rhAlBYvIzoAhypgUHvJCzxlSG9ag8QMkltK1Hu_rX4jqdQgGuOD2JLzo" />
                 </div>
                 <div class="px-6 pb-4 hover:bg-blue-700">
                     <h1 class="text-xl font-bold text-center">InU Learning</h1>
@@ -50,7 +53,8 @@
                 </a>
             </nav>
             <div class="p-4 border-t border-blue-700">
-                <button id="logoutBtn" class="w-full flex items-center px-4 py-2 text-gray-100 hover:bg-blue-700 rounded-lg">
+                <button id="logoutBtn"
+                    class="w-full flex items-center px-4 py-2 text-gray-100 hover:bg-blue-700 rounded-lg">
                     <span class="material-icons">logout</span>
                     <span class="ml-3">登出</span>
                 </button>
@@ -71,7 +75,9 @@
                                 <span class="material-icons">search</span>
                             </button>
                         </span>
-                        <input autocomplete="off" class="py-2 text-sm text-gray-700 bg-gray-200 rounded-md pl-10 focus:outline-none focus:bg-white focus:text-gray-900 w-full" name="q" placeholder="搜尋..." type="search"/>
+                        <input autocomplete="off"
+                            class="py-2 text-sm text-gray-700 bg-gray-200 rounded-md pl-10 focus:outline-none focus:bg-white focus:text-gray-900 w-full"
+                            name="q" placeholder="搜尋..." type="search" />
                     </div>
                 </div>
                 <div class="flex items-center space-x-4">
@@ -80,8 +86,10 @@
                         <span id="userName" class="text-sm font-medium text-blue-600"></span>
                     </div>
                     <div id="authButtons">
-                        <a class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors" href="login.html">登入</a>
-                        <a class="bg-gray-200 text-gray-800 px-4 py-2 rounded-lg hover:bg-gray-300 transition-colors" href="register.html">註冊</a>
+                        <a class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors"
+                            href="http://localhost/login.html">登入</a>
+                        <a class="bg-gray-200 text-gray-800 px-4 py-2 rounded-lg hover:bg-gray-300 transition-colors"
+                            href="register.html">註冊</a>
                     </div>
                 </div>
             </header>
@@ -100,35 +108,49 @@
                         <div class="lg:col-span-2">
                             <div class="bg-white rounded-lg shadow-md p-6">
                                 <h3 class="text-lg font-semibold text-gray-800 mb-6">基本資料</h3>
-                                
+
                                 <!-- 錯誤訊息顯示區 -->
-                                <div id="errorMessage" class="hidden mb-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded"></div>
-                                
+                                <div id="errorMessage"
+                                    class="hidden mb-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded"></div>
+
                                 <!-- 成功訊息顯示區 -->
-                                <div id="successMessage" class="hidden mb-4 p-3 bg-green-100 border border-green-400 text-green-700 rounded"></div>
-                                
+                                <div id="successMessage"
+                                    class="hidden mb-4 p-3 bg-green-100 border border-green-400 text-green-700 rounded">
+                                </div>
+
                                 <form id="profileForm" class="space-y-6">
                                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                                         <div>
-                                            <label class="block text-sm font-medium text-gray-700 mb-2" for="firstName">姓名</label>
-                                            <input type="text" id="firstName" name="firstName" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500" required>
+                                            <label class="block text-sm font-medium text-gray-700 mb-2"
+                                                for="firstName">姓名</label>
+                                            <input type="text" id="firstName" name="firstName"
+                                                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                                                required>
                                         </div>
                                         <div>
-                                            <label class="block text-sm font-medium text-gray-700 mb-2" for="lastName">姓氏</label>
-                                            <input type="text" id="lastName" name="lastName" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500" required>
+                                            <label class="block text-sm font-medium text-gray-700 mb-2"
+                                                for="lastName">姓氏</label>
+                                            <input type="text" id="lastName" name="lastName"
+                                                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                                                required>
                                         </div>
                                     </div>
-                                    
+
                                     <div>
-                                        <label class="block text-sm font-medium text-gray-700 mb-2" for="email">電子郵件</label>
-                                        <input type="email" id="email" name="email" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500" required readonly>
+                                        <label class="block text-sm font-medium text-gray-700 mb-2"
+                                            for="email">電子郵件</label>
+                                        <input type="email" id="email" name="email"
+                                            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                                            required readonly>
                                         <p class="text-sm text-gray-500 mt-1">電子郵件不可修改</p>
                                     </div>
-                                    
+
                                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                                         <div>
-                                            <label class="block text-sm font-medium text-gray-700 mb-2" for="grade">年級</label>
-                                            <select id="grade" name="grade" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                                            <label class="block text-sm font-medium text-gray-700 mb-2"
+                                                for="grade">年級</label>
+                                            <select id="grade" name="grade"
+                                                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500">
                                                 <option value="">請選擇年級</option>
                                                 <option value="7A">七年級上學期</option>
                                                 <option value="7B">七年級下學期</option>
@@ -139,8 +161,10 @@
                                             </select>
                                         </div>
                                         <div>
-                                            <label class="block text-sm font-medium text-gray-700 mb-2" for="preferredEdition">偏好版本</label>
-                                            <select id="preferredEdition" name="preferredEdition" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                                            <label class="block text-sm font-medium text-gray-700 mb-2"
+                                                for="preferredEdition">偏好版本</label>
+                                            <select id="preferredEdition" name="preferredEdition"
+                                                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500">
                                                 <option value="">請選擇版本</option>
                                                 <option value="南一">南一</option>
                                                 <option value="翰林">翰林</option>
@@ -148,19 +172,27 @@
                                             </select>
                                         </div>
                                     </div>
-                                    
+
                                     <div>
-                                        <label class="block text-sm font-medium text-gray-700 mb-2" for="bio">自我介紹</label>
-                                        <textarea id="bio" name="bio" rows="4" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500" placeholder="請簡單介紹一下自己..."></textarea>
+                                        <label class="block text-sm font-medium text-gray-700 mb-2"
+                                            for="bio">自我介紹</label>
+                                        <textarea id="bio" name="bio" rows="4"
+                                            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                                            placeholder="請簡單介紹一下自己..."></textarea>
                                     </div>
-                                    
+
                                     <div class="flex justify-end">
-                                        <button type="submit" class="bg-blue-600 text-white px-6 py-2 rounded-md hover:bg-blue-700 transition-colors">
+                                        <button type="submit"
+                                            class="bg-blue-600 text-white px-6 py-2 rounded-md hover:bg-blue-700 transition-colors">
                                             <span id="saveButtonText">儲存變更</span>
                                             <span id="saveSpinner" class="hidden ml-2">
-                                                <svg class="animate-spin h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                                                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                                                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                                <svg class="animate-spin h-4 w-4 text-white"
+                                                    xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                                    <circle class="opacity-25" cx="12" cy="12" r="10"
+                                                        stroke="currentColor" stroke-width="4"></circle>
+                                                    <path class="opacity-75" fill="currentColor"
+                                                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
+                                                    </path>
                                                 </svg>
                                             </span>
                                         </button>
@@ -196,19 +228,23 @@
                                 <div class="space-y-4">
                                     <div>
                                         <label class="flex items-center">
-                                            <input type="checkbox" id="emailNotifications" class="rounded border-gray-300 text-blue-600 focus:ring-blue-500">
+                                            <input type="checkbox" id="emailNotifications"
+                                                class="rounded border-gray-300 text-blue-600 focus:ring-blue-500">
                                             <span class="ml-2 text-sm text-gray-700">接收學習提醒郵件</span>
                                         </label>
                                     </div>
                                     <div>
                                         <label class="flex items-center">
-                                            <input type="checkbox" id="aiRecommendations" class="rounded border-gray-300 text-blue-600 focus:ring-blue-500" checked>
+                                            <input type="checkbox" id="aiRecommendations"
+                                                class="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                                                checked>
                                             <span class="ml-2 text-sm text-gray-700">啟用 AI 推薦</span>
                                         </label>
                                     </div>
                                     <div>
                                         <label class="flex items-center">
-                                            <input type="checkbox" id="progressSharing" class="rounded border-gray-300 text-blue-600 focus:ring-blue-500">
+                                            <input type="checkbox" id="progressSharing"
+                                                class="rounded border-gray-300 text-blue-600 focus:ring-blue-500">
                                             <span class="ml-2 text-sm text-gray-700">分享學習進度</span>
                                         </label>
                                     </div>
@@ -219,15 +255,18 @@
                             <div class="bg-white rounded-lg shadow-md p-6">
                                 <h3 class="text-lg font-semibold text-gray-800 mb-4">快速操作</h3>
                                 <div class="space-y-3">
-                                    <button onclick="location.href='exercise.html'" class="w-full text-left px-4 py-2 text-sm text-blue-600 hover:bg-blue-50 rounded-md transition-colors">
+                                    <button onclick="location.href='exercise.html'"
+                                        class="w-full text-left px-4 py-2 text-sm text-blue-600 hover:bg-blue-50 rounded-md transition-colors">
                                         <span class="material-icons mr-2 text-sm">play_arrow</span>
                                         開始新練習
                                     </button>
-                                    <button onclick="location.href='dashboard.html'" class="w-full text-left px-4 py-2 text-sm text-green-600 hover:bg-green-50 rounded-md transition-colors">
+                                    <button onclick="location.href='dashboard.html'"
+                                        class="w-full text-left px-4 py-2 text-sm text-green-600 hover:bg-green-50 rounded-md transition-colors">
                                         <span class="material-icons mr-2 text-sm">dashboard</span>
                                         查看學習分析
                                     </button>
-                                    <button onclick="location.href='history.html'" class="w-full text-left px-4 py-2 text-sm text-purple-600 hover:bg-purple-50 rounded-md transition-colors">
+                                    <button onclick="location.href='history.html'"
+                                        class="w-full text-left px-4 py-2 text-sm text-purple-600 hover:bg-purple-50 rounded-md transition-colors">
                                         <span class="material-icons mr-2 text-sm">history</span>
                                         查看學習歷程
                                     </button>
@@ -244,4 +283,5 @@
     <script src="../js/api/auth.js"></script>
     <script src="../js/pages/profile.js"></script>
 </body>
-</html> 
+
+</html>
