@@ -330,7 +330,10 @@ services:
     volumes:
       - ./files:/var/www/html/files
       - ./2_implementation/frontend/shared:/usr/share/nginx/html/shared
-      - ./2_implementation/frontend/teacher-app:/usr/share/nginx/html
+      - ./2_implementation/frontend/teacher-app:/usr/share/nginx/html/teacher-app
+      - ./2_implementation/frontend/teacher-app/pages:/usr/share/nginx/html/pages
+      - ./2_implementation/frontend/teacher-app/js:/usr/share/nginx/html/js
+      - ./2_implementation/frontend/teacher-app/css:/usr/share/nginx/html/css
   # ... existing code ...
 
   # 備註：以下服務暫時註釋，後續開發

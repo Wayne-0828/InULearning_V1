@@ -150,7 +150,7 @@ async function loadClasses() {
         if (!apiConnected) throw new Error('API 未連接');
 
         // 嘗試載入班級資料
-        const response = await apiClient.get('/relationships/teacher-class');
+                    const response = await apiClient.get('/api/v1/relationships/teacher-class');
 
         if (response && (response.data || response.items || response.length > 0)) {
             dashboardData.classes = response.data || response.items || response || [];

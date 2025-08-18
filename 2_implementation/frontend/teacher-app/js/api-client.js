@@ -1,5 +1,5 @@
 const apiClient = {
-	baseUrl: 'http://localhost/api/v1',
+	baseUrl: 'http://localhost',
 	getToken() {
 		return (
 			localStorage.getItem('auth_token') ||

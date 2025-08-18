@@ -5,11 +5,12 @@ class AssignmentsManager {
         this.filteredAssignments = [];
         this.currentView = 'list';
         this.currentMonth = new Date();
-        // 與 apiClient 統一，由 apiClient.baseUrl 決定 domain；此處只偵測 path
+        // 使用相對路徑，因為 api-client.js 已經包含了 baseUrl
         this.apiPathCandidates = [
+            '/assignments/',
             '/learning/assignments/'
         ];
-        this.apiPath = '/learning/assignments/';
+        this.apiPath = '/assignments/';
         this.editingId = null;
 
         this.init();
@@ -533,8 +534,8 @@ class QuizBuilder {
             chapter: ''
         };
         this.assignmentsPath = '/assignments';
-        this.questionsPath = '/api/v1/questions';
-        this.classesPath = '/relationships/teacher-class';
+        this.questionsPath = '/questions';
+        this.classesPath = '/api/v1/relationships/teacher-class';
         this.maxQuestions = 50;
         this.init();
     }
@@ -561,8 +562,12 @@ class QuizBuilder {
 
         // 先開啟 UI，避免等待 API 期間無反應
         this.open();
-        // 並行載入資料（不阻塞 UI）
-        this.loadClasses();
+        
+        // 延遲載入班級，確保 DOM 完全準備好
+        setTimeout(() => {
+            this.loadClasses();
+        }, 100);
+        
         // 不立即載入題目，等待版本和單元選擇
         this.renderQuestionList([]);
     }
@@ -683,12 +688,17 @@ class QuizBuilder {
         const chapter = document.getElementById('quizChapter').value;
         this.state.chapter = chapter;
         
+        console.log(`章節變更: ${chapter}`);
+        console.log(`當前狀態: 年級=${this.state.grade}, 出版社=${this.state.publisher}, 章節=${this.state.chapter}`);
+        
         if (chapter) {
             // 載入該章節的題目
             this.state.qPage = 1;
+            console.log('開始載入題目...');
             this.loadQuestionList();
         } else {
             // 清空題目列表
+            console.log('清空題目列表');
             this.renderQuestionList([]);
         }
     }
@@ -697,176 +707,363 @@ class QuizBuilder {
     async loadChaptersByGradeAndPublisher(grade, publisher) {
         const chapterSelect = document.getElementById('quizChapter');
         
-        try {
-            // 從資料庫查詢該年級和出版社的章節
-            const params = new URLSearchParams();
-            params.append('grade', grade);
-            params.append('publisher', publisher);
-            params.append('page_size', 100); // 獲取較多章節
-            
-            const data = await apiClient.get(`${this.questionsPath}?${params.toString()}`);
-            const questions = Array.isArray(data) ? data : (data.items || data.results || data.questions || []);
-            
-            // 提取唯一的章節
-            const chapters = [...new Set(questions.map(q => q.chapter).filter(Boolean))];
-            
-            // 排序章節
-            chapters.sort();
-            
-            // 清空並重新填充章節選項
-            chapterSelect.innerHTML = '<option value="">請選擇章節</option>';
-            chapters.forEach(chapter => {
-                const option = document.createElement('option');
-                option.value = chapter;
-                option.textContent = chapter;
-                chapterSelect.appendChild(option);
-            });
-            
-            console.log(`✅ 載入章節成功: ${grade} ${publisher}, 共 ${chapters.length} 個章節`);
-            
-        } catch (error) {
-            console.error('❌ 載入章節失敗:', error);
-            // 如果 API 失敗，使用靜態數據作為備用
-            this.loadStaticChapters(grade, publisher);
+        // 優先使用靜態數據，避免 API 依賴
+        this.loadStaticChapters(grade, publisher);
+        
+        // 如果靜態數據沒有該年級和出版社的組合，嘗試從 API 載入
+        const staticChapters = this.getStaticChapters(grade, publisher);
+        if (staticChapters.length === 0) {
+            try {
+                console.log(`嘗試從 API 載入章節: ${grade} ${publisher}`);
+                const params = new URLSearchParams();
+                params.append('grade', grade);
+                params.append('publisher', publisher);
+                params.append('page_size', 100);
+                
+                const data = await apiClient.get(`${this.questionsPath}?${params.toString()}`);
+                const questions = Array.isArray(data) ? data : (data.items || data.results || data.questions || []);
+                
+                // 提取唯一的章節
+                const chapters = [...new Set(questions.map(q => q.chapter).filter(Boolean))];
+                chapters.sort();
+                
+                if (chapters.length > 0) {
+                    chapterSelect.innerHTML = '<option value="">請選擇章節</option>';
+                    chapters.forEach(chapter => {
+                        const option = document.createElement('option');
+                        option.value = chapter;
+                        option.textContent = chapter;
+                        chapterSelect.appendChild(option);
+                    });
+                    console.log(`✅ 從 API 載入章節成功: ${grade} ${publisher}, 共 ${chapters.length} 個章節`);
+                }
+            } catch (error) {
+                console.error('❌ 從 API 載入章節失敗:', error);
+                // API 失敗時，顯示預設章節
+                this.loadDefaultChapters();
+            }
         }
+    }
+
+    // 獲取靜態章節數據
+    getStaticChapters(grade, publisher) {
+        const staticChapters = {
+            '7A': {
+                '康軒': ['第一章 數與式', '第二章 多項式', '第三章 二次函數', '第四章 統計與機率'],
+                '翰林': ['第一單元 數與式', '第二單元 多項式', '第三單元 二次函數', '第四單元 統計與機率'],
+                '南一': ['單元一 數與式', '單元二 多項式', '單元三 二次函數', '單元四 統計與機率']
+            },
+            '7B': {
+                '康軒': ['第五章 指數與對數', '第六章 幾何圖形', '第七章 三角形', '第八章 四邊形'],
+                '翰林': ['第五單元 指數與對數', '第六單元 幾何圖形', '第七單元 三角形', '第八單元 四邊形'],
+                '南一': ['單元五 指數與對數', '單元六 幾何圖形', '單元七 三角形', '單元八 四邊形']
+            },
+            '8A': {
+                '康軒': ['第一章 一元二次方程式', '第二章 函數', '第三章 相似形', '第四章 圓'],
+                '翰林': ['第一單元 一元二次方程式', '第二單元 函數', '第三單元 相似形', '第四單元 圓'],
+                '南一': ['單元一 一元二次方程式', '單元二 函數', '單元三 相似形', '單元四 圓']
+            },
+            '8B': {
+                '康軒': ['第五章 二次函數', '第六章 統計', '第七章 機率', '第八章 幾何證明'],
+                '翰林': ['第五單元 二次函數', '第六單元 統計', '第七單元 機率', '第八單元 幾何證明'],
+                '南一': ['單元五 二次函數', '單元六 統計', '單元七 機率', '單元八 幾何證明']
+            },
+            '9A': {
+                '康軒': ['第一章 數列', '第二章 等差數列', '第三章 等比數列', '第四章 排列組合'],
+                '翰林': ['第一單元 數列', '第二單元 等差數列', '第三單元 等比數列', '第四單元 排列組合'],
+                '南一': ['單元一 數列', '單元二 等差數列', '單元三 等比數列', '單元四 排列組合']
+            },
+            '9B': {
+                '康軒': ['第五章 機率', '第六章 統計', '第七章 三角函數', '第八章 複習'],
+                '翰林': ['第五單元 機率', '第六單元 統計', '第七單元 三角函數', '第八單元 複習'],
+                '南一': ['單元五 機率', '單元六 統計', '單元七 三角函數', '單元八 複習']
+            }
+        };
+        
+        return staticChapters[grade]?.[publisher] || [];
     }
 
     // 靜態章節數據作為備用
     loadStaticChapters(grade, publisher) {
         const chapterSelect = document.getElementById('quizChapter');
+        const chapters = this.getStaticChapters(grade, publisher);
         
-        // 根據年級和出版社提供靜態章節選項
-        const staticChapters = {
-            '7A': {
-                '康軒': ['第一章 數與式', '第二章 多項式', '第三章 二次函數'],
-                '翰林': ['第一單元 數與式', '第二單元 多項式', '第三單元 二次函數'],
-                '南一': ['單元一 數與式', '單元二 多項式', '單元三 二次函數']
-            },
-            '7B': {
-                '康軒': ['第四章 指數與對數', '第五章 統計', '第六章 機率'],
-                '翰林': ['第四單元 指數與對數', '第五單元 統計', '第六單元 機率'],
-                '南一': ['單元四 指數與對數', '單元五 統計', '單元六 機率']
-            }
-            // 可以繼續添加其他年級的章節
-        };
-        
-        const chapters = staticChapters[grade]?.[publisher] || [];
+        // 清空並重新填充章節選項
+        chapterSelect.innerHTML = '<option value="">請選擇章節</option>';
         chapters.forEach(chapter => {
             const option = document.createElement('option');
             option.value = chapter;
             option.textContent = chapter;
             chapterSelect.appendChild(option);
         });
+        
+        if (chapters.length > 0) {
+            console.log(`✅ 載入靜態章節成功: ${grade} ${publisher}, 共 ${chapters.length} 個章節`);
+        } else {
+            console.log(`⚠️ 沒有找到 ${grade} ${publisher} 的靜態章節數據`);
+        }
+    }
+
+    // 載入預設章節（當靜態數據和 API 都失敗時）
+    loadDefaultChapters() {
+        const chapterSelect = document.getElementById('quizChapter');
+        const defaultChapters = [
+            '第一章 基礎概念',
+            '第二章 進階應用',
+            '第三章 綜合練習',
+            '第四章 複習測驗'
+        ];
+        
+        chapterSelect.innerHTML = '<option value="">請選擇章節</option>';
+        defaultChapters.forEach(chapter => {
+            const option = document.createElement('option');
+            option.value = chapter;
+            option.textContent = chapter;
+            chapterSelect.appendChild(option);
+        });
+        
+        console.log('✅ 載入預設章節成功');
     }
 
     async loadClasses() {
         try {
+            console.log('🏫 開始載入班級列表');
+            console.log('🔗 API 路徑:', this.classesPath);
+            
             const data = await apiClient.get(this.classesPath);
+            console.log('📡 班級 API 回應:', data);
+            
             const classes = Array.isArray(data) ? data : (data.items || data.data || []);
+            console.log('📋 解析後的班級列表:', classes);
+            
             const sel = document.getElementById('quizClasses');
-            if (sel) sel.innerHTML = classes.map(c => `<option value="${c.class_id || c.id}">${c.class_name || c.name}</option>`).join('');
-        } catch (_) { /* ignore */ }
+            if (!sel) {
+                console.error('❌ 找不到班級選擇器 #quizClasses');
+                return;
+            }
+            
+            if (classes.length === 0) {
+                console.log('⚠️ 班級列表為空');
+                sel.innerHTML = '<option value="">暫無可用班級</option>';
+                return;
+            }
+            
+            const options = classes.map(c => {
+                const id = c.class_id || c.id;
+                const name = c.class_name || c.name;
+                console.log(`班級: ID=${id}, 名稱=${name}`);
+                return `<option value="${id}">${name}</option>`;
+            }).join('');
+            
+            sel.innerHTML = options;
+            console.log(`✅ 班級載入成功: ${classes.length} 個班級`);
+            
+        } catch (error) {
+            console.error('❌ 載入班級失敗:', error);
+            const sel = document.getElementById('quizClasses');
+            if (sel) {
+                sel.innerHTML = '<option value="">載入班級失敗</option>';
+            }
+        }
     }
 
     async loadQuestionList() {
         // 檢查是否已選擇年級、出版社和章節
         if (!this.state.grade || !this.state.publisher || !this.state.chapter) {
+            console.log('❌ 缺少必要參數:', { grade: this.state.grade, publisher: this.state.publisher, chapter: this.state.chapter });
             this.renderQuestionList([]);
             return;
         }
 
-        const params = new URLSearchParams();
-        const q = document.getElementById('qSearch')?.value.trim() || '';
-        const diff = document.getElementById('qDifficulty')?.value || '';
-        const kp = document.getElementById('qKnowledge')?.value.trim() || '';
-        if (q) params.append('q', q);
-        if (diff) params.append('difficulty', diff);
-        if (kp) params.append('knowledge_point', kp);
-        params.append('page', String(this.state.qPage));
-        params.append('page_size', String(this.state.qPageSize));
-        if (this.state.subject) params.append('subject', this.state.subject);
-        if (this.state.grade) params.append('grade', this.state.grade);
-        if (this.state.publisher) params.append('publisher', this.state.publisher);
-        if (this.state.chapter) params.append('chapter', this.state.chapter);
-        
-        let list = [];
+        console.log(`🔍 開始載入題目，參數:`, {
+            grade: this.state.grade,
+            publisher: this.state.publisher,
+            chapter: this.state.chapter,
+            page: this.state.qPage,
+            pageSize: this.state.qPageSize
+        });
+
         try {
-            const data = await apiClient.get(`${this.questionsPath}?${params.toString()}`);
-            list = Array.isArray(data) ? data : (data.items || data.results || data.questions || []);
-            this.state.qTotal = (data.total || data.count || list.length || 0);
-        } catch (_) {
-            list = [];
-            this.state.qTotal = 0;
+            // 先載入所有題目，然後在前端過濾
+            console.log(`🌐 嘗試從 API 載入題目: ${this.questionsPath}`);
+            const data = await apiClient.get(this.questionsPath);
+            console.log('📡 API 回應:', data);
+            
+            let allQuestions = Array.isArray(data) ? data : (data.items || data.results || data.questions || []);
+            console.log(`📝 載入所有題目: ${allQuestions.length} 題`);
+            
+            // 在前端過濾題目
+            const filteredQuestions = allQuestions.filter(q => {
+                const gradeMatch = q.grade === this.state.grade;
+                const publisherMatch = q.publisher === this.state.publisher;
+                const chapterMatch = q.chapter === this.state.chapter;
+                
+                console.log(`題目 ${q.id}: grade=${q.grade}(${gradeMatch}), publisher=${q.publisher}(${publisherMatch}), chapter=${q.chapter}(${chapterMatch})`);
+                
+                return gradeMatch && publisherMatch && chapterMatch;
+            });
+            
+            console.log(`🔍 過濾後題目: ${filteredQuestions.length} 題`);
+            
+            // 分頁處理
+            const startIndex = (this.state.qPage - 1) * this.state.qPageSize;
+            const endIndex = startIndex + this.state.qPageSize;
+            const list = filteredQuestions.slice(startIndex, endIndex);
+            
+            this.state.qTotal = filteredQuestions.length;
+            
+            console.log(`📝 載入題目完成: ${list.length} 題 (第 ${this.state.qPage} 頁)`);
+            this.renderQuestionList(list);
+            
+        } catch (error) {
+            console.error('❌ 載入題目失敗:', error);
+            console.log('📭 顯示空題目列表');
+            this.renderQuestionList([]);
         }
-        this.renderQuestionList(list);
     }
 
     renderQuestionList(list) {
+        console.log('🎨 開始渲染題目列表:', list.length, '題');
+        
         const wrap = document.getElementById('qList');
-        if (!wrap) return;
+        if (!wrap) {
+            console.error('❌ 找不到題目列表容器 #qList');
+            return;
+        }
+        
         if (!list.length) {
+            console.log('📭 題目列表為空，顯示空狀態');
             wrap.innerHTML = `<div style="color:var(--text-light);text-align:center;padding:2rem;">沒有符合條件的題目</div>`;
             const pagerHint = document.getElementById('qPagerHint');
             if (pagerHint) pagerHint.textContent = '';
             return;
         }
-        const selectedSet = new Set(this.state.selectedQuestions.map(q => q.id));
+        
+        console.log('🔍 開始渲染題目項目');
+        const selectedSet = new Set(this.state.selectedQuestions.map(q => q.id || q.question_id));
         wrap.innerHTML = list.map(q => {
-            const added = selectedSet.has(q.id);
+            const questionId = q.id || q.question_id;
+            const added = selectedSet.has(questionId);
+            const content = q.question || q.content || `題目 ${questionId}`;
+            const subject = q.subject || '未知科目';
+            const difficulty = q.difficulty || '未知難度';
+            const knowledgePoint = q.topic || q.knowledge_point || '未知知識點';
+            
             return `
-                <div style="padding:.5rem;border-bottom:1px solid var(--border);display:flex;gap:.5rem;align-items:flex-start;">
+                <div style="padding:.75rem;border-bottom:1px solid var(--border);display:flex;gap:.75rem;align-items:flex-start;">
                     <div style="flex:1;">
-                        <div style="font-weight:600;">#${q.id} ${this.escapeHtml(q.content || '')}</div>
-                        <div style="font-size:.85rem;color:var(--text-light);">${q.knowledge_point || ''} · ${q.difficulty || ''}</div>
+                        <div style="font-weight:600;margin-bottom:.5rem;line-height:1.4;">
+                            #${questionId} ${this.escapeHtml(content)}
+                        </div>
+                        <div style="font-size:.85rem;color:var(--text-light);display:flex;gap:.75rem;flex-wrap:wrap;">
+                            <span>${subject}</span>
+                            <span>·</span>
+                            <span>${difficulty}</span>
+                            <span>·</span>
+                            <span>${knowledgePoint}</span>
+                        </div>
                     </div>
-                    <button class="btn ${added?'btn-secondary':'btn-primary'}" data-action="${added?'remove':'add'}" data-id="${q.id}">${added?'移除':'加入'}</button>
+                    <button class="btn ${added ? 'btn-secondary' : 'btn-primary'}" 
+                            data-action="${added ? 'remove' : 'add'}" 
+                            data-id="${questionId}"
+                            style="min-width:60px;white-space:nowrap;">
+                        ${added ? '移除' : '加入'}
+                    </button>
                 </div>
             `;
         }).join('');
-        // 綁定加入/移除
+        
+        console.log('🔗 綁定題目按鈕事件');
+        // 綁定加入/移除按鈕事件
         wrap.querySelectorAll('button[data-action]').forEach(btn => {
             btn.addEventListener('click', () => {
-                const id = Number(btn.getAttribute('data-id'));
-                const item = list.find(x => x.id === id);
-                if (!item) return;
-                const idx = this.state.selectedQuestions.findIndex(x => x.id === id);
-                if (idx >= 0) {
-                    this.state.selectedQuestions.splice(idx, 1);
-                } else {
-                    if (this.state.selectedQuestions.length >= this.maxQuestions) return alert(`最多選擇 ${this.maxQuestions} 題`);
-                    this.state.selectedQuestions.push(item);
+                const id = btn.getAttribute('data-id');
+                const item = list.find(x => (x.id || x.question_id) === id);
+                if (!item) {
+                    console.error('❌ 找不到題目項目:', id);
+                    return;
                 }
+                
+                const idx = this.state.selectedQuestions.findIndex(x => (x.id || x.question_id) === id);
+                if (idx >= 0) {
+                    // 移除題目
+                    this.state.selectedQuestions.splice(idx, 1);
+                    console.log(`➖ 移除題目 #${id}`);
+                } else {
+                    // 加入題目
+                    if (this.state.selectedQuestions.length >= this.maxQuestions) {
+                        alert(`最多選擇 ${this.maxQuestions} 題`);
+                        return;
+                    }
+                    this.state.selectedQuestions.push(item);
+                    console.log(`➕ 加入題目 #${id}`);
+                }
+                
                 this.renderSelected();
-                this.loadQuestionList();
+                // 重新渲染題目列表以更新按鈕狀態
+                this.renderQuestionList(list);
             });
         });
+        
+        // 更新分頁提示
         const maxPage = Math.max(1, Math.ceil(this.state.qTotal / this.state.qPageSize));
         const pagerHint = document.getElementById('qPagerHint');
-        if (pagerHint) pagerHint.textContent = `第 ${this.state.qPage}/${maxPage} 頁，共 ${this.state.qTotal} 題`;
+        if (pagerHint) {
+            pagerHint.textContent = `第 ${this.state.qPage}/${maxPage} 頁，共 ${this.state.qTotal} 題`;
+        }
+        
+        console.log('✅ 題目列表渲染完成');
     }
 
     renderSelected() {
         const wrap = document.getElementById('qSelected');
         const countEl = document.getElementById('qSelectedCount');
+        
         if (countEl) countEl.textContent = String(this.state.selectedQuestions.length);
         if (!wrap) return;
+        
         if (this.state.selectedQuestions.length === 0) {
             wrap.innerHTML = `<div style="color:var(--text-light);text-align:center;padding:2rem;">尚未選擇題目</div>`;
             return;
         }
-        wrap.innerHTML = this.state.selectedQuestions.map((q, i) => `
-            <div style="padding:.5rem;border-bottom:1px solid var(--border);display:flex;gap:.5rem;">
-                <span style="width:2rem;color:var(--text-light);">${i+1}.</span>
-                <div style="flex:1;">${this.escapeHtml(q.content || '')}</div>
-                <button class="btn btn-secondary" data-remove="${q.id}">移除</button>
-            </div>
-        `).join('');
+        
+        wrap.innerHTML = this.state.selectedQuestions.map((q, i) => {
+            const content = q.content || `題目 ${q.id}`;
+            const subject = q.subject || '未知科目';
+            const difficulty = q.difficulty || '未知難度';
+            
+            return `
+                <div style="padding:.75rem;border-bottom:1px solid var(--border);display:flex;gap:.75rem;align-items:flex-start;">
+                    <span style="width:2rem;color:var(--text-light);font-weight:600;">${i+1}.</span>
+                    <div style="flex:1;">
+                        <div style="font-weight:500;margin-bottom:.25rem;line-height:1.3;">
+                            ${this.escapeHtml(content)}
+                        </div>
+                        <div style="font-size:.8rem;color:var(--text-light);">
+                            ${subject} · ${difficulty}
+                        </div>
+                    </div>
+                    <button class="btn btn-secondary" 
+                            data-remove="${q.id}"
+                            style="min-width:50px;padding:.25rem .5rem;font-size:.85rem;">
+                        移除
+                    </button>
+                </div>
+            `;
+        }).join('');
+        
+        // 綁定移除按鈕事件
         wrap.querySelectorAll('button[data-remove]').forEach(btn => {
             btn.addEventListener('click', () => {
                 const id = Number(btn.getAttribute('data-remove'));
-                this.state.selectedQuestions = this.state.selectedQuestions.filter(x => x.id !== id);
-                this.renderSelected();
-                this.loadQuestionList();
+                const idx = this.state.selectedQuestions.findIndex(x => x.id === id);
+                if (idx >= 0) {
+                    this.state.selectedQuestions.splice(idx, 1);
+                    console.log(`從已選列表中移除題目 #${id}`);
+                    this.renderSelected();
+                    // 重新載入題目列表以更新按鈕狀態
+                    this.loadQuestionList();
+                }
             });
         });
     }
@@ -874,18 +1071,83 @@ class QuizBuilder {
     renderPreview() {
         const pv = document.getElementById('quizPreview');
         if (!pv) return;
+        
+        const selectedCount = this.state.selectedQuestions.length;
+        const timeLimitText = this.state.timeLimit > 0 ? `${this.state.timeLimit} 分鐘` : '無限制';
+        
         pv.innerHTML = `
-            <div class="glass-card" style="padding:1rem;">
-                <h4 style="margin-top:0;">${this.escapeHtml(this.state.title)}</h4>
-                <div style="color:var(--text-light);margin-bottom:.5rem;">
-                    科目：${this.state.subject} · 截止：${this.state.dueDate} · 題數：${this.state.selectedQuestions.length}
+            <div class="glass-card" style="padding:1.5rem;">
+                <h4 style="margin-top:0;margin-bottom:1rem;color:var(--text-dark);">
+                    ${this.escapeHtml(this.state.title)}
+                </h4>
+                
+                <div style="margin-bottom:1rem;">
+                    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1rem;margin-bottom:1rem;">
+                        <div style="padding:.75rem;background:var(--bg-light);border-radius:8px;">
+                            <div style="font-size:.85rem;color:var(--text-light);margin-bottom:.25rem;">科目</div>
+                            <div style="font-weight:600;">${this.state.subject || '未設定'}</div>
+                        </div>
+                        <div style="padding:.75rem;background:var(--bg-light);border-radius:8px;">
+                            <div style="font-size:.85rem;color:var(--text-light);margin-bottom:.25rem;">截止日期</div>
+                            <div style="font-weight:600;">${this.state.dueDate || '未設定'}</div>
+                        </div>
+                        <div style="padding:.75rem;background:var(--bg-light);border-radius:8px;">
+                            <div style="font-size:.85rem;color:var(--text-light);margin-bottom:.25rem;">題目數量</div>
+                            <div style="font-weight:600;">${selectedCount} 題</div>
+                        </div>
+                        <div style="padding:.75rem;background:var(--bg-light);border-radius:8px;">
+                            <div style="font-size:.85rem;color:var(--text-light);margin-bottom:.25rem;">限時</div>
+                            <div style="font-weight:600;">${timeLimitText}</div>
+                        </div>
+                    </div>
+                    
+                    <div style="padding:.75rem;background:var(--bg-light);border-radius:8px;">
+                        <div style="font-size:.85rem;color:var(--text-light);margin-bottom:.25rem;">設定選項</div>
+                        <div style="display:flex;gap:1rem;flex-wrap:wrap;">
+                            <span style="font-size:.85rem;">
+                                <i class="fas fa-clock" style="margin-right:.25rem;"></i>
+                                作答次數：1 次
+                            </span>
+                            <span style="font-size:.85rem;">
+                                <i class="fas fa-random" style="margin-right:.25rem;"></i>
+                                題目亂序：${this.state.shuffleQuestions ? '是' : '否'}
+                            </span>
+                            <span style="font-size:.85rem;">
+                                <i class="fas fa-shuffle" style="margin-right:.25rem;"></i>
+                                選項亂序：${this.state.shuffleOptions ? '是' : '否'}
+                            </span>
+                        </div>
+                    </div>
                 </div>
-                <div style="color:var(--text-light);margin-bottom:.5rem;">
-                    限時：${this.state.timeLimit} 分鐘 · 作答次數：1 次 · 題目亂序：${this.state.shuffleQuestions ? '是' : '否'} · 選項亂序：${this.state.shuffleOptions ? '是' : '否'}
-                </div>
-                <ol style="padding-left:1.25rem;">
-                    ${this.state.selectedQuestions.map(q => `<li style="margin:.25rem 0;">${this.escapeHtml(q.content || '')}</li>`).join('')}
-                </ol>
+                
+                ${selectedCount > 0 ? `
+                    <div style="margin-top:1.5rem;">
+                        <h5 style="margin-bottom:1rem;color:var(--text-dark);">題目預覽</h5>
+                        <ol style="padding-left:1.5rem;margin:0;">
+                            ${this.state.selectedQuestions.map((q, i) => {
+                                const content = q.content || `題目 ${q.id}`;
+                                const subject = q.subject || '未知科目';
+                                const difficulty = q.difficulty || '未知難度';
+                                
+                                return `
+                                    <li style="margin-bottom:.75rem;line-height:1.4;">
+                                        <div style="font-weight:500;margin-bottom:.25rem;">
+                                            ${this.escapeHtml(content)}
+                                        </div>
+                                        <div style="font-size:.8rem;color:var(--text-light);">
+                                            ${subject} · ${difficulty}
+                                        </div>
+                                    </li>
+                                `;
+                            }).join('')}
+                        </ol>
+                    </div>
+                ` : `
+                    <div style="text-align:center;padding:2rem;color:var(--text-light);">
+                        <i class="fas fa-exclamation-triangle" style="font-size:2rem;margin-bottom:1rem;opacity:.5;"></i>
+                        <div>尚未選擇任何題目</div>
+                    </div>
+                `}
             </div>
         `;
     }

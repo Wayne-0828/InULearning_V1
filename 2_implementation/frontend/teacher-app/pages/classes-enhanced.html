@@ -770,7 +770,7 @@
                 // 檢查認證狀態
                 if (!teacherAuth.isLoggedIn()) {
                     console.log('❌ 用戶未登入，重定向到登入頁面');
-                    window.location.href = '../login.html';
+                    window.location.href = 'login.html';
                     return;
                 }
                 
@@ -808,8 +808,8 @@
                 // 嘗試多個可能的 API 路徑
                 let res = null;
                 const apiPaths = [
-                    '/relationships/teacher-class',
-                    '/relationships/classes'
+                    '/api/v1/relationships/teacher-class',
+                    '/api/v1/relationships/classes'
                 ];
                 
                 for (const path of apiPaths) {
@@ -867,9 +867,7 @@
                         // 嘗試多個可能的 API 路徑
                         let res = null;
                         const apiPaths = [
-                            `/relationships/classes/${c.id}/students`,
                             `/api/v1/relationships/classes/${c.id}/students`,
-                            `/relationships/teacher-class/${c.id}/students`,
                             `/api/v1/relationships/teacher-class/${c.id}/students`
                         ];
                         
@@ -1059,7 +1057,12 @@
                 }
                 
                 const createBtn = document.getElementById('createStudentBtn');
-                if (createBtn) createBtn.addEventListener('click', createAndAddStudent);
+                if (createBtn) {
+                    createBtn.addEventListener('click', createAndAddStudent);
+                    console.log('✅ 新增學生按鈕事件綁定完成');
+                } else {
+                    console.error('❌ 找不到新增學生按鈕');
+                }
                 
                 console.log('✅ 事件綁定完成');
             } catch (error) {
@@ -1134,9 +1137,7 @@
                     // 嘗試多個可能的 API 路徑進行更新
                     let updated = false;
                     const updatePaths = [
-                        `/relationships/teacher-class/${editingId}`,
                         `/api/v1/relationships/teacher-class/${editingId}`,
-                        `/relationships/classes/${editingId}`,
                         `/api/v1/relationships/classes/${editingId}`
                     ];
                     
@@ -1162,8 +1163,8 @@
                     // 嘗試多個可能的 API 路徑進行創建
                     let created = null;
                     const createPaths = [
-                        '/relationships/teacher-class/create-class',
-                        '/relationships/classes'
+                        '/api/v1/relationships/teacher-class/create-class',
+                        '/api/v1/relationships/classes'
                     ];
                     
                     for (const path of createPaths) {
@@ -1223,6 +1224,16 @@
             switchTab('students');
             openModal();
             loadClassStudents(editingId);
+            
+            // 重新綁定新增學生按鈕事件
+            const createBtn = document.getElementById('createStudentBtn');
+            if (createBtn) {
+                // 移除舊的事件監聽器
+                createBtn.removeEventListener('click', createAndAddStudent);
+                // 重新綁定事件
+                createBtn.addEventListener('click', createAndAddStudent);
+                console.log('✅ 新增學生按鈕事件重新綁定完成');
+            }
         }
 
         // 確認刪除
@@ -1235,8 +1246,8 @@
                 // 嘗試多個可能的 API 路徑進行刪除
                 let deleted = false;
                 const deletePaths = [
-                    `/relationships/teacher-class/${pendingDeleteId}`,
-                    `/relationships/classes/${pendingDeleteId}`
+                    `/api/v1/relationships/teacher-class/${pendingDeleteId}`,
+                    `/api/v1/relationships/classes/${pendingDeleteId}`
                 ];
                 
                 for (const path of deletePaths) {
@@ -1355,9 +1366,7 @@
                 // 嘗試多個可能的 API 路徑
                 let res = null;
                 const searchPaths = [
-                    `/relationships/students/search?kw=${encodeURIComponent(keyword)}&limit=10`,
                     `/api/v1/relationships/students/search?kw=${encodeURIComponent(keyword)}&limit=10`,
-                    `/users/search?kw=${encodeURIComponent(keyword)}&limit=10`,
                     `/api/v1/users/search?kw=${encodeURIComponent(keyword)}&limit=10`
                 ];
                 
@@ -1412,9 +1421,7 @@
                 // 嘗試多個可能的 API 路徑
                 let res = null;
                 const loadPaths = [
-                    `/relationships/classes/${classId}/students`,
                     `/api/v1/relationships/classes/${classId}/students`,
-                    `/relationships/teacher-class/${classId}/students`,
                     `/api/v1/relationships/teacher-class/${classId}/students`
                 ];
                 
@@ -1468,9 +1475,7 @@
                 // 嘗試多個可能的 API 路徑
                 let added = false;
                 const addPaths = [
-                    `/relationships/classes/${editingId}/students`,
                     `/api/v1/relationships/classes/${editingId}/students`,
-                    `/relationships/teacher-class/${editingId}/students`,
                     `/api/v1/relationships/teacher-class/${editingId}/students`
                 ];
                 
@@ -1501,7 +1506,12 @@
 
         // 依據資料庫欄位新增學生後加入班級
         async function createAndAddStudent() {
-            if (!editingId) return;
+            console.log('🔍 createAndAddStudent 被調用，editingId:', editingId);
+            if (!editingId) {
+                console.error('❌ editingId 未設定，無法新增學生');
+                showAlert('請先選擇班級', 'warning');
+                return;
+            }
             const email = document.getElementById('newStuEmail').value.trim();
             const first = document.getElementById('newStuFirst').value.trim();
             const last = document.getElementById('newStuLast').value.trim();
@@ -1527,9 +1537,7 @@
                     // 嘗試多個可能的 API 路徑進行創建
                     let created = null;
                     const createPaths = [
-                        '/users',
                         '/api/v1/users',
-                        '/relationships/users',
                         '/api/v1/relationships/users'
                     ];
                     
@@ -1551,9 +1559,7 @@
                     } else {
                         // 若創建失敗，嘗試搜尋取得 id
                         const searchPaths = [
-                            `/relationships/students/search?kw=${encodeURIComponent(email)}&limit=1`,
                             `/api/v1/relationships/students/search?kw=${encodeURIComponent(email)}&limit=1`,
-                            `/users/search?kw=${encodeURIComponent(email)}&limit=1`,
                             `/api/v1/users/search?kw=${encodeURIComponent(email)}&limit=1`
                         ];
                         
@@ -1579,9 +1585,7 @@
                 // 2) 加入班級
                 let added = false;
                 const addPaths = [
-                    `/relationships/classes/${editingId}/students`,
                     `/api/v1/relationships/classes/${editingId}/students`,
-                    `/relationships/teacher-class/${editingId}/students`,
                     `/api/v1/relationships/teacher-class/${editingId}/students`
                 ];
                 
@@ -1629,9 +1633,7 @@
                 // 嘗試多個可能的 API 路徑
                 let removed = false;
                 const removePaths = [
-                    `/relationships/classes/${editingId}/students/${studentId}`,
                     `/api/v1/relationships/classes/${editingId}/students/${studentId}`,
-                    `/relationships/teacher-class/${editingId}/students/${studentId}`,
                     `/api/v1/relationships/teacher-class/${editingId}/students/${studentId}`
                 ];
                 
