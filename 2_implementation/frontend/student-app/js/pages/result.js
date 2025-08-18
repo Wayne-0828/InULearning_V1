@@ -260,7 +260,7 @@ class ResultPage {
 
         this.examResults.detailedResults.forEach((result, index) => {
             const navButton = document.createElement('button');
-            navButton.className = `w-10 h-10 rounded-full border-2 text-sm font-medium transition-colors ${result.isCorrect
+            navButton.className = `w-10 h-10 rounded-full border-2 text-sm font-medium transition-colors flex-shrink-0 ${result.isCorrect
                 ? 'bg-green-100 border-green-300 text-green-800 hover:bg-green-200'
                 : 'bg-red-100 border-red-300 text-red-800 hover:bg-red-200'
                 }`;
@@ -269,6 +269,9 @@ class ResultPage {
 
             questionNav.appendChild(navButton);
         });
+
+        // 初始化題目導航狀態
+        this.updateQuestionNavigation();
     }
 
     /**
@@ -434,6 +437,34 @@ class ResultPage {
                 button.classList.remove('ring-2', 'ring-blue-500');
             }
         });
+
+        // 確保當前題目按鈕在可視範圍（當題數超過可視寬度時自動水平滾動）
+        const activeButton = navButtons[this.currentDetailIndex];
+        if (activeButton) {
+            // 在 result.html 中，滾動容器是 questionNav 的父元素（question-nav-container 的 div）
+            const container = questionNav.parentElement;
+
+            if (container && container.classList.contains('question-nav-container')) {
+                const needsScroll = container.scrollWidth > container.clientWidth;
+
+                if (needsScroll) {
+                    const containerLeft = container.scrollLeft;
+                    const containerRight = containerLeft + container.clientWidth;
+                    const btnLeft = activeButton.offsetLeft;
+                    const btnRight = btnLeft + activeButton.offsetWidth;
+                    const padding = 12; // 視覺餘量
+
+                    // 僅在當前題目完全超出可視範圍時才滾動，且以最小位移讓其剛好可見，避免「亂跳」
+                    if (btnRight + padding > containerRight) {
+                        const delta = btnRight + padding - containerRight;
+                        container.scrollTo({ left: containerLeft + delta, behavior: 'smooth' });
+                    } else if (btnLeft - padding < containerLeft) {
+                        const delta = containerLeft - (btnLeft - padding);
+                        container.scrollTo({ left: Math.max(0, containerLeft - delta), behavior: 'smooth' });
+                    }
+                }
+            }
+        }
     }
 
     /**
