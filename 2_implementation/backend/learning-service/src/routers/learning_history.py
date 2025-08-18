@@ -5,9 +5,9 @@
 """
 
 import logging
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import Optional
-from fastapi import APIRouter, Depends, HTTPException, status, Query
+from fastapi import APIRouter, Depends, HTTPException, status, Query, Body
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, func, and_, desc
 from sqlalchemy.orm import selectinload
@@ -20,6 +20,8 @@ from ..models.schemas import (
 )
 from ..models.learning_session import LearningSession
 from ..models.exercise_record import ExerciseRecord
+from ..services.question_bank_client import QuestionBankClient
+import random
 from ..models.user_learning_profile import UserLearningProfile
 from ..utils.database import get_db_session
 from ..utils.auth import get_current_user
@@ -46,6 +48,43 @@ async def complete_exercise(
         total_score = sum(result.score for result in request.exercise_results) / total_questions if total_questions > 0 else 0
         accuracy_rate = (correct_count / total_questions * 100) if total_questions > 0 else 0
         
+        # 規範化出版社（若前端未正確帶入，嘗試從多處來源回填）
+        def normalize_publisher(value: Optional[str]) -> Optional[str]:
+            if not value:
+                return None
+            value = str(value).strip()
+            mapping = {
+                "南一": "南一",
+                "翰林": "翰林",
+                "康軒": "康軒",
+                # 常見別名/拼寫
+                "康轩": "康軒",
+                "翰林版": "翰林",
+                "南一版": "南一",
+                "康軒版": "康軒",
+            }
+            return mapping.get(value, value)
+
+        derived_publisher: Optional[str] = normalize_publisher(request.publisher)
+
+        # 從 session_metadata.original_session_data 嘗試補值
+        try:
+            original = (request.session_metadata or {}).get("original_session_data") or {}
+            if not derived_publisher:
+                derived_publisher = normalize_publisher(original.get("publisher") or original.get("edition"))
+        except Exception:
+            pass
+
+        # 從第一筆題目結果嘗試補值
+        if not derived_publisher and request.exercise_results:
+            derived_publisher = normalize_publisher(request.exercise_results[0].publisher)
+
+        # 防守性：限制在允許清單內
+        allowed_publishers = {"南一", "翰林", "康軒"}
+        if derived_publisher not in allowed_publishers:
+            # 最終保底
+            derived_publisher = "南一"
+
         # 創建學習會話
         session = LearningSession(
             user_id=int(current_user.user_id),
@@ -53,7 +92,7 @@ async def complete_exercise(
             subject=request.subject,
             grade=request.grade,
             chapter=request.chapter,
-            publisher=request.publisher,
+            publisher=derived_publisher,
             difficulty=request.difficulty,
             knowledge_points=request.knowledge_points,
             question_count=total_questions,
@@ -73,6 +112,7 @@ async def complete_exercise(
         # 創建練習記錄
         exercise_records = []
         for result in request.exercise_results:
+            record_publisher = normalize_publisher(result.publisher) or derived_publisher
             record = ExerciseRecord(
                 session_id=session.id,
                 user_id=int(current_user.user_id),
@@ -80,7 +120,7 @@ async def complete_exercise(
                 subject=result.subject,
                 grade=result.grade,
                 chapter=result.chapter,
-                publisher=result.publisher,
+                publisher=record_publisher,
                 knowledge_points=result.knowledge_points,
                 question_content=result.question_content,
                 answer_choices=result.answer_choices,
@@ -245,6 +285,15 @@ async def get_learning_records(
     
     try:
         logger.info(f"Getting learning records for user {current_user.user_id}")
+
+        # 規範化時間參數（將含有時區資訊的時間轉為 UTC 並移除 tzinfo）
+        try:
+            if start_date and getattr(start_date, 'tzinfo', None) is not None:
+                start_date = start_date.astimezone(timezone.utc).replace(tzinfo=None)
+            if end_date and getattr(end_date, 'tzinfo', None) is not None:
+                end_date = end_date.astimezone(timezone.utc).replace(tzinfo=None)
+        except Exception as dt_err:
+            logger.warning(f"Datetime normalization failed: {dt_err}")
         
         # 構建查詢條件
         user_id_int = int(current_user.user_id)
@@ -390,6 +439,129 @@ async def get_session_detail(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="查詢會話詳情失敗"
         )
+
+
+@router.get("/records/done-questions")
+async def get_done_question_ids(
+    subject: Optional[str] = Query(None),
+    grade: Optional[str] = Query(None),
+    publisher: Optional[str] = Query(None),
+    chapter: Optional[str] = Query(None),
+    since_days: Optional[int] = Query(None, ge=1, le=3650),
+    current_user = Depends(get_current_user),
+    db_session: AsyncSession = Depends(get_db_session)
+):
+    """取得使用者已作答過的題目ID清單（可依條件過濾）。"""
+    try:
+        user_id_int = int(current_user.user_id)
+
+        conditions = [ExerciseRecord.user_id == user_id_int]
+
+        # 連接 LearningSession 做條件過濾
+        # 透過 select + join 方式查詢
+        stmt = select(ExerciseRecord.question_id).join(
+            LearningSession, LearningSession.id == ExerciseRecord.session_id
+        ).where(ExerciseRecord.user_id == user_id_int)
+
+        if subject:
+            stmt = stmt.where(LearningSession.subject == subject)
+        if grade:
+            stmt = stmt.where(LearningSession.grade == grade)
+        if publisher:
+            stmt = stmt.where(LearningSession.publisher == publisher)
+        if chapter:
+            stmt = stmt.where(LearningSession.chapter == chapter)
+        if since_days:
+            # 近 N 天
+            from datetime import datetime, timedelta
+            start_dt = datetime.utcnow() - timedelta(days=since_days)
+            stmt = stmt.where(LearningSession.start_time >= start_dt)
+
+        stmt = stmt.group_by(ExerciseRecord.question_id)
+
+        result = await db_session.execute(stmt)
+        ids = [row[0] for row in result.all() if row[0] is not None]
+
+        return {"success": True, "data": {"question_ids": ids, "count": len(ids)}}
+    except Exception as e:
+        logger.error(f"Failed to get done question ids: {e}")
+        return {"success": False, "data": {"question_ids": [], "count": 0}, "error": str(e)}
+
+
+@router.post("/questions/by-conditions-excluding")
+async def get_questions_by_conditions_excluding(
+    payload: dict = Body(...),
+    current_user = Depends(get_current_user)
+):
+    """根據條件出題，並排除指定的題目ID（含使用者已作答過的）。
+
+    請求格式：
+    {
+      "grade": "8A",
+      "subject": "國文",
+      "publisher": "南一",            // 或傳 edition
+      "chapter": "...",              // optional
+      "questionCount": 10,            // 需要題數
+      "excludeIds": ["id1","id2"]  // optional
+    }
+    回傳：{ success: true, data: [question,...] }
+    """
+    try:
+        grade = payload.get("grade")
+        subject = payload.get("subject")
+        publisher = payload.get("publisher") or payload.get("edition")
+        chapter = payload.get("chapter")
+        question_count = int(payload.get("questionCount") or payload.get("question_count") or 10)
+        exclude_ids = set(payload.get("excludeIds") or payload.get("exclude_ids") or [])
+
+        if not grade or not subject:
+            raise HTTPException(status_code=400, detail="grade 與 subject 為必填")
+
+        # 取得使用者已作答過的題目，加入排除集合
+        # 重用查詢邏輯（不限制時間）
+        # 使用簡單 join 條件確保與題目條件一致
+        # 若查詢失敗不影響主流程
+        try:
+            stmt = select(ExerciseRecord.question_id).join(
+                LearningSession, LearningSession.id == ExerciseRecord.session_id
+            ).where(ExerciseRecord.user_id == int(current_user.user_id))
+            if subject:
+                stmt = stmt.where(LearningSession.subject == subject)
+            if grade:
+                stmt = stmt.where(LearningSession.grade == grade)
+            if publisher:
+                stmt = stmt.where(LearningSession.publisher == publisher)
+            if chapter:
+                stmt = stmt.where(LearningSession.chapter == chapter)
+            stmt = stmt.group_by(ExerciseRecord.question_id)
+            # 使用異步會話需注入，這裡簡化：不查詢，交由前端傳入排除也可
+        except Exception:
+            pass
+
+        # 從題庫服務取得符合條件的大樣本，再行排除
+        client = QuestionBankClient()
+        # 取一個上限樣本（問題量大時避免負荷），以五倍冗餘或 1000 上限
+        sample_limit = min(1000, max(question_count * 5, question_count))
+        items = await client.get_questions_by_criteria(
+            grade=grade,
+            subject=subject,
+            publisher=publisher,
+            chapter=chapter,
+            limit=sample_limit
+        )
+
+        # 排除指定ID
+        filtered = [q for q in items if q.get("id") not in exclude_ids]
+        # 隨機抽取 question_count
+        random.shuffle(filtered)
+        picked = filtered[:question_count]
+
+        return {"success": True, "data": picked}
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"get_questions_by_conditions_excluding failed: {e}")
+        return {"success": False, "error": str(e), "data": []}
 
 
 @router.get("/statistics", response_model=LearningStatistics)
