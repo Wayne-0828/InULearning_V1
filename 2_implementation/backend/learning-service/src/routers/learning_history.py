@@ -46,6 +46,43 @@ async def complete_exercise(
         total_score = sum(result.score for result in request.exercise_results) / total_questions if total_questions > 0 else 0
         accuracy_rate = (correct_count / total_questions * 100) if total_questions > 0 else 0
         
+        # 規範化出版社（若前端未正確帶入，嘗試從多處來源回填）
+        def normalize_publisher(value: Optional[str]) -> Optional[str]:
+            if not value:
+                return None
+            value = str(value).strip()
+            mapping = {
+                "南一": "南一",
+                "翰林": "翰林",
+                "康軒": "康軒",
+                # 常見別名/拼寫
+                "康轩": "康軒",
+                "翰林版": "翰林",
+                "南一版": "南一",
+                "康軒版": "康軒",
+            }
+            return mapping.get(value, value)
+
+        derived_publisher: Optional[str] = normalize_publisher(request.publisher)
+
+        # 從 session_metadata.original_session_data 嘗試補值
+        try:
+            original = (request.session_metadata or {}).get("original_session_data") or {}
+            if not derived_publisher:
+                derived_publisher = normalize_publisher(original.get("publisher") or original.get("edition"))
+        except Exception:
+            pass
+
+        # 從第一筆題目結果嘗試補值
+        if not derived_publisher and request.exercise_results:
+            derived_publisher = normalize_publisher(request.exercise_results[0].publisher)
+
+        # 防守性：限制在允許清單內
+        allowed_publishers = {"南一", "翰林", "康軒"}
+        if derived_publisher not in allowed_publishers:
+            # 最終保底
+            derived_publisher = "南一"
+
         # 創建學習會話
         session = LearningSession(
             user_id=int(current_user.user_id),
@@ -53,7 +90,7 @@ async def complete_exercise(
             subject=request.subject,
             grade=request.grade,
             chapter=request.chapter,
-            publisher=request.publisher,
+            publisher=derived_publisher,
             difficulty=request.difficulty,
             knowledge_points=request.knowledge_points,
             question_count=total_questions,
@@ -73,6 +110,7 @@ async def complete_exercise(
         # 創建練習記錄
         exercise_records = []
         for result in request.exercise_results:
+            record_publisher = normalize_publisher(result.publisher) or derived_publisher
             record = ExerciseRecord(
                 session_id=session.id,
                 user_id=int(current_user.user_id),
@@ -80,7 +118,7 @@ async def complete_exercise(
                 subject=result.subject,
                 grade=result.grade,
                 chapter=result.chapter,
-                publisher=result.publisher,
+                publisher=record_publisher,
                 knowledge_points=result.knowledge_points,
                 question_content=result.question_content,
                 answer_choices=result.answer_choices,

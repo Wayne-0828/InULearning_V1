@@ -472,6 +472,7 @@ class ExamPage {
                 session_data: {
                     grade: this.sessionData.grade,
                     edition: this.sessionData.edition,
+                    publisher: this.sessionData.publisher || this.sessionData.edition,
                     subject: this.sessionData.subject,
                     chapter: this.sessionData.chapter,
                     question_count: this.questions.length

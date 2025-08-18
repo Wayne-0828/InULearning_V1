@@ -432,6 +432,7 @@ class ExerciseManager {
             const sessionData = {
                 grade: this.selectedCriteria.grade,
                 edition: this.selectedCriteria.edition,
+                publisher: this.selectedCriteria.edition,
                 subject: this.selectedCriteria.subject,
                 chapter: this.selectedCriteria.chapter,
                 question_count: this.questions.length,
