@@ -67,6 +67,17 @@ class ExerciseManager {
         this.init();
     }
 
+    shuffleArray(array) {
+        const result = array.slice();
+        for (let i = result.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            const temp = result[i];
+            result[i] = result[j];
+            result[j] = temp;
+        }
+        return result;
+    }
+
     init() {
         // 避免重複初始化
         if (this.initialized) return;
@@ -418,6 +429,8 @@ class ExerciseManager {
 
             if (questionsResult.success && questionsResult.data && questionsResult.data.length > 0) {
                 this.questions = questionsResult.data;
+                const shuffled = this.shuffleArray(this.questions);
+                this.questions = shuffled.map((q, idx) => ({ ...q, order_index: idx }));
                 console.log('成功載入題目:', this.questions.length, '題');
                 console.log('題目內容:', this.questions);
             } else {
@@ -429,6 +442,7 @@ class ExerciseManager {
             }
 
             // 創建學習會話並跳轉到考試頁面
+            const randomSeed = Date.now();
             const sessionData = {
                 grade: this.selectedCriteria.grade,
                 edition: this.selectedCriteria.edition,
@@ -436,7 +450,9 @@ class ExerciseManager {
                 subject: this.selectedCriteria.subject,
                 chapter: this.selectedCriteria.chapter,
                 question_count: this.questions.length,
-                questions: this.questions
+                questions: this.questions,
+                randomized: true,
+                randomSeed: randomSeed
             };
 
             // 將會話資料存儲到 sessionStorage
