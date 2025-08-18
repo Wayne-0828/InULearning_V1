@@ -216,6 +216,9 @@ class ResultPage {
 
         // 初始 MathJax 渲染
         this.renderMath();
+
+        // 初始化「錯題重練」按鈕狀態
+        this.setupRetryWrongButton();
     }
 
     /**
@@ -509,6 +512,136 @@ class ResultPage {
                 }
             });
         }
+
+        // 錯題重練按鈕
+        const retryBtn = document.getElementById('retryWrongBtn');
+        if (retryBtn) {
+            retryBtn.addEventListener('click', () => this.handleRetryWrong());
+        }
+    }
+
+    /**
+     * 設定「錯題重練」按鈕啟用/停用
+     */
+    setupRetryWrongButton() {
+        const retryBtn = document.getElementById('retryWrongBtn');
+        const meta = document.getElementById('retryMeta');
+        if (!retryBtn || !this.examResults || !Array.isArray(this.examResults.detailedResults)) return;
+
+        const wrongCount = this.examResults.detailedResults.filter(r => r && r.isCorrect === false).length;
+        const estimatedMinutes = wrongCount * 2;
+
+        if (wrongCount > 0) {
+            retryBtn.disabled = false;
+            retryBtn.title = `錯題數：${wrongCount}，預估時間：約 ${estimatedMinutes} 分鐘。點擊開始重練`;
+            if (meta) {
+                meta.textContent = `錯題數：${wrongCount} 題｜預估時間：約 ${estimatedMinutes} 分鐘`;
+            }
+        } else {
+            retryBtn.disabled = true;
+            retryBtn.title = '本次全對，無需重練';
+            if (meta) {
+                meta.textContent = '本次全對，無需重練';
+            }
+        }
+    }
+
+    /**
+     * 錯題重練：用本次 session 的錯題建立新 session，並導向 exam.html
+     */
+    handleRetryWrong() {
+        if (!this.examResults || !Array.isArray(this.examResults.detailedResults) || !Array.isArray(this.examResults.questions)) {
+            this.showWarningMessage('找不到可重練的錯題');
+            return;
+        }
+
+        // 取出錯題索引
+        const wrongIndexes = this.examResults.detailedResults
+            .map((r, i) => (r && r.isCorrect === false ? i : -1))
+            .filter(i => i >= 0);
+
+        if (wrongIndexes.length === 0) {
+            this.showWarningMessage('本次全對，無需重練');
+            return;
+        }
+
+        // 取出錯題題目並正規化為 exam.js 期望的結構（必須有 options）
+        const wrongQuestions = wrongIndexes
+            .map(i => this.examResults.questions[i])
+            .filter(Boolean)
+            .map(q => this.normalizeQuestionForExam(q));
+        if (wrongQuestions.length === 0) {
+            this.showWarningMessage('錯題資料異常，請稍後再試');
+            return;
+        }
+
+        // 隨機化錯題順序
+        const shuffled = this.shuffleArray(wrongQuestions).map((q, idx) => ({ ...q, order_index: idx }));
+
+        // 準備新 session 資料
+        const seed = Date.now();
+        const src = this.examResults.sessionData || {};
+        const newSession = {
+            grade: src.grade,
+            edition: src.edition,
+            publisher: src.publisher || src.edition,
+            subject: src.subject,
+            chapter: src.chapter,
+            question_count: shuffled.length,
+            questions: shuffled,
+            randomized: true,
+            randomSeed: seed,
+            isRetry: true,
+            retrySourceSubmittedAt: this.examResults.submittedAt,
+            retrySourceSessionId: src.sessionId || null
+        };
+
+        // 寫入並導向
+        sessionStorage.setItem('examSession', JSON.stringify(newSession));
+        window.location.href = 'exam.html';
+    }
+
+    // 將 result.html 內的題目資料正規化為 exam.js 可用的格式
+    normalizeQuestionForExam(q) {
+        const questionText = q.question || q.content || q.question_text || '';
+        // 規整選項：優先使用 q.options（陣列或物件），否則從 q.choices 轉為陣列
+        let optionsArray = [];
+        if (Array.isArray(q.options)) {
+            optionsArray = q.options;
+        } else if (q.options && typeof q.options === 'object') {
+            optionsArray = Object.values(q.options);
+        } else if (Array.isArray(q.choices)) {
+            optionsArray = q.choices;
+        } else if (q.choices && typeof q.choices === 'object') {
+            const order = ['A', 'B', 'C', 'D', 'E', 'F'];
+            optionsArray = order.map(k => q.choices[k]).filter(v => v !== undefined);
+        }
+
+        const answer = q.answer !== undefined ? q.answer : (q.correctAnswer !== undefined ? q.correctAnswer : null);
+
+        return {
+            id: q.id,
+            question: questionText,
+            options: optionsArray,
+            answer: answer,
+            explanation: q.explanation || '暫無解析',
+            difficulty: q.difficulty,
+            knowledgePoints: q.knowledgePoints || q.knowledge_points || [],
+            topic: q.topic || q.questionTopic || q.subject,
+            image_filename: q.image_filename,
+            image_url: q.image_url
+        };
+    }
+
+    shuffleArray(array) {
+        const result = array.slice();
+        for (let i = result.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            const temp = result[i];
+            result[i] = result[j];
+            result[j] = temp;
+        }
+        return result;
     }
 
     /**

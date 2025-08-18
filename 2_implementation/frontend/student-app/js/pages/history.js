@@ -298,6 +298,7 @@ class HistoryManager {
                 tags.push(`<span class="px-2 py-1 text-xs bg-gray-100 text-gray-600 rounded-full">+${record.knowledge_points.length - 2}</span>`);
             }
 
+            const isFullMark = (record.correct_count || 0) >= (record.question_count || 0);
             return `
                 <div class="px-6 py-4 hover:bg-gray-50 cursor-pointer" onclick="historyManager.viewRecordDetails('${record.session_id}')">
                     <div class="flex items-center justify-between">
@@ -346,6 +347,14 @@ class HistoryManager {
                                 <div class="text-sm font-medium text-gray-900">${Math.round(record.total_score || 0)}</div>
                                 <div class="text-sm text-gray-500">總分</div>
                             </div>
+                            <div class="flex items-center">
+                                <button class="bg-red-600 text-white px-3 py-1.5 rounded-md text-sm font-medium hover:bg-red-700 disabled:opacity-50 disabled:cursor-not-allowed"
+                                        ${isFullMark ? 'disabled' : ''}
+                                        title="${isFullMark ? '本次全對，無需重練' : '根據本次錯題重新練習'}"
+                                        onclick="event.stopPropagation(); historyManager.retryWrongFromHistory('${record.session_id}')">
+                                    錯題重練
+                                </button>
+                            </div>
                             <div class="flex-shrink-0">
                                 <span class="material-icons text-gray-400">chevron_right</span>
                             </div>
@@ -354,6 +363,103 @@ class HistoryManager {
                 </div>
             `;
         }).join('');
+    }
+
+    async retryWrongFromHistory(sessionId) {
+        try {
+            const loadingToast = this.showToast('正在準備錯題重練...', 'info');
+
+            // 需要登入
+            const token = localStorage.getItem('auth_token');
+            if (!token) {
+                this.hideToast(loadingToast);
+                this.showToast('需要登入才能重練錯題', 'warning');
+                return;
+            }
+
+            // 取得會話詳細資料
+            const detail = await learningAPI.getSessionDetail(sessionId);
+            if (!detail.success || !detail.data) {
+                this.hideToast(loadingToast);
+                this.showToast('載入會話詳情失敗，無法重練', 'error');
+                return;
+            }
+
+            const session = detail.data.session || {};
+            const records = detail.data.exercise_records || [];
+            const wrongRecords = records.filter(r => r && r.is_correct === false);
+
+            if (wrongRecords.length === 0) {
+                this.hideToast(loadingToast);
+                this.showToast('本次全對，無需重練', 'success');
+                return;
+            }
+
+            // 構建題目陣列
+            const wrongQuestions = wrongRecords.map(r => this.normalizeRecordToQuestion(r));
+
+            // 隨機化
+            const shuffled = this.shuffleArray(wrongQuestions).map((q, idx) => ({ ...q, order_index: idx }));
+
+            // 建立新的練習會話
+            const newSession = {
+                grade: session.grade,
+                edition: session.publisher, // 與前端其他頁面對齊（edition=publisher）
+                publisher: session.publisher,
+                subject: session.subject,
+                chapter: session.chapter,
+                question_count: shuffled.length,
+                questions: shuffled,
+                randomized: true,
+                randomSeed: Date.now(),
+                isRetry: true,
+                retrySourceSubmittedAt: session.end_time || session.start_time,
+                retrySourceSessionId: session.session_id
+            };
+
+            sessionStorage.setItem('examSession', JSON.stringify(newSession));
+            this.hideToast(loadingToast);
+            window.location.href = 'exam.html';
+        } catch (error) {
+            console.error('錯題重練失敗:', error);
+            this.showToast('建立錯題重練失敗，請稍後再試', 'error');
+        }
+    }
+
+    normalizeRecordToQuestion(record) {
+        // 將資料庫的 exercise_record 轉為 exam.js 期望的結構（確保 options 為陣列）
+        let optionsArray = [];
+        const ac = record.answer_choices;
+        if (Array.isArray(ac)) {
+            optionsArray = ac;
+        } else if (ac && typeof ac === 'object') {
+            const order = ['A', 'B', 'C', 'D', 'E', 'F'];
+            optionsArray = order.map(k => ac[k]).filter(v => v !== undefined);
+        }
+
+        return {
+            id: record.question_id,
+            question: record.question_content,
+            options: optionsArray,
+            answer: record.correct_answer,
+            explanation: record.explanation,
+            difficulty: record.difficulty,
+            knowledgePoints: record.knowledge_points || [],
+            topic: record.question_topic,
+            image_filename: record.image_filename,
+            image_url: record.image_url
+        };
+    }
+
+    shuffleArray(array) {
+        const result = array.slice();
+        for (let i = result.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            const temp = result[i];
+            result[i] = result[j];
+            result[j] = temp;
+        }
+        return result;
     }
 
     displayEmptyRecords() {

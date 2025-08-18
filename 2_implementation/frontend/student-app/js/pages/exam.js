@@ -78,6 +78,16 @@ class ExamPage {
                 sessionIdElement.textContent = `EXAM-${Date.now()}`;
             }
 
+            // 顯示「錯題重練」徽章
+            const retryBadge = document.getElementById('retryBadge');
+            if (retryBadge) {
+                if (this.sessionData && this.sessionData.isRetry) {
+                    retryBadge.classList.remove('hidden');
+                } else {
+                    retryBadge.classList.add('hidden');
+                }
+            }
+
         } catch (error) {
             console.error('載入會話資料失敗:', error);
             throw error;
