@@ -476,7 +476,7 @@ class UnifiedRegister {
             this.hideMessages();
 
             // 調用註冊 API
-            const response = await fetch('/api/v1/auth/register', {
+            const response = await fetch('/auth/register', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'

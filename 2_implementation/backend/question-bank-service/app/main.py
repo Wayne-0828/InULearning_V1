@@ -31,13 +31,14 @@ app = FastAPI(
 )
 
 # 配置 CORS
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=settings.cors_origins,
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
+# 註解掉 CORS 中間件，由 Nginx 統一處理 CORS
+# app.add_middleware(
+#     CORSMiddleware,
+#     allow_origins=settings.cors_origins,
+#     allow_credentials=True,
+#     allow_methods=["*"],
+#     allow_headers=["*"],
+# )
 
 # 包含 API 路由
 app.include_router(questions.router, prefix=settings.api_prefix)

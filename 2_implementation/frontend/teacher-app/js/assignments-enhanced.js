@@ -533,9 +533,9 @@ class QuizBuilder {
             publisher: '',
             chapter: ''
         };
-        this.assignmentsPath = '/assignments';
+        this.assignmentsPath = '';
         this.questionsPath = '/questions';
-        this.classesPath = '/api/v1/relationships/teacher-class';
+        this.classesPath = '/relationships/teacher-class';
         this.maxQuestions = 50;
         this.init();
     }

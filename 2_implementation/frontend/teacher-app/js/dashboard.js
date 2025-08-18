@@ -58,21 +58,21 @@ class TeacherDashboard {
      * 載入統計資料
      */
     async loadStats() {
-        return await apiClient.get('/api/v1/teacher/dashboard/stats');
+        return await apiClient.get('/teacher/dashboard/stats');
     }
 
     /**
      * 載入最近活動
      */
     async loadRecentActivities() {
-        return await apiClient.get('/api/v1/teacher/dashboard/activities');
+        return await apiClient.get('/teacher/dashboard/activities');
     }
 
     /**
      * 載入即將到來的任務
      */
     async loadUpcomingTasks() {
-        return await apiClient.get('/api/v1/teacher/dashboard/upcoming');
+        return await apiClient.get('/teacher/dashboard/upcoming');
     }
 
     /**

@@ -808,8 +808,8 @@
                 // 嘗試多個可能的 API 路徑
                 let res = null;
                 const apiPaths = [
-                    '/api/v1/relationships/teacher-class',
-                    '/api/v1/relationships/classes'
+                                '/relationships/teacher-class',
+            '/relationships/classes'
                 ];
                 
                 for (const path of apiPaths) {
@@ -867,8 +867,8 @@
                         // 嘗試多個可能的 API 路徑
                         let res = null;
                         const apiPaths = [
-                            `/api/v1/relationships/classes/${c.id}/students`,
-                            `/api/v1/relationships/teacher-class/${c.id}/students`
+                            `/relationships/classes/${c.id}/students`,
+                            `/relationships/teacher-class/${c.id}/students`
                         ];
                         
                         for (const path of apiPaths) {
@@ -1137,8 +1137,8 @@
                     // 嘗試多個可能的 API 路徑進行更新
                     let updated = false;
                     const updatePaths = [
-                        `/api/v1/relationships/teacher-class/${editingId}`,
-                        `/api/v1/relationships/classes/${editingId}`
+                        `/relationships/teacher-class/${editingId}`,
+                        `/relationships/classes/${editingId}`
                     ];
                     
                     for (const path of updatePaths) {
@@ -1163,8 +1163,8 @@
                     // 嘗試多個可能的 API 路徑進行創建
                     let created = null;
                     const createPaths = [
-                        '/api/v1/relationships/teacher-class/create-class',
-                        '/api/v1/relationships/classes'
+                        '/relationships/teacher-class/create-class',
+                        '/relationships/classes'
                     ];
                     
                     for (const path of createPaths) {
@@ -1246,8 +1246,8 @@
                 // 嘗試多個可能的 API 路徑進行刪除
                 let deleted = false;
                 const deletePaths = [
-                    `/api/v1/relationships/teacher-class/${pendingDeleteId}`,
-                    `/api/v1/relationships/classes/${pendingDeleteId}`
+                    `/relationships/teacher-class/${pendingDeleteId}`,
+                    `/relationships/classes/${pendingDeleteId}`
                 ];
                 
                 for (const path of deletePaths) {
@@ -1366,8 +1366,8 @@
                 // 嘗試多個可能的 API 路徑
                 let res = null;
                 const searchPaths = [
-                    `/api/v1/relationships/students/search?kw=${encodeURIComponent(keyword)}&limit=10`,
-                    `/api/v1/users/search?kw=${encodeURIComponent(keyword)}&limit=10`
+                    `/relationships/students/search?kw=${encodeURIComponent(keyword)}&limit=10`,
+                                         `/users/search?kw=${encodeURIComponent(keyword)}&limit=10`
                 ];
                 
                 for (const path of searchPaths) {
@@ -1421,8 +1421,8 @@
                 // 嘗試多個可能的 API 路徑
                 let res = null;
                 const loadPaths = [
-                    `/api/v1/relationships/classes/${classId}/students`,
-                    `/api/v1/relationships/teacher-class/${classId}/students`
+                    `/relationships/classes/${classId}/students`,
+                    `/relationships/teacher-class/${classId}/students`
                 ];
                 
                 for (const path of loadPaths) {
@@ -1475,8 +1475,8 @@
                 // 嘗試多個可能的 API 路徑
                 let added = false;
                 const addPaths = [
-                    `/api/v1/relationships/classes/${editingId}/students`,
-                    `/api/v1/relationships/teacher-class/${editingId}/students`
+                    `/relationships/classes/${editingId}/students`,
+                    `/relationships/teacher-class/${editingId}/students`
                 ];
                 
                 for (const path of addPaths) {
@@ -1537,8 +1537,8 @@
                     // 嘗試多個可能的 API 路徑進行創建
                     let created = null;
                     const createPaths = [
-                        '/api/v1/users',
-                        '/api/v1/relationships/users'
+                        '/users',
+                        '/relationships/users'
                     ];
                     
                     for (const path of createPaths) {
@@ -1559,8 +1559,8 @@
                     } else {
                         // 若創建失敗，嘗試搜尋取得 id
                         const searchPaths = [
-                            `/api/v1/relationships/students/search?kw=${encodeURIComponent(email)}&limit=1`,
-                            `/api/v1/users/search?kw=${encodeURIComponent(email)}&limit=1`
+                            `/relationships/students/search?kw=${encodeURIComponent(email)}&limit=1`,
+                                                         `/users/search?kw=${encodeURIComponent(email)}&limit=1`
                         ];
                         
                         for (const path of searchPaths) {
@@ -1585,8 +1585,8 @@
                 // 2) 加入班級
                 let added = false;
                 const addPaths = [
-                    `/api/v1/relationships/classes/${editingId}/students`,
-                    `/api/v1/relationships/teacher-class/${editingId}/students`
+                    `/relationships/classes/${editingId}/students`,
+                    `/relationships/teacher-class/${editingId}/students`
                 ];
                 
                 for (const path of addPaths) {
@@ -1633,8 +1633,8 @@
                 // 嘗試多個可能的 API 路徑
                 let removed = false;
                 const removePaths = [
-                    `/api/v1/relationships/classes/${editingId}/students/${studentId}`,
-                    `/api/v1/relationships/teacher-class/${editingId}/students/${studentId}`
+                    `/relationships/classes/${editingId}/students/${studentId}`,
+                    `/relationships/teacher-class/${editingId}/students/${studentId}`
                 ];
                 
                 for (const path of removePaths) {

@@ -50,8 +50,8 @@ class ModernTeacherDashboard {
 
             // 並行抓取：教師聚合儀表板 + 關係服務（以關係服務為準以保證數值正確）
             const [dashboard, rels] = await Promise.all([
-                apiClient.get('/api/v1/teacher/dashboard').catch(() => null),
-                apiClient.get('/api/v1/relationships/teacher-class').catch(() => [])
+                apiClient.get('/teacher/dashboard').catch(() => null),
+                apiClient.get('/relationships/teacher-class').catch(() => [])
             ]);
 
             // 標準化班級列表（以關係服務為準）
@@ -61,7 +61,7 @@ class ModernTeacherDashboard {
 
             // 逐班級抓學生數，得到準確總學生數
             const classWithCounts = await Promise.all(relClasses.map(c => (
-                apiClient.get(`/api/v1/relationships/classes/${c.id}/students`)
+                apiClient.get(`/relationships/classes/${c.id}/students`)
                     .then(arr => ({ id: c.id, name: c.name, students: Array.isArray(arr) ? arr.length : ((arr && typeof arr.count === 'number') ? arr.count : 0) }))
                     .catch(() => ({ id: c.id, name: c.name, students: 0 }))
             )));
@@ -111,7 +111,7 @@ class ModernTeacherDashboard {
     async loadDashboardDataFallback() {
         try {
             // 教師的班級列表（關係服務）
-            const rels = await apiClient.get('/api/v1/relationships/teacher-class');
+            const rels = await apiClient.get('/relationships/teacher-class');
             const classes = Array.isArray(rels) ? rels.map(r => ({
                 id: r.class_id,
                 name: r.class_name || `班級 ${r.class_id}`,
@@ -120,7 +120,7 @@ class ModernTeacherDashboard {
 
             // 逐班級抓學生數
             const results = await Promise.all(classes.map(c => (
-                apiClient.get(`/api/v1/relationships/classes/${c.id}/students`).then(arr => ({ id: c.id, name: c.name, students: Array.isArray(arr) ? arr.length : 0 }))
+                apiClient.get(`/relationships/classes/${c.id}/students`).then(arr => ({ id: c.id, name: c.name, students: Array.isArray(arr) ? arr.length : 0 }))
                     .catch(() => ({ id: c.id, name: c.name, students: 0 }))
             )));
 

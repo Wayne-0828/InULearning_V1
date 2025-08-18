@@ -1040,14 +1040,14 @@
             if (!apiConnected) throw new Error('API 未連接');
             // 若帶 classId，取該班；否則載入教師所有班級學生
             if (classId) {
-                const res = await apiClient.get(`/api/v1/relationships/classes/${classId}/students`);
+                const res = await apiClient.get(`/relationships/classes/${classId}/students`);
                 const arr = (res && (res.data || res.items || res)) || [];
                 students = toStudentRows(arr, className);
                 return;
             }
             // 無 classId：聚合所有班級
             const lists = await Promise.all(
-                teacherClasses.map(c => apiClient.get(`/api/v1/relationships/classes/${c.id}/students`).then(r => ({
+                                 teacherClasses.map(c => apiClient.get(`/relationships/classes/${c.id}/students`).then(r => ({
                     className: c.name,
                     arr: (r && (r.data || r.items || r)) || []
                 })).catch(() => ({ className: c.name, arr: [] })))
@@ -1146,7 +1146,7 @@
 
         async function fetchTeacherClasses() {
             try {
-                const res = await apiClient.get('/api/v1/relationships/teacher-class');
+                                 const res = await apiClient.get('/relationships/teacher-class');
                 const list = (res && (res.data || res.items || res)) || [];
                 teacherClasses = list.map(r => ({ id: r.class_id, name: r.class_name || '' }));
             } catch (e) {

@@ -75,13 +75,14 @@ app = FastAPI(
 )
 
 # 中間件配置
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=os.getenv("ALLOWED_ORIGINS", "*").split(","),
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
+# 註解掉 CORS 中間件，由 Nginx 統一處理 CORS
+# app.add_middleware(
+#     CORSMiddleware,
+#     allow_origins=os.getenv("ALLOWED_ORIGINS", "*").split(","),
+#     allow_credentials=True,
+#     allow_methods=["*"],
+#     allow_headers=["*"],
+# )
 
 # 暫時禁用 TrustedHostMiddleware 以解決主機標頭問題
 # app.add_middleware(
