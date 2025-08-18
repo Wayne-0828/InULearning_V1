@@ -436,12 +436,15 @@ class HistoryManager {
             const order = ['A', 'B', 'C', 'D', 'E', 'F'];
             optionsArray = order.map(k => ac[k]).filter(v => v !== undefined);
         }
+        const correctIndex = this.resolveCorrectIndex(record.correct_answer, optionsArray);
 
         return {
             id: record.question_id,
             question: record.question_content,
             options: optionsArray,
-            answer: record.correct_answer,
+            answer: correctIndex,
+            correctAnswer: correctIndex,
+            correct_answer: correctIndex,
             explanation: record.explanation,
             difficulty: record.difficulty,
             knowledgePoints: record.knowledge_points || [],
@@ -449,6 +452,18 @@ class HistoryManager {
             image_filename: record.image_filename,
             image_url: record.image_url
         };
+    }
+
+    resolveCorrectIndex(sourceAnswer, optionsArray) {
+        if (sourceAnswer === null || sourceAnswer === undefined) return 0;
+        if (typeof sourceAnswer === 'number') return sourceAnswer;
+        const str = String(sourceAnswer).trim();
+        const upper = str.toUpperCase();
+        const letterMap = { 'A': 0, 'B': 1, 'C': 2, 'D': 3, 'E': 4, 'F': 5 };
+        if (letterMap.hasOwnProperty(upper)) return letterMap[upper];
+        if (/^\d+$/.test(str)) return parseInt(str, 10);
+        const idx = optionsArray.findIndex(opt => String(opt).trim() === str);
+        return idx >= 0 ? idx : 0;
     }
 
     shuffleArray(array) {

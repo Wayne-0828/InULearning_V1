@@ -536,15 +536,27 @@ class ExamPage {
 
             // 處理正確答案格式
             let correctAnswer = 0;
-            if (question.answer !== undefined) {
-                if (typeof question.answer === 'string') {
-                    const answerMap = { 'A': 0, 'B': 1, 'C': 2, 'D': 3 };
-                    correctAnswer = answerMap[question.answer.toUpperCase()] || 0;
-                } else if (typeof question.answer === 'number') {
-                    correctAnswer = question.answer;
+            const rawAnswer = (question.answer !== undefined)
+                ? question.answer
+                : (question.correct_answer !== undefined)
+                    ? question.correct_answer
+                    : (question.correctAnswer !== undefined)
+                        ? question.correctAnswer
+                        : 0;
+
+            if (typeof rawAnswer === 'number') {
+                correctAnswer = rawAnswer;
+            } else if (typeof rawAnswer === 'string') {
+                const upper = rawAnswer.toUpperCase().trim();
+                const answerMap = { 'A': 0, 'B': 1, 'C': 2, 'D': 3 };
+                if (answerMap.hasOwnProperty(upper)) {
+                    correctAnswer = answerMap[upper];
+                } else if (/^\d+$/.test(upper)) {
+                    // 支援數字字串，例如 "0", "1" 等
+                    correctAnswer = parseInt(upper, 10);
+                } else {
+                    correctAnswer = 0;
                 }
-            } else if (question.correct_answer !== undefined) {
-                correctAnswer = question.correct_answer;
             }
 
             const isCorrect = userAnswer === correctAnswer;

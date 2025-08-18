@@ -616,14 +616,22 @@ class ResultPage {
             const order = ['A', 'B', 'C', 'D', 'E', 'F'];
             optionsArray = order.map(k => q.choices[k]).filter(v => v !== undefined);
         }
+        const sourceAnswer = (q.answer !== undefined) ? q.answer
+            : (q.correctAnswer !== undefined) ? q.correctAnswer
+                : (q.correct_answer !== undefined) ? q.correct_answer
+                    : null;
 
-        const answer = q.answer !== undefined ? q.answer : (q.correctAnswer !== undefined ? q.correctAnswer : null);
+        const correctIndex = this.resolveCorrectIndex(sourceAnswer, optionsArray);
 
         return {
             id: q.id,
             question: questionText,
             options: optionsArray,
-            answer: answer,
+            // 兼容字段：提供多種命名，統一為索引
+            answer: correctIndex,
+            correctAnswer: correctIndex,
+            correct_answer: correctIndex,
+            correctAnswerIndex: correctIndex,
             explanation: q.explanation || '暫無解析',
             difficulty: q.difficulty,
             knowledgePoints: q.knowledgePoints || q.knowledge_points || [],
@@ -631,6 +639,19 @@ class ResultPage {
             image_filename: q.image_filename,
             image_url: q.image_url
         };
+    }
+
+    resolveCorrectIndex(sourceAnswer, optionsArray) {
+        if (sourceAnswer === null || sourceAnswer === undefined) return 0;
+        if (typeof sourceAnswer === 'number') return sourceAnswer;
+        const str = String(sourceAnswer).trim();
+        const upper = str.toUpperCase();
+        const letterMap = { 'A': 0, 'B': 1, 'C': 2, 'D': 3, 'E': 4, 'F': 5 };
+        if (letterMap.hasOwnProperty(upper)) return letterMap[upper];
+        if (/^\d+$/.test(str)) return parseInt(str, 10);
+        // 嘗試用文字匹配
+        const idx = optionsArray.findIndex(opt => String(opt).trim() === str);
+        return idx >= 0 ? idx : 0;
     }
 
     shuffleArray(array) {
