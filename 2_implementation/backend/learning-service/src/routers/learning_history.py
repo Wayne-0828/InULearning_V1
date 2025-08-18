@@ -5,7 +5,7 @@
 """
 
 import logging
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import Optional
 from fastapi import APIRouter, Depends, HTTPException, status, Query
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -283,6 +283,15 @@ async def get_learning_records(
     
     try:
         logger.info(f"Getting learning records for user {current_user.user_id}")
+
+        # 規範化時間參數（將含有時區資訊的時間轉為 UTC 並移除 tzinfo）
+        try:
+            if start_date and getattr(start_date, 'tzinfo', None) is not None:
+                start_date = start_date.astimezone(timezone.utc).replace(tzinfo=None)
+            if end_date and getattr(end_date, 'tzinfo', None) is not None:
+                end_date = end_date.astimezone(timezone.utc).replace(tzinfo=None)
+        except Exception as dt_err:
+            logger.warning(f"Datetime normalization failed: {dt_err}")
         
         # 構建查詢條件
         user_id_int = int(current_user.user_id)

@@ -23,7 +23,7 @@ class HistoryManager {
         console.log('learningAPI 狀態:', typeof learningAPI, learningAPI);
 
         this.bindEvents();
-        this.loadRecentRecords(); // 先載入最近5筆記錄
+        this.loadLearningRecords(); // 直接載入分頁記錄（每頁 10 筆）
         this.loadStatistics();
 
         console.log('HistoryManager 初始化完成');
@@ -50,11 +50,11 @@ class HistoryManager {
         // 每頁顯示數量
         const pageSizeSelect = document.getElementById('pageSize');
         if (pageSizeSelect) {
-            pageSizeSelect.addEventListener('change', (e) => {
-                this.pageSize = parseInt(e.target.value);
-                this.currentPage = 1;
-                this.loadLearningRecords();
-            });
+            // 固定每頁顯示 10 筆並停用下拉選單
+            this.pageSize = 10;
+            pageSizeSelect.value = '10';
+            pageSizeSelect.disabled = true;
+            pageSizeSelect.classList.add('opacity-50', 'cursor-not-allowed');
         }
 
         // 登出按鈕
