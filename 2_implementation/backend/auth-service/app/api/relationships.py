@@ -16,6 +16,7 @@ from app.models import (
 )
 from app.dependencies import get_current_user
 from pydantic import BaseModel
+from app.schemas import UserResponse # Import UserResponse schema
 
 router = APIRouter(prefix="/relationships", tags=["relationships"])
 
@@ -78,6 +79,14 @@ class StudentClassRelationResponse(BaseModel):
     is_active: bool
     student_name: Optional[str] = None
     class_name: Optional[str] = None
+
+
+class ParentChildDetailResponse(BaseModel):
+    id: int
+    name: str
+    grade: Optional[str] = None # Assuming grade is a field in User model
+    class_name: Optional[str] = None
+    avatar: Optional[str] = None
 
 
 # 家長-學生關係管理
@@ -144,12 +153,12 @@ async def create_parent_child_relation(
     )
 
 
-@router.get("/parent-child", response_model=List[ParentChildRelationResponse])
+@router.get("/parent-child", response_model=List[ParentChildDetailResponse])
 async def get_parent_child_relations(
     current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db)
 ):
-    """獲取家長的子女關係列表"""
+    """獲取家長的子女關係列表，並直接回傳子女詳細資訊"""
     
     if current_user.role != UserRole.parent:
         raise HTTPException(
@@ -160,24 +169,25 @@ async def get_parent_child_relations(
     relations = db.query(ParentChildRelation).options(
         joinedload(ParentChildRelation.child)
     ).filter(
-        and_(
-            ParentChildRelation.parent_id == current_user.id,
-            ParentChildRelation.is_active == True
-        )
+        ParentChildRelation.parent_id == current_user.id,
+        ParentChildRelation.is_active == True
     ).all()
     
-    return [
-        ParentChildRelationResponse(
-            id=relation.id,
-            parent_id=relation.parent_id,
-            child_id=relation.child_id,
-            relationship_type=relation.relationship_type,
-            is_active=relation.is_active,
-            parent_name=f"{current_user.first_name} {current_user.last_name}",
-            child_name=f"{relation.child.first_name} {relation.child.last_name}"
-        )
-        for relation in relations
-    ]
+    # 直接從載入的 child 關係中提取子女資訊
+    children_list = []
+    for relation in relations:
+        if relation.child:
+            children_list.append(
+                ParentChildDetailResponse(
+                    id=relation.child.id,
+                    name=f"{relation.child.first_name or ''} {relation.child.last_name or ''}".strip(),
+                    grade=getattr(relation.child, 'grade', None), # Safely access grade
+                    class_name=getattr(relation.child, 'class_name', None),
+                    avatar=getattr(relation.child, 'avatar_url', None)
+                )
+            )
+    
+    return children_list
 
 
 # 班級管理
