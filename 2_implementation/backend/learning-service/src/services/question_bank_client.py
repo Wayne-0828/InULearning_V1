@@ -284,3 +284,42 @@ class QuestionBankClient:
         except Exception as e:
             logger.error(f"Health check failed: {e}")
             return False 
+
+    async def get_questions_by_conditions_simple(
+        self,
+        grade: str,
+        publisher: str,
+        subject: str,
+        chapter: Optional[str],
+        question_count: int
+    ) -> List[Dict[str, Any]]:
+        """呼叫題庫 /questions/by-conditions 取得題目（已是前端使用的格式）。"""
+        try:
+            params = {
+                "grade": grade,
+                "edition": publisher,
+                "subject": subject,
+                "questionCount": question_count,
+            }
+            if chapter:
+                params["chapter"] = chapter
+
+            paths = self._candidate_urls("/api/v1/questions/by-conditions")
+            last_exc = None
+            for url in paths:
+                try:
+                    async with httpx.AsyncClient(timeout=self.timeout) as client:
+                        response = await client.get(url, params=params)
+                        response.raise_for_status()
+                        data = response.json()
+                        if isinstance(data, dict) and data.get("success"):
+                            return data.get("data", [])
+                        # 若結構非預期，嘗試容錯
+                        return data.get("data", []) if isinstance(data, dict) else []
+                except Exception as e:
+                    last_exc = e
+                    continue
+            raise last_exc
+        except Exception as e:
+            logger.error(f"Error getting questions by conditions: {e}")
+            return []
