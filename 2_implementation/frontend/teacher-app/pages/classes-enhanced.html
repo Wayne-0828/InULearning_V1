@@ -1553,7 +1553,7 @@
                         if (studentsRes && (studentsRes.data || studentsRes.items || studentsRes)) {
                             const students = studentsRes.data || studentsRes.items || studentsRes || [];
                             const removedStudents = students.filter(s => !s.is_active).map(s => ({
-                                id: s.id,
+                                id: s.id,  // 使用關係記錄的 ID，這是正確的
                                 student_id: s.student_id,
                                 name: s.student_name || '未知學生',
                                 class_id: s.class_id,
