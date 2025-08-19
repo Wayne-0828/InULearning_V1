@@ -9,7 +9,7 @@ from datetime import datetime, timezone
 from typing import Optional
 from fastapi import APIRouter, Depends, HTTPException, status, Query, Body
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import select, func, and_, desc
+from sqlalchemy import select, func, and_, or_, desc
 from sqlalchemy.orm import selectinload
 import math
 
@@ -25,11 +25,29 @@ import random
 from ..models.user_learning_profile import UserLearningProfile
 from ..utils.database import get_db_session
 from ..utils.auth import get_current_user
+from ..services.question_bank_client import QuestionBankClient
 
 logger = logging.getLogger(__name__)
 
 router = APIRouter(tags=["learning_history"])
 
+
+def _normalize_publisher(value: Optional[str]) -> Optional[str]:
+    """將 publisher/edition 正規化為資料庫使用的固定值。"""
+    if not value:
+        return None
+    value = str(value).strip()
+    mapping = {
+        "南一": "南一",
+        "翰林": "翰林",
+        "康軒": "康軒",
+        # 常見別名/拼寫
+        "康轩": "康軒",
+        "翰林版": "翰林",
+        "南一版": "南一",
+        "康軒版": "康軒",
+    }
+    return mapping.get(value, value)
 
 @router.post("/exercises/complete", response_model=CompleteExerciseResponse)
 async def complete_exercise(
@@ -454,44 +472,112 @@ async def get_done_question_ids(
     """取得使用者已作答過的題目ID清單（可依條件過濾）。"""
     try:
         user_id_int = int(current_user.user_id)
+        logger.info(
+            "[done-questions] user=%s subject=%s grade=%s publisher=%s chapter=%s since_days=%s",
+            user_id_int, subject, grade, _normalize_publisher(publisher), chapter, since_days
+        )
 
-        conditions = [ExerciseRecord.user_id == user_id_int]
-
-        # 連接 LearningSession 做條件過濾
-        # 透過 select + join 方式查詢
-        stmt = select(ExerciseRecord.question_id).join(
-            LearningSession, LearningSession.id == ExerciseRecord.session_id
-        ).where(ExerciseRecord.user_id == user_id_int)
+        # 直接在 ExerciseRecord 上用欄位過濾，避免 join 帶來的潛在錯誤
+        stmt = select(ExerciseRecord.question_id).where(ExerciseRecord.user_id == user_id_int)
 
         if subject:
-            stmt = stmt.where(LearningSession.subject == subject)
+            stmt = stmt.where(ExerciseRecord.subject == subject)
         if grade:
-            stmt = stmt.where(LearningSession.grade == grade)
+            stmt = stmt.where(ExerciseRecord.grade == grade)
         if publisher:
-            stmt = stmt.where(LearningSession.publisher == publisher)
+            # 舊資料可能 publisher 為 NULL，視為通配以避免漏抓
+            stmt = stmt.where(or_(ExerciseRecord.publisher == _normalize_publisher(publisher), ExerciseRecord.publisher.is_(None)))
         if chapter:
-            stmt = stmt.where(LearningSession.chapter == chapter)
+            # 舊資料可能 chapter 為 NULL，視為通配以避免漏抓
+            stmt = stmt.where(or_(ExerciseRecord.chapter == chapter, ExerciseRecord.chapter.is_(None)))
         if since_days:
-            # 近 N 天
             from datetime import datetime, timedelta
             start_dt = datetime.utcnow() - timedelta(days=since_days)
-            stmt = stmt.where(LearningSession.start_time >= start_dt)
+            stmt = stmt.where(ExerciseRecord.created_at >= start_dt)
 
         stmt = stmt.group_by(ExerciseRecord.question_id)
 
         result = await db_session.execute(stmt)
         ids = [row[0] for row in result.all() if row[0] is not None]
+        logger.info("[done-questions] user=%s matched_ids=%d", user_id_int, len(ids))
 
         return {"success": True, "data": {"question_ids": ids, "count": len(ids)}}
     except Exception as e:
-        logger.error(f"Failed to get done question ids: {e}")
-        return {"success": False, "data": {"question_ids": [], "count": 0}, "error": str(e)}
+        logger.exception("[done-questions] failed: user=%s error=%s", getattr(current_user, 'user_id', None), str(e))
+        return {
+            "success": False,
+            "data": {"question_ids": [], "count": 0},
+            "error": f"done-questions failed: {str(e)[:200]}"
+        }
+
+
+@router.get("/availability/summary")
+async def get_availability_summary(
+    grade: str = Query(...),
+    subject: str = Query(...),
+    publisher: str = Query(..., description="出版社/版本"),
+    chapter: Optional[str] = Query(None),
+    current_user = Depends(get_current_user),
+    db_session: AsyncSession = Depends(get_db_session)
+):
+    """彙總可用題目數：total/done/unseen。"""
+    try:
+        normalized_publisher = _normalize_publisher(publisher)
+        user_id_int = int(current_user.user_id)
+
+        # 1) 取 Mongo 題庫總數（透過題庫服務 /questions/check）
+        qb = QuestionBankClient()
+        total = await qb.check_question_count(
+            grade=grade,
+            subject=subject,
+            publisher=normalized_publisher,
+            chapter=chapter
+        )
+
+        # 2) 取 PostgreSQL 已做過數（ExerciseRecord 直接過濾）
+        stmt = select(ExerciseRecord.question_id).where(
+            ExerciseRecord.user_id == user_id_int
+        )
+        stmt = stmt.where(ExerciseRecord.subject == subject)
+        stmt = stmt.where(ExerciseRecord.grade == grade)
+        if normalized_publisher:
+            stmt = stmt.where(or_(ExerciseRecord.publisher == normalized_publisher, ExerciseRecord.publisher.is_(None)))
+        if chapter:
+            stmt = stmt.where(or_(ExerciseRecord.chapter == chapter, ExerciseRecord.chapter.is_(None)))
+        stmt = stmt.group_by(ExerciseRecord.question_id)
+
+        result = await db_session.execute(stmt)
+        done_ids = [row[0] for row in result.all() if row[0] is not None]
+        done = len(done_ids)
+        unseen = max(0, int(total) - int(done))
+
+        logger.info(
+            "[availability] user=%s total=%s done=%s unseen=%s grade=%s subject=%s publisher=%s chapter=%s",
+            user_id_int, total, done, unseen, grade, subject, normalized_publisher, chapter
+        )
+
+        return {
+            "success": True,
+            "data": {
+                "total": int(total),
+                "done": int(done),
+                "unseen": int(unseen)
+            }
+        }
+    except Exception as e:
+        logger.exception("[availability] failed: %s", str(e))
+        return {
+            "success": False,
+            "error": f"availability summary failed: {str(e)[:200]}",
+            "data": {"total": 0, "done": 0, "unseen": 0}
+        }
 
 
 @router.post("/questions/by-conditions-excluding")
 async def get_questions_by_conditions_excluding(
     payload: dict = Body(...),
-    current_user = Depends(get_current_user)
+    current_user = Depends(get_current_user),
+    db_session: AsyncSession = Depends(get_db_session)
 ):
     """根據條件出題，並排除指定的題目ID（含使用者已作答過的）。
 
@@ -509,59 +595,105 @@ async def get_questions_by_conditions_excluding(
     try:
         grade = payload.get("grade")
         subject = payload.get("subject")
-        publisher = payload.get("publisher") or payload.get("edition")
+        publisher = _normalize_publisher(payload.get("publisher") or payload.get("edition"))
         chapter = payload.get("chapter")
         question_count = int(payload.get("questionCount") or payload.get("question_count") or 10)
         exclude_ids = set(payload.get("excludeIds") or payload.get("exclude_ids") or [])
 
         if not grade or not subject:
+            logger.warning("[exclude] missing required fields: grade=%s subject=%s", grade, subject)
             raise HTTPException(status_code=400, detail="grade 與 subject 為必填")
 
-        # 取得使用者已作答過的題目，加入排除集合
-        # 重用查詢邏輯（不限制時間）
-        # 使用簡單 join 條件確保與題目條件一致
-        # 若查詢失敗不影響主流程
-        try:
-            stmt = select(ExerciseRecord.question_id).join(
-                LearningSession, LearningSession.id == ExerciseRecord.session_id
-            ).where(ExerciseRecord.user_id == int(current_user.user_id))
-            if subject:
-                stmt = stmt.where(LearningSession.subject == subject)
-            if grade:
-                stmt = stmt.where(LearningSession.grade == grade)
-            if publisher:
-                stmt = stmt.where(LearningSession.publisher == publisher)
-            if chapter:
-                stmt = stmt.where(LearningSession.chapter == chapter)
-            stmt = stmt.group_by(ExerciseRecord.question_id)
-            # 使用異步會話需注入，這裡簡化：不查詢，交由前端傳入排除也可
-        except Exception:
-            pass
+        logger.info(
+            "[exclude] user=%s grade=%s subject=%s publisher=%s chapter=%s requested=%s exclude_in=%d",
+            getattr(current_user, 'user_id', None), grade, subject, publisher, chapter, question_count, len(exclude_ids)
+        )
 
-        # 從題庫服務取得符合條件的大樣本，再行排除
+        # 取得使用者已作答過的題目，加入排除集合
+        # 直接在 ExerciseRecord 上過濾，避免 join 帶來的異常
+        done_contents = set()
+        try:
+            stmt = select(ExerciseRecord.question_id, ExerciseRecord.question_content).where(
+                ExerciseRecord.user_id == int(current_user.user_id)
+            )
+            if subject:
+                stmt = stmt.where(ExerciseRecord.subject == subject)
+            if grade:
+                stmt = stmt.where(ExerciseRecord.grade == grade)
+            if publisher:
+                stmt = stmt.where(or_(ExerciseRecord.publisher == _normalize_publisher(publisher), ExerciseRecord.publisher.is_(None)))
+            if chapter:
+                stmt = stmt.where(or_(ExerciseRecord.chapter == chapter, ExerciseRecord.chapter.is_(None)))
+            stmt = stmt.group_by(ExerciseRecord.question_id, ExerciseRecord.question_content)
+
+            result = await db_session.execute(stmt)
+            rows = result.all()
+            done_ids = {row[0] for row in rows if row[0] is not None}
+            done_contents = {row[1] for row in rows if len(row) > 1 and row[1] is not None}
+            exclude_ids |= done_ids
+            logger.info("[exclude] user=%s merged_exclude_ids size=%d (added %d ids, %d contents from DB)", getattr(current_user, 'user_id', None), len(exclude_ids), len(done_ids), len(done_contents))
+
+            # 階段0診斷：抽樣驗證 done_ids 是否存在於 Mongo（型別/格式一致性）
+            try:
+                if done_ids:
+                    sample_ids = list(done_ids)[:5]
+                    qb = QuestionBankClient()
+                    probe = await qb.get_questions_by_ids(sample_ids)
+                    logger.info(
+                        "[exclude][probe] sample=%s exists_in_mongo=%d", len(sample_ids), len(probe or [])
+                    )
+            except Exception as probe_err:
+                logger.warning("[exclude][probe] validation failed: %s", str(probe_err))
+        except Exception:
+            # 後端過濾失敗時，不阻斷流程，改為僅使用前端提供的 excludeIds
+            logger.exception("[exclude] failed to merge DB done_ids, fallback to client excludeIds only")
+
+        # 直接由題庫服務以 $nin 過濾，避免本地二次過濾
         client = QuestionBankClient()
-        # 取一個上限樣本（問題量大時避免負荷），以五倍冗餘或 1000 上限
-        sample_limit = min(1000, max(question_count * 5, question_count))
-        items = await client.get_questions_by_criteria(
+        picked = await client.get_questions_by_criteria_excluding(
             grade=grade,
             subject=subject,
             publisher=publisher,
             chapter=chapter,
-            limit=sample_limit
+            limit=question_count,
+            exclude_ids=list(exclude_ids),
+            exclude_contents=list(done_contents)
         )
 
-        # 排除指定ID
-        filtered = [q for q in items if q.get("id") not in exclude_ids]
-        # 隨機抽取 question_count
-        random.shuffle(filtered)
-        picked = filtered[:question_count]
+        # 後備：若無需排除且未取到題目，嘗試無排除路徑（避免誤判為「全做過」）
+        if (not picked or len(picked) == 0) and len(exclude_ids) == 0:
+            try:
+                logger.warning("[exclude] empty result with no exclude_ids; fallback to criteria fetch")
+                picked = await client.get_questions_by_criteria(
+                    grade=grade,
+                    subject=subject,
+                    publisher=publisher,
+                    chapter=chapter,
+                    limit=question_count
+                )
+            except Exception as fb_err:
+                logger.warning("[exclude] fallback criteria fetch failed: %s", str(fb_err))
+
+        # 第二層後備：若題庫不可用或回傳異常，避免前端誤判，顯示保底友善訊息
+        if not picked:
+            logger.error("[exclude] no questions picked after fallback; question bank may be unavailable")
+            return {"success": False, "error": "題庫服務暫時不可用，請稍後再試", "data": []}
+
+        logger.info(
+            "[exclude] user=%s exclude_total=%d returned=%d",
+            getattr(current_user, 'user_id', None), len(exclude_ids), len(picked)
+        )
 
         return {"success": True, "data": picked}
     except HTTPException:
         raise
     except Exception as e:
-        logger.error(f"get_questions_by_conditions_excluding failed: {e}")
-        return {"success": False, "error": str(e), "data": []}
+        logger.exception("[exclude] failed: %s", str(e))
+        return {
+            "success": False,
+            "error": f"by-conditions-excluding failed: {str(e)[:200]}",
+            "data": []
+        }
 
 
 @router.get("/statistics", response_model=LearningStatistics)

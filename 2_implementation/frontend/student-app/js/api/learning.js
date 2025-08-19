@@ -436,6 +436,28 @@ class LearningAPI {
         }
     }
 
+    // 可用題數彙總：total/done/unseen
+    async getAvailabilitySummary(filters = {}) {
+        try {
+            const params = new URLSearchParams();
+            if (filters.grade) params.append('grade', filters.grade);
+            if (filters.subject) params.append('subject', filters.subject);
+            if (filters.publisher || filters.edition) params.append('publisher', filters.publisher || filters.edition);
+            if (filters.chapter) params.append('chapter', filters.chapter);
+
+            const response = await fetch(`${this.baseURL}/availability/summary?${params.toString()}`, {
+                headers: this.getAuthHeaders()
+            });
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return await response.json();
+        } catch (error) {
+            console.error('取得題庫彙總失敗:', error);
+            return { success: false, data: { total: 0, done: 0, unseen: 0 }, error: error.message };
+        }
+    }
+
     // 服務端過濾：依條件出題並排除指定題目ID
     async getQuestionsByConditionsExcluding(payload = {}) {
         try {

@@ -309,27 +309,38 @@ class ExerciseManager {
                 const requestedCount = this.selectedCriteria.question_count;
 
                 if (this.selectedCriteria.only_unseen) {
-                    // 取得已作答題目 ID
-                    const doneRes = await learningAPI.getDoneQuestionIds({
-                        subject: this.selectedCriteria.subject,
-                        grade: this.selectedCriteria.grade,
-                        publisher: this.selectedCriteria.edition,
-                        chapter: this.selectedCriteria.chapter
-                    });
-                    const doneCount = doneRes?.data?.question_ids?.length || 0;
-                    const unseenCount = Math.max(0, totalCount - doneCount);
+                    // 新：改用後端彙總端點，直接取得 total/done/unseen
+                    let total = totalCount;
+                    let done = 0;
+                    let unseen = totalCount;
+                    try {
+                        const sum = await learningAPI.getAvailabilitySummary({
+                            grade: this.selectedCriteria.grade,
+                            subject: this.selectedCriteria.subject,
+                            publisher: this.selectedCriteria.edition,
+                            chapter: this.selectedCriteria.chapter
+                        });
+                        if (sum && sum.success && sum.data) {
+                            total = sum.data.total ?? totalCount;
+                            done = sum.data.done ?? 0;
+                            unseen = sum.data.unseen ?? Math.max(0, total - done);
+                        }
+                    } catch (e) {
+                        console.warn('取得可用題數彙總失敗，退回基本估算:', e);
+                        unseen = Math.max(0, totalCount);
+                    }
 
-                    if (unseenCount === 0) {
+                    if (unseen === 0) {
                         this.showAllDoneMessage();
                         this.disableStartButton();
                         return;
                     }
 
-                    this.showUnseenQuestionBankInfo(totalCount, unseenCount, requestedCount);
-                    if (unseenCount >= requestedCount) {
+                    this.showUnseenQuestionBankInfo(total, unseen, requestedCount);
+                    if (unseen >= requestedCount) {
                         this.enableStartButton();
                     } else {
-                        this.showInsufficientUnseen(unseenCount, requestedCount);
+                        this.showInsufficientUnseen(unseen, requestedCount);
                         this.disableStartButton();
                     }
                 } else {
@@ -533,23 +544,14 @@ class ExerciseManager {
             this.showLoading('正在載入題目...');
 
             if (this.selectedCriteria.only_unseen) {
-                // 只出未做過：先抓到已做過ID
-                const doneRes = await learningAPI.getDoneQuestionIds({
-                    subject: this.selectedCriteria.subject,
-                    grade: this.selectedCriteria.grade,
-                    publisher: this.selectedCriteria.edition,
-                    chapter: this.selectedCriteria.chapter
-                });
-                const doneSet = new Set(doneRes?.data?.question_ids || []);
+                // 只出未做過：完全交由後端排除，前端不再依賴 done-questions
                 const target = this.selectedCriteria.question_count;
-                // 服務端一次過濾
                 const res = await learningAPI.getQuestionsByConditionsExcluding({
                     grade: this.selectedCriteria.grade,
                     edition: this.selectedCriteria.edition,
                     subject: this.selectedCriteria.subject,
                     chapter: this.selectedCriteria.chapter,
-                    questionCount: target,
-                    excludeIds: Array.from(doneSet)
+                    questionCount: target
                 });
 
                 if (!res.success || !Array.isArray(res.data) || res.data.length === 0) {

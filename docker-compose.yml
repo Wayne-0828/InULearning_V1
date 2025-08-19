@@ -183,7 +183,9 @@ services:
       MONGODB_URL: mongodb://aipe-tester:aipe-tester@mongodb:27017/inulearning?authSource=admin
       REDIS_URL: redis://redis:6379/0
       AUTH_SERVICE_URL: http://auth-service:8000
+      # 舊變數保留兼容，實際使用 QUESTION_BANK_URL
       QUESTION_BANK_SERVICE_URL: http://question-bank-service:8000
+      QUESTION_BANK_URL: http://question-bank-service:8000
       CORS_ORIGINS: '["http://localhost","http://localhost:3000","http://localhost:8080","http://localhost:8081","http://localhost:8082","http://localhost:8083"]'
       SECRET_KEY: your-secret-key-change-in-production
       ALGORITHM: HS256

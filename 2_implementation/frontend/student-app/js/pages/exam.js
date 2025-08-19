@@ -230,12 +230,28 @@ class ExamPage {
         let options = [];
         if (Array.isArray(question.options)) {
             options = question.options;
-        } else if (typeof question.options === 'object') {
+        } else if (typeof question.options === 'object' && question.options !== null) {
             options = Object.values(question.options);
         } else {
             console.error('Invalid options format:', question.options);
             return;
         }
+
+        // 將物件型選項轉為純文字（支援 {text: '...'} 或 {A: '...'} 等結構）
+        const normalizeOptionText = (opt) => {
+            if (typeof opt === 'string') return opt;
+            if (opt && typeof opt === 'object') {
+                if (Object.prototype.hasOwnProperty.call(opt, 'text')) {
+                    return String(opt.text);
+                }
+                const values = Object.values(opt);
+                if (values.length > 0) {
+                    return String(values[0]);
+                }
+            }
+            return String(opt);
+        };
+        options = options.map(normalizeOptionText);
 
         const selectedAnswer = this.answers[questionIndex];
 
@@ -569,9 +585,23 @@ class ExamPage {
             let options = [];
             if (Array.isArray(question.options)) {
                 options = question.options;
-            } else if (typeof question.options === 'object') {
+            } else if (typeof question.options === 'object' && question.options !== null) {
                 options = Object.values(question.options);
             }
+            const normalizeOptionText = (opt) => {
+                if (typeof opt === 'string') return opt;
+                if (opt && typeof opt === 'object') {
+                    if (Object.prototype.hasOwnProperty.call(opt, 'text')) {
+                        return String(opt.text);
+                    }
+                    const values = Object.values(opt);
+                    if (values.length > 0) {
+                        return String(values[0]);
+                    }
+                }
+                return String(opt);
+            };
+            options = options.map(normalizeOptionText);
 
             detailedResults.push({
                 questionId: question.id || index + 1,
