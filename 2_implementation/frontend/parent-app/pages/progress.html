@@ -331,17 +331,27 @@
             // 載入子女列表
             loadChildren();
 
-            // 載入匯總統計數據
+            // 載入匯總統計數據 (預設載入全部)
             loadSummaryStats();
         });
 
-        async function loadSummaryStats() {
+        async function loadSummaryStats(childId = null) {
             const minutesElement = document.getElementById('totalStudyMinutes');
             const sessionsElement = document.getElementById('totalSessions');
             const scoreElement = document.getElementById('averageScore');
 
+            // 讓使用者知道正在載入
+            if (minutesElement) minutesElement.textContent = '計算中...';
+            if (sessionsElement) sessionsElement.textContent = '計算中...';
+            if (scoreElement) scoreElement.textContent = '計算中...';
+
+            let url = `/api/v1/parent/summary/stats?t=${Date.now()}`;
+            if (childId) {
+                url += `&child_id=${childId}`;
+            }
+
             try {
-                const response = await fetch(`/api/v1/parent/summary/stats?t=${Date.now()}`, {
+                const response = await fetch(url, {
                     headers: {
                         'Authorization': `Bearer ${parentAuth.getToken()}`
                     }
@@ -449,18 +459,41 @@
 
         // 子女選擇功能
         function selectChild(childId) {
-            // 這裡可以根據 childId 來載入該子女的詳細進度資料
-            // 例如：loadChildProgress(childId);
-            console.log('選擇子女:', childId);
-            // 這裡可以切換顯示模式，例如 'all' 或 'compare'
-            // switchChild(childId);
+            // 移除所有選中狀態
+            document.querySelectorAll('.child-card').forEach(card => {
+                card.classList.remove('bg-blue-100', 'border-blue-500');
+                card.classList.add('hover:bg-blue-50');
+            });
+
+            // 添加選中狀態
+            // 使用 event.currentTarget 來確保選中的是綁定事件的元素
+            const selectedCard = event.currentTarget;
+            if (selectedCard) {
+                selectedCard.classList.remove('hover:bg-blue-50');
+                selectedCard.classList.add('bg-blue-100', 'border-blue-500');
+            }
+
+            // 載入該子女的進度數據
+            loadSummaryStats(childId);
         }
 
-        // 切換顯示模式 (例如 'all' 或 'compare')
         function switchChild(mode) {
-            console.log('切換顯示模式:', mode);
-            // 根據 mode 來載入不同的資料
-            // 例如：loadChildren(mode);
+            if (mode === 'all') {
+                // 顯示所有子女的綜合進度
+                loadSummaryStats(); // 不帶參數，載入全部
+                // 取消所有卡片的選中狀態
+                document.querySelectorAll('.child-card').forEach(card => {
+                    card.classList.remove('bg-blue-100', 'border-blue-500');
+                    card.classList.add('hover:bg-blue-50');
+                });
+            } else if (mode === 'compare') {
+                // 顯示比較模式
+                console.log('比較模式待實現...');
+            }
+        }
+
+        function loadChildProgress(childId) {
+            // 這裡會載入特定子女的進度數據
         }
     </script>
 </body>

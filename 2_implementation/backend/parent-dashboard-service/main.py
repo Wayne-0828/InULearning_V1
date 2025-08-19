@@ -571,20 +571,24 @@ async def get_learning_trend(child_id: int) -> List[Dict[str, Any]]:
 
 @app.get("/api/v1/parent/summary/stats")
 async def get_parent_summary_stats(
+    child_id: Optional[int] = None,
     current_user: Dict[str, Any] = Depends(get_current_user), 
     token: HTTPAuthorizationCredentials = Depends(security)
 ):
-    """計算並返回該家長所有子女的匯總統計數據 (分鐘數、測驗次數)"""
+    """計算並返回該家長所有或特定子女的匯總統計數據"""
     db = SessionLocal()
     try:
-        logger.info(f"用戶 {current_user.get('email')} 正在請求匯總統計數據...")
-        
-        children_data = await get_user_children(token.credentials)
-        if not children_data:
-            return {"total_study_minutes": 0.0, "total_sessions": 0, "average_score": 0.0}
-        
-        child_user_ids = [child['id'] for child in children_data]
-        if not child_user_ids:
+        if child_id:
+            logger.info(f"用戶 {current_user.get('email')} 正在請求子女 {child_id} 的統計數據...")
+            target_user_ids = [child_id]
+        else:
+            logger.info(f"用戶 {current_user.get('email')} 正在請求所有子女的匯總統計數據...")
+            children_data = await get_user_children(token.credentials)
+            if not children_data:
+                return {"total_study_minutes": 0.0, "total_sessions": 0, "average_score": 0.0}
+            target_user_ids = [child['id'] for child in children_data]
+
+        if not target_user_ids:
             return {"total_study_minutes": 0.0, "total_sessions": 0, "average_score": 0.0}
 
         sql_query = text("""
@@ -595,7 +599,7 @@ async def get_parent_summary_stats(
             FROM learning_sessions 
             WHERE user_id = ANY(:user_ids)
         """)
-        result = db.execute(sql_query, {"user_ids": child_user_ids}).first()
+        result = db.execute(sql_query, {"user_ids": target_user_ids}).first()
         
         total_seconds = result.total_seconds or 0
         total_sessions = result.total_sessions or 0
