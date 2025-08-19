@@ -648,17 +648,49 @@ async def get_questions_by_conditions_excluding(
             # 後端過濾失敗時，不阻斷流程，改為僅使用前端提供的 excludeIds
             logger.exception("[exclude] failed to merge DB done_ids, fallback to client excludeIds only")
 
-        # 直接由題庫服務以 $nin 過濾，避免本地二次過濾
+        # 直接由題庫服務以 $nin 過濾，失敗時回退到本地過濾
         client = QuestionBankClient()
-        picked = await client.get_questions_by_criteria_excluding(
-            grade=grade,
-            subject=subject,
-            publisher=publisher,
-            chapter=chapter,
-            limit=question_count,
-            exclude_ids=list(exclude_ids),
-            exclude_contents=list(done_contents)
-        )
+        picked = []
+        try:
+            picked = await client.get_questions_by_criteria_excluding(
+                grade=grade,
+                subject=subject,
+                publisher=publisher,
+                chapter=chapter,
+                limit=question_count,
+                exclude_ids=list(exclude_ids),
+                exclude_contents=list(done_contents)
+            )
+        except Exception as ce_err:
+            logger.warning("[exclude] criteria-excluding failed, will try local filter: %s", str(ce_err))
+
+        # 後備A：若題庫 $nin 失敗或回傳不足，抓大樣本本地過濾
+        if (not picked) or (len(picked) < question_count):
+            try:
+                sample_limit = min(1000, max(question_count * 5, question_count))
+                items = await client.get_questions_by_criteria(
+                    grade=grade,
+                    subject=subject,
+                    publisher=publisher,
+                    chapter=chapter,
+                    limit=sample_limit
+                )
+                # 本地排除：依 id 與內容（處理歷史 id 不對齊）
+                exclude_id_set = set(exclude_ids)
+                exclude_content_set = set(done_contents)
+                filtered = []
+                for q in items or []:
+                    qid = q.get("id")
+                    qcontent = q.get("content") or q.get("question") or ""
+                    if qid in exclude_id_set:
+                        continue
+                    if qcontent in exclude_content_set:
+                        continue
+                    filtered.append(q)
+                random.shuffle(filtered)
+                picked = filtered[:question_count]
+            except Exception as lf_err:
+                logger.warning("[exclude] local filter fallback failed: %s", str(lf_err))
 
         # 後備：若無需排除且未取到題目，嘗試無排除路徑（避免誤判為「全做過」）
         if (not picked or len(picked) == 0) and len(exclude_ids) == 0:
@@ -674,10 +706,10 @@ async def get_questions_by_conditions_excluding(
             except Exception as fb_err:
                 logger.warning("[exclude] fallback criteria fetch failed: %s", str(fb_err))
 
-        # 第二層後備：若題庫不可用或回傳異常，避免前端誤判，顯示保底友善訊息
+        # 第二層後備：若仍無題，顯示友善錯誤，避免前端誤判
         if not picked:
-            logger.error("[exclude] no questions picked after fallback; question bank may be unavailable")
-            return {"success": False, "error": "題庫服務暫時不可用，請稍後再試", "data": []}
+            logger.error("[exclude] no questions picked after fallbacks; check question bank and data")
+            return {"success": False, "error": "目前無法取得題目，請稍後再試", "data": []}
 
         logger.info(
             "[exclude] user=%s exclude_total=%d returned=%d",

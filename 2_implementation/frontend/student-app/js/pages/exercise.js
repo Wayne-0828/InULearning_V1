@@ -554,7 +554,12 @@ class ExerciseManager {
                     questionCount: target
                 });
 
-                if (!res.success || !Array.isArray(res.data) || res.data.length === 0) {
+                if (!res.success) {
+                    // 題庫或服務端不可用時，提示錯誤而非誤判「全部做過」
+                    this.showError(res.error || '題庫服務暫時不可用，請稍後再試');
+                    return;
+                }
+                if (!Array.isArray(res.data) || res.data.length === 0) {
                     this.showAllDoneMessage();
                     return;
                 }
