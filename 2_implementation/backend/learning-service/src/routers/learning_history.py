@@ -664,7 +664,34 @@ async def get_questions_by_conditions_excluding(
         except Exception as ce_err:
             logger.warning("[exclude] criteria-excluding failed, will try local filter: %s", str(ce_err))
 
-        # 後備A：若題庫 $nin 失敗或回傳不足，抓大樣本本地過濾
+        # 後備A：若題庫 $nin 失敗或回傳不足，先嘗試題庫的 by-conditions（已是前端格式）
+        if (not picked) or (len(picked) < question_count):
+            try:
+                candidates = await client.get_questions_by_conditions_simple(
+                    grade=grade,
+                    publisher=publisher,
+                    subject=subject,
+                    chapter=chapter,
+                    question_count=question_count * 5
+                )
+                # 本地排除：依 id 與內容（處理歷史 id 不對齊）
+                exclude_id_set = set(exclude_ids)
+                exclude_content_set = set(done_contents)
+                filtered = []
+                for q in candidates or []:
+                    qid = q.get("id")
+                    qcontent = q.get("content") or q.get("question") or ""
+                    if qid in exclude_id_set:
+                        continue
+                    if qcontent in exclude_content_set:
+                        continue
+                    filtered.append(q)
+                random.shuffle(filtered)
+                picked = filtered[:question_count]
+            except Exception as simple_err:
+                logger.warning("[exclude] simple by-conditions fallback failed: %s", str(simple_err))
+
+        # 後備B：若仍不足，抓更大樣本（學習服務後端 by-criteria）並本地過濾
         if (not picked) or (len(picked) < question_count):
             try:
                 sample_limit = min(1000, max(question_count * 5, question_count))
