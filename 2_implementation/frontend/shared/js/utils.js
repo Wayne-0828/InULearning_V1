@@ -12,7 +12,7 @@
 
 // ===== 全域變數 =====
 const APP_CONFIG = {
-    API_BASE_URL: 'http://localhost/api/v1',
+    API_BASE_URL: '/api/v1',
     STORAGE_PREFIX: 'inulearning_',
     DATE_FORMAT: 'YYYY-MM-DD',
     TIME_FORMAT: 'HH:mm:ss',

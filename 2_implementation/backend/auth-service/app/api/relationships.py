@@ -5,7 +5,7 @@
 """
 
 from typing import List, Optional
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, status, Query
 from sqlalchemy.orm import Session, joinedload
 from sqlalchemy import and_
 
@@ -510,6 +510,7 @@ def teacher_create_class(
 
 @router.get("/teacher-class", response_model=List[TeacherClassRelationResponse])
 async def get_teacher_class_relations(
+    include_deleted: bool = Query(False, description="是否包含已刪除的班級"),
     current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db)
 ):
@@ -521,14 +522,22 @@ async def get_teacher_class_relations(
             detail="只有教師可以查看教學關係"
         )
     
-    relations = db.query(TeacherClassRelation).options(
-        joinedload(TeacherClassRelation.school_class)
-    ).filter(
-        and_(
-            TeacherClassRelation.teacher_id == current_user.id,
-            TeacherClassRelation.is_active == True
-        )
-    ).all()
+    # 根據 include_deleted 參數決定是否過濾已刪除的關係
+    if include_deleted:
+        relations = db.query(TeacherClassRelation).options(
+            joinedload(TeacherClassRelation.school_class)
+        ).filter(
+            TeacherClassRelation.teacher_id == current_user.id
+        ).all()
+    else:
+        relations = db.query(TeacherClassRelation).options(
+            joinedload(TeacherClassRelation.school_class)
+        ).filter(
+            and_(
+                TeacherClassRelation.teacher_id == current_user.id,
+                TeacherClassRelation.is_active == True
+            )
+        ).all()
     
     return [
         TeacherClassRelationResponse(
@@ -622,6 +631,45 @@ def teacher_delete_class(
     return {"success": True}
 
 
+@router.patch("/teacher-class/{class_id}/restore")
+def teacher_restore_class(
+    class_id: int,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    """教師恢復已刪除的班級（重新啟用關係與班級）。"""
+    if current_user.role not in [UserRole.teacher, UserRole.admin]:
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="只有教師或管理員可恢復班級")
+
+    # 檢查班級是否存在
+    school_class = db.query(SchoolClass).filter(SchoolClass.id == class_id).first()
+    if not school_class:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="班級不存在")
+
+    # 檢查是否已被刪除
+    if school_class.is_active:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="班級未被刪除，無需恢復")
+
+    # 檢查教師是否有權限恢復此班級
+    relation = db.query(TeacherClassRelation).filter(
+        and_(
+            TeacherClassRelation.class_id == class_id,
+            TeacherClassRelation.teacher_id == current_user.id,
+        )
+    ).first()
+    
+    if not relation and current_user.role != UserRole.admin:
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="無權限恢復此班級")
+
+    # 恢復班級和關係
+    school_class.is_active = True
+    if relation:
+        relation.is_active = True
+    
+    db.commit()
+    return {"success": True, "message": "班級恢復成功"}
+
+
 # 學生-班級關係管理
 @router.post("/student-class", response_model=StudentClassRelationResponse)
 async def create_student_class_relation(
@@ -699,4 +747,236 @@ async def create_student_class_relation(
         is_active=relation.is_active,
         student_name=f"{student.first_name} {student.last_name}",
         class_name=school_class.class_name
-    ) 
+    )
+
+
+# 已移除學生管理
+@router.get("/teacher/removed-students")
+async def get_teacher_removed_students(
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    """獲取教師的已移除學生列表"""
+    
+    if current_user.role not in [UserRole.teacher, UserRole.admin]:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="只有教師或管理員可以查看已移除學生"
+        )
+    
+    # 獲取教師所有班級中已移除的學生
+    removed_students = []
+    
+    # 獲取教師的班級關係（包括已刪除的）
+    teacher_relations = db.query(TeacherClassRelation).filter(
+        TeacherClassRelation.teacher_id == current_user.id
+    ).all()
+    
+    for relation in teacher_relations:
+        # 獲取該班級中已移除的學生
+        student_relations = db.query(StudentClassRelation).filter(
+            and_(
+                StudentClassRelation.class_id == relation.class_id,
+                StudentClassRelation.is_active == False  # 已移除的學生
+            )
+        ).all()
+        
+        for student_relation in student_relations:
+            student = db.query(User).filter(User.id == student_relation.student_id).first()
+            if student:
+                removed_students.append({
+                    "student_id": student.id,
+                    "student_name": f"{student.first_name} {student.last_name}",
+                    "email": student.email,
+                    "student_number": student_relation.student_number,
+                    "class_name": relation.school_class.class_name if relation.school_class else "未知班級",
+                    "is_removed": True,
+                    "removed_at": student_relation.updated_at or student_relation.created_at
+                })
+    
+    return {"data": removed_students}
+
+
+@router.patch("/teacher/restore-all-students")
+async def restore_all_teacher_students(
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    """恢復教師所有已移除的學生"""
+    
+    if current_user.role not in [UserRole.teacher, UserRole.admin]:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="只有教師或管理員可以恢復學生"
+        )
+    
+    # 獲取教師所有班級中已移除的學生關係
+    teacher_relations = db.query(TeacherClassRelation).filter(
+        TeacherClassRelation.teacher_id == current_user.id
+    ).all()
+    
+    restored_count = 0
+    for relation in teacher_relations:
+        student_relations = db.query(StudentClassRelation).filter(
+            and_(
+                StudentClassRelation.class_id == relation.class_id,
+                StudentClassRelation.is_active == False
+            )
+        ).all()
+        
+        for student_relation in student_relations:
+            student_relation.is_active = True
+            restored_count += 1
+    
+    if restored_count > 0:
+        db.commit()
+        return {"success": True, "message": f"成功恢復 {restored_count} 個學生"}
+    else:
+        return {"success": True, "message": "沒有可恢復的學生"}
+
+
+@router.delete("/teacher/clear-all-removed-students")
+async def clear_all_teacher_removed_students(
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    """清空教師所有已移除的學生（永久刪除）"""
+    
+    if current_user.role not in [UserRole.teacher, UserRole.admin]:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="只有教師或管理員可以清空已移除學生"
+        )
+    
+    # 獲取教師所有班級中已移除的學生關係
+    teacher_relations = db.query(TeacherClassRelation).filter(
+        TeacherClassRelation.teacher_id == current_user.id
+    ).all()
+    
+    deleted_count = 0
+    for relation in teacher_relations:
+        student_relations = db.query(StudentClassRelation).filter(
+            and_(
+                StudentClassRelation.class_id == relation.class_id,
+                StudentClassRelation.is_active == False
+            )
+        ).all()
+        
+        for student_relation in student_relations:
+            db.delete(student_relation)
+            deleted_count += 1
+    
+    if deleted_count > 0:
+        db.commit()
+        return {"success": True, "message": f"成功清空 {deleted_count} 個已移除學生"}
+    else:
+        return {"success": True, "message": "沒有可清空的已移除學生"}
+
+
+@router.patch("/teacher/restore-student/{student_id}")
+async def restore_teacher_student(
+    student_id: int,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    """恢復教師的已移除學生"""
+    
+    if current_user.role not in [UserRole.teacher, UserRole.admin]:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="只有教師或管理員可以恢復學生"
+        )
+    
+    # 檢查學生是否存在
+    student = db.query(User).filter(
+        and_(User.id == student_id, User.role == UserRole.student)
+    ).first()
+    
+    if not student:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="學生不存在"
+        )
+    
+    # 獲取教師的班級關係
+    teacher_relations = db.query(TeacherClassRelation).filter(
+        TeacherClassRelation.teacher_id == current_user.id
+    ).all()
+    
+    # 查找該學生在教師班級中的已移除關係
+    restored_count = 0
+    for relation in teacher_relations:
+        student_relation = db.query(StudentClassRelation).filter(
+            and_(
+                StudentClassRelation.student_id == student_id,
+                StudentClassRelation.class_id == relation.class_id,
+                StudentClassRelation.is_active == False
+            )
+        ).first()
+        
+        if student_relation:
+            student_relation.is_active = True
+            restored_count += 1
+    
+    if restored_count > 0:
+        db.commit()
+        return {"success": True, "message": f"成功恢復學生「{student.first_name} {student.last_name}」"}
+    else:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="找不到該學生的已移除關係"
+        )
+
+
+@router.delete("/teacher/remove-student/{student_id}")
+async def permanently_remove_teacher_student(
+    student_id: int,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    """永久移除教師的學生"""
+    
+    if current_user.role not in [UserRole.teacher, UserRole.admin]:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="只有教師或管理員可以永久移除學生"
+        )
+    
+    # 檢查學生是否存在
+    student = db.query(User).filter(
+        and_(User.id == student_id, User.role == UserRole.student)
+    ).first()
+    
+    if not student:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="學生不存在"
+        )
+    
+    # 獲取教師的班級關係
+    teacher_relations = db.query(TeacherClassRelation).filter(
+        TeacherClassRelation.teacher_id == current_user.id
+    ).all()
+    
+    # 查找該學生在教師班級中的關係
+    removed_count = 0
+    for relation in teacher_relations:
+        student_relation = db.query(StudentClassRelation).filter(
+            and_(
+                StudentClassRelation.student_id == student_id,
+                StudentClassRelation.class_id == relation.class_id
+            )
+        ).first()
+        
+        if student_relation:
+            db.delete(student_relation)
+            removed_count += 1
+    
+    if removed_count > 0:
+        db.commit()
+        return {"success": True, "message": f"成功永久移除學生「{student.first_name} {student.last_name}」"}
+    else:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="找不到該學生的關係"
+        ) 

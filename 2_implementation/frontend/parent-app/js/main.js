@@ -50,6 +50,13 @@ class ParentApp {
      * 初始化頁面
      */
     initializePage() {
+        // 檢查認證狀態（除了登入頁面）
+        if (this.currentPage !== 'login') {
+            if (typeof parentAuth !== 'undefined') {
+                parentAuth.checkAuthStatus();
+            }
+        }
+        
         // 根據當前頁面初始化相應模組
         switch (this.currentPage) {
             case 'dashboard':

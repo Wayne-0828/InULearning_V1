@@ -34,6 +34,11 @@ class ModernTeacherDashboard {
     }
 
     async init() {
+        // 檢查認證狀態
+        if (typeof authManager !== 'undefined') {
+            await authManager.checkAuthStatus();
+        }
+        
         this.showLoading();
         this.hydrateTeacherFromLocal();
         await this.loadDashboardData();

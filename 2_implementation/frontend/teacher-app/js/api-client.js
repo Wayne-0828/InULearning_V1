@@ -1,5 +1,5 @@
 const apiClient = {
-	baseUrl: 'http://localhost/api/v1',
+	baseUrl: '/api/v1',  // 使用相對路徑，通過前端 nginx 代理到主 nginx
 	getToken() {
 		return (
 			localStorage.getItem('auth_token') ||
@@ -14,7 +14,25 @@ const apiClient = {
 		const headers = Object.assign({ 'Content-Type': 'application/json', 'Accept': 'application/json' }, options.headers || {});
 		const token = this.getToken();
 		if (token) headers['Authorization'] = `Bearer ${token}`;
-		const res = await fetch(url, { ...options, headers });
+		
+		console.log('🌐 API 請求:', url); // 添加日誌
+		console.log('🌐 請求選項:', options); // 添加更多日誌
+		
+		// 強制設置必要的選項
+		const fetchOptions = {
+			method: options.method || 'GET',
+			headers: headers,
+			...options
+		};
+		
+		// 如果是 POST/PUT 且有 body，確保 body 被設置
+		if ((options.method === 'POST' || options.method === 'PUT') && options.body) {
+			fetchOptions.body = options.body;
+		}
+		
+		console.log('🌐 最終 fetch 選項:', fetchOptions); // 添加更多日誌
+		
+		const res = await fetch(url, fetchOptions);
 		let data = {};
 		try { data = await res.json(); } catch (_) {}
 		if (!res.ok) {

@@ -251,7 +251,6 @@ services:
       - learning-service
       - ai-analysis-service
       - teacher-management-service
-      - teacher-frontend
     networks:
       - inulearning_network
 
@@ -334,6 +333,9 @@ services:
       - ./2_implementation/frontend/teacher-app/pages:/usr/share/nginx/html/pages
       - ./2_implementation/frontend/teacher-app/js:/usr/share/nginx/html/js
       - ./2_implementation/frontend/teacher-app/css:/usr/share/nginx/html/css
+    depends_on:
+      auth-service:
+        condition: service_started
   # ... existing code ...
 
   # 備註：以下服務暫時註釋，後續開發

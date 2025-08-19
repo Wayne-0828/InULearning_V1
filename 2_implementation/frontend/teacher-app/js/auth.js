@@ -58,6 +58,11 @@ class TeacherAuthManager {
         try {
             showLoading();
             
+            // 檢查 apiClient 是否可用
+            if (typeof apiClient === 'undefined' || !apiClient.post) {
+                throw new Error('API 客戶端未初始化');
+            }
+            
             const response = await apiClient.post('/auth/login', { email, password });
 
             if (response.access_token) {
@@ -154,6 +159,60 @@ class TeacherAuthManager {
         } catch (error) {
             return true;
         }
+    }
+
+    /**
+     * 檢查認證狀態
+     */
+    async checkAuthStatus() {
+        const token = this.getToken();
+        
+        if (!token) {
+            this.redirectToLogin();
+            return;
+        }
+        
+        try {
+            // 檢查 token 是否過期
+            if (this.isTokenExpired(token)) {
+                console.log('Token 已過期，嘗試重新整理');
+                const refreshed = await this.refreshToken();
+                if (!refreshed) {
+                    this.clearAuth();
+                    this.redirectToLogin();
+                    return;
+                }
+            }
+            
+            // 驗證 token 有效性
+            const response = await apiClient.get('/auth/verify');
+            
+            if (response.success) {
+                this.updateUI();
+            } else {
+                this.clearAuth();
+                this.redirectToLogin();
+            }
+        } catch (error) {
+            console.error('認證檢查失敗:', error);
+            this.clearAuth();
+            this.redirectToLogin();
+        }
+    }
+
+    /**
+     * 清除認證資訊
+     */
+    clearAuth() {
+        localStorage.removeItem(this.tokenKey);
+        localStorage.removeItem(this.userKey);
+    }
+
+    /**
+     * 重定向到登入頁面
+     */
+    redirectToLogin() {
+        window.location.href = 'http://localhost/login.html';
     }
 
     /**

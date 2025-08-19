@@ -488,7 +488,14 @@ apiClient.addResponseInterceptor(async (response) => {
 
         // 檢查當前頁面是否為登入頁面
         if (!window.location.href.includes('/login.html')) {
-            window.location.href = 'http://localhost/login.html';
+            // 動態生成登入頁面路徑
+            const currentHost = window.location.host;
+            const loginPath = currentHost.includes('8083') ? '/login.html' : 
+                             currentHost.includes('8080') ? '/login.html' :
+                             currentHost.includes('8081') ? '/login.html' :
+                             currentHost.includes('8082') ? '/login.html' :
+                             'http://localhost/login.html';
+            window.location.href = loginPath;
         }
     }
     return response;

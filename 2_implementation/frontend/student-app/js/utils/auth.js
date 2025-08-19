@@ -7,7 +7,47 @@ class AuthManager {
     constructor() {
         this.tokenKey = 'auth_token';
         this.userKey = 'user_info';
-        this.baseURL = 'http://localhost:8001'; // auth-service 的預設端口
+        this.baseURL = ''; // 使用相對路徑，通過前端 nginx 代理到主 nginx
+        this.init();
+    }
+
+    init() {
+        // 處理從統一登入頁面傳來的認證資訊
+        this.handleAuthFromURL();
+        
+        // 檢查是否已登入
+        if (this.isLoggedIn()) {
+            this.updateAuthUI();
+        } else {
+            // 如果未登入且不在登入頁面，重定向到統一登入頁面
+            if (!window.location.pathname.includes('login.html')) {
+                window.location.href = 'http://localhost/login.html';
+            }
+        }
+    }
+
+    /**
+     * 處理URL參數中的認證資訊
+     */
+    handleAuthFromURL() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const token = urlParams.get('token');
+        const userInfo = urlParams.get('userInfo');
+
+        if (token && userInfo) {
+            console.log('從URL接收到認證資訊');
+            
+            // 儲存到localStorage
+            localStorage.setItem(this.tokenKey, token);
+            localStorage.setItem(this.userKey, userInfo);
+            
+            // 清除URL參數
+            const newURL = window.location.protocol + "//" + window.location.host + window.location.pathname;
+            window.history.replaceState({}, document.title, newURL);
+            
+            // 更新認證狀態
+            this.updateAuthUI();
+        }
     }
 
     /**

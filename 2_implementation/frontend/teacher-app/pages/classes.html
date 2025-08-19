@@ -77,17 +77,34 @@
                     </select>
                 </div>
                 <div>
+                    <button class="btn" id="showDeletedBtn" style="margin-right: 10px;">
+                        <i class="fas fa-trash-restore"></i> 已刪除班級
+                    </button>
                     <button class="btn-primary" id="createBtn">
                         <i class="fas fa-plus"></i> 新增班級
                     </button>
                 </div>
             </div>
-            <table class="table">
+            <table class="table" id="activeClassesTable">
                 <thead>
                     <tr><th>班級名稱</th><th>科目</th><th>操作</th></tr>
                 </thead>
                 <tbody id="classes-tbody"></tbody>
             </table>
+            
+            <!-- 已刪除班級表格 -->
+            <table class="table" id="deletedClassesTable" style="display: none; margin-top: 20px;">
+                <thead>
+                    <tr>
+                        <th>班級名稱</th>
+                        <th>科目</th>
+                        <th>刪除時間</th>
+                        <th>操作</th>
+                    </tr>
+                </thead>
+                <tbody id="deleted-classes-tbody"></tbody>
+            </table>
+            
             <div class="pagination">
                 <button class="btn" id="prevPage">上一頁</button>
                 <span id="pageInfo"></span>
@@ -199,6 +216,21 @@
             }
         }
 
+        // 載入已刪除的班級
+        async function loadDeletedClasses() {
+            try {
+                // 這裡可以調用一個新的 API 端點來獲取已刪除的班級
+                // 暫時使用模擬數據
+                const deletedClasses = [
+                    { id: 'dc1', name: '六年一班', subject: '數學', deletedAt: '2025-01-15' },
+                    { id: 'dc2', name: '五年三班', subject: '國文', deletedAt: '2025-01-10' }
+                ];
+                return deletedClasses;
+            } catch (e) {
+                return [];
+            }
+        }
+
         async function loadStudentCounts(){
             try {
                 const updated = await Promise.all(classes.map(async (c) => {
@@ -232,7 +264,7 @@
             const total = arr.length; const totalPages = Math.max(1, Math.ceil(total / pageSize));
             page = Math.min(page, totalPages);
             arr = arr.slice((page-1)*pageSize, (page-1)*pageSize + pageSize);
-            if (!arr.length){ tbody.innerHTML = `<tr><td colspan="5"><div class="empty">尚無班級</div></td></tr>`; }
+            if (!arr.length){ tbody.innerHTML = `<tr><td colspan="3"><div class="empty">尚無班級</div></td></tr>`; }
             else {
                 tbody.innerHTML = arr.map(c => `
                 <tr>
@@ -307,7 +339,7 @@
             } finally { hideLoading(); }
         }
 
-			async function confirmDelete(){
+			        async function confirmDelete(){
             if (!pendingDeleteId) { closeConfirm(); return; }
             try {
                 showLoading();
@@ -322,6 +354,71 @@
                 closeConfirm();
                 pendingDeleteId = null;
             }
+        }
+
+        // 恢復已刪除的班級
+        async function restoreClass(classId, className) {
+            try {
+                showLoading();
+                await apiClient.patch(`/relationships/teacher-class/${classId}/restore`);
+                await loadClasses();
+                render();
+                showAlert(`班級「${className}」恢復成功`, 'success');
+            } catch(e) {
+                showAlert('恢復失敗：' + (e.message||''), 'error');
+            } finally {
+                hideLoading();
+            }
+        }
+
+        // 切換顯示已刪除班級
+        let showingDeleted = false;
+        async function toggleDeletedClasses() {
+            showingDeleted = !showingDeleted;
+            
+            if (showingDeleted) {
+                // 顯示已刪除班級
+                document.getElementById('activeClassesTable').style.display = 'none';
+                document.getElementById('deletedClassesTable').style.display = 'table';
+                document.getElementById('showDeletedBtn').innerHTML = '<i class="fas fa-users"></i> 活躍班級';
+                document.getElementById('showDeletedBtn').classList.add('btn-primary');
+                
+                // 載入已刪除班級
+                const deletedClasses = await loadDeletedClasses();
+                renderDeletedClasses(deletedClasses);
+            } else {
+                // 顯示活躍班級
+                document.getElementById('activeClassesTable').style.display = 'table';
+                document.getElementById('deletedClassesTable').style.display = 'none';
+                document.getElementById('showDeletedBtn').innerHTML = '<i class="fas fa-trash-restore"></i> 已刪除班級';
+                document.getElementById('showDeletedBtn').classList.remove('btn-primary');
+                
+                // 重新載入活躍班級
+                await loadClasses();
+                render();
+            }
+        }
+
+        // 渲染已刪除班級列表
+        function renderDeletedClasses(deletedClasses) {
+            const tbody = document.getElementById('deleted-classes-tbody');
+            if (!deletedClasses.length) {
+                tbody.innerHTML = '<tr><td colspan="4"><div class="empty">尚無已刪除的班級</div></td></tr>';
+                return;
+            }
+            
+            tbody.innerHTML = deletedClasses.map(c => `
+                <tr>
+                    <td>${c.name}</td>
+                    <td>${c.subject}</td>
+                    <td>${c.deletedAt}</td>
+                    <td>
+                        <button class="btn btn-primary" onclick="restoreClass('${c.id}', '${c.name}')">
+                            <i class="fas fa-undo"></i> 恢復
+                        </button>
+                    </td>
+                </tr>
+            `).join('');
         }
 
         // 確保動態 onclick 能找到全域函式
@@ -404,6 +501,7 @@
             await loadClasses();
             render();
             document.getElementById('createBtn').addEventListener('click', onCreate);
+            document.getElementById('showDeletedBtn').addEventListener('click', toggleDeletedClasses);
             document.getElementById('cancelBtn').addEventListener('click', closeModal);
             document.getElementById('saveBtn').addEventListener('click', saveClass);
             document.getElementById('confirmCancel').addEventListener('click', closeConfirm);
