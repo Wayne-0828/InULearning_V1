@@ -255,8 +255,8 @@ app.include_router(
 app.include_router(
     analytics.router,
     prefix="/api/v1/learning",
-    tags=["學習分析"],
-    dependencies=[Depends(get_current_user)]
+    tags=["學習分析"]
+    # dependencies=[Depends(get_current_user)] # 移除依賴，允許服務間調用
 )
 
 # 健康檢查端點
