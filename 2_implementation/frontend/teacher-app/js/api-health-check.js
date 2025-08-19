@@ -2,10 +2,10 @@
 class APIHealthChecker {
     constructor() {
         this.endpoints = [
-            { name: '認證服務', url: '/api/auth/health', port: 8001 },
-            { name: '題庫服務', url: '/api/questions/health', port: 8002 },
-            { name: '學習服務', url: '/api/learning/health', port: 8003 },
-            { name: 'AI分析服務', url: '/api/ai/health', port: 8004 }
+            { name: '認證服務', url: '/api/v1/auth/health', port: null },
+            { name: '題庫服務', url: '/api/v1/questions/health', port: null },
+            { name: '學習服務', url: '/api/v1/learning/health', port: null },
+            { name: 'AI分析服務', url: '/api/v1/ai/health', port: null }
         ];
         this.results = {};
     }
@@ -44,38 +44,25 @@ class APIHealthChecker {
 
     async checkService(endpoint) {
         try {
-            // 嘗試多個可能的URL
-            const urls = [
-                endpoint.url,
-                `http://localhost:${endpoint.port}/health`,
-                `http://localhost/api${endpoint.url.replace('/api', '')}`
-            ];
-
-            for (const url of urls) {
-                try {
-                    const response = await fetch(url, {
-                        method: 'GET',
-                        timeout: 5000,
-                        headers: {
-                            'Accept': 'application/json'
-                        }
-                    });
-
-                    if (response.ok) {
-                        const data = await response.json().catch(() => ({}));
-                        return {
-                            healthy: true,
-                            url: url,
-                            status: response.status,
-                            data: data
-                        };
-                    }
-                } catch (urlError) {
-                    continue; // 嘗試下一個URL
+            const response = await fetch(endpoint.url, {
+                method: 'GET',
+                timeout: 5000,
+                headers: {
+                    'Accept': 'application/json'
                 }
-            }
+            });
 
-            throw new Error('所有URL都無法連接');
+            if (response.ok) {
+                const data = await response.json().catch(() => ({}));
+                return {
+                    healthy: true,
+                    url: endpoint.url,
+                    status: response.status,
+                    data: data
+                };
+            } else {
+                throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+            }
 
         } catch (error) {
             return {

@@ -17,7 +17,7 @@ from app.models import (
 from app.dependencies import get_current_user
 from pydantic import BaseModel
 
-router = APIRouter(prefix="/relationships", tags=["relationships"])
+router = APIRouter(tags=["relationships"])
 
 
 # Pydantic 模型
@@ -108,7 +108,7 @@ def _ensure_teacher_can_access_class(db: Session, current_user: User, class_id: 
         and_(
             TeacherClassRelation.teacher_id == current_user.id,
             TeacherClassRelation.class_id == class_id,
-            TeacherClassRelation.is_active == True,
+            # 移除 is_active == True 的限制，允許教師操作自己創建的班級（包括已刪除的）
         )
     ).first()
     if not bound:
@@ -118,17 +118,25 @@ def _ensure_teacher_can_access_class(db: Session, current_user: User, class_id: 
 @router.get("/classes/{class_id}/students", response_model=List[StudentClassRelationResponse])
 def list_class_students(
     class_id: int,
+    include_removed: bool = Query(False, description="是否包含已移除的學生"),
     current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db)
 ):
     """列出班級學生（教師/Admin 可用）。"""
     _ensure_teacher_can_access_class(db, current_user, class_id)
-    relations = db.query(StudentClassRelation).options(
-        joinedload(StudentClassRelation.student),
-        joinedload(StudentClassRelation.school_class),
-    ).filter(
-        and_(StudentClassRelation.class_id == class_id, StudentClassRelation.is_active == True)
-    ).all()
+    
+    if include_removed:
+        relations = db.query(StudentClassRelation).options(
+            joinedload(StudentClassRelation.student),
+            joinedload(StudentClassRelation.school_class),
+        ).filter(StudentClassRelation.class_id == class_id).all()
+    else:
+        relations = db.query(StudentClassRelation).options(
+            joinedload(StudentClassRelation.student),
+            joinedload(StudentClassRelation.school_class),
+        ).filter(
+            and_(StudentClassRelation.class_id == class_id, StudentClassRelation.is_active == True)
+        ).all()
     out: List[StudentClassRelationResponse] = []
     for r in relations:
         out.append(
@@ -202,7 +210,7 @@ def remove_class_student(
     current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db)
 ):
-    """從班級移除學生（教師/Admin）。"""
+    """從班級移除學生（教師/Admin）- 軟刪除。"""
     _ensure_teacher_can_access_class(db, current_user, class_id)
     rel = db.query(StudentClassRelation).filter(
         and_(
@@ -213,7 +221,34 @@ def remove_class_student(
     ).first()
     if not rel:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="學生不在此班級")
-    db.delete(rel)
+    
+    # 軟刪除：將關係設為非活躍
+    rel.is_active = False
+    db.commit()
+    return {"success": True}
+
+
+@router.patch("/classes/{class_id}/students/{student_id}/restore")
+def restore_class_student(
+    class_id: int,
+    student_id: int,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    """恢復班級中的已移除學生（教師/Admin）。"""
+    _ensure_teacher_can_access_class(db, current_user, class_id)
+    rel = db.query(StudentClassRelation).filter(
+        and_(
+            StudentClassRelation.class_id == class_id,
+            StudentClassRelation.student_id == student_id,
+            StudentClassRelation.is_active == False,
+        )
+    ).first()
+    if not rel:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="找不到該學生的已移除關係")
+    
+    # 恢復：將關係設為活躍
+    rel.is_active = True
     db.commit()
     return {"success": True}
 
@@ -393,12 +428,16 @@ async def create_school_class(
 
 @router.get("/classes", response_model=List[SchoolClassResponse])
 async def get_school_classes(
+    include_deleted: bool = Query(False, description="是否包含已刪除的班級"),
     current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db)
 ):
     """獲取班級列表"""
     
-    classes = db.query(SchoolClass).filter(SchoolClass.is_active == True).all()
+    if include_deleted:
+        classes = db.query(SchoolClass).all()
+    else:
+        classes = db.query(SchoolClass).filter(SchoolClass.is_active == True).all()
     
     return [SchoolClassResponse(**cls.to_dict()) for cls in classes]
 
@@ -751,7 +790,7 @@ async def create_student_class_relation(
 
 
 # 已移除學生管理
-@router.get("/teacher/removed-students")
+@router.get("/teacher-management/removed-students")
 async def get_teacher_removed_students(
     current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db)
@@ -797,7 +836,7 @@ async def get_teacher_removed_students(
     return {"data": removed_students}
 
 
-@router.patch("/teacher/restore-all-students")
+@router.patch("/teacher-management/restore-all-students")
 async def restore_all_teacher_students(
     current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db)
@@ -835,7 +874,7 @@ async def restore_all_teacher_students(
         return {"success": True, "message": "沒有可恢復的學生"}
 
 
-@router.delete("/teacher/clear-all-removed-students")
+@router.delete("/teacher-management/clear-all-removed-students")
 async def clear_all_teacher_removed_students(
     current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db)
@@ -863,7 +902,8 @@ async def clear_all_teacher_removed_students(
         ).all()
         
         for student_relation in student_relations:
-            db.delete(student_relation)
+            # 軟刪除：將關係設為非活躍
+            student_relation.is_active = False
             deleted_count += 1
     
     if deleted_count > 0:
@@ -873,7 +913,7 @@ async def clear_all_teacher_removed_students(
         return {"success": True, "message": "沒有可清空的已移除學生"}
 
 
-@router.patch("/teacher/restore-student/{student_id}")
+@router.patch("/teacher-management/restore-student/{student_id}")
 async def restore_teacher_student(
     student_id: int,
     current_user: User = Depends(get_current_user),
@@ -928,7 +968,7 @@ async def restore_teacher_student(
         )
 
 
-@router.delete("/teacher/remove-student/{student_id}")
+@router.delete("/teacher-management/remove-student/{student_id}")
 async def permanently_remove_teacher_student(
     student_id: int,
     current_user: User = Depends(get_current_user),
@@ -969,7 +1009,8 @@ async def permanently_remove_teacher_student(
         ).first()
         
         if student_relation:
-            db.delete(student_relation)
+            # 軟刪除：將關係設為非活躍
+            student_relation.is_active = False
             removed_count += 1
     
     if removed_count > 0:

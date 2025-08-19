@@ -122,6 +122,8 @@ services:
       - CORS_ORIGINS=["http://localhost:3000","http://localhost:8080","http://localhost:8081","http://localhost:8082","http://localhost:8083"]
     ports:
       - "8002:8000"
+    expose:
+      - "8000"
     depends_on:
       mongodb:
         condition: service_healthy
@@ -191,6 +193,8 @@ services:
       ENVIRONMENT: development
     ports:
       - "8003:8000"
+    expose:
+      - "8000"
     depends_on:
       postgres:
         condition: service_healthy
@@ -222,6 +226,8 @@ services:
       - GEMINI_API_KEY=${GEMINI_API_KEY}
     ports:
       - "8004:8004"
+    expose:
+      - "8004"
     depends_on:
       postgres:
         condition: service_healthy
@@ -297,6 +303,9 @@ services:
     volumes:
       - ./files:/var/www/html/files
       - ./2_implementation/frontend/shared:/usr/share/nginx/html/shared
+    depends_on:
+      nginx:
+        condition: service_started
 
   # 家長端前端
   parent-frontend:
@@ -313,6 +322,9 @@ services:
     volumes:
       - ./files:/var/www/html/files
       - ./2_implementation/frontend/shared:/usr/share/nginx/html/shared
+    depends_on:
+      nginx:
+        condition: service_started
 
   # 教師端前端
   teacher-frontend:
@@ -334,6 +346,8 @@ services:
       - ./2_implementation/frontend/teacher-app/js:/usr/share/nginx/html/js
       - ./2_implementation/frontend/teacher-app/css:/usr/share/nginx/html/css
     depends_on:
+      nginx:
+        condition: service_started
       auth-service:
         condition: service_started
   # ... existing code ...
@@ -352,6 +366,9 @@ services:
       - ALGORITHM=HS256
     ports:
       - "8006:8006"
+      - "8000:8006"
+    expose:
+      - "8006"
     depends_on:
       auth-service:
         condition: service_started

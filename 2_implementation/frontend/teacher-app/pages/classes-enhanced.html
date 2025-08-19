@@ -1254,7 +1254,7 @@
                         await Promise.all([
                             loadClasses().then(() => renderClasses()),
                             loadDeletedClasses(),
-                            loadMainRemovedStudents()
+                            loadRemovedStudents()
                         ]);
                     } catch (e) {
                         console.warn('載入資料失敗', e);
@@ -1333,94 +1333,71 @@
 
                 container.innerHTML = '<p style="text-align: center; color: var(--text-tertiary); padding: var(--spacing-lg);">載入中...</p>';
 
-                // 使用正確的 API 路徑來獲取所有已移除學生
-                let res = null;
-                const apiPaths = [
-                    '/relationships/teacher/removed-students'
-                ];
-                
-                for (const path of apiPaths) {
+                // 獲取教師的所有班級
+                let teacherClasses = [];
+                try {
+                    const teacherClassesRes = await apiClient.get('/relationships/teacher-class');
+                    if (teacherClassesRes && (teacherClassesRes.data || teacherClassesRes.items || teacherClassesRes)) {
+                        teacherClasses = teacherClassesRes.data || teacherClassesRes.items || teacherClassesRes || [];
+                    }
+                } catch (error) {
+                    console.log('❌ 無法載入教師班級:', error.message);
+                    container.innerHTML = '<p style="text-align: center; color: var(--text-tertiary); padding: var(--spacing-lg);">無法載入班級資料</p>';
+                    return;
+                }
+
+                if (teacherClasses.length === 0) {
+                    container.innerHTML = '<p style="text-align: center; color: var(--text-tertiary); padding: var(--spacing-lg);">尚無班級，無法載入已移除學生</p>';
+                    return;
+                }
+
+                // 收集所有班級的已移除學生
+                let allRemovedStudents = [];
+                for (const teacherClass of teacherClasses) {
                     try {
-                        res = await apiClient.get(path);
-                        if (res && (res.data || res.items || res)) {
-                            console.log('✅ 成功載入已移除學生資料，使用路徑:', path);
-                            break;
+                        const studentsRes = await apiClient.get(`/relationships/classes/${teacherClass.class_id}/students?include_removed=true`);
+                        if (studentsRes && (studentsRes.data || studentsRes.items || studentsRes)) {
+                            const students = studentsRes.data || studentsRes.items || studentsRes || [];
+                            const removedStudents = students.filter(s => !s.is_active).map(s => ({
+                                id: s.id,
+                                student_id: s.student_id,
+                                name: s.student_name || '未知學生',
+                                class_id: s.class_id,
+                                class_name: s.class_name || '未知班級',
+                                student_number: s.student_number || '',
+                                removed_time: s.updated_at || new Date().toISOString()
+                            }));
+                            allRemovedStudents.push(...removedStudents);
                         }
                     } catch (error) {
-                        console.log(`❌ API 路徑 ${path} 失敗:`, error.message);
+                        console.log(`❌ 無法載入班級 ${teacherClass.class_id} 的學生:`, error.message);
                         continue;
                     }
                 }
-                
-                if (!res) {
-                    throw new Error('所有 API 路徑都失敗');
-                }
-                
-                console.log('🔍 API 返回的原始資料:', res);
-                console.log('🔍 嘗試提取資料:', {
-                    'res.data': res.data,
-                    'res.items': res.items,
-                    'res': res
-                });
-                
-                // 確保 list 是數組
-                let list = res.data || res.items || res || [];
-                if (!Array.isArray(list)) {
-                    console.warn('⚠️ API 返回的資料不是數組，嘗試轉換:', list);
-                    if (typeof list === 'object' && list !== null) {
-                        // 如果是對象，嘗試提取數組
-                        list = Object.values(list).find(val => Array.isArray(val)) || [];
-                        console.log('🔍 從對象中提取的數組:', list);
-                    } else {
-                        list = [];
-                    }
-                }
-                
-                if (!Array.isArray(list)) {
-                    console.error('❌ 無法獲取有效的學生列表資料');
-                    container.innerHTML = '<p style="text-align: center; color: var(--error); padding: var(--spacing-lg);">資料格式錯誤，請稍後再試</p>';
-                    return;
-                }
-                
-                // 過濾已移除的學生
-                const removedStudents = list.filter(student => {
-                    return student.is_active === false || student.is_removed === true || student.status === 'removed';
-                }).map(student => ({
-                    id: student.student_id || student.id,
-                    name: student.student_name || student.name || '未命名學生',
-                    email: student.email || '',
-                    student_number: student.student_number || '',
-                    class_name: student.class_name || '未知班級',
-                    removed_at: student.updated_at || student.removed_at || new Date().toISOString()
-                }));
 
-                console.log('📊 找到已移除學生數量:', removedStudents.length);
+                console.log('📊 找到已移除學生數量:', allRemovedStudents.length);
 
-                if (removedStudents.length === 0) {
+                if (allRemovedStudents.length === 0) {
                     container.innerHTML = '<p style="text-align: center; color: var(--text-tertiary); padding: var(--spacing-lg);">尚無已移除的學生</p>';
                     return;
                 }
 
                 // 渲染已移除學生列表
-                container.innerHTML = removedStudents.map(student => `
-                    <div class="removed-student-item">
-                        <div class="removed-student-info">
-                            <div class="removed-student-name">${student.name}</div>
-                            <div class="removed-student-details">
-                                Email: ${student.email} | 學號: ${student.student_number || '無'} | 班級: ${student.class_name}
+                container.innerHTML = allRemovedStudents.map(student => `
+                    <div class="removed-student-item" style="display: flex; justify-content: space-between; align-items: center; padding: var(--spacing-md); border: 1px solid var(--border-light); border-radius: var(--radius-lg); margin-bottom: var(--spacing-sm); background: var(--bg-secondary);">
+                        <div style="flex: 1;">
+                            <div style="font-weight: 500; color: var(--text-primary);">${student.name}</div>
+                            <div style="font-size: var(--font-size-sm); color: var(--text-secondary);">
+                                班級: ${student.class_name} | 學號: ${student.student_number || '無'}
                             </div>
                             <div style="font-size: var(--font-size-xs); color: var(--text-tertiary);">
-                                移除時間: ${new Date(student.removed_at).toLocaleString('zh-TW')}
+                                移除時間: ${new Date(student.removed_time).toLocaleString('zh-TW')}
                             </div>
                         </div>
-                        <div class="removed-student-actions">
-                            <button class="btn-secondary" onclick="restoreMainStudent('${student.id}', '${student.name}')">
+                        <div style="display: flex; gap: var(--spacing-sm);">
+                            <button class="btn-secondary" onclick="restoreMainStudent('${student.id}', '${student.name}', '${student.class_id}')">
                                 <i class="fas fa-undo"></i>
                                 恢復
-                            </button>
-                            <button class="btn-danger" onclick="permanentlyRemoveMainStudent('${student.id}', '${student.name}')">
-                                <i class="fas fa-trash-alt"></i>
-                                永久移除
                             </button>
                         </div>
                     </div>
@@ -1445,8 +1422,9 @@
                 // 嘗試多個可能的 API 路徑
                 let res = null;
                 const apiPaths = [
+                    '/relationships/teacher-class?include_deleted=true',
                     '/relationships/classes?include_deleted=true',
-                    '/relationships/classes'
+                    '/relationships/teacher-class'
                 ];
                 
                 for (const path of apiPaths) {
@@ -1496,8 +1474,8 @@
                     id: r.class_id || r.id,
                     name: r.class_name || '未命名班級',
                     subject: r.subject || '',
-                    grade: r.grade || '',
-                    school_year: r.school_year || '',
+                    grade: r.grade || '未知',
+                    school_year: r.school_year || '未知',
                     updated: r.updated_at || new Date().toISOString(),
                     created: r.created_at || new Date().toISOString()
                 }));
@@ -1540,6 +1518,118 @@
                 if (container) {
                     container.innerHTML = '<p style="text-align: center; color: var(--error); padding: var(--spacing-lg);">載入失敗，請稍後再試</p>';
                 }
+            }
+        }
+
+        // 載入已移除學生資料
+        async function loadRemovedStudents() {
+            try {
+                console.log('🔍 開始載入已移除學生');
+                const container = document.getElementById('mainRemovedStudentsList');
+                if (!container) return;
+
+                // 獲取教師的所有班級
+                let teacherClasses = [];
+                try {
+                    const teacherClassesRes = await apiClient.get('/relationships/teacher-class');
+                    if (teacherClassesRes && (teacherClassesRes.data || teacherClassesRes.items || teacherClassesRes)) {
+                        teacherClasses = teacherClassesRes.data || teacherClassesRes.items || teacherClassesRes || [];
+                    }
+                } catch (error) {
+                    console.log('❌ 無法載入教師班級:', error.message);
+                    return;
+                }
+
+                if (teacherClasses.length === 0) {
+                    container.innerHTML = '<p style="text-align: center; color: var(--text-tertiary); padding: var(--spacing-lg);">尚無班級，無法載入已移除學生</p>';
+                    return;
+                }
+
+                // 收集所有班級的已移除學生
+                let allRemovedStudents = [];
+                for (const teacherClass of teacherClasses) {
+                    try {
+                        const studentsRes = await apiClient.get(`/relationships/classes/${teacherClass.class_id}/students?include_removed=true`);
+                        if (studentsRes && (studentsRes.data || studentsRes.items || studentsRes)) {
+                            const students = studentsRes.data || studentsRes.items || studentsRes || [];
+                            const removedStudents = students.filter(s => !s.is_active).map(s => ({
+                                id: s.id,
+                                student_id: s.student_id,
+                                name: s.student_name || '未知學生',
+                                class_id: s.class_id,
+                                class_name: s.class_name || '未知班級',
+                                student_number: s.student_number || '',
+                                removed_time: s.updated_at || new Date().toISOString()
+                            }));
+                            allRemovedStudents.push(...removedStudents);
+                        }
+                    } catch (error) {
+                        console.log(`❌ 無法載入班級 ${teacherClass.class_id} 的學生:`, error.message);
+                        continue;
+                    }
+                }
+
+                console.log('📊 找到已移除學生數量:', allRemovedStudents.length);
+
+                if (allRemovedStudents.length === 0) {
+                    container.innerHTML = '<p style="text-align: center; color: var(--text-tertiary); padding: var(--spacing-lg);">尚無已移除的學生</p>';
+                    return;
+                }
+
+                // 渲染已移除學生列表
+                container.innerHTML = allRemovedStudents.map(student => `
+                    <div class="removed-student-item" style="display: flex; justify-content: space-between; align-items: center; padding: var(--spacing-md); border: 1px solid var(--border-light); border-radius: var(--radius-lg); margin-bottom: var(--spacing-sm); background: var(--bg-secondary);">
+                        <div style="flex: 1;">
+                            <div style="font-weight: 500; color: var(--text-primary);">${student.name}</div>
+                            <div style="font-size: var(--font-size-sm); color: var(--text-secondary);">
+                                班級: ${student.class_name} | 學號: ${student.student_number || '無'}
+                            </div>
+                            <div style="font-size: var(--font-size-xs); color: var(--text-tertiary);">
+                                移除時間: ${new Date(student.removed_time).toLocaleString('zh-TW')}
+                            </div>
+                        </div>
+                        <div style="display: flex; gap: var(--spacing-sm);">
+                            <button class="btn-secondary" onclick="restoreRemovedStudent('${student.id}', '${student.name}', '${student.class_id}')" style="font-size: var(--font-size-sm);">
+                                <i class="fas fa-undo"></i>
+                                恢復
+                            </button>
+                        </div>
+                    </div>
+                `).join('');
+
+            } catch (e) {
+                console.error('載入已移除學生失敗', e);
+                const container = document.getElementById('mainRemovedStudentsList');
+                if (container) {
+                    container.innerHTML = '<p style="text-align: center; color: var(--error); padding: var(--spacing-lg);">載入失敗，請稍後再試</p>';
+                }
+            }
+        }
+
+        // 恢復已移除學生（從已移除學生列表）
+        async function restoreRemovedStudent(studentId, studentName, classId) {
+            if (!confirm(`確定要將 ${studentName} 恢復到班級中嗎？`)) {
+                return;
+            }
+
+            try {
+                showLoading();
+                console.log('🔍 開始恢復已移除學生，ID:', studentId, '到班級:', classId);
+                
+                // 使用正確的 API 路徑恢復學生
+                await apiClient.patch(`/relationships/classes/${classId}/students/${studentId}/restore`);
+                
+                console.log('✅ 學生恢復成功');
+                showAlert(`學生「${studentName}」已恢復到班級`, 'success');
+                
+                // 重新載入資料
+                await loadRemovedStudents();
+                
+            } catch (e) {
+                console.error('❌ 恢復失敗:', e);
+                showAlert('恢復失敗：' + (e.message || ''), 'error');
+            } finally {
+                hideLoading();
             }
         }
 
@@ -2095,7 +2185,7 @@
                 // 嘗試多個可能的 API 路徑進行刪除
                 let deleted = false;
                 const deletePaths = [
-                    `/relationships/classes/${pendingDeleteId}`,
+                    `/relationships/teacher-class/${pendingDeleteId}`,
                     `/relationships/classes/${pendingDeleteId}`
                 ];
                 
@@ -2624,7 +2714,16 @@
 
         // 將學生從班級移除
         async function removeStudentFromClass(studentId, studentName) {
-            if (!editingId) return;
+            console.log('🔍 removeStudentFromClass 被調用');
+            console.log('🔍 studentId:', studentId);
+            console.log('🔍 studentName:', studentName);
+            console.log('🔍 editingId:', editingId);
+            
+            if (!editingId) {
+                console.error('❌ editingId 未設定，無法移除學生');
+                showAlert('請先選擇班級', 'warning');
+                return;
+            }
 
             if (!confirm(`確定要將 ${studentName} 從班級中移除嗎？`)) {
                 return;
@@ -2635,7 +2734,6 @@
                 // 嘗試多個可能的 API 路徑
                 let removed = false;
                 const removePaths = [
-                    `/relationships/classes/${editingId}/students/${studentId}`,
                     `/relationships/classes/${editingId}/students/${studentId}`
                 ];
                 
@@ -2673,6 +2771,7 @@
         window.restoreAllClasses = restoreAllClasses;
         window.clearAllDeletedClasses = clearAllDeletedClasses;
         window.restoreStudent = restoreStudent;
+        window.restoreRemovedStudent = restoreRemovedStudent;
         window.permanentlyRemoveStudent = permanentlyRemoveStudent;
         window.restoreAllStudents = restoreAllStudents;
         window.clearAllRemovedStudents = clearAllRemovedStudents;
@@ -2692,17 +2791,14 @@
                 // 嘗試多個可能的 API 路徑進行恢復
                 let restored = false;
                 const restorePaths = [
-                    `/relationships/classes/${id}/restore`,
-                    `/relationships/classes/${id}/restore`,
-                    `/relationships/classes/${id}`,
-                    `/relationships/classes/${id}`
+                    `/relationships/teacher-class/${id}/restore`
                 ];
                 
                 for (const path of restorePaths) {
                     try {
                         if (path.includes('/restore')) {
-                            // 如果有專門的恢復端點
-                            await apiClient.post(path);
+                            // 如果有專門的恢復端點，使用 PATCH 方法
+                            await apiClient.patch(path);
                         } else {
                             // 否則使用更新端點將 is_active 設為 true
                             await apiClient.put(path, { is_active: true });
@@ -2818,16 +2914,13 @@
                                 // 嘗試恢復班級
                                 let restored = false;
                                 const restorePaths = [
-                                    `/relationships/classes/${id}/restore`,
-                                    `/relationships/classes/${id}/restore`,
-                                    `/relationships/classes/${id}`,
-                                    `/relationships/classes/${id}`
+                                    `/relationships/teacher-class/${id}/restore`
                                 ];
                                 
                                 for (const path of restorePaths) {
                                     try {
                                         if (path.includes('/restore')) {
-                                            await apiClient.post(path);
+                                            await apiClient.patch(path);
                                         } else {
                                             await apiClient.put(path, { is_active: true });
                                         }
@@ -2971,8 +3064,8 @@
                 // 嘗試多個可能的 API 路徑
                 let res = null;
                 const apiPaths = [
-                    `/relationships/classes/${editingId}/students?include_removed=true`,
-                    `/relationships/classes/${editingId}/students`
+                    `/classes/${editingId}/students?include_removed=true`,
+                    `/classes/${editingId}/students`
                 ];
                 
                 for (const path of apiPaths) {
@@ -2993,19 +3086,23 @@
                 }
                 
                 const list = res.data || res.items || res || [];
+                console.log('📊 API 返回的原始資料:', list);
                 
-                // 這裡需要根據實際的 API 響應結構來判斷學生是否被移除
-                // 假設有 is_active 或 is_removed 欄位來標識學生狀態
+                // 根據後端 API 響應結構過濾已移除的學生
                 const removedStudents = list.filter(student => {
-                    // 根據實際 API 響應調整過濾邏輯
-                    return student.is_active === false || student.is_removed === true || student.status === 'removed';
+                    console.log('🔍 檢查學生:', student);
+                    console.log('🔍 student.is_active:', student.is_active);
+                    // 後端返回 is_active 欄位，false 表示已移除
+                    return student.is_active === false;
                 }).map(student => ({
-                    id: student.student_id || student.id,
-                    name: student.student_name || student.name || '未命名學生',
-                    email: student.email || '',
+                    id: student.student_id,  // 後端返回的是 student_id
+                    name: student.student_name || '未命名學生',  // 後端返回的是 student_name
+                    email: '',  // 後端沒有返回 email
                     student_number: student.student_number || '',
-                    removed_at: student.updated_at || student.removed_at || new Date().toISOString()
+                    removed_at: new Date().toISOString()  // 暫時使用當前時間
                 }));
+                
+                console.log('📊 過濾後的已移除學生:', removedStudents);
 
                 console.log('📊 找到已移除學生數量:', removedStudents.length);
 
@@ -3031,9 +3128,9 @@
                                 <i class="fas fa-undo"></i>
                                 恢復
                             </button>
-                            <button class="btn-danger" onclick="permanentlyRemoveStudent('${student.id}', '${student.name}')" style="font-size: var(--font-size-sm);">
+                            <button class="btn-danger" onclick="removeStudentFromClass('${student.id}', '${student.name}')" style="font-size: var(--font-size-sm);">
                                 <i class="fas fa-trash-alt"></i>
-                                永久移除
+                                移除
                             </button>
                         </div>
                     </div>
@@ -3060,7 +3157,7 @@
                 // 使用正確的 API 路徑
                 let res = null;
                 const apiPaths = [
-                    `/relationships/teacher/restore-student/${studentId}`
+                    `/relationships/teacher-management/restore-student/${studentId}`
                 ];
                 
                 for (const path of apiPaths) {
@@ -3104,7 +3201,7 @@
                 // 使用正確的 API 路徑
                 let res = null;
                 const apiPaths = [
-                    `/relationships/teacher/remove-student/${studentId}`
+                    `/relationships/teacher-management/remove-student/${studentId}`
                 ];
                 
                 for (const path of apiPaths) {
@@ -3151,21 +3248,13 @@
                 // 嘗試多個可能的 API 路徑進行恢復
                 let restored = false;
                 const restorePaths = [
-                    `/relationships/classes/${editingId}/students/${studentId}/restore`,
-                    `/relationships/classes/${editingId}/students/${studentId}/restore`,
-                    `/relationships/classes/${editingId}/students`,
-                    `/relationships/classes/${editingId}/students`
+                    `/relationships/classes/${editingId}/students/${studentId}/restore`
                 ];
                 
                 for (const path of restorePaths) {
                     try {
-                        if (path.includes('/restore')) {
-                            // 如果有專門的恢復端點
-                            await apiClient.post(path);
-                        } else {
-                            // 否則使用 POST 端點重新加入學生
-                            await apiClient.post(path, { student_id: studentId });
-                        }
+                        // 使用 PATCH 方法恢復學生
+                        await apiClient.patch(path);
                         restored = true;
                         console.log('✅ 學生恢復成功，使用路徑:', path);
                         break;
@@ -3347,7 +3436,7 @@
                 // 使用正確的 API 路徑
                 let res = null;
                 const apiPaths = [
-                    `/relationships/teacher/restore-all-students`
+                    `/relationships/teacher-management/restore-all-students`
                 ];
                 
                 for (const path of apiPaths) {
@@ -3391,7 +3480,7 @@
                 // 使用正確的 API 路徑
                 let res = null;
                 const apiPaths = [
-                    `/relationships/teacher/clear-all-removed-students`
+                    `/relationships/teacher-management/clear-all-removed-students`
                 ];
                 
                 for (const path of apiPaths) {
