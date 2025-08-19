@@ -513,8 +513,8 @@ pull_and_build() {
     $DOCKER_COMPOSE_CMD pull --ignore-pull-failures 2>/dev/null || true
     
     # 建立自定義映像
-    log_info "建立應用映像..."
-    $DOCKER_COMPOSE_CMD build --parallel 2>/dev/null || $DOCKER_COMPOSE_CMD build
+    log_info "建立應用映像 (將禁用快取以確保最新)..."
+    $DOCKER_COMPOSE_CMD build --no-cache
     
     log_success "映像準備完成"
 }

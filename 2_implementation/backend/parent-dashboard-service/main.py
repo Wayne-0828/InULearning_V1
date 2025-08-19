@@ -13,6 +13,10 @@ import logging
 from datetime import datetime, timedelta
 import asyncio
 
+# 新增 SQLAlchemy 相關導入
+from sqlalchemy import create_engine, text
+from sqlalchemy.orm import sessionmaker
+
 # 配置日誌
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -41,6 +45,11 @@ LEARNING_SERVICE_URL = "http://learning-service:8000"
 AI_ANALYSIS_SERVICE_URL = "http://ai-analysis-service:8004"
 QUESTION_BANK_SERVICE_URL = "http://question-bank-service:8000"
 
+# 新增：資料庫連接配置
+DATABASE_URL = "postgresql://aipe-tester:aipe-tester@postgres:5432/inulearning"
+engine = create_engine(DATABASE_URL)
+SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+
 # 資料模型
 class ChildInfo(BaseModel):
     id: int
@@ -55,7 +64,7 @@ class ChildInfo(BaseModel):
     study_days: int = 0
     overall_progress: float = 0.0
     streak_days: int = 0
-    total_study_hours: float = 0.0
+    total_study_hours: float = 0.0 # 保留前端其他地方可能用到的欄位
 
 class ChildProgress(BaseModel):
     child_name: str
@@ -162,7 +171,7 @@ async def get_child_learning_data(child_id: int) -> Dict[str, Any]:
     try:
         async with httpx.AsyncClient() as client:
             response = await client.get(
-                f"{LEARNING_SERVICE_URL}/api/v1/learning/students/{child_id}/summary"
+                f"{LEARNING_SERVICE_URL}/api/v1/learning/analytics/students/{child_id}/summary"
             )
             
             if response.status_code == 200:
@@ -559,6 +568,55 @@ async def get_learning_trend(child_id: int) -> List[Dict[str, Any]]:
     except Exception as e:
         logger.error(f"獲取學習趨勢錯誤: {e}")
         return []
+
+@app.get("/api/v1/parent/summary/stats")
+async def get_parent_summary_stats(
+    current_user: Dict[str, Any] = Depends(get_current_user), 
+    token: HTTPAuthorizationCredentials = Depends(security)
+):
+    """計算並返回該家長所有子女的匯總統計數據 (分鐘數、測驗次數)"""
+    db = SessionLocal()
+    try:
+        logger.info(f"用戶 {current_user.get('email')} 正在請求匯總統計數據...")
+        
+        children_data = await get_user_children(token.credentials)
+        if not children_data:
+            return {"total_study_minutes": 0.0, "total_sessions": 0, "average_score": 0.0}
+        
+        child_user_ids = [child['id'] for child in children_data]
+        if not child_user_ids:
+            return {"total_study_minutes": 0.0, "total_sessions": 0, "average_score": 0.0}
+
+        sql_query = text("""
+            SELECT 
+                SUM(time_spent) as total_seconds, 
+                COUNT(id) as total_sessions,
+                AVG(total_score) as average_score
+            FROM learning_sessions 
+            WHERE user_id = ANY(:user_ids)
+        """)
+        result = db.execute(sql_query, {"user_ids": child_user_ids}).first()
+        
+        total_seconds = result.total_seconds or 0
+        total_sessions = result.total_sessions or 0
+        average_score = result.average_score or 0
+        total_minutes = float(total_seconds) / 60.0
+        
+        logger.info(f"從資料庫計算得出 -> 總秒數: {total_seconds}, 總測驗次數: {total_sessions}, 平均分數: {average_score}")
+        return {
+            "total_study_minutes": round(total_minutes, 1),
+            "total_sessions": total_sessions,
+            "average_score": round(float(average_score), 1)
+        }
+
+    except Exception as e:
+        logger.error(f"查詢匯總統計數據時發生錯誤: {e}", exc_info=True)
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="無法計算匯總統計數據"
+        )
+    finally:
+        db.close()
 
 def generate_alerts(children_data: List[Dict[str, Any]], learning_data_list: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
     """生成警報"""
