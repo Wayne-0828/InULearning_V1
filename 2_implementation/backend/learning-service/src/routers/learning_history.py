@@ -733,9 +733,23 @@ async def get_questions_by_conditions_excluding(
             except Exception as fb_err:
                 logger.warning("[exclude] fallback criteria fetch failed: %s", str(fb_err))
 
-        # 第二層後備：若仍無題，顯示友善錯誤，避免前端誤判
+        # 第二層後備：若仍無題，為避免使用者阻塞，最後再嘗試「不排除」直接抓題
         if not picked:
-            logger.error("[exclude] no questions picked after fallbacks; check question bank and data")
+            try:
+                logger.warning("[exclude] all fallbacks empty; trying non-excluding by-conditions as last resort")
+                picked = await client.get_questions_by_conditions_simple(
+                    grade=grade,
+                    publisher=publisher,
+                    subject=subject,
+                    chapter=chapter,
+                    question_count=question_count
+                )
+            except Exception as final_err:
+                logger.error("[exclude] non-excluding fallback failed: %s", str(final_err))
+
+        # 若最後仍無法取得，才回錯誤
+        if not picked:
+            logger.error("[exclude] no questions picked after all strategies; check question bank and data")
             return {"success": False, "error": "目前無法取得題目，請稍後再試", "data": []}
 
         logger.info(
