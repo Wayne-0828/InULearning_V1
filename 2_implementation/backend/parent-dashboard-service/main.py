@@ -4,7 +4,6 @@
 """
 
 from fastapi import FastAPI, HTTPException, Depends, status
-from fastapi.middleware.cors import CORSMiddleware
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from pydantic import BaseModel
 from typing import List, Optional, Dict, Any
@@ -24,29 +23,29 @@ app = FastAPI(
     version="1.0.0"
 )
 
-# CORS 配置
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
+# # CORS 配置 (整個區塊移除或註解掉)
+# app.add_middleware(
+#     CORSMiddleware,
+#     allow_origins=["*"],
+#     allow_credentials=True,
+#     allow_methods=["*"],
+#     allow_headers=["*"],
+# )
 
 # 安全配置
-security = HTTPBearer()
+security = HTTPBearer(auto_error=False)
 
 # 服務配置
-AUTH_SERVICE_URL = "http://auth-service:8001"
-LEARNING_SERVICE_URL = "http://learning-service:8002"
+AUTH_SERVICE_URL = "http://auth-service:8000"
+LEARNING_SERVICE_URL = "http://learning-service:8000"
 AI_ANALYSIS_SERVICE_URL = "http://ai-analysis-service:8004"
-QUESTION_BANK_SERVICE_URL = "http://question-bank-service:8003"
+QUESTION_BANK_SERVICE_URL = "http://question-bank-service:8000"
 
 # 資料模型
 class ChildInfo(BaseModel):
     id: int
     name: str
-    grade: int
+    grade: Optional[int] = None
     class_name: Optional[str] = None
     student_id: Optional[str] = None
     avatar: Optional[str] = None
@@ -86,24 +85,38 @@ class LearningActivity(BaseModel):
     metadata: Dict[str, Any]
 
 # 依賴注入
-async def get_current_user(credentials: HTTPAuthorizationCredentials = Depends(security)) -> Dict[str, Any]:
+async def get_current_user(credentials: Optional[HTTPAuthorizationCredentials] = Depends(security)) -> Dict[str, Any]:
     """驗證用戶身份並返回用戶資訊"""
+    logger.info("開始驗證用戶身份...")
+    if not credentials:
+        logger.warning("請求未包含認證令牌")
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="請求未包含有效的認證令牌",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
     try:
+        logger.info(f"接收到令牌: {credentials.credentials[:10]}...") # 只記錄前10個字符以保護隱私
         async with httpx.AsyncClient() as client:
             response = await client.get(
-                f"{AUTH_SERVICE_URL}/api/v1/auth/verify",
+                f"{AUTH_SERVICE_URL}/api/v1/users/profile",
                 headers={"Authorization": f"Bearer {credentials.credentials}"}
             )
             
+            logger.info(f"認證服務回應狀態碼: {response.status_code}")
+            
             if response.status_code == 200:
                 user_data = response.json()
+                logger.info(f"成功獲取用戶資訊: {user_data.get('email')}, 角色: {user_data.get('role')}")
                 if user_data.get("role") != "parent":
+                    logger.warning(f"用戶角色不符: {user_data.get('role')}")
                     raise HTTPException(
                         status_code=status.HTTP_403_FORBIDDEN,
                         detail="只有家長角色可以訪問此服務"
                     )
                 return user_data
             else:
+                logger.error(f"認證失敗: {response.text}")
                 raise HTTPException(
                     status_code=status.HTTP_401_UNAUTHORIZED,
                     detail="無效的認證令牌"
@@ -114,19 +127,31 @@ async def get_current_user(credentials: HTTPAuthorizationCredentials = Depends(s
             status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
             detail="認證服務暫時不可用"
         )
+    except Exception as e:
+        logger.error(f"get_current_user 中發生未知錯誤: {e}", exc_info=True)
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="內部伺服器錯誤"
+        )
 
-async def get_user_children(parent_id: int) -> List[Dict[str, Any]]:
+async def get_user_children(token: str) -> List[Dict[str, Any]]:
     """獲取家長的子女列表"""
     try:
         async with httpx.AsyncClient() as client:
             response = await client.get(
-                f"{AUTH_SERVICE_URL}/api/v1/users/{parent_id}/children"
+                f"{AUTH_SERVICE_URL}/api/v1/relationships/parent-child",
+                headers={"Authorization": f"Bearer {token}"}
             )
             
             if response.status_code == 200:
-                return response.json()
+                # auth-service 現在直接回傳子女列表，格式已符合需求
+                children_data = response.json()
+                # 我們需要確保 created_at 欄位存在，如果不存在就提供一個預設值
+                for child in children_data:
+                    child.setdefault('created_at', datetime.now().isoformat())
+                return children_data
             else:
-                logger.error(f"獲取子女列表失敗: {response.status_code}")
+                logger.error(f"獲取子女列表失敗: {response.status_code}, {response.text}")
                 return []
     except httpx.RequestError as e:
         logger.error(f"獲取子女列表錯誤: {e}")
@@ -192,11 +217,12 @@ async def health_check():
     return {"status": "healthy", "service": "parent-dashboard-service", "timestamp": datetime.now()}
 
 @app.get("/api/v1/parent/children", response_model=List[ChildInfo])
-async def get_children(current_user: Dict[str, Any] = Depends(get_current_user)):
+async def get_children(current_user: Dict[str, Any] = Depends(get_current_user), token: HTTPAuthorizationCredentials = Depends(security)):
     """獲取家長的子女列表"""
+    logger.info(f"用戶 {current_user.get('email')} 正在請求子女列表...")
     try:
-        parent_id = current_user["id"]
-        children_data = await get_user_children(parent_id)
+        children_data = await get_user_children(token.credentials)
+        logger.info(f"成功從 auth-service 獲取到 {len(children_data)} 個子女的基礎資料")
         
         # 並行獲取每個子女的學習資料
         tasks = []
@@ -205,16 +231,20 @@ async def get_children(current_user: Dict[str, Any] = Depends(get_current_user))
             tasks.append(task)
         
         learning_data_list = await asyncio.gather(*tasks, return_exceptions=True)
+        logger.info("已並行獲取所有子女的學習資料")
         
         # 整合資料
         enriched_children = []
         for i, child in enumerate(children_data):
             learning_data = learning_data_list[i] if not isinstance(learning_data_list[i], Exception) else {}
             
+            if isinstance(learning_data_list[i], Exception):
+                logger.error(f"獲取子女 {child['id']} 的學習資料時發生錯誤: {learning_data_list[i]}")
+
             enriched_child = ChildInfo(
                 id=child["id"],
                 name=child["name"],
-                grade=child["grade"],
+                grade=child.get("grade"),
                 class_name=child.get("class_name"),
                 student_id=child.get("student_id"),
                 avatar=child.get("avatar"),
@@ -228,13 +258,14 @@ async def get_children(current_user: Dict[str, Any] = Depends(get_current_user))
             )
             enriched_children.append(enriched_child)
         
+        logger.info(f"成功整合 {len(enriched_children)} 個子女的完整資料")
         return enriched_children
         
     except Exception as e:
-        logger.error(f"獲取子女列表錯誤: {e}")
+        logger.error(f"在 get_children 端點處理用戶 {current_user.get('email')} 的請求時發生嚴重錯誤: {e}", exc_info=True)
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail="獲取子女列表失敗"
+            detail=f"獲取子女列表時發生內部錯誤: {e}"
         )
 
 @app.get("/api/v1/parent/children/{child_id}", response_model=ChildInfo)
@@ -245,7 +276,7 @@ async def get_child_details(
     """獲取特定子女的詳細資訊"""
     try:
         parent_id = current_user["id"]
-        children_data = await get_user_children(parent_id)
+        children_data = await get_user_children(current_user["token"]) # Pass token here
         
         # 驗證子女是否屬於該家長
         child = next((c for c in children_data if c["id"] == child_id), None)
@@ -300,7 +331,7 @@ async def get_child_progress(
     """獲取子女的學習進度"""
     try:
         parent_id = current_user["id"]
-        children_data = await get_user_children(parent_id)
+        children_data = await get_user_children(current_user["token"]) # Pass token here
         
         # 驗證子女是否屬於該家長
         child = next((c for c in children_data if c["id"] == child_id), None)
@@ -361,7 +392,7 @@ async def get_communication_advice_for_child(
     """獲取親子溝通建議"""
     try:
         parent_id = current_user["id"]
-        children_data = await get_user_children(parent_id)
+        children_data = await get_user_children(current_user["token"]) # Pass token here
         
         # 驗證子女是否屬於該家長
         child = next((c for c in children_data if c["id"] == child_id), None)
@@ -410,7 +441,7 @@ async def get_parent_dashboard(current_user: Dict[str, Any] = Depends(get_curren
     """獲取家長儀表板概覽"""
     try:
         parent_id = current_user["id"]
-        children_data = await get_user_children(parent_id)
+        children_data = await get_user_children(current_user["token"]) # Pass token here
         
         if not children_data:
             return {
@@ -448,7 +479,7 @@ async def get_parent_dashboard(current_user: Dict[str, Any] = Depends(get_curren
         average_progress = total_progress / valid_children if valid_children > 0 else 0.0
         
         # 獲取最近活動
-        recent_activities = await get_recent_activities_for_parent(parent_id)
+        recent_activities = await get_recent_activities_for_parent(parent_id, current_user["token"])
         
         # 生成警報
         alerts = generate_alerts(children_data, learning_data_list)
@@ -492,10 +523,10 @@ async def get_recent_activities(child_id: int) -> List[Dict[str, Any]]:
         logger.error(f"獲取最近活動錯誤: {e}")
         return []
 
-async def get_recent_activities_for_parent(parent_id: int) -> List[Dict[str, Any]]:
+async def get_recent_activities_for_parent(parent_id: int, token: str) -> List[Dict[str, Any]]:
     """獲取家長所有子女的最近活動"""
     try:
-        children_data = await get_user_children(parent_id)
+        children_data = await get_user_children(token)
         all_activities = []
         
         for child in children_data:

@@ -1,4 +1,5 @@
 #!/bin/bash
+set -x # 追蹤模式
 
 # InULearning Docker 一鍵啟動腳本
 # 作者: AIPE01_group2
@@ -531,7 +532,7 @@ start_services() {
     sleep 10
     
     log_info "啟動應用服務..."
-    $DOCKER_COMPOSE_CMD up -d auth-service question-bank-service learning-service ai-analysis-service
+    $DOCKER_COMPOSE_CMD up -d auth-service question-bank-service learning-service ai-analysis-service parent-dashboard-service report-service
 
     # 啟動題庫資料載入（一次性）
     log_info "啟動題庫資料載入..."
