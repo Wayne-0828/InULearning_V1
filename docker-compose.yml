@@ -225,6 +225,15 @@ services:
       - POSTGRES_DB=inulearning
       - GEMINI_API_KEY=${GEMINI_API_KEY}
       - REDIS_URL=redis://redis:6379/0
+      - AI_MAX_CONCURRENCY=${AI_MAX_CONCURRENCY:-3}
+      - AI_RATE_LIMIT_RPS=${AI_RATE_LIMIT_RPS:-2}
+      - AI_DEDUP_LOCK_TTL=${AI_DEDUP_LOCK_TTL:-300}
+      - AI_RETRY_MAX_ATTEMPTS=${AI_RETRY_MAX_ATTEMPTS:-2}
+      - AI_RETRY_BACKOFF_SECONDS=${AI_RETRY_BACKOFF_SECONDS:-2}
+      - AI_PREWARM_DEFAULT_NEXT_N=${AI_PREWARM_DEFAULT_NEXT_N:-5}
+      - AI_USE_RQ=${AI_USE_RQ:-1}
+      - AI_RQ_QUEUE_NAME=${AI_RQ_QUEUE_NAME:-ai-analysis}
+      - AI_JOB_TIMEOUT_SECONDS=${AI_JOB_TIMEOUT_SECONDS:-900}
     ports:
       - "8004:8004"
     depends_on:
@@ -241,6 +250,36 @@ services:
       interval: 30s
       timeout: 10s
       retries: 3
+
+  # AI 分析 Worker（RQ）
+  ai-analysis-worker:
+    build:
+      context: ./2_implementation/backend/ai-analysis-service
+      dockerfile: Dockerfile
+    container_name: inulearning_ai_analysis_worker
+    environment:
+      - REDIS_URL=redis://redis:6379/0
+      - AI_RQ_QUEUE_NAME=${AI_RQ_QUEUE_NAME:-ai-analysis}
+      - AI_USE_RQ=1
+      - GEMINI_API_KEY=${GEMINI_API_KEY}
+      - POSTGRES_HOST=postgres
+      - POSTGRES_PORT=5432
+      - POSTGRES_USER=aipe-tester
+      - POSTGRES_PASSWORD=aipe-tester
+      - POSTGRES_DB=inulearning
+      - AI_RATE_LIMIT_RPS=${AI_RATE_LIMIT_RPS:-2}
+      - AI_RETRY_MAX_ATTEMPTS=${AI_RETRY_MAX_ATTEMPTS:-2}
+      - AI_RETRY_BACKOFF_SECONDS=${AI_RETRY_BACKOFF_SECONDS:-2}
+    depends_on:
+      redis:
+        condition: service_healthy
+      postgres:
+        condition: service_healthy
+    networks:
+      - inulearning_network
+    working_dir: /app
+    command: ["python", "-u", "src/services/rq_worker.py"]
+    restart: unless-stopped
 
   # Nginx API Gateway
   nginx:
