@@ -56,12 +56,11 @@ async function loadDashboardData() {
 
         showApiStatus('資料載入完成', 'connected');
 
-    } catch (error) {
-        console.warn('API 連接失敗，使用模擬資料:', error);
-        apiConnected = false;
-        loadMockData();
-        showApiStatus('API 無法連接，顯示模擬資料', 'error');
-    }
+            } catch (error) {
+            console.warn('API 連接失敗:', error);
+            apiConnected = false;
+            showApiStatus('API 無法連接，請檢查網路連線', 'error');
+        }
 }
 
 /**
@@ -85,18 +84,24 @@ async function loadStats() {
     try {
         if (!apiConnected) throw new Error('API 未連接');
 
-        // 嘗試從學習記錄獲取統計
-        const response = await apiClient.get('/learning/records');
+        // 從教師儀表板 API 獲取統計資料
+        const response = await apiClient.get('/teacher/dashboard');
 
-        if (response && response.sessions) {
-            processStatsFromSessions(response.sessions);
+        if (response && response.total_classes !== undefined) {
+            dashboardData.stats = {
+                totalClasses: response.total_classes,
+                totalStudents: response.total_students,
+                activeSessions: response.overall_stats?.active_classes || 0,
+                avgScore: response.overall_stats?.average_accuracy || 0
+            };
         } else {
             throw new Error('無統計資料');
         }
 
     } catch (error) {
         console.warn('載入統計資料失敗:', error.message);
-        generateMockStats();
+        // 不再使用假資料，顯示錯誤狀態
+        showApiStatus('無法載入統計資料', 'error');
     }
 }
 
@@ -128,19 +133,7 @@ function processStatsFromSessions(sessions) {
     renderStats();
 }
 
-/**
- * 生成模擬統計資料
- */
-function generateMockStats() {
-    dashboardData.stats = {
-        totalClasses: Math.floor(Math.random() * 5) + 3, // 3-7 個班級
-        totalStudents: Math.floor(Math.random() * 50) + 80, // 80-130 個學生
-        activeSessions: Math.floor(Math.random() * 20) + 10, // 10-30 個活躍會話
-        avgScore: Math.floor(Math.random() * 20) + 75 // 75-95 分
-    };
 
-    renderStats();
-}
 
 /**
  * 載入班級資料
@@ -149,38 +142,32 @@ async function loadClasses() {
     try {
         if (!apiConnected) throw new Error('API 未連接');
 
-        // 嘗試載入班級資料
-                    const response = await apiClient.get('/relationships/teacher-class');
+        // 從教師班級 API 獲取班級資料
+        const response = await apiClient.get('/teacher/classes');
 
-        if (response && (response.data || response.items || response.length > 0)) {
-            dashboardData.classes = response.data || response.items || response || [];
+        if (response && Array.isArray(response)) {
+            dashboardData.classes = response.map(cls => ({
+                id: cls.id,
+                class_name: cls.name,
+                name: cls.name,
+                student_count: cls.student_count,
+                avg_score: cls.average_accuracy,
+                last_activity: cls.created_at
+            }));
         } else {
             throw new Error('無班級資料');
         }
 
     } catch (error) {
         console.warn('載入班級資料失敗:', error.message);
-        generateMockClasses();
+        // 不再使用假資料，顯示錯誤狀態
+        showApiStatus('無法載入班級資料', 'error');
     }
 
     renderClasses();
 }
 
-/**
- * 生成模擬班級資料
- */
-function generateMockClasses() {
-    const classNames = ['七年一班', '七年二班', '七年三班', '八年一班', '八年二班'];
 
-    dashboardData.classes = classNames.map((name, index) => ({
-        id: index + 1,
-        class_name: name,
-        name: name,
-        student_count: Math.floor(Math.random() * 15) + 25, // 25-40 學生
-        avg_score: Math.floor(Math.random() * 20) + 75, // 75-95 分
-        last_activity: generateLastActivity()
-    }));
-}
 
 /**
  * 載入最近活動
@@ -189,17 +176,24 @@ async function loadRecentActivities() {
     try {
         if (!apiConnected) throw new Error('API 未連接');
 
-        const response = await apiClient.get('/learning/recent');
+        // 從教師儀表板 API 獲取最近活動
+        const response = await apiClient.get('/teacher/dashboard');
 
-        if (response && response.sessions) {
-            processActivitiesFromSessions(response.sessions);
+        if (response && response.recent_activities) {
+            dashboardData.activities = response.recent_activities.map(activity => ({
+                type: activity.type || 'activity',
+                description: activity.description || activity.message || '活動',
+                timestamp: activity.timestamp || activity.created_at || new Date().toISOString(),
+                user: activity.user_name || activity.user || '用戶'
+            }));
         } else {
             throw new Error('無活動資料');
         }
 
     } catch (error) {
         console.warn('載入活動資料失敗:', error.message);
-        generateMockActivities();
+        // 不再使用假資料，顯示錯誤狀態
+        showApiStatus('無法載入活動資料', 'error');
     }
 
     renderRecentActivities();
@@ -217,23 +211,7 @@ function processActivitiesFromSessions(sessions) {
     }));
 }
 
-/**
- * 生成模擬活動資料
- */
-function generateMockActivities() {
-    const activities = [
-        { type: 'quiz_completed', description: '王小明完成了數學練習', user: '王小明' },
-        { type: 'assignment_submitted', description: '李小華提交了英文作業', user: '李小華' },
-        { type: 'student_joined', description: '張小美加入了七年三班', user: '張小美' },
-        { type: 'assignment_graded', description: '批改了陳小強的自然作業', user: '陳小強' },
-        { type: 'quiz_completed', description: '林小芳完成了國文測驗', user: '林小芳' }
-    ];
 
-    dashboardData.activities = activities.map(activity => ({
-        ...activity,
-        timestamp: new Date(Date.now() - Math.random() * 24 * 60 * 60 * 1000).toISOString()
-    }));
-}
 
 /**
  * 載入今日重點
@@ -249,15 +227,7 @@ async function loadTodayHighlights() {
     renderTodayHighlights();
 }
 
-/**
- * 載入模擬資料
- */
-function loadMockData() {
-    generateMockStats();
-    generateMockClasses();
-    generateMockActivities();
-    loadTodayHighlights();
-}
+
 
 /**
  * 渲染統計資料

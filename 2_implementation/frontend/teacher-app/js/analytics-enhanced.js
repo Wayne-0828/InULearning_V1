@@ -26,83 +26,14 @@ class AnalyticsManager {
             this.data = await apiClient.get('/teacher/analytics');
             console.log('✅ 成功載入真實分析資料');
         } catch (error) {
-            console.log('⚠️ API 載入失敗，使用模擬資料:', error.message);
-            this.data = this.getMockAnalyticsData();
+            console.error('⚠️ API 載入失敗:', error.message);
+            // 不再使用假資料，顯示錯誤狀態
+            this.data = this.getDefaultEmptyData();
+            this.showApiStatus('無法載入分析資料', 'error');
         }
     }
 
-    getMockAnalyticsData() {
-        return {
-            overview: {
-                engagementRate: 87,
-                avgPerformance: 82.5,
-                completionRate: 94,
-                attentionStudents: 3
-            },
-            trends: {
-                week: {
-                    labels: ['週一', '週二', '週三', '週四', '週五', '週六', '週日'],
-                    performance: [78, 82, 85, 83, 87, 89, 86],
-                    engagement: [85, 88, 90, 87, 92, 94, 91],
-                    completion: [92, 94, 96, 93, 97, 95, 94]
-                },
-                month: {
-                    labels: ['第1週', '第2週', '第3週', '第4週'],
-                    performance: [80, 83, 85, 87],
-                    engagement: [88, 90, 92, 94],
-                    completion: [93, 95, 94, 96]
-                }
-            },
-            knowledgePoints: [
-                { name: '二次函數', score: 85, mastery: 85 },
-                { name: '三角函數', score: 78, mastery: 78 },
-                { name: '分數運算', score: 92, mastery: 92 },
-                { name: '幾何證明', score: 73, mastery: 73 },
-                { name: '代數運算', score: 88, mastery: 88 },
-                { name: '統計圖表', score: 81, mastery: 81 }
-            ],
-            studentRanking: [
-                { name: '李小華', class: '三年一班', score: 94.5, improvement: 5.2 },
-                { name: '林小雅', class: '三年一班', score: 92.8, improvement: 3.1 },
-                { name: '蔡小慧', class: '三年一班', score: 90.2, improvement: 4.8 },
-                { name: '陳小強', class: '三年一班', score: 88.7, improvement: 2.3 },
-                { name: '吳小玲', class: '三年一班', score: 87.3, improvement: 3.7 },
-                { name: '王小明', class: '三年一班', score: 85.9, improvement: 1.9 },
-                { name: '劉小安', class: '三年一班', score: 82.4, improvement: -1.2 },
-                { name: '張小美', class: '三年一班', score: 79.6, improvement: -2.8 }
-            ],
-            insights: [
-                {
-                    type: 'success',
-                    title: '整體表現優秀',
-                    description: '班級平均分數較上週提升2.3分，學生學習積極性明顯提高。'
-                },
-                {
-                    type: 'warning',
-                    title: '幾何證明需加強',
-                    description: '73%的學生在幾何證明題目上表現不佳，建議增加相關練習。'
-                },
-                {
-                    type: 'info',
-                    title: '學習時間分布均勻',
-                    description: '學生在各時段的學習參與度較為平均，沒有明顯的低谷期。'
-                },
-                {
-                    type: 'danger',
-                    title: '3名學生需要關注',
-                    description: '周小傑、張小美、劉小安三位學生近期表現下滑，需要額外輔導。'
-                }
-            ],
-            subjects: {
-                labels: ['數學', '國文', '英文', '自然'],
-                data: [82, 78, 85, 80]
-            },
-            timeDistribution: {
-                labels: ['08:00-10:00', '10:00-12:00', '14:00-16:00', '16:00-18:00', '19:00-21:00'],
-                data: [15, 25, 30, 20, 10]
-            }
-        };
-    }
+
 
     setupEventListeners() {
         // 時間篩選
@@ -366,6 +297,69 @@ class AnalyticsManager {
             danger: 'fa-times-circle'
         };
         return icons[type] || 'fa-info-circle';
+    }
+
+    getDefaultEmptyData() {
+        return {
+            overview: {
+                engagementRate: 0,
+                avgPerformance: 0,
+                completionRate: 0,
+                attentionStudents: 0
+            },
+            trends: {
+                week: {
+                    labels: [],
+                    performance: [],
+                    engagement: [],
+                    completion: []
+                },
+                month: {
+                    labels: [],
+                    performance: [],
+                    engagement: [],
+                    completion: []
+                }
+            },
+            knowledgePoints: [],
+            studentRanking: [],
+            insights: [],
+            subjects: {
+                labels: [],
+                data: []
+            },
+            timeDistribution: {
+                labels: [],
+                data: []
+            }
+        };
+    }
+
+    showApiStatus(message, type = 'error') {
+        // 更新概覽數據顯示錯誤狀態
+        document.getElementById('engagementRate').textContent = '--';
+        document.getElementById('avgPerformance').textContent = '--';
+        document.getElementById('completionRate').textContent = '--';
+        document.getElementById('attentionStudents').textContent = '--';
+        
+        // 顯示錯誤訊息
+        const insightsList = document.getElementById('insightsList');
+        if (insightsList) {
+            insightsList.innerHTML = `
+                <li class="insight-item">
+                    <div class="insight-icon ${type}">
+                        <i class="fas fa-exclamation-triangle"></i>
+                    </div>
+                    <div class="insight-content">
+                        <div class="insight-title">API 連接錯誤</div>
+                        <div class="insight-description">${message}</div>
+                        <button onclick="analyticsManager.init()" class="mt-2 px-3 py-1 bg-blue-500 text-white rounded text-sm hover:bg-blue-600">
+                            重新載入
+                        </button>
+                    </div>
+                </li>
+            `;
+        }
     }
 
     async generateInsights() {

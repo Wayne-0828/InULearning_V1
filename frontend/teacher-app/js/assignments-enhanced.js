@@ -79,14 +79,10 @@ class AssignmentsManager {
             if (!Array.isArray(this.assignments)) this.assignments = [];
             console.log('✅ 成功載入真實作業資料');
         } catch (error) {
-            console.log('⚠️ API 載入失敗，使用模擬資料:', error.message);
-            // 只在開發環境使用模擬資料，生產環境應該顯示錯誤
-            if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
-                this.assignments = this.getMockAssignments();
-            } else {
-                this.assignments = [];
-                console.error('生產環境不應使用模擬資料');
-            }
+            console.error('⚠️ API 載入失敗:', error.message);
+            // 不再使用假資料，顯示錯誤狀態
+            this.assignments = [];
+            this.showApiStatus('無法載入作業資料', 'error');
         }
         this.filteredAssignments = [...this.assignments];
     }
@@ -104,39 +100,7 @@ class AssignmentsManager {
         return true;
     }
 
-    getMockAssignments() {
-        return [
-            // 保留原本的模擬資料
-            {
-                id: 1,
-                title: '第三章 二次函數練習',
-                subject: 'math',
-                description: '完成課本第三章所有練習題，包含圖形繪製',
-                status: 'active',
-                dueDate: '2024-02-28',
-                createdDate: '2024-02-15',
-                totalStudents: 32,
-                submitted: 28,
-                graded: 15,
-                avgScore: 85.5,
-                difficulty: 'medium'
-            },
-            {
-                id: 2,
-                title: '作文：我的寒假生活',
-                subject: 'chinese',
-                description: '以「我的寒假生活」為題，寫一篇不少於600字的作文',
-                status: 'grading',
-                dueDate: '2024-02-25',
-                createdDate: '2024-02-10',
-                totalStudents: 32,
-                submitted: 32,
-                graded: 8,
-                avgScore: 78.2,
-                difficulty: 'easy'
-            }
-        ];
-    }
+
 
     setupEventListeners() {
         try {

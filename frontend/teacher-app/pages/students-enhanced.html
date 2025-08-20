@@ -1097,40 +1097,22 @@
 
                 const avgScore = scores.length > 0
                     ? Math.round(scores.reduce((a, b) => a + b, 0) / scores.length)
-                    : generateRandomScore();
+                    : 0;
 
                 return {
                     id: student.id,
                     name: student.name,
                     class: className || '七年三班',
                     avgScore: avgScore,
-                    weakSubjects: generateWeakSubjects(),
-                    lastActivity: generateLastActivity(),
-                    status: generateStatus(avgScore),
+                    weakSubjects: [],
+                    lastActivity: '最近',
+                    status: avgScore >= 70 ? 'active' : 'need_help',
                     totalExercises: student.sessions.length
                 };
             });
         }
 
-        function loadMockData() {
-            const mockNames = [
-                '王小明', '李小華', '張小美', '陳小強', '林小芳',
-                '黃小龍', '吳小玲', '劉小傑', '蔡小雯', '鄭小宇',
-                '楊小慧', '許小偉', '謝小婷', '洪小峰', '郭小琪',
-                '周小安', '徐小涵', '朱小豪', '馬小欣', '高小翔'
-            ];
 
-            students = mockNames.map((name, index) => ({
-                id: `student_${index + 1}`,
-                name: name,
-                class: className || '七年三班',
-                avgScore: generateRandomScore(),
-                weakSubjects: generateWeakSubjects(),
-                lastActivity: generateLastActivity(),
-                status: generateStatus(),
-                totalExercises: Math.floor(Math.random() * 30) + 5
-            }));
-        }
 
         function loadClassOptions() {
             const classFilter = document.getElementById('classFilter');
@@ -1154,53 +1136,22 @@
             }
         }
 
-        function generateRandomScore() {
-            return Math.floor(Math.random() * 40) + 60; // 60-100
-        }
 
-        function generateWeakSubjects() {
-            const subjects = ['數學', '國文', '英文', '自然'];
-            const count = Math.floor(Math.random() * 3);
-            const selected = [];
 
-            for (let i = 0; i < count; i++) {
-                const subject = subjects[Math.floor(Math.random() * subjects.length)];
-                if (!selected.includes(subject)) {
-                    selected.push(subject);
-                }
-            }
 
-            return selected;
-        }
 
-        function generateLastActivity() {
-            const days = Math.floor(Math.random() * 7);
-            if (days === 0) return '今天';
-            if (days === 1) return '昨天';
-            return `${days} 天前`;
-        }
 
-        function generateStatus(score) {
-            if (score) {
-                if (score >= 85) return 'active';
-                if (score >= 70) return 'active';
-                return 'need_help';
-            }
 
-            const statuses = ['active', 'inactive', 'need_help'];
-            const weights = [0.6, 0.3, 0.1];
-            const random = Math.random();
-            let cumulative = 0;
 
-            for (let i = 0; i < statuses.length; i++) {
-                cumulative += weights[i];
-                if (random <= cumulative) {
-                    return statuses[i];
-                }
-            }
 
-            return 'active';
-        }
+
+
+
+
+
+
+
+
 
         function applyFilters() {
             const searchTerm = document.getElementById('searchInput').value.toLowerCase().trim();

@@ -20,223 +20,30 @@ class GradesManager {
     }
 
     async loadGrades() {
+        // 顯示加載狀態
+        this.showLoadingState();
+        
         try {
             // 嘗試從 API 載入真實資料
             const data = await apiClient.get('/teacher/grades');
             this.grades = data.grades || data.students || data || [];
             console.log('✅ 成功載入真實成績資料');
+            
+            // 如果成功但沒有數據，顯示空狀態
+            if (this.grades.length === 0) {
+                this.showEmptyState();
+            }
         } catch (error) {
-            console.log('⚠️ API 載入失敗，使用模擬資料:', error.message);
-            this.grades = this.getMockGrades();
+            console.error('⚠️ API 載入失敗:', error.message);
+            // 不再使用假資料，顯示錯誤狀態
+            this.grades = [];
+            this.showApiStatus('無法載入成績資料', 'error');
         }
 
         this.filteredGrades = [...this.grades];
     }
 
-    getMockGrades() {
-        return [
-            {
-                id: 1,
-                name: '王小明',
-                studentId: 'S001',
-                class: '三年一班',
-                grades: {
-                    math: 85,
-                    chinese: 78,
-                    english: 92,
-                    science: 88
-                },
-                previousGrades: {
-                    math: 82,
-                    chinese: 75,
-                    english: 89,
-                    science: 85
-                },
-                average: 85.8,
-                trend: 'up'
-            },
-            {
-                id: 2,
-                name: '李小華',
-                studentId: 'S002',
-                class: '三年一班',
-                grades: {
-                    math: 92,
-                    chinese: 88,
-                    english: 95,
-                    science: 90
-                },
-                previousGrades: {
-                    math: 90,
-                    chinese: 86,
-                    english: 93,
-                    science: 88
-                },
-                average: 91.3,
-                trend: 'up'
-            },
-            {
-                id: 3,
-                name: '張小美',
-                studentId: 'S003',
-                class: '三年一班',
-                grades: {
-                    math: 76,
-                    chinese: 82,
-                    english: 79,
-                    science: 81
-                },
-                previousGrades: {
-                    math: 78,
-                    chinese: 84,
-                    english: 82,
-                    science: 83
-                },
-                average: 79.5,
-                trend: 'down'
-            },
-            {
-                id: 4,
-                name: '陳小強',
-                studentId: 'S004',
-                class: '三年一班',
-                grades: {
-                    math: 88,
-                    chinese: 85,
-                    english: 87,
-                    science: 89
-                },
-                previousGrades: {
-                    math: 87,
-                    chinese: 85,
-                    english: 86,
-                    science: 88
-                },
-                average: 87.3,
-                trend: 'stable'
-            },
-            {
-                id: 5,
-                name: '林小雅',
-                studentId: 'S005',
-                class: '三年一班',
-                grades: {
-                    math: 94,
-                    chinese: 91,
-                    english: 96,
-                    science: 93
-                },
-                previousGrades: {
-                    math: 92,
-                    chinese: 89,
-                    english: 94,
-                    science: 91
-                },
-                average: 93.5,
-                trend: 'up'
-            },
-            {
-                id: 6,
-                name: '黃小文',
-                studentId: 'S006',
-                class: '三年一班',
-                grades: {
-                    math: 72,
-                    chinese: 75,
-                    english: 68,
-                    science: 74
-                },
-                previousGrades: {
-                    math: 70,
-                    chinese: 73,
-                    english: 66,
-                    science: 72
-                },
-                average: 72.3,
-                trend: 'up'
-            },
-            {
-                id: 7,
-                name: '劉小安',
-                studentId: 'S007',
-                class: '三年一班',
-                grades: {
-                    math: 80,
-                    chinese: 83,
-                    english: 78,
-                    science: 82
-                },
-                previousGrades: {
-                    math: 82,
-                    chinese: 85,
-                    english: 80,
-                    science: 84
-                },
-                average: 80.8,
-                trend: 'down'
-            },
-            {
-                id: 8,
-                name: '吳小玲',
-                studentId: 'S008',
-                class: '三年一班',
-                grades: {
-                    math: 86,
-                    chinese: 89,
-                    english: 84,
-                    science: 87
-                },
-                previousGrades: {
-                    math: 84,
-                    chinese: 87,
-                    english: 82,
-                    science: 85
-                },
-                average: 86.5,
-                trend: 'up'
-            },
-            {
-                id: 9,
-                name: '周小傑',
-                studentId: 'S009',
-                class: '三年一班',
-                grades: {
-                    math: 65,
-                    chinese: 68,
-                    english: 62,
-                    science: 66
-                },
-                previousGrades: {
-                    math: 68,
-                    chinese: 70,
-                    english: 65,
-                    science: 69
-                },
-                average: 65.3,
-                trend: 'down'
-            },
-            {
-                id: 10,
-                name: '蔡小慧',
-                studentId: 'S010',
-                class: '三年一班',
-                grades: {
-                    math: 91,
-                    chinese: 87,
-                    english: 93,
-                    science: 89
-                },
-                previousGrades: {
-                    math: 89,
-                    chinese: 85,
-                    english: 91,
-                    science: 87
-                },
-                average: 90.0,
-                trend: 'up'
-            }
-        ];
-    }
+
 
     setupEventListeners() {
         // 搜尋功能
@@ -503,6 +310,53 @@ class GradesManager {
             stable: '持平'
         };
         return texts[trend] || '持平';
+    }
+
+    showApiStatus(message, type = 'error') {
+        const tbody = document.getElementById('gradesTableBody');
+        const icon = type === 'error' ? 'fa-exclamation-triangle' : 'fa-info-circle';
+        const color = type === 'error' ? 'text-red-500' : 'text-blue-500';
+        
+        tbody.innerHTML = `
+            <tr>
+                <td colspan="8" style="text-align: center; padding: 3rem;">
+                    <i class="fas ${icon} ${color}" style="font-size: 3rem; margin-bottom: 1rem;"></i>
+                    <p class="${color}">${message}</p>
+                    <button onclick="gradesManager.init()" class="mt-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">
+                        重新載入
+                    </button>
+                </td>
+            </tr>
+        `;
+    }
+
+    showLoadingState() {
+        const tbody = document.getElementById('gradesTableBody');
+        tbody.innerHTML = `
+            <tr>
+                <td colspan="8" style="text-align: center; padding: 3rem;">
+                    <div class="flex items-center justify-center space-x-3">
+                        <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+                        <span class="text-gray-600 font-medium">載入成績資料中...</span>
+                    </div>
+                </td>
+            </tr>
+        `;
+    }
+
+    showEmptyState() {
+        const tbody = document.getElementById('gradesTableBody');
+        tbody.innerHTML = `
+            <tr>
+                <td colspan="8" style="text-align: center; padding: 3rem;">
+                    <i class="fas fa-file-alt text-gray-400" style="font-size: 3rem; margin-bottom: 1rem;"></i>
+                    <p class="text-gray-500 mb-4">暫無成績資料</p>
+                    <button onclick="gradesManager.init()" class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">
+                        重新載入
+                    </button>
+                </td>
+            </tr>
+        `;
     }
 }
 

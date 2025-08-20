@@ -27,122 +27,17 @@ class QuestionsManager {
             this.questions = data.questions || data.items || data || [];
             console.log('✅ 成功載入真實題目資料');
         } catch (error) {
-            console.log('⚠️ API 載入失敗，使用模擬資料:', error.message);
-            this.questions = this.getMockQuestions();
+            console.error('⚠️ API 載入失敗:', error.message);
+            // 不再使用假資料，顯示錯誤狀態
+            this.questions = [];
+            this.showApiStatus('無法載入題目資料', 'error');
         }
 
         this.filteredQuestions = [...this.questions];
         this.extractKnowledgePoints();
     }
 
-    getMockQuestions() {
-        return [
-            {
-                id: 1,
-                subject: 'math',
-                knowledgePoint: '二次函數',
-                difficulty: 'medium',
-                content: '已知二次函數 f(x) = ax² + bx + c 的圖形通過點 (1, 2)、(2, 5)、(3, 10)，求 a、b、c 的值。',
-                options: ['A. a=1, b=0, c=1', 'B. a=1, b=1, c=0', 'C. a=2, b=-1, c=1', 'D. a=1, b=-1, c=2'],
-                answer: 'B',
-                explanation: '將三個點代入函數式，建立三元一次方程組求解。',
-                createdDate: '2024-02-15',
-                lastUsed: '2024-02-20',
-                usageCount: 15
-            },
-            {
-                id: 2,
-                subject: 'math',
-                knowledgePoint: '三角函數',
-                difficulty: 'hard',
-                content: '在直角三角形 ABC 中，∠C = 90°，若 sin A = 3/5，求 cos B 的值。',
-                options: ['A. 3/5', 'B. 4/5', 'C. 3/4', 'D. 4/3'],
-                answer: 'A',
-                explanation: '利用直角三角形中 sin A = cos B 的性質。',
-                createdDate: '2024-02-10',
-                lastUsed: '2024-02-18',
-                usageCount: 8
-            },
-            {
-                id: 3,
-                subject: 'chinese',
-                knowledgePoint: '文言文閱讀',
-                difficulty: 'medium',
-                content: '「學而時習之，不亦說乎？」這句話的意思是什麼？',
-                options: ['A. 學習要按時複習，不是很快樂嗎？', 'B. 學習要及時練習，不是很說話嗎？', 'C. 學習要時常溫習，不是很愉快嗎？', 'D. 學習要定時學習，不是很容易嗎？'],
-                answer: 'C',
-                explanation: '「說」通「悅」，表示愉快、高興的意思。',
-                createdDate: '2024-02-12',
-                lastUsed: '2024-02-19',
-                usageCount: 12
-            },
-            {
-                id: 4,
-                subject: 'english',
-                knowledgePoint: '現在完成式',
-                difficulty: 'easy',
-                content: 'Choose the correct sentence:',
-                options: ['A. I have went to school.', 'B. I have gone to school.', 'C. I have go to school.', 'D. I have going to school.'],
-                answer: 'B',
-                explanation: 'Present perfect tense uses "have/has + past participle". The past participle of "go" is "gone".',
-                createdDate: '2024-02-14',
-                lastUsed: '2024-02-21',
-                usageCount: 20
-            },
-            {
-                id: 5,
-                subject: 'science',
-                knowledgePoint: '光合作用',
-                difficulty: 'medium',
-                content: '植物進行光合作用時，下列哪一項不是必需的條件？',
-                options: ['A. 陽光', 'B. 二氧化碳', 'C. 水分', 'D. 氧氣'],
-                answer: 'D',
-                explanation: '氧氣是光合作用的產物，不是必需的條件。光合作用需要陽光、二氧化碳和水分。',
-                createdDate: '2024-02-08',
-                lastUsed: '2024-02-16',
-                usageCount: 18
-            },
-            {
-                id: 6,
-                subject: 'math',
-                knowledgePoint: '分數運算',
-                difficulty: 'easy',
-                content: '計算：2/3 + 1/4 = ?',
-                options: ['A. 3/7', 'B. 11/12', 'C. 5/6', 'D. 8/12'],
-                answer: 'B',
-                explanation: '通分後計算：2/3 + 1/4 = 8/12 + 3/12 = 11/12',
-                createdDate: '2024-02-16',
-                lastUsed: '2024-02-22',
-                usageCount: 25
-            },
-            {
-                id: 7,
-                subject: 'chinese',
-                knowledgePoint: '成語運用',
-                difficulty: 'easy',
-                content: '「畫蛇添足」這個成語的意思是什麼？',
-                options: ['A. 做事很仔細', 'B. 多此一舉', 'C. 畫畫很好', 'D. 蛇很可怕'],
-                answer: 'B',
-                explanation: '畫蛇添足比喻做了多餘的事，不但無益，反而有害。',
-                createdDate: '2024-02-11',
-                lastUsed: '2024-02-17',
-                usageCount: 14
-            },
-            {
-                id: 8,
-                subject: 'english',
-                knowledgePoint: '動詞時態',
-                difficulty: 'medium',
-                content: 'Yesterday, I _____ to the library.',
-                options: ['A. go', 'B. goes', 'C. went', 'D. going'],
-                answer: 'C',
-                explanation: '"Yesterday" indicates past time, so we use the past tense "went".',
-                createdDate: '2024-02-13',
-                lastUsed: '2024-02-20',
-                usageCount: 16
-            }
-        ];
-    }
+
 
     extractKnowledgePoints() {
         const kpMap = {};
@@ -408,6 +303,22 @@ class QuestionsManager {
 
             alert(this.editingId ? '題目更新成功！' : '題目新增成功！');
         }
+    }
+
+    showApiStatus(message, type = 'error') {
+        const container = document.getElementById('questionsList');
+        const icon = type === 'error' ? 'fa-exclamation-triangle' : 'fa-info-circle';
+        const color = type === 'error' ? 'text-red-500' : 'text-blue-500';
+        
+        container.innerHTML = `
+            <div style="text-align: center; padding: 3rem;">
+                <i class="fas ${icon} ${color}" style="font-size: 3rem; margin-bottom: 1rem;"></i>
+                <p class="${color}">${message}</p>
+                <button onclick="questionsManager.init()" class="mt-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">
+                    重新載入
+                </button>
+            </div>
+        `;
     }
 }
 

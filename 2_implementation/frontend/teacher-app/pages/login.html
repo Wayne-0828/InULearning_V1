@@ -1,207 +1,148 @@
 <!DOCTYPE html>
 <html lang="zh-TW">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>教師登入 - InULearning</title>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+    <title>登入 - InULearning 教師控制台</title>
+    <meta name="description" content="InULearning 教師控制台：管理班級、學生、題庫與作業，查看學習報告。">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-    <link rel="stylesheet" href="../shared/css/components.css">
-    <link rel="stylesheet" href="../shared/css/responsive.css">
+    <link rel="stylesheet" href="../css/components.css">
+    <link rel="stylesheet" href="../css/responsive.css">
     <link rel="stylesheet" href="../css/main.css">
 </head>
-<body class="bg-gray-50 min-h-screen flex items-center justify-center p-4">
-    <div class="max-w-6xl w-full grid grid-cols-1 lg:grid-cols-2 gap-8">
-        <!-- 左側登入表單 -->
-        <div class="flex items-center justify-center">
-            <div class="w-full max-w-md">
-                <!-- Logo 和標題 -->
-                <div class="text-center mb-8">
-                    <div class="w-20 h-20 bg-blue-600 rounded-full flex items-center justify-center mx-auto mb-4">
-                        <span class="material-icons text-white text-4xl">school</span>
-                    </div>
-                    <h1 class="text-3xl font-bold text-gray-800 mb-2">教師登入</h1>
-                    <p class="text-gray-600">歡迎回到 InULearning 教學平台</p>
+
+<body class="bg-gray-100 min-h-screen flex items-center justify-center">
+    <div class="max-w-md w-full mx-auto">
+        <!-- 登入卡片 -->
+        <div class="bg-white rounded-lg shadow-md p-8">
+            <!-- Logo 和標題 -->
+            <div class="text-center mb-8">
+                <div class="w-20 h-20 bg-blue-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <span class="material-icons text-white text-4xl">school</span>
                 </div>
+                <h1 class="text-2xl font-bold text-gray-800 mb-2">InU Learning</h1>
+                <p class="text-gray-600">【因你而學】教師控制台</p>
+            </div>
 
-                <!-- 登入表單 -->
-                <form class="space-y-6">
-                    <div class="form-group">
-                        <label for="email" class="form-label">
-                            <span class="material-icons mr-2 text-gray-500">email</span>
-                            電子郵件
-                        </label>
-                        <input type="email" id="email" name="email" class="form-control" 
-                               placeholder="請輸入您的電子郵件" required>
-                        <div class="form-error" id="email-error"></div>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="password" class="form-label">
-                            <span class="material-icons mr-2 text-gray-500">lock</span>
-                            密碼
-                        </label>
-                        <div class="relative">
-                            <input type="password" id="password" name="password" class="form-control pr-12" 
-                                   placeholder="請輸入您的密碼" required>
-                            <button type="button" class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700" id="password-toggle">
-                                <span class="material-icons">visibility</span>
-                            </button>
-                        </div>
-                        <div class="form-error" id="password-error"></div>
-                    </div>
-
-                    <div class="flex items-center justify-between">
-                        <label class="flex items-center">
-                            <input type="checkbox" id="remember-me" name="remember-me" class="mr-2">
-                            <span class="text-sm text-gray-600">記住我</span>
-                        </label>
-                        <a href="#" class="text-sm text-blue-600 hover:text-blue-800" id="forgot-password">忘記密碼？</a>
-                    </div>
-
-                    <button type="submit" class="btn btn-primary btn-block" id="login-btn">
-                        <span class="btn-text">登入</span>
-                        <span class="btn-loading hidden">
-                            <span class="material-icons animate-spin mr-2">refresh</span>
-                            登入中...
+            <!-- 登入表單 -->
+            <form class="space-y-6">
+                <div>
+                    <label for="email" class="block text-sm font-medium text-gray-700 mb-2">電子郵件</label>
+                    <div class="relative">
+                        <span class="absolute inset-y-0 left-0 flex items-center pl-3">
+                            <span class="material-icons text-gray-400">email</span>
                         </span>
-                    </button>
-                </form>
-
-                <!-- 快速登入選項（開發用） -->
-                <div class="mt-8 p-4 bg-gray-50 rounded-lg">
-                    <p class="text-sm text-gray-600 mb-3 text-center">快速登入（開發用）</p>
-                    <div class="grid grid-cols-3 gap-2">
-                        <button class="btn btn-outline-secondary btn-sm" 
-                                data-email="teacher01@test.com" data-password="password123">
-                            教師 01
-                        </button>
-                        <button class="btn btn-outline-secondary btn-sm" 
-                                data-email="teacher02@test.com" data-password="password123">
-                            教師 02
-                        </button>
-                        <button class="btn btn-outline-secondary btn-sm" 
-                                data-email="teacher03@test.com" data-password="password123">
-                            教師 03
-                        </button>
+                        <input 
+                            type="email" 
+                            id="email" 
+                            name="email" 
+                            required 
+                            class="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                            placeholder="請輸入您的電子郵件"
+                        >
                     </div>
                 </div>
 
-                <!-- 其他選項 -->
-                <div class="mt-6 text-center text-sm text-gray-600">
-                    <p>還沒有帳號？ <a href="#" class="text-blue-600 hover:text-blue-800" id="register-link">聯絡管理員</a></p>
-                    <p class="mt-2"><a href="../index.html" class="text-blue-600 hover:text-blue-800">返回首頁</a></p>
+                <div>
+                    <label for="password" class="block text-sm font-medium text-gray-700 mb-2">密碼</label>
+                    <div class="relative">
+                        <span class="absolute inset-y-0 left-0 flex items-center pl-3">
+                            <span class="material-icons text-gray-400">lock</span>
+                        </span>
+                        <input 
+                            type="password" 
+                            id="password" 
+                            name="password" 
+                            required 
+                            class="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                            placeholder="請輸入您的密碼"
+                        >
+                    </div>
                 </div>
-            </div>
-        </div>
 
-        <!-- 右側資訊面板 -->
-        <div class="hidden lg:flex items-center justify-center">
-            <div class="max-w-md text-center">
-                <div class="w-32 h-32 bg-gradient-to-br from-blue-500 to-blue-700 rounded-full flex items-center justify-center mx-auto mb-8">
-                    <span class="material-icons text-white text-6xl">school</span>
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center">
+                        <input type="checkbox" id="remember" name="remember" class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
+                        <label for="remember" class="ml-2 block text-sm text-gray-700">記住我</label>
+                    </div>
+                    <a href="#" class="text-sm text-blue-600 hover:text-blue-800">忘記密碼？</a>
                 </div>
-                
-                <h2 class="text-4xl font-bold text-gray-800 mb-6">InULearning 教學平台</h2>
-                <p class="text-xl text-gray-600 mb-12 leading-relaxed">
-                    為教師提供完整的教學管理工具，讓您專注於教學品質的提升。
+
+                <button 
+                    type="submit" 
+                    class="w-full bg-blue-600 text-white py-2 px-4 rounded-lg font-semibold hover:bg-blue-700 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+                >
+                    登入
+                </button>
+            </form>
+
+            <!-- 分隔線 -->
+            <div class="my-6 flex items-center">
+                <div class="flex-1 border-t border-gray-300"></div>
+                <span class="px-3 text-sm text-gray-500">或</span>
+                <div class="flex-1 border-t border-gray-300"></div>
+            </div>
+
+            <!-- 其他登入選項 -->
+            <div class="space-y-3">
+                <button class="w-full bg-white border border-gray-300 text-gray-700 py-2 px-4 rounded-lg font-medium hover:bg-gray-50 transition-colors flex items-center justify-center">
+                    <span class="material-icons mr-2">school</span>
+                    使用學校帳號登入
+                </button>
+                <button class="w-full bg-white border border-gray-300 text-gray-700 py-2 px-4 rounded-lg font-medium hover:bg-gray-50 transition-colors flex items-center justify-center">
+                    <span class="material-icons mr-2">admin_panel_settings</span>
+                    管理員登入
+                </button>
+            </div>
+
+            <!-- 註冊連結 -->
+            <div class="text-center mt-6">
+                <p class="text-sm text-gray-600">
+                    還沒有帳號？
+                    <a href="register.html" class="text-blue-600 hover:text-blue-800 font-medium">立即註冊</a>
                 </p>
-                
-                <div class="space-y-8">
-                    <div class="flex items-start">
-                        <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mr-4 flex-shrink-0">
-                            <span class="material-icons text-blue-600 text-2xl">book</span>
-                        </div>
-                        <div class="text-left">
-                            <h4 class="text-lg font-semibold text-gray-800 mb-2">課程管理</h4>
-                            <p class="text-gray-600">輕鬆創建和管理您的課程內容</p>
-                        </div>
-                    </div>
-                    
-                    <div class="flex items-start">
-                        <div class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center mr-4 flex-shrink-0">
-                            <span class="material-icons text-green-600 text-2xl">people</span>
-                        </div>
-                        <div class="text-left">
-                            <h4 class="text-lg font-semibold text-gray-800 mb-2">學生追蹤</h4>
-                            <p class="text-gray-600">即時掌握學生的學習進度和表現</p>
-                        </div>
-                    </div>
-                    
-                    <div class="flex items-start">
-                        <div class="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center mr-4 flex-shrink-0">
-                            <span class="material-icons text-purple-600 text-2xl">trending_up</span>
-                        </div>
-                        <div class="text-left">
-                            <h4 class="text-lg font-semibold text-gray-800 mb-2">數據分析</h4>
-                            <p class="text-gray-600">AI 驅動的學習分析，提供深入洞察</p>
-                        </div>
-                    </div>
-                </div>
             </div>
+        </div>
+
+        <!-- 頁腳資訊 -->
+        <div class="text-center mt-6">
+            <p class="text-sm text-gray-500">© 2024 InULearning. 保留所有權利。</p>
         </div>
     </div>
 
-    <!-- Loading Indicator -->
-    <div class="loading-overlay hidden" id="loading-overlay">
-        <div class="loading-spinner"></div>
-    </div>
-
+    <!-- JavaScript 檔案載入 -->
+    <script src="../js/auth.js"></script>
+    <script src="../js/main.js"></script>
+    
     <script>
-        // 簡單的互動功能
+        // 頁面載入完成後的初始化
         document.addEventListener('DOMContentLoaded', function() {
-            // 密碼顯示/隱藏切換
-            const passwordToggle = document.getElementById('password-toggle');
-            const passwordInput = document.getElementById('password');
+            const loginForm = document.querySelector('form');
             
-            if (passwordToggle && passwordInput) {
-                passwordToggle.addEventListener('click', function() {
-                    const type = passwordInput.type === 'password' ? 'text' : 'password';
-                    passwordInput.type = type;
-                    
-                    const icon = this.querySelector('.material-icons');
-                    icon.textContent = type === 'password' ? 'visibility' : 'visibility_off';
-                });
-            }
-
-            // 快速登入按鈕
-            const quickLoginBtns = document.querySelectorAll('[data-email]');
-            quickLoginBtns.forEach(btn => {
-                btn.addEventListener('click', function() {
-                    const email = this.dataset.email;
-                    const password = this.dataset.password;
-                    
-                    document.getElementById('email').value = email;
-                    document.getElementById('password').value = password;
-                });
+            loginForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const email = document.getElementById('email').value;
+                const password = document.getElementById('password').value;
+                
+                if (!email || !password) {
+                    alert('請填寫完整的登入資訊');
+                    return;
+                }
+                
+                // 這裡可以添加登入邏輯
+                console.log('登入資訊:', { email, password });
+                
+                // 模擬登入成功，跳轉到主頁
+                alert('登入成功！');
+                window.location.href = '../index.html';
             });
-
-            // 表單提交
-            const form = document.querySelector('form');
-            if (form) {
-                form.addEventListener('submit', function(e) {
-                    e.preventDefault();
-                    
-                    const loginBtn = document.getElementById('login-btn');
-                    const btnText = loginBtn.querySelector('.btn-text');
-                    const btnLoading = loginBtn.querySelector('.btn-loading');
-                    
-                    // 顯示載入狀態
-                    btnText.classList.add('hidden');
-                    btnLoading.classList.remove('hidden');
-                    
-                    // 模擬登入過程
-                    setTimeout(() => {
-                        // 恢復按鈕狀態
-                        btnText.classList.remove('hidden');
-                        btnLoading.classList.add('hidden');
-                        
-                        // 這裡可以添加實際的登入邏輯
-                        alert('登入功能待實現');
-                    }, 2000);
-                });
-            }
         });
     </script>
 </body>
+
 </html> 

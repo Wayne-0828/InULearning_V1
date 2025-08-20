@@ -22,9 +22,10 @@ security = HTTPBearer()
 
 
 class User:
-    """用戶模型"""
+    """用戶模型 - 與認證服務保持一致"""
     def __init__(self, user_id: str, username: str, role: str):
-        self.user_id = user_id
+        self.id = user_id  # 與認證服務的 User.id 保持一致
+        self.user_id = user_id  # 保持向後兼容
         self.username = username
         self.role = role
 
@@ -101,7 +102,7 @@ require_teacher_or_admin = require_any_role(["teacher", "admin"])
 def check_user_access(user: User, target_user_id: str) -> bool:
     """檢查用戶是否有權限存取指定用戶的資料"""
     # 用戶可以存取自己的資料
-    if user.user_id == target_user_id:
+    if user.id == target_user_id:
         return True
     
     # 管理員可以存取所有資料

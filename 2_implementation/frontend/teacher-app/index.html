@@ -10,8 +10,8 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-    <link rel="stylesheet" href="shared/css/components.css">
-    <link rel="stylesheet" href="shared/css/responsive.css">
+    <link rel="stylesheet" href="css/components.css">
+    <link rel="stylesheet" href="css/responsive.css">
     <link rel="stylesheet" href="css/main.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
@@ -87,6 +87,14 @@
                     </div>
                 </div>
                 <div class="flex items-center space-x-4">
+                    <!-- API 加載指示器 -->
+                    <div class="api-loading-indicator" style="display: none;">
+                        <div class="flex items-center text-blue-600">
+                            <div class="animate-spin rounded-full h-4 w-4 border-b-2 border-blue-600 mr-2"></div>
+                            <span class="text-sm">載入中...</span>
+                        </div>
+                    </div>
+                    
                     <div id="userInfo" class="hidden flex items-center space-x-2">
                         <span class="text-sm text-gray-600">歡迎，</span>
                         <span id="userName" class="text-sm font-medium text-blue-600">王老師</span>
@@ -103,6 +111,14 @@
 
             <!-- 主要內容 -->
             <main class="flex-1 overflow-x-hidden overflow-y-auto bg-gray-100">
+                <!-- 全局加載指示器 -->
+                <div id="global-loading" class="fixed inset-0 bg-black bg-opacity-25 flex items-center justify-center z-50" style="display: none;">
+                    <div class="bg-white rounded-lg p-6 flex items-center space-x-3 shadow-lg">
+                        <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+                        <span class="text-gray-700 font-medium">載入中，請稍候...</span>
+                    </div>
+                </div>
+                
                 <div class="container mx-auto px-6 py-8">
                     <!-- 歡迎區塊 -->
                     <div class="bg-gradient-to-r from-blue-600 to-blue-800 text-white rounded-lg p-8 mb-8">
@@ -281,6 +297,11 @@
     <script>
         // 頁面載入完成後的初始化
         document.addEventListener('DOMContentLoaded', function() {
+            // 更新認證狀態和歡迎訊息
+            if (typeof teacherAuth !== 'undefined') {
+                teacherAuth.updateUI();
+            }
+            
             // 登出功能
             document.getElementById('logoutBtn').addEventListener('click', function() {
                 if (confirm('確定要登出嗎？')) {
