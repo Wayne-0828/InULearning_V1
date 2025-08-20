@@ -12,6 +12,23 @@ from bson import ObjectId
 router = APIRouter(prefix="/questions", tags=["questions"])
 
 
+def _dedup_by_id(items: list) -> list:
+    """以 id 欄位去重，保留先出現者。"""
+    if not items:
+        return []
+    seen = set()
+    unique = []
+    for it in items:
+        qid = it.get("id") if isinstance(it, dict) else None
+        if not qid:
+            unique.append(it)
+            continue
+        if qid in seen:
+            continue
+        seen.add(qid)
+        unique.append(it)
+    return unique
+
 @router.get("/", response_model=PaginatedResponse)
 async def list_questions(
     limit: int = Query(20, ge=1, le=100, description="每頁數量"),
@@ -160,7 +177,7 @@ async def get_questions_by_conditions(
         
         return {
             "success": True,
-            "data": formatted_questions
+            "data": _dedup_by_id(formatted_questions)
         }
     except Exception as e:
         return {
@@ -351,6 +368,7 @@ async def get_questions_by_criteria_excluding(
 
         cursor = collection.find(query).limit(limit)
         questions: List[Dict[str, Any]] = []
+        seen_ids = set()
         async for q in cursor:
             # 與 /by-conditions 的格式保持一致
             options = q.get("options", [])
@@ -376,6 +394,9 @@ async def get_questions_by_criteria_excluding(
                 "image_filename": q.get("image_filename"),
                 "image_url": q.get("image_url")
             }
+            if formatted_q["id"] in seen_ids:
+                continue
+            seen_ids.add(formatted_q["id"])
             questions.append(formatted_q)
 
         return questions

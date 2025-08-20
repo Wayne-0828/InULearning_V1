@@ -531,7 +531,7 @@ start_services() {
     sleep 10
     
     log_info "啟動應用服務..."
-    $DOCKER_COMPOSE_CMD up -d auth-service question-bank-service learning-service ai-analysis-service parent-dashboard-service report-service
+    $DOCKER_COMPOSE_CMD up -d auth-service question-bank-service learning-service ai-analysis-service ai-analysis-worker parent-dashboard-service report-service
 
     # 啟動題庫資料載入（一次性）
     log_info "啟動題庫資料載入..."
@@ -541,7 +541,7 @@ start_services() {
     
     # 等待應用服務就緒
     log_info "等待應用服務啟動..."
-    sleep 15
+    sleep 20
     
     log_info "啟動前端和代理服務..."
     $DOCKER_COMPOSE_CMD up -d student-frontend admin-frontend teacher-frontend parent-frontend nginx
@@ -587,6 +587,12 @@ wait_for_services() {
         # 檢查 AI 分析服務
         if ! curl -s -f http://localhost:8004/api/v1/ai/health > /dev/null 2>&1; then
             services_ready=false
+        fi
+        # 檢查 AI 佇列（若啟用 RQ）
+        if curl -s -f http://localhost:8004/api/v1/ai/queue/health > /dev/null 2>&1; then
+            :
+        else
+            log_warning "AI 佇列健康檢查不可用或未啟用 RQ（可忽略）"
         fi
         
         if [ "$services_ready" = true ]; then

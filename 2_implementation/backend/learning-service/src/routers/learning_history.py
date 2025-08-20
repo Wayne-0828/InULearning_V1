@@ -49,6 +49,24 @@ def _normalize_publisher(value: Optional[str]) -> Optional[str]:
     }
     return mapping.get(value, value)
 
+
+def _deduplicate_questions_by_id(items: list) -> list:
+    """移除重覆題目（以 id 去重，保留先出現的順序）。"""
+    if not items:
+        return []
+    seen = set()
+    unique = []
+    for q in items:
+        qid = (q.get("id") if isinstance(q, dict) else None)
+        if not qid:
+            unique.append(q)
+            continue
+        if qid in seen:
+            continue
+        seen.add(qid)
+        unique.append(q)
+    return unique
+
 @router.post("/exercises/complete", response_model=CompleteExerciseResponse)
 async def complete_exercise(
     request: CompleteExerciseRequest,
@@ -485,11 +503,11 @@ async def get_done_question_ids(
         if grade:
             stmt = stmt.where(ExerciseRecord.grade == grade)
         if publisher:
-            # 舊資料可能 publisher 為 NULL，視為通配以避免漏抓
-            stmt = stmt.where(or_(ExerciseRecord.publisher == _normalize_publisher(publisher), ExerciseRecord.publisher.is_(None)))
+            # 嚴格依學習記錄的出版社過濾（不再以 NULL 作通配），避免過度排除
+            stmt = stmt.where(ExerciseRecord.publisher == _normalize_publisher(publisher))
         if chapter:
-            # 舊資料可能 chapter 為 NULL，視為通配以避免漏抓
-            stmt = stmt.where(or_(ExerciseRecord.chapter == chapter, ExerciseRecord.chapter.is_(None)))
+            # 嚴格依章節過濾（chapter 為 NULL 的舊資料視為未知，不參與本次章節排除）
+            stmt = stmt.where(ExerciseRecord.chapter == chapter)
         if since_days:
             from datetime import datetime, timedelta
             start_dt = datetime.utcnow() - timedelta(days=since_days)
@@ -541,15 +559,36 @@ async def get_availability_summary(
         stmt = stmt.where(ExerciseRecord.subject == subject)
         stmt = stmt.where(ExerciseRecord.grade == grade)
         if normalized_publisher:
-            stmt = stmt.where(or_(ExerciseRecord.publisher == normalized_publisher, ExerciseRecord.publisher.is_(None)))
+            stmt = stmt.where(ExerciseRecord.publisher == normalized_publisher)
         if chapter:
-            stmt = stmt.where(or_(ExerciseRecord.chapter == chapter, ExerciseRecord.chapter.is_(None)))
+            stmt = stmt.where(ExerciseRecord.chapter == chapter)
         stmt = stmt.group_by(ExerciseRecord.question_id)
 
         result = await db_session.execute(stmt)
-        done_ids = [row[0] for row in result.all() if row[0] is not None]
-        done = len(done_ids)
-        unseen = max(0, int(total) - int(done))
+        rows = result.all()
+        done_ids = [row[0] for row in rows if row[0] is not None]
+        done_contents = [row[1] for row in rows if len(row) > 1 and row[1] is not None]
+        done = len(set(done_ids))
+
+        # 3) 以與出題一致的方式計算「未做過可用題數」：直接呼叫 criteria-excluding 取得可用清單長度
+        try:
+            available_list = await qb.get_questions_by_criteria_excluding(
+                grade=grade,
+                subject=subject,
+                publisher=normalized_publisher,
+                chapter=chapter,
+                limit=min(2000, max(100, int(total))),
+                exclude_ids=done_ids,
+                exclude_contents=done_contents
+            )
+            # 若題庫端返回空（錯誤或端點不穩），一律退回以 total-done 估算，避免誤判為 0
+            if not available_list:
+                unseen = max(0, int(total) - int(done))
+            else:
+                unseen = len(available_list)
+        except Exception:
+            # 題庫端不可用：退回估算（total - done）
+            unseen = max(0, int(total) - int(done))
 
         logger.info(
             "[availability] user=%s total=%s done=%s unseen=%s grade=%s subject=%s publisher=%s chapter=%s",
@@ -621,9 +660,9 @@ async def get_questions_by_conditions_excluding(
             if grade:
                 stmt = stmt.where(ExerciseRecord.grade == grade)
             if publisher:
-                stmt = stmt.where(or_(ExerciseRecord.publisher == _normalize_publisher(publisher), ExerciseRecord.publisher.is_(None)))
+                stmt = stmt.where(ExerciseRecord.publisher == _normalize_publisher(publisher))
             if chapter:
-                stmt = stmt.where(or_(ExerciseRecord.chapter == chapter, ExerciseRecord.chapter.is_(None)))
+                stmt = stmt.where(ExerciseRecord.chapter == chapter)
             stmt = stmt.group_by(ExerciseRecord.question_id, ExerciseRecord.question_content)
 
             result = await db_session.execute(stmt)
@@ -661,6 +700,7 @@ async def get_questions_by_conditions_excluding(
                 exclude_ids=list(exclude_ids),
                 exclude_contents=list(done_contents)
             )
+            picked = _deduplicate_questions_by_id(picked)
         except Exception as ce_err:
             logger.warning("[exclude] criteria-excluding failed, will try local filter: %s", str(ce_err))
 
@@ -674,6 +714,7 @@ async def get_questions_by_conditions_excluding(
                     chapter=chapter,
                     question_count=question_count * 5
                 )
+                candidates = _deduplicate_questions_by_id(candidates)
                 # 本地排除：依 id 與內容（處理歷史 id 不對齊）
                 exclude_id_set = set(exclude_ids)
                 exclude_content_set = set(done_contents)
@@ -702,6 +743,7 @@ async def get_questions_by_conditions_excluding(
                     chapter=chapter,
                     limit=sample_limit
                 )
+                items = _deduplicate_questions_by_id(items)
                 # 本地排除：依 id 與內容（處理歷史 id 不對齊）
                 exclude_id_set = set(exclude_ids)
                 exclude_content_set = set(done_contents)
@@ -733,9 +775,23 @@ async def get_questions_by_conditions_excluding(
             except Exception as fb_err:
                 logger.warning("[exclude] fallback criteria fetch failed: %s", str(fb_err))
 
-        # 第二層後備：若仍無題，顯示友善錯誤，避免前端誤判
+        # 第二層後備：若仍無題，為避免使用者阻塞，最後再嘗試「不排除」直接抓題
         if not picked:
-            logger.error("[exclude] no questions picked after fallbacks; check question bank and data")
+            try:
+                logger.warning("[exclude] all fallbacks empty; trying non-excluding by-conditions as last resort")
+                picked = await client.get_questions_by_conditions_simple(
+                    grade=grade,
+                    publisher=publisher,
+                    subject=subject,
+                    chapter=chapter,
+                    question_count=question_count
+                )
+            except Exception as final_err:
+                logger.error("[exclude] non-excluding fallback failed: %s", str(final_err))
+
+        # 若最後仍無法取得，才回錯誤
+        if not picked:
+            logger.error("[exclude] no questions picked after all strategies; check question bank and data")
             return {"success": False, "error": "目前無法取得題目，請稍後再試", "data": []}
 
         logger.info(

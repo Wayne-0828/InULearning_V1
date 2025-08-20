@@ -11,9 +11,11 @@ import sys
 import json
 import uuid
 import time
-from typing import Dict, Any, Optional
+from typing import Dict, Any, Optional, List
+from enum import Enum
 from dotenv import load_dotenv
 import datetime
+from concurrent.futures import ThreadPoolExecutor
 
 # 載入環境變數
 load_dotenv()
@@ -61,6 +63,13 @@ except ImportError as e:
     print(f"警告: 缺少 Redis 套件: {e}")
     print("請執行: pip install redis")
     REDIS_AVAILABLE = False
+
+# RQ（可選）
+try:
+    import rq
+    RQ_AVAILABLE = True
+except Exception as e:
+    RQ_AVAILABLE = False
 
 # 創建 FastAPI 應用
 app = FastAPI(
@@ -184,6 +193,102 @@ AI_CACHE_PREFIX = os.getenv("AI_CACHE_PREFIX", "ai:v1:")
 
 # 是否可用 JSONB 欄位（啟動時偵測）
 JSONB_COLUMNS_AVAILABLE: bool = False
+
+# 併發執行緒池（Phase 1：限制同時 3 條，可由環境變數覆寫）
+AI_MAX_CONCURRENCY = int(os.getenv("AI_MAX_CONCURRENCY", "3"))
+TASK_EXECUTOR = ThreadPoolExecutor(max_workers=AI_MAX_CONCURRENCY)
+
+# 速率限制（Phase 2）：每秒最大外部呼叫數
+AI_RATE_LIMIT_RPS = int(os.getenv("AI_RATE_LIMIT_RPS", "2"))
+
+# 去重鎖 TTL（秒）
+AI_DEDUP_LOCK_TTL = int(os.getenv("AI_DEDUP_LOCK_TTL", "300"))
+
+# 重試設定（次數與指數退避起始秒）
+AI_RETRY_MAX_ATTEMPTS = int(os.getenv("AI_RETRY_MAX_ATTEMPTS", "2"))
+AI_RETRY_BACKOFF_SECONDS = float(os.getenv("AI_RETRY_BACKOFF_SECONDS", "2"))
+AI_PREWARM_DEFAULT_NEXT_N = int(os.getenv("AI_PREWARM_DEFAULT_NEXT_N", "5"))
+
+# RQ 設定（Phase 4）
+AI_USE_RQ = os.getenv("AI_USE_RQ", "0") == "1"
+AI_RQ_QUEUE_NAME = os.getenv("AI_RQ_QUEUE_NAME", "ai-analysis")
+AI_JOB_TIMEOUT_SECONDS = int(os.getenv("AI_JOB_TIMEOUT_SECONDS", "900"))  # 15 分鐘
+
+# 本機記憶體狀態（無 Redis 時候的保底方案）
+_LOCAL_RATE_STATE = {"sec": 0, "count": 0}
+_LOCAL_LOCKED_RECORDS = set()
+from threading import Lock
+_LOCAL_RATE_LOCK = Lock()
+_LOCAL_RECORD_LOCK = Lock()
+
+
+def _rate_limit_token():
+    """簡單 RPS 速率限制：優先使用 Redis；若無則使用本機記憶體。"""
+    if AI_RATE_LIMIT_RPS <= 0:
+        return
+    now_sec = int(time.time())
+    if REDIS_AVAILABLE:
+        try:
+            client = get_redis_client()
+            key = f"{AI_CACHE_PREFIX}rl:gemini:{now_sec}"
+            current = client.incr(key)
+            if current == 1:
+                client.expire(key, 1)
+            if current > AI_RATE_LIMIT_RPS:
+                # 等待下一秒
+                sleep_time = (now_sec + 1) - time.time()
+                if sleep_time > 0:
+                    time.sleep(sleep_time)
+                return
+        except Exception:
+            # 回退到本機
+            pass
+
+    # 本機回退
+    with _LOCAL_RATE_LOCK:
+        state = _LOCAL_RATE_STATE
+        if state["sec"] != now_sec:
+            state["sec"] = now_sec
+            state["count"] = 0
+        if state["count"] >= AI_RATE_LIMIT_RPS:
+            sleep_time = (now_sec + 1) - time.time()
+            if sleep_time > 0:
+                time.sleep(sleep_time)
+            state["sec"] = int(time.time())
+            state["count"] = 0
+        state["count"] += 1
+
+
+def _acquire_record_lock(exercise_record_id: str) -> bool:
+    """取得去重鎖，避免同一 record 被重複排程。"""
+    if REDIS_AVAILABLE:
+        try:
+            client = get_redis_client()
+            key = f"{AI_CACHE_PREFIX}analysis:lock:{exercise_record_id}"
+            # nx: 僅在不存在時設定，ex: 過期秒數
+            ok = client.set(key, "1", nx=True, ex=AI_DEDUP_LOCK_TTL)
+            return bool(ok)
+        except Exception:
+            pass
+    # 本機回退
+    with _LOCAL_RECORD_LOCK:
+        if exercise_record_id in _LOCAL_LOCKED_RECORDS:
+            return False
+        _LOCAL_LOCKED_RECORDS.add(exercise_record_id)
+        return True
+
+
+def _release_record_lock(exercise_record_id: str):
+    if REDIS_AVAILABLE:
+        try:
+            client = get_redis_client()
+            key = f"{AI_CACHE_PREFIX}analysis:lock:{exercise_record_id}"
+            client.delete(key)
+        except Exception:
+            pass
+    with _LOCAL_RECORD_LOCK:
+        if exercise_record_id in _LOCAL_LOCKED_RECORDS:
+            _LOCAL_LOCKED_RECORDS.discard(exercise_record_id)
 
 
 def detect_jsonb_columns() -> bool:
@@ -457,30 +562,67 @@ def get_latest_success_by_record(exercise_record_id: str) -> Optional[Dict[str, 
 
 
 def process_analysis_task(task_id: uuid.UUID, exercise_record_id: str, temperature: float = 1.0, max_output_tokens: int = 512):
-    """背景任務：從 DB 取資料，呼叫 Gemini，回寫結果。"""
+    """背景任務：從 DB 取資料，呼叫 Gemini（含速率限制與重試），回寫結果。"""
     try:
         update_task_status(task_id, status="processing")
-        # 快取 processing 狀態（write-through 前的立即可見狀態）
         cache_set_task(str(task_id), exercise_record_id, status="processing")
 
         record = fetch_exercise_record(exercise_record_id)
         question = record["question"]
         student_answer = record["student_answer"]
 
-        # 呼叫 Gemini
-        eval_result = do_student_learning_evaluation(question, student_answer, temperature, max_output_tokens)
-        guide_result = do_solution_guidance(question, student_answer, temperature, max_output_tokens)
+        attempts = 0
+        last_err: Optional[Exception] = None
+        while attempts <= AI_RETRY_MAX_ATTEMPTS:
+            try:
+                # 速率限制
+                _rate_limit_token()
 
-        weakness_text = eval_result.get("學生學習狀況評估") if isinstance(eval_result, dict) else str(eval_result)
-        guidance_text = guide_result.get("題目詳解與教學建議") if isinstance(guide_result, dict) else str(guide_result)
+                eval_result = do_student_learning_evaluation(
+                    question, student_answer, temperature, max_output_tokens
+                )
+                _rate_limit_token()
+                guide_result = do_solution_guidance(
+                    question, student_answer, temperature, max_output_tokens
+                )
 
-        update_task_status(task_id, status="succeeded", weakness=weakness_text, guidance=guidance_text)
-        # 寫入快取（成功結果）並更新最新索引
-        cache_set_task(str(task_id), exercise_record_id, status="succeeded", weakness=weakness_text, guidance=guidance_text)
-        cache_set_record_latest(exercise_record_id, str(task_id))
+                weakness_text = (
+                    eval_result.get("學生學習狀況評估") if isinstance(eval_result, dict) else str(eval_result)
+                )
+                guidance_text = (
+                    guide_result.get("題目詳解與教學建議") if isinstance(guide_result, dict) else str(guide_result)
+                )
+
+                update_task_status(
+                    task_id, status="succeeded", weakness=weakness_text, guidance=guidance_text
+                )
+                cache_set_task(
+                    str(task_id),
+                    exercise_record_id,
+                    status="succeeded",
+                    weakness=weakness_text,
+                    guidance=guidance_text,
+                )
+                cache_set_record_latest(exercise_record_id, str(task_id))
+                break
+            except Exception as inner_e:
+                last_err = inner_e
+                attempts += 1
+                if attempts > AI_RETRY_MAX_ATTEMPTS:
+                    raise
+                # 退避
+                sleep_s = AI_RETRY_BACKOFF_SECONDS * (2 ** (attempts - 1))
+                time.sleep(sleep_s)
+        
     except Exception as e:
         update_task_status(task_id, status="failed", error=str(e))
         cache_set_task(str(task_id), exercise_record_id, status="failed", error=str(e))
+    finally:
+        # 嘗試釋放去重鎖（若有）
+        try:
+            _release_record_lock(exercise_record_id)
+        except Exception:
+            pass
 
 # 取得最新成功（不嚴格，可能只有部分欄位）
 def get_latest_succeeded_by_record_raw(exercise_record_id: str) -> Optional[Dict[str, Any]]:
@@ -502,6 +644,146 @@ def get_latest_succeeded_by_record_raw(exercise_record_id: str) -> Optional[Dict
     finally:
         conn.close()
 
+
+def list_exercise_record_ids_by_session(session_id: str, limit: int = 1000) -> List[str]:
+    """依據 session_id 讀取該 session 的 exercise_record id 列表。"""
+    conn = get_db_connection()
+    try:
+        with conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor) as cur:
+            cur.execute(
+                """
+                SELECT id
+                FROM exercise_records
+                WHERE session_id = %s
+                LIMIT %s
+                """,
+                (session_id, limit),
+            )
+            rows = cur.fetchall()
+            return [str(r["id"]) for r in rows]
+    finally:
+        conn.close()
+
+
+def list_exercise_record_ids_by_session_ordered(session_id: str, limit: int = 10000) -> List[str]:
+    """依據 session_id 讀取該 session 的 exercise_record id 列表（按時間排序）。
+    若資料表無 created_at 欄位，回退以 id 排序。
+    """
+    conn = get_db_connection()
+    try:
+        with conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor) as cur:
+            try:
+                cur.execute(
+                    """
+                    SELECT id
+                    FROM exercise_records
+                    WHERE session_id = %s
+                    ORDER BY created_at ASC, id ASC
+                    LIMIT %s
+                    """,
+                    (session_id, limit),
+                )
+                rows = cur.fetchall()
+                return [str(r["id"]) for r in rows]
+            except Exception:
+                # 回退：若無 created_at
+                cur.execute(
+                    """
+                    SELECT id
+                    FROM exercise_records
+                    WHERE session_id = %s
+                    ORDER BY id ASC
+                    LIMIT %s
+                    """,
+                    (session_id, limit),
+                )
+                rows = cur.fetchall()
+                return [str(r["id"]) for r in rows]
+    finally:
+        conn.close()
+
+
+def queue_analysis_if_needed(
+    exercise_record_id: str,
+    temperature: float = 1.0,
+    max_output_tokens: int = 512,
+    skip_existing: bool = True,
+) -> Optional[str]:
+    """若無現成結果則排程任務；回傳新建的 task_id，否則回傳 None（代表跳過）。"""
+    if skip_existing:
+        # 1) Redis 嚴格命中
+        if REDIS_AVAILABLE:
+            try:
+                client = get_redis_client()
+                latest_key = f"{AI_CACHE_PREFIX}analysis:record:{exercise_record_id}:latest"
+                latest_task_id = client.get(latest_key)
+                if latest_task_id:
+                    cache_key = f"{AI_CACHE_PREFIX}analysis:task:{latest_task_id}"
+                    cached = client.get(cache_key)
+                    if cached:
+                        obj = json.loads(cached)
+                        if (
+                            obj.get("status") == "succeeded"
+                            and obj.get("學生學習狀況評估")
+                            and obj.get("題目詳解與教學建議")
+                        ):
+                            return None
+            except Exception:
+                pass
+
+        # 2) PG 嚴格命中
+        existing = get_latest_success_by_record(exercise_record_id)
+        if existing:
+            try:
+                cache_set_task(
+                    existing.get("id"),
+                    exercise_record_id,
+                    status="succeeded",
+                    weakness=existing.get("weakness_analysis"),
+                    guidance=existing.get("learning_guidance"),
+                )
+                cache_set_record_latest(exercise_record_id, existing.get("id"))
+            except Exception:
+                pass
+            return None
+
+    # 3) 去重鎖（避免重複排程）
+    if not _acquire_record_lock(exercise_record_id):
+        return None
+
+    # 4) 排程新任務（可選 RQ）
+    task_id = uuid.uuid4()
+    upsert_task_initial(task_id, exercise_record_id)
+    if AI_USE_RQ and REDIS_AVAILABLE and RQ_AVAILABLE:
+        try:
+            client = get_redis_client()
+            queue = rq.Queue(AI_RQ_QUEUE_NAME, connection=client)
+            queue.enqueue(
+                process_analysis_task,
+                task_id,
+                exercise_record_id,
+                temperature,
+                max_output_tokens,
+                job_timeout=AI_JOB_TIMEOUT_SECONDS,
+            )
+        except Exception as e:
+            # 失敗則回退至執行緒池
+            TASK_EXECUTOR.submit(
+                process_analysis_task,
+                task_id,
+                exercise_record_id,
+                temperature,
+                max_output_tokens,
+            )
+    else:
+        TASK_EXECUTOR.submit(
+            process_analysis_task,
+            task_id,
+            exercise_record_id,
+            temperature,
+            max_output_tokens,
+        )
+    return str(task_id)
 
 # 取得或生成兩欄，必要時僅補算缺失欄位，並同步 DB 與 Redis。
 def get_or_generate_both(question: Dict[str, Any], student_answer: str, exercise_record_id: str, temperature: float, max_output_tokens: int) -> Dict[str, Any]:
@@ -885,6 +1167,401 @@ async def get_ai_analysis_status(task_id: str):
     }
 
 
+class SessionPrepareRequest(BaseModel):
+    session_id: Optional[str] = None
+    exercise_record_ids: Optional[List[str]] = None
+    skip_existing: bool = True
+    max_records: int = 100
+    temperature: float = 1.0
+    max_output_tokens: int = 512
+
+
+@app.post("/api/v1/ai/analysis/session/prepare")
+async def prepare_session_analysis(request: SessionPrepareRequest):
+    if not GEMINI_AVAILABLE:
+        raise HTTPException(status_code=503, detail="Gemini API 不可用")
+    if not PSYCOPG2_AVAILABLE:
+        raise HTTPException(status_code=503, detail="資料庫驅動不可用")
+
+    if not request.session_id and not request.exercise_record_ids:
+        raise HTTPException(status_code=400, detail="需提供 session_id 或 exercise_record_ids")
+
+    # 解析 record_ids
+    record_ids_set = set()
+    if request.session_id:
+        try:
+            normalized_session_id = str(uuid.UUID(request.session_id))
+        except Exception:
+            raise HTTPException(status_code=400, detail="session_id 需為有效的 UUID")
+        session_records = list_exercise_record_ids_by_session(
+            normalized_session_id, limit=max(1, request.max_records)
+        )
+        record_ids_set.update(session_records)
+
+    if request.exercise_record_ids:
+        for rid in request.exercise_record_ids:
+            try:
+                record_ids_set.add(str(uuid.UUID(rid)))
+            except Exception:
+                # 忽略非法 UUID
+                continue
+
+    if not record_ids_set:
+        return {
+            "success": True,
+            "accepted": 0,
+            "skipped": 0,
+            "queued": 0,
+            "queued_task_ids": [],
+            "message": "no_records",
+        }
+
+    # 限制數量
+    record_ids: List[str] = list(record_ids_set)[: max(1, request.max_records)]
+
+    accepted_task_ids: List[str] = []
+    skipped = 0
+    for rid in record_ids:
+        task_id = queue_analysis_if_needed(
+            rid,
+            temperature=request.temperature,
+            max_output_tokens=request.max_output_tokens,
+            skip_existing=request.skip_existing,
+        )
+        if task_id is None:
+            skipped += 1
+        else:
+            accepted_task_ids.append(task_id)
+
+    return {
+        "success": True,
+        "accepted": len(accepted_task_ids),
+        "skipped": skipped,
+        "queued": len(accepted_task_ids),
+        "queued_task_ids": accepted_task_ids,
+        "message": "queued",
+    }
+
+
+class PrewarmStrategy(str, Enum):
+    all = "all"
+    next_n = "next_n"
+
+
+class SessionPrewarmRequest(BaseModel):
+    session_id: str
+    strategy: PrewarmStrategy = PrewarmStrategy.all
+    next_n: Optional[int] = None
+    skip_existing: bool = True
+    temperature: float = 1.0
+    max_output_tokens: int = 512
+
+
+@app.post("/api/v1/ai/analysis/session/prewarm")
+async def prewarm_session_analysis(request: SessionPrewarmRequest):
+    if not GEMINI_AVAILABLE:
+        raise HTTPException(status_code=503, detail="Gemini API 不可用")
+    if not PSYCOPG2_AVAILABLE:
+        raise HTTPException(status_code=503, detail="資料庫驅動不可用")
+
+    try:
+        normalized_session_id = str(uuid.UUID(request.session_id))
+    except Exception:
+        raise HTTPException(status_code=400, detail="session_id 需為有效的 UUID")
+
+    ordered_ids = list_exercise_record_ids_by_session_ordered(normalized_session_id)
+    if not ordered_ids:
+        return {
+            "success": True,
+            "accepted": 0,
+            "skipped": 0,
+            "queued": 0,
+            "queued_task_ids": [],
+            "message": "no_records",
+        }
+
+    if request.strategy == PrewarmStrategy.all:
+        target_ids = ordered_ids
+    else:
+        n = request.next_n if request.next_n and request.next_n > 0 else AI_PREWARM_DEFAULT_NEXT_N
+        target_ids = ordered_ids[:n]
+
+    accepted_task_ids: List[str] = []
+    skipped = 0
+    for rid in target_ids:
+        task_id = queue_analysis_if_needed(
+            rid,
+            temperature=request.temperature,
+            max_output_tokens=request.max_output_tokens,
+            skip_existing=request.skip_existing,
+        )
+        if task_id is None:
+            skipped += 1
+        else:
+            accepted_task_ids.append(task_id)
+
+    return {
+        "success": True,
+        "accepted": len(accepted_task_ids),
+        "skipped": skipped,
+        "queued": len(accepted_task_ids),
+        "queued_task_ids": accepted_task_ids,
+        "message": "queued",
+        "strategy": request.strategy,
+        "count": len(target_ids),
+    }
+
+# ===== Phase 5：前端批量查詢支援 =====
+class BatchStatusRequest(BaseModel):
+    exercise_record_ids: List[str]
+    include_data: bool = False
+    max_records: int = 100
+
+
+def summarize_status_for_record(exercise_record_id: str, include_data: bool = False) -> Dict[str, Any]:
+    # 1) Redis 最新 task → task payload
+    if REDIS_AVAILABLE:
+        try:
+            client = get_redis_client()
+            latest_key = f"{AI_CACHE_PREFIX}analysis:record:{exercise_record_id}:latest"
+            latest_task_id = client.get(latest_key)
+            if latest_task_id:
+                cache_key = f"{AI_CACHE_PREFIX}analysis:task:{latest_task_id}"
+                cached = client.get(cache_key)
+                if cached:
+                    obj = json.loads(cached)
+                    data = None
+                    if include_data and obj.get("status") == "succeeded":
+                        data = {
+                            "學生學習狀況評估": obj.get("學生學習狀況評估"),
+                            "題目詳解與教學建議": obj.get("題目詳解與教學建議"),
+                        }
+                    has_both = bool(
+                        obj.get("status") == "succeeded"
+                        and obj.get("學生學習狀況評估")
+                        and obj.get("題目詳解與教學建議")
+                    )
+                    return {
+                        "exercise_record_id": exercise_record_id,
+                        "latest_task_id": latest_task_id,
+                        "status": obj.get("status"),
+                        "has_both": has_both,
+                        "updated_at": obj.get("updated_at"),
+                        "data": data,
+                        "message": obj.get("error") or "ok",
+                        "source": "cache",
+                    }
+        except Exception:
+            pass
+
+    # 2) DB：先嚴格成功 → 再取最新任務
+    strict = get_latest_success_by_record(exercise_record_id)
+    if strict:
+        data = None
+        if include_data:
+            data = {
+                "學生學習狀況評估": strict.get("weakness_analysis"),
+                "題目詳解與教學建議": strict.get("learning_guidance"),
+            }
+        return {
+            "exercise_record_id": exercise_record_id,
+            "latest_task_id": strict.get("id"),
+            "status": "succeeded",
+            "has_both": True,
+            "updated_at": strict.get("updated_at").isoformat() if strict.get("updated_at") else None,
+            "data": data,
+            "message": "db_hit",
+            "source": "db_strict",
+        }
+
+    latest = get_latest_task_by_record(exercise_record_id)
+    if latest:
+        data = None
+        has_both = bool(
+            latest.get("status") == "succeeded"
+            and latest.get("weakness_analysis")
+            and latest.get("learning_guidance")
+        )
+        if include_data and has_both:
+            data = {
+                "學生學習狀況評估": latest.get("weakness_analysis"),
+                "題目詳解與教學建議": latest.get("learning_guidance"),
+            }
+        return {
+            "exercise_record_id": exercise_record_id,
+            "latest_task_id": latest.get("id"),
+            "status": latest.get("status"),
+            "has_both": has_both,
+            "updated_at": latest.get("updated_at").isoformat() if latest.get("updated_at") else None,
+            "data": data,
+            "message": latest.get("error") or "ok",
+            "source": "db_latest",
+        }
+
+    return {
+        "exercise_record_id": exercise_record_id,
+        "latest_task_id": None,
+        "status": "not_found",
+        "has_both": False,
+        "updated_at": None,
+        "data": None,
+        "message": "no_task",
+        "source": "none",
+    }
+
+
+@app.post("/api/v1/ai/analysis/status/batch")
+async def get_batch_status(request: BatchStatusRequest):
+    if not PSYCOPG2_AVAILABLE:
+        raise HTTPException(status_code=503, detail="資料庫驅動不可用")
+
+    if not request.exercise_record_ids:
+        return {"success": True, "items": []}
+
+    items: List[Dict[str, Any]] = []
+    count = 0
+    for rid in request.exercise_record_ids:
+        if count >= max(1, request.max_records):
+            break
+        try:
+            normalized = str(uuid.UUID(rid))
+        except Exception:
+            continue
+        items.append(summarize_status_for_record(normalized, include_data=request.include_data))
+        count += 1
+
+    return {"success": True, "items": items}
+
+
+@app.get("/api/v1/ai/analysis/session/{session_id}/status/batch")
+async def get_session_batch_status(session_id: str, include_data: bool = False, max_records: int = 100):
+    if not PSYCOPG2_AVAILABLE:
+        raise HTTPException(status_code=503, detail="資料庫驅動不可用")
+    try:
+        normalized_session_id = str(uuid.UUID(session_id))
+    except Exception:
+        raise HTTPException(status_code=400, detail="session_id 需為有效的 UUID")
+
+    record_ids = list_exercise_record_ids_by_session_ordered(normalized_session_id, limit=max(1, max_records))
+    items = [summarize_status_for_record(rid, include_data=include_data) for rid in record_ids]
+    return {"success": True, "items": items, "count": len(items)}
+
+@app.get("/api/v1/ai/analysis/session/{session_id}/status")
+async def get_session_analysis_status(session_id: str):
+    if not PSYCOPG2_AVAILABLE:
+        raise HTTPException(status_code=503, detail="資料庫驅動不可用")
+
+    try:
+        normalized_session_id = str(uuid.UUID(session_id))
+    except Exception:
+        raise HTTPException(status_code=400, detail="session_id 需為有效的 UUID")
+
+    record_ids = list_exercise_record_ids_by_session(normalized_session_id, limit=10000)
+    total = len(record_ids)
+    if total == 0:
+        return {
+            "success": True,
+            "session_id": normalized_session_id,
+            "total": 0,
+            "succeeded": 0,
+            "processing": 0,
+            "failed": 0,
+            "missing_fields": 0,
+            "latest_updated_at": None,
+        }
+
+    conn = get_db_connection()
+    try:
+        with conn.cursor() as cur:
+            # 成功且兩欄齊備的題數（去重 record）
+            cur.execute(
+                """
+                SELECT COUNT(DISTINCT exercise_record_id)
+                FROM ai_analysis_results
+                WHERE exercise_record_id = ANY(%s::uuid[])
+                  AND status = 'succeeded'
+                  AND weakness_analysis IS NOT NULL
+                  AND learning_guidance IS NOT NULL
+                """,
+                (record_ids,),
+            )
+            succeeded = cur.fetchone()[0]
+
+            # 處理中（尚未成功過）
+            cur.execute(
+                """
+                SELECT COUNT(DISTINCT r.exercise_record_id)
+                FROM ai_analysis_results r
+                WHERE r.exercise_record_id = ANY(%s::uuid[])
+                  AND r.status = 'processing'
+                  AND NOT EXISTS (
+                    SELECT 1 FROM ai_analysis_results s
+                    WHERE s.exercise_record_id = r.exercise_record_id
+                      AND s.status = 'succeeded'
+                      AND s.weakness_analysis IS NOT NULL
+                      AND s.learning_guidance IS NOT NULL
+                  )
+                """,
+                (record_ids,),
+            )
+            processing = cur.fetchone()[0]
+
+            # 失敗（尚未成功過）
+            cur.execute(
+                """
+                SELECT COUNT(DISTINCT r.exercise_record_id)
+                FROM ai_analysis_results r
+                WHERE r.exercise_record_id = ANY(%s::uuid[])
+                  AND r.status = 'failed'
+                  AND NOT EXISTS (
+                    SELECT 1 FROM ai_analysis_results s
+                    WHERE s.exercise_record_id = r.exercise_record_id
+                      AND s.status = 'succeeded'
+                      AND s.weakness_analysis IS NOT NULL
+                      AND s.learning_guidance IS NOT NULL
+                  )
+                """,
+                (record_ids,),
+            )
+            failed = cur.fetchone()[0]
+
+            # 成功但缺欄位
+            cur.execute(
+                """
+                SELECT COUNT(DISTINCT exercise_record_id)
+                FROM ai_analysis_results
+                WHERE exercise_record_id = ANY(%s::uuid[])
+                  AND status = 'succeeded'
+                  AND (weakness_analysis IS NULL OR learning_guidance IS NULL)
+                """,
+                (record_ids,),
+            )
+            missing_fields = cur.fetchone()[0]
+
+            # 最近更新時間
+            cur.execute(
+                """
+                SELECT MAX(updated_at)
+                FROM ai_analysis_results
+                WHERE exercise_record_id = ANY(%s::uuid[])
+                """,
+                (record_ids,),
+            )
+            latest_updated_at = cur.fetchone()[0]
+
+        return {
+            "success": True,
+            "session_id": normalized_session_id,
+            "total": total,
+            "succeeded": succeeded,
+            "processing": processing,
+            "failed": failed,
+            "missing_fields": missing_fields,
+            "latest_updated_at": latest_updated_at.isoformat() if latest_updated_at else None,
+        }
+    finally:
+        conn.close()
+
 @app.get("/api/v1/ai/analysis/by-record/{exercise_record_id}")
 async def get_latest_analysis_by_record(exercise_record_id: str):
     if not PSYCOPG2_AVAILABLE:
@@ -954,6 +1631,29 @@ async def get_latest_analysis_by_record(exercise_record_id: str):
         "data": data,
         "message": task.get("error") or "ok"
     }
+
+# 佇列健康檢查（Phase 4）
+@app.get("/api/v1/ai/queue/health")
+async def get_queue_health():
+    """回報工作列隊健康狀態（若啟用 RQ）。"""
+    if not (AI_USE_RQ and REDIS_AVAILABLE and RQ_AVAILABLE):
+        return {
+            "success": True,
+            "use_rq": False,
+            "message": "rq_disabled_or_unavailable",
+        }
+    try:
+        client = get_redis_client()
+        queue = rq.Queue(AI_RQ_QUEUE_NAME, connection=client)
+        return {
+            "success": True,
+            "use_rq": True,
+            "queue": AI_RQ_QUEUE_NAME,
+            "count": queue.count,
+            "is_empty": queue.is_empty(),
+        }
+    except Exception as e:
+        return {"success": False, "use_rq": True, "message": str(e)}
 
 # 代理健康檢查（便於 /api/v1/ai/health 測試）
 @app.get("/api/v1/ai/health")
