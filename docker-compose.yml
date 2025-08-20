@@ -371,10 +371,44 @@ services:
       - inulearning_network
     volumes:
       - ./logs:/app/logs
+
+# 教師管理服務
+  teacher-management-service:
+    build:
+      context: ./2_implementation/backend/teacher-management-service
+      dockerfile: Dockerfile
+    container_name: inulearning_teacher_management_service
+    environment:
+      - AUTH_SERVICE_URL=http://auth-service:8000
+      - LEARNING_SERVICE_URL=http://learning-service:8000
+      - AI_ANALYSIS_SERVICE_URL=http://ai-analysis-service:8004
+      - QUESTION_BANK_SERVICE_URL=http://question-bank-service:8000
+      - CORS_ORIGINS=["http://localhost","http://localhost:3000","http://localhost:8080","http://localhost:8081","http://localhost:8082","http://localhost:8083"]
+    ports:
+      - "8007:8006"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      auth-service:
+        condition: service_started
+      learning-service:
+        condition: service_started
+      question-bank-service:
+        condition: service_started
+    networks:
+      - inulearning_network
+    volumes:
+      - ./logs:/app/logs
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:8006/health" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3  
+          
   # 備註：以下服務暫時註釋，後續開發
   # ai-analysis-service:  # 備註 - Milvus/RAG 後續開發
   # notification-service: # 備註 - 後續開發
-  # teacher-management-service: # 備註 - 後續開發
+  
 
 volumes:
   postgres_data:
