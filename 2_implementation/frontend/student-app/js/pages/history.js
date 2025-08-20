@@ -238,8 +238,8 @@ class HistoryManager {
         }
         if (totalTimeEl) {
             const timeSpent = stats.total_time_spent || 0;
-            const hours = Math.round(timeSpent / 3600 * 10) / 10; // 秒轉小時，保留一位小數
-            totalTimeEl.textContent = `${hours}h`;
+            const minutes = Math.round(timeSpent / 60); // 秒轉分鐘，取整數
+            totalTimeEl.textContent = `${minutes} 分`;
         }
     }
 
