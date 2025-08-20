@@ -6,22 +6,6 @@ class TeacherAuthManager {
     constructor() {
         this.tokenKey = 'auth_token';  // 統一使用相同的key
         this.userKey = 'user_info';    // 統一使用相同的key
-        this.init();
-    }
-
-    init() {
-        // 處理從統一登入頁面傳來的認證資訊
-        this.handleAuthFromURL();
-        
-        // 檢查是否已登入
-        if (this.isLoggedIn()) {
-            this.updateUI();
-        } else {
-            // 如果未登入且不在登入頁面，重定向到統一登入頁面
-            if (!window.location.pathname.includes('login.html')) {
-                window.location.href = 'http://localhost/login.html';
-            }
-        }
     }
 
     /**
@@ -220,13 +204,24 @@ class TeacherAuthManager {
      */
     updateUI() {
         const user = this.getCurrentUser();
-        if (user) {
+        const userInfo = document.getElementById('userInfo');
+        const authButtons = document.getElementById('authButtons');
+        const userName = document.getElementById('userName');
+        const logoutBtn = document.getElementById('logoutBtn');
+
+        if (this.isLoggedIn() && user) {
+            // 已登入：顯示用戶資訊，隱藏登入按鈕
+            if (userInfo) userInfo.classList.remove('hidden');
+            if (userName) userName.textContent = user.name || user.email || '王老師';
+            if (authButtons) authButtons.classList.add('hidden');
+            if (logoutBtn) logoutBtn.classList.remove('hidden');
+
+            // 更新其他用戶相關元素
             const teacherNameElement = document.getElementById('teacher-name');
             if (teacherNameElement) {
                 teacherNameElement.textContent = user.name || user.email;
             }
 
-            // 更新用戶頭像或顯示名稱
             const userAvatarElement = document.getElementById('teacher-avatar');
             if (userAvatarElement) {
                 if (user.avatar) {
@@ -235,6 +230,11 @@ class TeacherAuthManager {
                     userAvatarElement.textContent = (user.name || user.email).charAt(0).toUpperCase();
                 }
             }
+        } else {
+            // 未登入：隱藏用戶資訊，顯示登入按鈕
+            if (userInfo) userInfo.classList.add('hidden');
+            if (authButtons) authButtons.classList.remove('hidden');
+            if (logoutBtn) logoutBtn.classList.add('hidden');
         }
     }
 

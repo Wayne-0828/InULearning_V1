@@ -331,6 +331,7 @@ services:
     volumes:
       - ./files:/var/www/html/files
       - ./2_implementation/frontend/shared:/usr/share/nginx/html/shared
+      - ./2_implementation/frontend/teacher-app:/usr/share/nginx/html
 
   # 家長儀表板服務
   parent-dashboard-service:
