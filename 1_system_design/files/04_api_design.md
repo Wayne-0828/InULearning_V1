@@ -2,9 +2,9 @@
 
 ---
 
-**文件版本 (Document Version):** `v1.2.0`
+**文件版本 (Document Version):** `v1.3.0`
 
-**最後更新 (Last Updated):** `2024-07-26`
+**最後更新 (Last Updated):** `2025-08-21`
 
 **主要作者/設計師 (Lead Author/Designer):** `AIPE01_group2`
 
@@ -19,6 +19,7 @@
 *   **題庫服務:** [http://localhost:8002/docs](http://localhost:8002/docs)
 *   **學習服務:** [http://localhost:8003/docs](http://localhost:8003/docs)
 *   **AI 分析服務:** [http://localhost:8004/docs](http://localhost:8004/docs)
+*   **家長儀表板服務:** [http://localhost:8005/docs](http://localhost:8005/docs)
 
 ---
 
@@ -76,6 +77,7 @@
         - **題庫服務:** `http://localhost:8002`
         - **學習服務:** `http://localhost:8003`
         - **AI 分析服務:** `http://localhost:8004`
+        - **家長儀表板服務:** `http://localhost:8005`
 
 ### 2.2 版本控制 (Versioning)
 - **策略:** URL 路徑版本控制。所有 API 路徑均以 `/api/v1` 作為前綴。
@@ -512,6 +514,66 @@
     }
     ```
 
+### 6.7 資源：AI 分析 (AI Analysis)
+
+> 非同步任務透過 Redis+RQ 在 AI 服務內部排程；提供觸發、查詢與批量端點。
+
+#### 6.7.1 `POST /ai/analysis`
+- **描述:** 觸發以 `exercise_record_id` 為單位的 AI 分析任務（弱點分析與學習建議）
+- **認證/授權:** `learning:write` 或相應業務權限
+- **請求體:**
+    ```json
+    {
+      "exercise_record_id": "uuid",
+      "temperature": 1.0,
+      "max_output_tokens": 512
+    }
+    ```
+- **成功回應 (202 Accepted):**
+    ```json
+    { "data": { "task_id": "uuid", "message": "queued" } }
+    ```
+
+#### 6.7.2 `GET /ai/analysis/{task_id}`
+- **描述:** 查詢任務狀態與結果（若任務完成）
+- **認證/授權:** `learning:read`
+- **成功回應 (200 OK):**
+    ```json
+    {
+      "data": {
+        "status": "succeeded|processing|failed|not_found",
+        "result": {
+          "學生學習狀況評估": "string",
+          "題目詳解與教學建議": "string"
+        }
+      }
+    }
+    ```
+
+#### 6.7.3 `POST /ai/analysis/generate`
+- **描述:** 單請求生成弱點分析與教學建議（可選帶 `exercise_record_id` 以覆用/持久化）
+- **認證/授權:** `learning:write`
+- **請求體（簡化）:**
+    ```json
+    {
+      "question": { "grade": "7A", "subject": "數學", "question": "...", "options": {"A": "..."}, "answer": "C" },
+      "student_answer": "B",
+      "exercise_record_id": "uuid"
+    }
+    ```
+- **成功回應 (200 OK):** 與 6.7.2 中 `result` 結構相同
+
+#### 6.7.4 `POST /ai/analysis/status/batch`
+- **描述:** 批量查詢多個 `exercise_record_id` 的最新分析狀態
+- **認證/授權:** `learning:read`
+- **請求體:** `{ "exercise_record_ids": ["uuid"], "include_data": false, "max_records": 100 }`
+- **成功回應 (200 OK):** `{ "data": { "items": [ { "exercise_record_id": "uuid", "status": "succeeded", "has_both": true } ] } }`
+
+#### 6.7.5 `GET /ai/analysis/session/{session_id}/status`
+- **描述:** 聚合回傳整個學習會話的分析進度統計
+- **認證/授權:** `learning:read`
+- **成功回應 (200 OK):** `{ "data": { "total": 20, "succeeded": 12, "processing": 6, "failed": 2, "missing_fields": 0, "latest_updated_at": "..." } }`
+
 #### 6.2.6 `GET /learning/users/{user_id}/trends`
 - **描述:** 獲取學生學習趨勢分析和進步記錄
 - **認證/授權:** `learning:read` 權限，且用戶只能存取自己的趨勢數據或家長存取孩子的數據
@@ -603,7 +665,7 @@
     }
     ```
 
-### 6.3 資源：家長儀表板 (Parent Dashboard) - 規劃中
+### 6.3 資源：家長儀表板 (Parent Dashboard)
 
 #### 6.3.1 `GET /parent/children`
 - **描述:** 獲取關聯的學生列表
@@ -621,6 +683,31 @@
           "created_at": "datetime"
         }
       ]
+    }
+    ```
+
+#### 6.3.2 `GET /parent/summary/stats`
+- **描述:** 彙總家長儀表板統計（可選指定 `child_id`）
+- **認證/授權:** `parent` 角色；需攜帶有效 Access Token
+- **查詢參數:**
+  - `child_id` (optional, UUID)
+- **成功回應 (200 OK):**
+    ```json
+    {
+      "data": {
+        "children": [
+          { "id": 1, "name": "string", "grade": 7, "class_name": "string" }
+        ],
+        "today_activity": {
+          "sessions": 3,
+          "questions_answered": 45,
+          "avg_accuracy": 0.78
+        },
+        "weakness_highlights": ["移項運算", "應用問題"],
+        "recommendations": [
+          { "type": "concept_review", "topics": ["移項法則"], "priority": "high" }
+        ]
+      }
     }
     ```
 
