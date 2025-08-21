@@ -297,9 +297,14 @@
     <script>
         // 頁面載入完成後的初始化
         document.addEventListener('DOMContentLoaded', function() {
-            // 更新認證狀態和歡迎訊息
+            console.log('🚀 教師前端頁面載入完成');
+            
+            // 強制更新認證狀態和歡迎訊息
             if (typeof teacherAuth !== 'undefined') {
+                console.log('✅ 找到認證管理器，更新 UI');
                 teacherAuth.updateUI();
+            } else {
+                console.log('❌ 認證管理器未找到');
             }
             
             // 登出功能

@@ -6,6 +6,18 @@ class TeacherAuthManager {
     constructor() {
         this.tokenKey = 'auth_token';  // 統一使用相同的key
         this.userKey = 'user_info';    // 統一使用相同的key
+        this.init();
+    }
+
+    /**
+     * 初始化認證管理器
+     */
+    init() {
+        // 處理從統一登入頁面傳來的認證資訊
+        this.handleAuthFromURL();
+        
+        // 強制檢查認證狀態
+        this.checkExistingAuth();
     }
 
     /**
@@ -17,7 +29,7 @@ class TeacherAuthManager {
         const userInfo = urlParams.get('userInfo');
 
         if (token && userInfo) {
-            console.log('從URL接收到認證資訊');
+            console.log('🚀 從URL接收到認證資訊');
             
             // 儲存到localStorage
             localStorage.setItem(this.tokenKey, token);
@@ -29,6 +41,41 @@ class TeacherAuthManager {
             
             // 更新認證狀態
             this.updateUI();
+        }
+    }
+
+    /**
+     * 檢查已存在的認證狀態
+     */
+    checkExistingAuth() {
+        console.log('🔍 檢查教師端認證狀態...');
+        
+        const token = localStorage.getItem(this.tokenKey);
+        const userInfo = localStorage.getItem(this.userKey);
+        
+        console.log('Token 存在:', !!token);
+        console.log('用戶資訊存在:', !!userInfo);
+        
+        if (token && userInfo) {
+            try {
+                const user = JSON.parse(userInfo);
+                console.log('✅ 找到已存在的認證資訊:', user);
+                
+                // 檢查 token 是否過期
+                if (!this.isTokenExpired(token)) {
+                    console.log('✅ Token 有效，更新 UI');
+                    this.updateUI();
+                } else {
+                    console.log('❌ Token 已過期，清除認證資訊');
+                    this.clearAuth();
+                }
+            } catch (error) {
+                console.error('❌ 解析用戶資訊失敗:', error);
+                this.clearAuth();
+            }
+        } else {
+            console.log('❌ 未找到認證資訊');
+            this.updateUI(); // 更新為未登入狀態
         }
     }
 

@@ -98,7 +98,53 @@
 
 .card:hover {
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+}
+
+.card-hover {
+    transition: all 0.3s ease;
+}
+
+.card-hover:hover {
     transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+/* 側邊分析區樣式 */
+.sidebar-analysis {
+    background: white;
+    border-left: 1px solid #e5e7eb;
+    padding: 1.5rem;
+    width: 20rem;
+}
+
+.sidebar-analysis .sticky {
+    position: sticky;
+    top: 1.5rem;
+}
+
+/* 響應式設計 */
+@media (max-width: 1024px) {
+    .sidebar-analysis {
+        width: 100%;
+        border-left: none;
+        border-top: 1px solid #e5e7eb;
+        margin-top: 1rem;
+    }
+}
+
+/* 快速統計區樣式 */
+.quick-stats {
+    background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.quick-stats .stat-card {
+    transition: all 0.3s ease;
+}
+
+.quick-stats .stat-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
 .card-header {
