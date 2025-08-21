@@ -1,0 +1,708 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>InU Learning - 因你而學，學習只為你</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="../css/components.css">
+    <link rel="stylesheet" href="../css/responsive.css">
+    <style>
+        :root {
+            --primary-blue: #3B82F6;
+            --light-blue: #EFF6FF;
+            --lighter-blue: #F8FAFC;
+            --accent-blue: #1E40AF;
+            --text-dark: #1F2937;
+            --text-light: #6B7280;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Noto Sans TC', sans-serif;
+            background: linear-gradient(135deg, var(--light-blue) 0%, var(--lighter-blue) 100%);
+            min-height: 100vh;
+            color: var(--text-dark);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* 導航欄 */
+        .navbar {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(59, 130, 246, 0.1);
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            transition: all 0.3s ease;
+        }
+
+        .navbar-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 0;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+            color: var(--primary-blue);
+        }
+
+        .logo img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            margin-right: 12px;
+        }
+
+        .logo-text {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary-blue);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .nav-link {
+            text-decoration: none;
+            color: var(--text-dark);
+            font-weight: 500;
+            transition: color 0.3s ease;
+            position: relative;
+        }
+
+        .nav-link:hover {
+            color: var(--primary-blue);
+        }
+
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--primary-blue);
+            transition: width 0.3s ease;
+        }
+
+        .nav-link:hover::after {
+            width: 100%;
+        }
+
+        .auth-buttons {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .btn-login {
+            background: var(--primary-blue);
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .btn-login:hover {
+            background: var(--accent-blue);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+        }
+
+        .btn-register {
+            background: transparent;
+            color: var(--primary-blue);
+            border: 2px solid var(--primary-blue);
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .btn-register:hover {
+            background: var(--primary-blue);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        /* 主要內容區 */
+        .main-content {
+            padding-top: 80px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* 英雄區塊 */
+        .hero-section {
+            text-align: center;
+            padding: 4rem 0 6rem 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-section::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(59, 130, 246, 0.1) 0%, transparent 70%);
+            animation: float 6s ease-in-out infinite;
+        }
+
+        @keyframes float {
+
+            0%,
+            100% {
+                transform: translateY(0px) rotate(0deg);
+            }
+
+            50% {
+                transform: translateY(-20px) rotate(180deg);
+            }
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+        }
+
+        .hero-logo {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            margin: 0 auto 2rem;
+            box-shadow: 0 8px 32px rgba(59, 130, 246, 0.3);
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.05);
+            }
+        }
+
+        .hero-title {
+            font-size: 3.5rem;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, var(--primary-blue), var(--accent-blue));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero-subtitle {
+            font-size: 1.5rem;
+            color: var(--text-light);
+            margin-bottom: 3rem;
+            font-weight: 400;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 1.5rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn-primary {
+            background: var(--primary-blue);
+            color: white;
+            padding: 1rem 2rem;
+            border-radius: 0.75rem;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary:hover {
+            background: var(--accent-blue);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(59, 130, 246, 0.4);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: var(--primary-blue);
+            border: 2px solid var(--primary-blue);
+            padding: 1rem 2rem;
+            border-radius: 0.75rem;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-secondary:hover {
+            background: var(--primary-blue);
+            color: white;
+            transform: translateY(-3px);
+        }
+
+        /* 特色區塊 */
+        .features-section {
+            padding: 4rem 0;
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(10px);
+            border-radius: 2rem;
+            margin: 2rem 0;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 2.5rem;
+            font-weight: 600;
+            color: var(--text-dark);
+            margin-bottom: 3rem;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .feature-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 1rem;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 30px rgba(59, 130, 246, 0.2);
+        }
+
+        .feature-icon {
+            width: 60px;
+            height: 60px;
+            background: var(--light-blue);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1.5rem;
+            color: var(--primary-blue);
+            font-size: 1.5rem;
+        }
+
+        .feature-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--text-dark);
+            margin-bottom: 1rem;
+        }
+
+        .feature-description {
+            color: var(--text-light);
+            line-height: 1.6;
+        }
+
+        /* 應用入口區塊 */
+        .apps-section {
+            padding: 4rem 0;
+        }
+
+        .apps-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .app-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 1rem;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            text-align: center;
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .app-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 30px rgba(59, 130, 246, 0.2);
+        }
+
+        .app-icon {
+            width: 80px;
+            height: 80px;
+            background: var(--light-blue);
+            border-radius: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1.5rem;
+            color: var(--primary-blue);
+            font-size: 2rem;
+        }
+
+        .app-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--text-dark);
+            margin-bottom: 0.5rem;
+        }
+
+        .app-description {
+            color: var(--text-light);
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+
+        /* 頁腳 */
+        .footer {
+            background: var(--text-dark);
+            color: white;
+            padding: 3rem 0 2rem;
+            margin-top: 4rem;
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+        }
+
+        .footer-section h3 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: var(--primary-blue);
+        }
+
+        .footer-section p,
+        .footer-section a {
+            color: #9CA3AF;
+            text-decoration: none;
+            line-height: 1.6;
+        }
+
+        .footer-section a:hover {
+            color: var(--primary-blue);
+        }
+
+        .footer-bottom {
+            text-align: center;
+            padding-top: 2rem;
+            border-top: 1px solid #374151;
+            margin-top: 2rem;
+            color: #9CA3AF;
+        }
+
+        /* 響應式設計 */
+        @media (max-width: 768px) {
+            .hero-title {
+                font-size: 2.5rem;
+            }
+
+            .hero-subtitle {
+                font-size: 1.25rem;
+            }
+
+            .nav-links {
+                display: none;
+            }
+
+            .hero-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .btn-primary,
+            .btn-secondary {
+                width: 100%;
+                max-width: 300px;
+                justify-content: center;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .hero-title {
+                font-size: 2rem;
+            }
+
+            .section-title {
+                font-size: 2rem;
+            }
+
+            .container {
+                padding: 0 15px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- 導航欄 -->
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-content">
+                <a href="#" class="logo">
+                    <img src="http://localhost/shared/image/InULearning_logo.png"
+                        alt="InU Learning Logo">
+                    <span class="logo-text">InU Learning</span>
+                </a>
+                <div class="nav-links">
+                    <a href="#features" class="nav-link">特色功能</a>
+                    <a href="#apps" class="nav-link">應用入口</a>
+                    <a href="#about" class="nav-link">關於我們</a>
+                </div>
+                <div class="auth-buttons">
+                    <a href="http://localhost/login.html" class="btn-login">登入</a>
+                    <a href="http://localhost/register.html" class="btn-register">註冊</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 主要內容 -->
+    <main class="main-content">
+        <!-- 英雄區塊 -->
+        <section class="hero-section">
+            <div class="container">
+                <div class="hero-content">
+                    <img src="http://localhost/shared/image/InULearning_logo.png"
+                        alt="InU Learning Logo" class="hero-logo">
+                    <h1 class="hero-title">InU Learning</h1>
+                    <p class="hero-subtitle">因你而學，學習只為你</p>
+                    <div class="hero-buttons">
+                        <a href="http://localhost/login.html" class="btn-primary">
+                            <span class="material-icons">login</span>
+                            立即登入
+                        </a>
+                        <a href="http://localhost/register.html" class="btn-secondary">
+                            <span class="material-icons">person_add</span>
+                            立即註冊
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 特色功能區塊 -->
+        <section id="features" class="features-section">
+            <div class="container">
+                <h2 class="section-title">平台特色</h2>
+                <div class="features-grid">
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <span class="material-icons">psychology</span>
+                        </div>
+                        <h3 class="feature-title">AI 智能學習</h3>
+                        <p class="feature-description">運用先進的人工智能技術，為每位學生提供個人化的學習路徑和內容推薦。</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <span class="material-icons">analytics</span>
+                        </div>
+                        <h3 class="feature-title">學習分析</h3>
+                        <p class="feature-description">詳細的學習數據分析，幫助學生和家長了解學習進度和弱點。</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <span class="material-icons">groups</span>
+                        </div>
+                        <h3 class="feature-title">多角色支援</h3>
+                        <p class="feature-description">支援學生、家長、教師和管理員四種角色，滿足不同使用者的需求。</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <span class="material-icons">security</span>
+                        </div>
+                        <h3 class="feature-title">安全可靠</h3>
+                        <p class="feature-description">採用最新的安全技術，保護用戶隱私和學習數據的安全。</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <span class="material-icons">devices</span>
+                        </div>
+                        <h3 class="feature-title">跨平台支援</h3>
+                        <p class="feature-description">支援桌面、平板和手機等多種設備，隨時隨地都能學習。</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <span class="material-icons">trending_up</span>
+                        </div>
+                        <h3 class="feature-title">持續進步</h3>
+                        <p class="feature-description">系統持續更新和優化，為用戶提供更好的學習體驗。</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 應用入口區塊 -->
+        <section id="apps" class="apps-section">
+            <div class="container">
+                <h2 class="section-title">應用入口</h2>
+                <div class="apps-grid">
+                    <a href="http://localhost:8080" class="app-card">
+                        <div class="app-icon">
+                            <span class="material-icons">school</span>
+                        </div>
+                        <h3 class="app-title">學生練功專區</h3>
+                        <p class="app-description">AI 驅動的個人化學習體驗，讓您的學習更有效率</p>
+                    </a>
+                    <a href="http://localhost:8081" class="app-card">
+                        <div class="app-icon">
+                            <span class="material-icons">admin_panel_settings</span>
+                        </div>
+                        <h3 class="app-title">管理員控制台</h3>
+                        <p class="app-description">系統管理和數據分析，全面掌握平台運營狀況</p>
+                    </a>
+                    <a href="http://localhost:8082" class="app-card">
+                        <div class="app-icon">
+                            <span class="material-icons">family_restroom</span>
+                        </div>
+                        <h3 class="app-title">家長關懷中心</h3>
+                        <p class="app-description">即時了解孩子的學習狀況，參與孩子的成長過程</p>
+                    </a>
+                    <a href="http://localhost:8083" class="app-card">
+                        <div class="app-icon">
+                            <span class="material-icons">person</span>
+                        </div>
+                        <h3 class="app-title">教師工作台</h3>
+                        <p class="app-description">教學資源管理和學生進度追蹤，提升教學效率</p>
+                    </a>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- 頁腳 -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>InU Learning</h3>
+                    <p>因你而學，學習只為你。我們致力於為每位學生提供個人化的學習體驗。</p>
+                </div>
+                <div class="footer-section">
+                    <h3>快速連結</h3>
+                    <p><a href="http://localhost/login.html">登入系統</a></p>
+                    <p><a href="http://localhost/register.html">註冊帳號</a></p>
+                    <p><a href="#features">平台特色</a></p>
+                    <p><a href="#apps">應用入口</a></p>
+                    <p><a href="#about">關於我們</a></p>
+                </div>
+                <div class="footer-section">
+                    <h3>技術支援</h3>
+                    <p><a href="#">使用指南</a></p>
+                    <p><a href="#">常見問題</a></p>
+                    <p><a href="#">聯絡我們</a></p>
+                    <p><a href="#">意見回饋</a></p>
+                </div>
+                <div class="footer-section">
+                    <h3>聯絡資訊</h3>
+                    <p>📧 support@inulearning.com</p>
+                    <p>📞 (02) 1234-5678</p>
+                    <p>📍 台北市信義區信義路五段7號</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 InU Learning. All rights reserved. | 因你而學，學習只為你</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // 平滑滾動
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // 導航欄滾動效果
+        window.addEventListener('scroll', () => {
+            const navbar = document.querySelector('.navbar');
+            if (window.scrollY > 100) {
+                navbar.style.background = 'rgba(255, 255, 255, 0.98)';
+                navbar.style.boxShadow = '0 2px 20px rgba(0, 0, 0, 0.1)';
+            } else {
+                navbar.style.background = 'rgba(255, 255, 255, 0.95)';
+                navbar.style.boxShadow = 'none';
+            }
+        });
+
+        // 動畫效果
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
+
+        // 觀察所有卡片
+        document.querySelectorAll('.feature-card, .app-card').forEach(card => {
+            card.style.opacity = '0';
+            card.style.transform = 'translateY(20px)';
+            card.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+            observer.observe(card);
+        });
+    </script>
+</body>
+
+</html>

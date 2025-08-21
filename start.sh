@@ -531,7 +531,10 @@ start_services() {
     sleep 10
     
     log_info "啟動應用服務..."
-    $DOCKER_COMPOSE_CMD up -d auth-service question-bank-service learning-service ai-analysis-service ai-analysis-worker parent-dashboard-service report-service
+
+
+    $DOCKER_COMPOSE_CMD up -d auth-service question-bank-service learning-service ai-analysis-service ai-analysis-worker parent-dashboard-service report-service teacher-management-service
+
 
     # 啟動題庫資料載入（一次性）
     log_info "啟動題庫資料載入..."
@@ -593,6 +596,11 @@ wait_for_services() {
             :
         else
             log_warning "AI 佇列健康檢查不可用或未啟用 RQ（可忽略）"
+        fi
+        
+        # 檢查教師管理服務
+        if ! curl -s -f http://localhost:8007/health > /dev/null 2>&1; then
+            services_ready=false
         fi
         
         if [ "$services_ready" = true ]; then
@@ -680,7 +688,7 @@ create_basic_users() {
 health_check() {
     log_step "執行系統健康檢查..."
     
-    local services=("postgres" "mongodb" "redis" "minio" "auth-service" "question-bank-service" "learning-service" "ai-analysis-service" "parent-dashboard-service" "report-service" "nginx")
+    local services=("postgres" "mongodb" "redis" "minio" "auth-service" "question-bank-service" "learning-service" "ai-analysis-service" "parent-dashboard-service" "report-service" "teacher-management-service" "nginx")
     local frontend_services=("student-frontend" "admin-frontend" "teacher-frontend" "parent-frontend")
     local failed_services=()
     
@@ -729,6 +737,7 @@ test_connectivity() {
         "http://localhost:8004/api/v1/ai/health|AI 分析服務健康檢查"
         "http://localhost:8005/health|家長儀表板服務健康檢查"
         "http://localhost:8006/health|報告服務健康檢查"
+        "http://localhost:8007/health|教師管理服務健康檢查"
     )
     
     local failed_endpoints=()
@@ -774,6 +783,7 @@ show_system_info() {
     echo "  AI 分析服務: http://localhost:8004"
     echo "  家長儀表板服務: http://localhost:8005"
     echo "  報告服務: http://localhost:8006"
+    echo "  教師管理服務: http://localhost:8007"
     echo ""
     log_highlight "🗄️ 資料庫服務："
     echo "  PostgreSQL: localhost:5432"
