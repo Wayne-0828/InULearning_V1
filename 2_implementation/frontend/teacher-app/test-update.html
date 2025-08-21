@@ -74,10 +74,10 @@
     <div class="success-card">
         <h1>🎉 前端更新成功！</h1>
         <p>如果你能看到這個頁面，表示前端文件已經成功更新。</p>
-        <p>現在可以訪問完整的學生管理頁面了。</p>
+                        <p>現在可以訪問完整的學生分析頁面了。</p>
 
         <a href="students-enhanced.html" class="test-button">
-            🚀 開啟學生管理頁面
+                            🚀 開啟學生分析頁面
         </a>
 
         <a href="../index.html" class="test-button">
@@ -94,17 +94,17 @@
 
         // 自動檢查主頁面
         setTimeout(() => {
-            console.log('🔍 檢查學生管理頁面是否可用...');
+            console.log('🔍 檢查學生分析頁面是否可用...');
             fetch('students-enhanced.html')
                 .then(response => {
                     if (response.ok) {
-                        console.log('✅ 學生管理頁面可用');
+                        console.log('✅ 學生分析頁面可用');
                     } else {
-                        console.log('⚠️ 學生管理頁面可能需要重新構建容器');
+                        console.log('⚠️ 學生分析頁面可能需要重新構建容器');
                     }
                 })
                 .catch(error => {
-                    console.log('❌ 無法訪問學生管理頁面:', error);
+                                            console.log('❌ 無法訪問學生分析頁面:', error);
                 });
         }, 1000);
     </script>

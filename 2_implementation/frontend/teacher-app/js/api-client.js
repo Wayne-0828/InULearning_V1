@@ -1,5 +1,5 @@
 const apiClient = {
-    baseUrl: '/api/v1',  // 使用相對路徑，通過前端 nginx 代理到主 nginx
+    baseUrl: '/api/v1',  // 使用相對路徑，通過 Nginx 代理到後端服務
     timeout: 10000, // 10秒超時
     cache: new Map(), // 簡單緩存
     loadingIndicators: new Set(), // 追蹤加載狀態
