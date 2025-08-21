@@ -515,21 +515,24 @@ async def get_parent_dashboard(current_user: Dict[str, Any] = Depends(get_curren
         )
 
 # 輔助函數
-async def get_recent_activities(child_id: int) -> List[Dict[str, Any]]:
+async def get_recent_activities(child_id: int, limit: int = 5) -> List[Dict[str, Any]]:
     """獲取子女的最近學習活動"""
     try:
         async with httpx.AsyncClient() as client:
             response = await client.get(
-                f"{LEARNING_SERVICE_URL}/api/v1/learning/students/{child_id}/activities",
-                params={"limit": 10}
+                f"{LEARNING_SERVICE_URL}/api/v1/internal/records/user/{child_id}",
+                params={"limit": limit, "page": 1}
             )
             
             if response.status_code == 200:
-                return response.json()
+                data = response.json()
+                logger.info(f"從 learning-service 收到的原始活動資料: {json.dumps(data, indent=2, ensure_ascii=False)}")
+                return data.get("records", [])
             else:
+                logger.error(f"從 learning-service 獲取活動失敗 (child_id: {child_id}): {response.status_code}")
                 return []
     except Exception as e:
-        logger.error(f"獲取最近活動錯誤: {e}")
+        logger.error(f"獲取最近活動時發生錯誤: {e}", exc_info=True)
         return []
 
 async def get_recent_activities_for_parent(parent_id: int, token: str) -> List[Dict[str, Any]]:
@@ -568,6 +571,25 @@ async def get_learning_trend(child_id: int) -> List[Dict[str, Any]]:
     except Exception as e:
         logger.error(f"獲取學習趨勢錯誤: {e}")
         return []
+
+@app.get("/api/v1/parent/children/{child_id}/activities")
+async def get_child_recent_activities(
+    child_id: int,
+    limit: int = 5,
+    current_user: Dict[str, Any] = Depends(get_current_user),
+    token: HTTPAuthorizationCredentials = Depends(security)
+):
+    """獲取指定子女的最近學習活動"""
+    # 驗證該家長是否對該子女有訪問權限
+    children_data = await get_user_children(token.credentials)
+    if not any(child['id'] == child_id for child in children_data):
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="您無權訪問此子女的資訊"
+        )
+    
+    activities = await get_recent_activities(child_id, limit)
+    return activities
 
 @app.get("/api/v1/parent/summary/stats")
 async def get_parent_summary_stats(

@@ -256,49 +256,8 @@
                     <!-- 最近活動 -->
                     <div class="bg-white rounded-lg shadow-md p-6 mt-8">
                         <h2 class="text-xl font-semibold text-gray-800 mb-4">最近學習活動</h2>
-                        <div class="space-y-4">
-                            <div class="activity-item flex items-center p-4 border rounded-lg">
-                                <div class="flex-shrink-0">
-                                    <div class="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
-                                        <span class="material-icons text-blue-600">quiz</span>
-                                    </div>
-                                </div>
-                                <div class="ml-4 flex-1">
-                                    <p class="text-sm font-medium text-gray-800">完成數學練習題</p>
-                                    <p class="text-xs text-gray-500">2024年1月15日 14:30</p>
-                                </div>
-                                <div class="text-right">
-                                    <span class="text-sm font-medium text-green-600">95 分</span>
-                                </div>
-                            </div>
-                            <div class="activity-item flex items-center p-4 border rounded-lg">
-                                <div class="flex-shrink-0">
-                                    <div class="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center">
-                                        <span class="material-icons text-green-600">book</span>
-                                    </div>
-                                </div>
-                                <div class="ml-4 flex-1">
-                                    <p class="text-sm font-medium text-gray-800">閱讀國語課文</p>
-                                    <p class="text-xs text-gray-500">2024年1月15日 13:15</p>
-                                </div>
-                                <div class="text-right">
-                                    <span class="text-sm font-medium text-blue-600">完成</span>
-                                </div>
-                            </div>
-                            <div class="activity-item flex items-center p-4 border rounded-lg">
-                                <div class="flex-shrink-0">
-                                    <div class="w-10 h-10 bg-yellow-100 rounded-full flex items-center justify-center">
-                                        <span class="material-icons text-yellow-600">language</span>
-                                    </div>
-                                </div>
-                                <div class="ml-4 flex-1">
-                                    <p class="text-sm font-medium text-gray-800">英文單字練習</p>
-                                    <p class="text-xs text-gray-500">2024年1月15日 12:00</p>
-                                </div>
-                                <div class="text-right">
-                                    <span class="text-sm font-medium text-yellow-600">88 分</span>
-                                </div>
-                            </div>
+                        <div id="recentActivitiesContainer" class="space-y-4">
+                            <!-- 學習活動將由 JavaScript 動態載入 -->
                         </div>
                     </div>
                 </div>
@@ -333,6 +292,8 @@
 
             // 載入匯總統計數據 (預設載入全部)
             loadSummaryStats();
+            // 預設情況下，可以清空或顯示提示訊息
+            clearRecentActivities();
         });
 
         async function loadSummaryStats(childId = null) {
@@ -457,6 +418,85 @@
             }
         }
 
+        async function loadRecentActivities(childId) {
+            const container = document.getElementById('recentActivitiesContainer');
+            if (!container) return;
+            container.innerHTML = '<p class="text-gray-500">正在載入最近活動...</p>';
+
+            try {
+                const response = await fetch(`/api/v1/parent/children/${childId}/activities?limit=5&t=${Date.now()}`, {
+                    headers: { 'Authorization': `Bearer ${parentAuth.getToken()}` }
+                });
+
+                if (!response.ok) throw new Error('無法獲取最近活動');
+
+                const activities = await response.json();
+                container.innerHTML = '';
+
+                if (activities.length === 0) {
+                    container.innerHTML = '<p class="text-gray-500">這位子女最近沒有學習活動。</p>';
+                    return;
+                }
+
+                activities.forEach(session => {
+                    const accuracyColor = session.accuracy_rate >= 60 ? 'text-green-600' : 'text-red-600';
+                    const timeSpent = session.time_spent ? `${Math.floor(session.time_spent / 60)}分${session.time_spent % 60}秒` : 'N/A';
+
+                    const activityElement = document.createElement('div');
+                    activityElement.className = 'flex items-center justify-between p-4 border rounded-lg hover:bg-gray-50';
+
+                    activityElement.innerHTML = `
+                        <div class="flex items-center flex-1 min-w-0">
+                            <div class="flex-shrink-0 mr-4">
+                                <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
+                                    <span class="material-icons text-blue-600">history</span>
+                                </div>
+                            </div>
+                            <div class="min-w-0">
+                                <p class="text-sm font-semibold text-gray-800 truncate">${session.session_name || '練習紀錄'}</p>
+                                <div class="flex items-center text-xs text-gray-500 mt-1 flex-wrap">
+                                    <span class="material-icons text-sm mr-1">calendar_today</span>
+                                    <span>${new Date(session.start_time).toLocaleDateString()}</span>
+                                    <span class="mx-2">|</span>
+                                    <span class="material-icons text-sm mr-1">timer</span>
+                                    <span>${timeSpent}</span>
+                                    <span class="mx-2">|</span>
+                                    <span class="material-icons text-sm mr-1">list_alt</span>
+                                    <span>${session.question_count || 0} 題</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="flex items-center space-x-6 ml-4 text-sm text-center">
+                            <div>
+                                <p class="font-medium">${session.correct_count || 0}/${session.question_count || 0}</p>
+                                <p class="text-xs text-gray-500">正確題數</p>
+                            </div>
+                            <div>
+                                <p class="font-semibold ${accuracyColor}">${session.accuracy_rate.toFixed(1)}%</p>
+                                <p class="text-xs text-gray-500">正確率</p>
+                            </div>
+                            <div>
+                                <p class="font-semibold text-blue-600">${session.total_score.toFixed(0)}</p>
+                                <p class="text-xs text-gray-500">總分</p>
+                            </div>
+                        </div>
+                    `;
+                    container.appendChild(activityElement);
+                });
+
+            } catch (error) {
+                console.error('載入最近活動失敗:', error);
+                container.innerHTML = '<p class="text-red-500">無法載入最近活動。</p>';
+            }
+        }
+
+        function clearRecentActivities() {
+            const container = document.getElementById('recentActivitiesContainer');
+            if (container) {
+                container.innerHTML = '<p class="text-gray-500">請選擇一位子女以查看其最近的學習活動。</p>';
+            }
+        }
+
         // 子女選擇功能
         function selectChild(childId) {
             // 移除所有選中狀態
@@ -473,14 +513,16 @@
                 selectedCard.classList.add('bg-blue-100', 'border-blue-500');
             }
 
-            // 載入該子女的進度數據
+            // 載入該子女的統計數據和最近活動
             loadSummaryStats(childId);
+            loadRecentActivities(childId);
         }
 
         function switchChild(mode) {
             if (mode === 'all') {
                 // 顯示所有子女的綜合進度
                 loadSummaryStats(); // 不帶參數，載入全部
+                clearRecentActivities(); // 清空活動列表
                 // 取消所有卡片的選中狀態
                 document.querySelectorAll('.child-card').forEach(card => {
                     card.classList.remove('bg-blue-100', 'border-blue-500');
