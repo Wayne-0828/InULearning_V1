@@ -2,9 +2,9 @@
 
 ---
 
-**文件版本 (Document Version):** `v1.1.0`
+**文件版本 (Document Version):** `v1.2.0`
 
-**最後更新 (Last Updated):** `2024-07-26`
+**最後更新 (Last Updated):** `2025-08-21`
 
 **主要作者 (Lead Author):** `AIPE01_group2`
 
@@ -91,6 +91,7 @@ graph TD
     Nginx --> LearningService
     Nginx --> QuestionBankService
     Nginx --> AIAnalysisService
+    Nginx --> ParentDashboardService
     
     %% 服務對共用組件的依賴
     AuthService --> SharedDB & SharedSchemas & SharedUtils
@@ -101,18 +102,22 @@ graph TD
     %% 服務對外部依賴
     AuthService --> PostgreSQL & Redis
     LearningService --> PostgreSQL & MongoDB & Redis
-    QuestionBankService --> MongoDB
-    AIAnalysisService --> Milvus & Gemini
+    QuestionBankService --> MongoDB & MinIO
+    AIAnalysisService --> PostgreSQL & Redis & Gemini
     
     %% AI 服務內部依賴
-    AIAnalysisService --> CrewAI & LangChain
-    CrewAI --> LangChain
-    LangChain --> Gemini
+    %% AI 服務內部依賴（現況）
+    AIAnalysisService --> Redis
+    AIAnalysisService --> Gemini
+    %% 規劃中
+    AIAnalysisService -.-> CrewAI
+    AIAnalysisService -.-> LangChain
     
     %% 服務間依賴
     LearningService -.->|API Call| QuestionBankService
     LearningService -.->|API Call| AIAnalysisService
     ParentDashboardService -.->|API Call| LearningService
+    ParentDashboardService -.->|API Call| AIAnalysisService
     TeacherManagementService -.->|API Call| LearningService
     ReportService -.->|API Call| LearningService
     NotificationService -.->|Event Subscribe| LearningService
@@ -173,8 +178,9 @@ graph TD
 
 #### **Layer 1: 基礎設施層 (Infrastructure Layer)**
 *   **API Gateway (Nginx)**: 統一入口點，路由分發
-*   **Message Queue (RabbitMQ)**: 異步通信和事件處理
-*   **Task Queue (Celery)**: 背景任務處理
+*   **Task Queue (Redis + RQ)**: AI 分析任務佇列與狀態查詢（現況）
+*   **Message Queue (RabbitMQ)**: 異步通信和事件處理（規劃中）
+*   **Task Queue (Celery)**: 分散式任務處理（規劃中）
 
 #### **Layer 2: 共用組件層 (Shared Components Layer)**
 *   **shared/database**: 資料庫連接和設定管理
@@ -189,15 +195,16 @@ graph TD
 *   **ai-analysis-service**: AI 驅動的學習分析
 
 #### **Layer 4: 業務服務層 (Business Services Layer)**
-*   **parent-dashboard-service**: 家長監控和報告 (規劃中)
+*   **parent-dashboard-service**: 家長監控和報告（已實現）
 *   **teacher-management-service**: 教師管理和班級分析 (規劃中)
 *   **notification-service**: 通知和提醒服務 (規劃中)
 *   **report-service**: 報表生成和統計分析 (規劃中)
 
 #### **Layer 5: AI 核心層 (AI Core Layer)**
-*   **CrewAI Agents**: 多 Agent 協作系統
-*   **LangChain**: LLM 鏈式處理框架
-*   **Vector Processing**: 向量化和相似性搜索 (規劃中)
+*   **Gemini**: 當前主力模型（AI 分析）
+*   **CrewAI Agents**: 多 Agent 協作系統（規劃中）
+*   **LangChain**: LLM 鏈式處理框架（規劃中）
+*   **Vector Processing**: 向量化和相似性搜索（規劃中）
 
 #### **Layer 6: 前端應用層 (Frontend Applications Layer)**
 *   **student-app**: 學生學習介面
@@ -251,25 +258,14 @@ from ..models.learning_record import LearningRecord       # ← 學習記錄模�
 
 ### 4.2 AI 分析服務 (AI Analysis Service) Import 關係
 
-#### `backend/ai-analysis-service/src/main.py`
+#### `backend/ai-analysis-service/src/services/start_ai_service.py`
 ```python
-# 外部框架
-from fastapi import FastAPI                               # ← Web 框架
-from langchain.llms import LLM                           # ← LangChain 基礎
-from crewai import Crew, Agent, Task                     # ← CrewAI 框架
+from fastapi import FastAPI, HTTPException                 # ← Web 框架
+import google.generativeai as genai                        # ← Gemini API
+import psycopg2, redis, rq                                # ← PostgreSQL/Redis/RQ
 
-# AI 專用套件
-import google.generativeai as genai                      # ← Gemini API
-from pymilvus import connections, Collection             # ← Milvus 向量資料庫
-
-# 共用組件
-from shared.schemas.analysis import WeaknessAnalysisSchema # ← 分析資料模型
-from shared.utils.ai_config import get_ai_settings       # ← AI 配置管理
-
-# 內部 AI Agents
-from .ai_agents.analyst_agent import AnalystAgent        # ← 分析師 Agent
-from .ai_agents.tutor_agent import TutorAgent           # ← 導師 Agent
-from .ai_agents.recommender_agent import RecommenderAgent # ← 推薦 Agent
+# 服務內部：Redis 快取鍵、速率限制、去重鎖與批量狀態查詢等工具
+from . import (get_db_connection, get_redis_client, queue_analysis_if_needed)
 ```
 
 #### `backend/ai-analysis-service/src/ai_agents/analyst_agent.py`
@@ -400,7 +396,7 @@ graph TD
     Step5 --> Step6
     Step6 --> Step7
     
-    Step1_Detail["PostgreSQL<br/>MongoDB<br/>Redis<br/>MinIO<br/>RabbitMQ<br/>Milvus"]
+    Step1_Detail["PostgreSQL<br/>MongoDB<br/>Redis<br/>MinIO<br/>(RabbitMQ - 規劃中)<br/>(Milvus - 規劃中)"]
     Step2_Detail["Database Migrations<br/>Initial Data Seeds"]
     Step3_Detail["Shared Libraries<br/>Configuration Loading"]
     Step4_Detail["auth-service<br/>question-bank-service"]
@@ -438,10 +434,10 @@ graph TD
 
 4. **依賴核心服務的業務服務** (Business Services)
    - `learning-service` (依賴 auth-service 和 question-bank-service)
-   - `ai-analysis-service` (依賴學習資料)
+   - `ai-analysis-service` (依賴 PostgreSQL、Redis；供 Learning/Parent Dashboard 調用)
 
-5. **高階業務服務 (規劃中)** (Advanced Business Services - Planned)
-   - `parent-dashboard-service` (依賴 learning-service)
+5. **高階業務服務** (Advanced Business Services)
+   - `parent-dashboard-service` (依賴 learning-service、ai-analysis-service)
    - `teacher-management-service` (依賴 learning-service)
    - `report-service` (依賴多個服務的資料)
    - `notification-service` (事件訂閱者)

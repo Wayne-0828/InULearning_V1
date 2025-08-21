@@ -268,6 +268,44 @@ async def get_parent_child_progress(
         logger.error(f"獲取子女學習進度失敗: {e}")
         raise HTTPException(status_code=500, detail="獲取學習進度失敗")
 
+@router.get("/records/user/{user_id}")
+async def get_user_records(
+    user_id: int,
+    limit: int = Query(10, ge=1, le=100),
+    page: int = Query(1, ge=1),
+    db_session: AsyncSession = Depends(get_db_session)
+):
+    """獲取指定用戶的學習記錄列表（主要供服務間調用）"""
+    try:
+        offset = (page - 1) * limit
+        
+        query = text(
+            """
+            SELECT * FROM learning_sessions
+            WHERE user_id = :user_id
+            ORDER BY start_time DESC
+            LIMIT :limit OFFSET :offset
+            """
+        )
+        
+        result = await db_session.execute(query, {"user_id": user_id, "limit": limit, "offset": offset})
+        records = result.mappings().all()
+
+        total_query = text("SELECT COUNT(*) FROM learning_sessions WHERE user_id = :user_id")
+        total_result = await db_session.execute(total_query, {"user_id": user_id})
+        total = total_result.scalar() or 0
+        
+        return {
+            "records": records,
+            "total": total,
+            "page": page,
+            "limit": limit
+        }
+        
+    except Exception as e:
+        logger.error(f"查詢用戶 {user_id} 的學習記錄失敗: {e}", exc_info=True)
+        raise HTTPException(status_code=500, detail="查詢學習記錄失敗")
+
 @router.get("/teacher/students")
 async def get_students_learning_records(
     request: Request,

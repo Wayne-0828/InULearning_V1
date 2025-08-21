@@ -825,6 +825,7 @@ class ResultPage {
                     <p class="text-gray-700 leading-relaxed">${analysis['題目詳解與教學建議'] || 'AI 分析暫時無法使用'}</p>
                 </div>
             `;
+            this.renderMath(weaknessContent);
         } else {
             const errorMessage = weaknessResult.status === 'rejected'
                 ? weaknessResult.reason?.message || '分析失敗'
@@ -852,6 +853,7 @@ class ResultPage {
                     <p class="text-gray-700 leading-relaxed">${guidance['學生學習狀況評估'] || '學習建議暫時無法生成'}</p>
                 </div>
             `;
+            this.renderMath(recommendationsContent);
         } else {
             const errorMessage = guidanceResult.status === 'rejected'
                 ? guidanceResult.reason?.message || '建議生成失敗'
@@ -892,9 +894,10 @@ class ResultPage {
     /**
      * 觸發 MathJax 重新渲染數學公式
      */
-    renderMath() {
+    renderMath(targetElement) {
         if (window.MathJax && window.MathJax.typesetPromise) {
-            window.MathJax.typesetPromise().then(() => {
+            const elements = targetElement ? [targetElement] : undefined;
+            window.MathJax.typesetPromise(elements).then(() => {
                 console.log('Result頁面 MathJax 渲染完成');
             }).catch((err) => {
                 console.error('Result頁面 MathJax 渲染失敗:', err);

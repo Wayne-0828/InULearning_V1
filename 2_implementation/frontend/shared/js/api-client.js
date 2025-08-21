@@ -11,7 +11,7 @@
 
 // ===== API 客戶端類別 =====
 class ApiClient {
-    constructor(baseURL = Utils.config.API_BASE_URL) {
+    constructor(baseURL = '') { // 預設為空，讓請求使用相對路徑
         this.baseURL = baseURL;
         this.defaultHeaders = {
             'Content-Type': 'application/json',
@@ -218,7 +218,7 @@ class ApiClient {
         } = options;
         
         // 建立完整 URL
-        const url = new URL(endpoint, this.baseURL);
+        const url = new URL(this.baseURL + endpoint, window.location.origin);
         
         // 添加查詢參數
         Object.entries(params).forEach(([key, value]) => {

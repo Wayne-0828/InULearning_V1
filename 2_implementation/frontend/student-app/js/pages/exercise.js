@@ -304,7 +304,7 @@ class ExerciseManager {
 
             console.log('題庫檢查結果:', result);
 
-            if (result.success && result.data.count > 0) {
+            if (result.success && result.data && typeof result.data.count === 'number' && result.data.count > 0) {
                 const totalCount = result.data.count;
                 const requestedCount = this.selectedCriteria.question_count;
 
@@ -320,17 +320,21 @@ class ExerciseManager {
                             publisher: this.selectedCriteria.edition,
                             chapter: this.selectedCriteria.chapter
                         });
-                        if (sum && sum.success && sum.data) {
+                        if (sum && sum.success && sum.data && typeof sum.data.unseen === 'number') {
                             total = sum.data.total ?? totalCount;
                             done = sum.data.done ?? 0;
                             unseen = sum.data.unseen ?? Math.max(0, total - done);
+                        } else if (sum && sum.data && typeof sum.data.count === 'number') {
+                            // 老結構容錯
+                            total = sum.data.count;
+                            unseen = sum.data.count;
                         }
                     } catch (e) {
                         console.warn('取得可用題數彙總失敗，退回基本估算:', e);
                         unseen = Math.max(0, totalCount);
                     }
 
-                    if (unseen === 0) {
+                    if (unseen <= 0) {
                         this.showAllDoneMessage();
                         this.disableStartButton();
                         return;

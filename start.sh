@@ -509,11 +509,11 @@ pull_and_build() {
     
     # 拉取基礎映像
     log_info "拉取基礎映像..."
-    $DOCKER_COMPOSE_CMD pull --ignore-pull-failures 2>/dev/null || true
+    $DOCKER_COMPOSE_CMD build --no-cache
     
     # 建立自定義映像
     log_info "建立應用映像..."
-    $DOCKER_COMPOSE_CMD build --parallel 2>/dev/null || $DOCKER_COMPOSE_CMD build
+    $DOCKER_COMPOSE_CMD build --no-cache
     
     log_success "映像準備完成"
 }
@@ -531,7 +531,10 @@ start_services() {
     sleep 10
     
     log_info "啟動應用服務..."
-    $DOCKER_COMPOSE_CMD up -d auth-service question-bank-service learning-service ai-analysis-service parent-dashboard-service report-service teacher-management-service
+
+
+    $DOCKER_COMPOSE_CMD up -d auth-service question-bank-service learning-service ai-analysis-service ai-analysis-worker parent-dashboard-service report-service teacher-management-service
+
 
     # 啟動題庫資料載入（一次性）
     log_info "啟動題庫資料載入..."
@@ -541,7 +544,7 @@ start_services() {
     
     # 等待應用服務就緒
     log_info "等待應用服務啟動..."
-    sleep 15
+    sleep 20
     
     log_info "啟動前端和代理服務..."
     $DOCKER_COMPOSE_CMD up -d student-frontend admin-frontend teacher-frontend parent-frontend nginx
@@ -587,6 +590,12 @@ wait_for_services() {
         # 檢查 AI 分析服務
         if ! curl -s -f http://localhost:8004/api/v1/ai/health > /dev/null 2>&1; then
             services_ready=false
+        fi
+        # 檢查 AI 佇列（若啟用 RQ）
+        if curl -s -f http://localhost:8004/api/v1/ai/queue/health > /dev/null 2>&1; then
+            :
+        else
+            log_warning "AI 佇列健康檢查不可用或未啟用 RQ（可忽略）"
         fi
         
         # 檢查教師管理服務
