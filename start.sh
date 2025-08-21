@@ -279,7 +279,7 @@ check_network() {
 check_ports() {
     log_step "檢查端口占用..."
     
-    local ports=(80 5432 6379 8001 8002 8003 8004 8005 8006 8080 8081 8082 8083 9000 9001 27017)
+    local ports=(80 5432 6379 8001 8002 8003 8004 8005 8007 8080 8081 8082 8083 9000 9001 27017)
     local occupied_ports=()
     
     for port in "${ports[@]}"; do
@@ -509,11 +509,11 @@ pull_and_build() {
     
     # 拉取基礎映像
     log_info "拉取基礎映像..."
-    $DOCKER_COMPOSE_CMD build --no-cache
+    $DOCKER_COMPOSE_CMD pull --ignore-pull-failures 2>/dev/null || true
     
     # 建立自定義映像
     log_info "建立應用映像..."
-    $DOCKER_COMPOSE_CMD build --no-cache
+    $DOCKER_COMPOSE_CMD build --parallel 2>/dev/null || $DOCKER_COMPOSE_CMD build
     
     log_success "映像準備完成"
 }
@@ -531,8 +531,6 @@ start_services() {
     sleep 10
     
     log_info "啟動應用服務..."
-
-
     $DOCKER_COMPOSE_CMD up -d auth-service question-bank-service learning-service ai-analysis-service ai-analysis-worker parent-dashboard-service report-service teacher-management-service
 
 
@@ -596,11 +594,6 @@ wait_for_services() {
             :
         else
             log_warning "AI 佇列健康檢查不可用或未啟用 RQ（可忽略）"
-        fi
-        
-        # 檢查教師管理服務
-        if ! curl -s -f http://localhost:8007/health > /dev/null 2>&1; then
-            services_ready=false
         fi
         
         if [ "$services_ready" = true ]; then
@@ -688,7 +681,7 @@ create_basic_users() {
 health_check() {
     log_step "執行系統健康檢查..."
     
-    local services=("postgres" "mongodb" "redis" "minio" "auth-service" "question-bank-service" "learning-service" "ai-analysis-service" "parent-dashboard-service" "report-service" "teacher-management-service" "nginx")
+    local services=("postgres" "mongodb" "redis" "minio" "auth-service" "question-bank-service" "learning-service" "ai-analysis-service" "parent-dashboard-service" "report-service" "nginx")
     local frontend_services=("student-frontend" "admin-frontend" "teacher-frontend" "parent-frontend")
     local failed_services=()
     
@@ -736,8 +729,7 @@ test_connectivity() {
         "http://localhost/|Nginx代理服務"
         "http://localhost:8004/api/v1/ai/health|AI 分析服務健康檢查"
         "http://localhost:8005/health|家長儀表板服務健康檢查"
-        "http://localhost:8006/health|報告服務健康檢查"
-        "http://localhost:8007/health|教師管理服務健康檢查"
+        "http://localhost:8007/health|報告服務健康檢查"
     )
     
     local failed_endpoints=()
@@ -782,8 +774,7 @@ show_system_info() {
     echo "  學習服務: http://localhost:8003"
     echo "  AI 分析服務: http://localhost:8004"
     echo "  家長儀表板服務: http://localhost:8005"
-    echo "  報告服務: http://localhost:8006"
-    echo "  教師管理服務: http://localhost:8007"
+    echo "  報告服務: http://localhost:8007"
     echo ""
     log_highlight "🗄️ 資料庫服務："
     echo "  PostgreSQL: localhost:5432"

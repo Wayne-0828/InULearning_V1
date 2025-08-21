@@ -153,12 +153,37 @@ async def get_user_children(token: str) -> List[Dict[str, Any]]:
             )
             
             if response.status_code == 200:
-                # auth-service 現在直接回傳子女列表，格式已符合需求
-                children_data = response.json()
-                # 我們需要確保 created_at 欄位存在，如果不存在就提供一個預設值
-                for child in children_data:
-                    child.setdefault('created_at', datetime.now().isoformat())
-                return children_data
+                # auth-service 回傳的是家長-子女關係列表，需要正規化為子女清單
+                data = response.json()
+                normalized_children: List[Dict[str, Any]] = []
+                if isinstance(data, list):
+                    for item in data:
+                        # 已是子女物件（包含 id 與 name）則直接沿用
+                        if isinstance(item, dict) and "id" in item and "name" in item:
+                            child_obj = dict(item)
+                            child_obj.setdefault("created_at", datetime.now().isoformat())
+                            normalized_children.append(child_obj)
+                            continue
+
+                        # 關係物件（包含 child_id/child_name）→ 映射成子女物件
+                        if isinstance(item, dict):
+                            child_id = item.get("child_id") or item.get("id")
+                            child_name = item.get("child_name") or item.get("name") or (f"學生 {child_id}" if child_id is not None else "學生")
+                            created_at = item.get("created_at") or datetime.now().isoformat()
+
+                            if child_id is not None:
+                                normalized_children.append({
+                                    "id": child_id,
+                                    "name": child_name,
+                                    "grade": item.get("grade"),
+                                    "class_name": item.get("class_name"),
+                                    "student_id": item.get("student_id"),
+                                    "avatar": item.get("avatar"),
+                                    "created_at": created_at,
+                                })
+                    # 若清單為空，回傳空陣列
+                logger.info(f"正規化後的子女數量: {len(normalized_children)}")
+                return normalized_children
             else:
                 logger.error(f"獲取子女列表失敗: {response.status_code}, {response.text}")
                 return []
