@@ -259,6 +259,13 @@ app.include_router(
     # dependencies=[Depends(get_current_user)] # 移除依賴，允許服務間調用
 )
 
+# 為 records.router 提供一個不需終端用戶認證的路徑
+app.include_router(
+    records.router,
+    prefix="/api/v1/internal", # 使用新的前綴
+    tags=["內部學習記錄"]
+)
+
 # 健康檢查端點
 @app.get("/health", tags=["系統"])
 async def health_check():

@@ -446,90 +446,80 @@ async def get_communication_advice_for_child(
         )
 
 @app.get("/api/v1/parent/dashboard")
-async def get_parent_dashboard(current_user: Dict[str, Any] = Depends(get_current_user)):
-    """獲取家長儀表板概覽"""
+async def get_parent_dashboard_data(
+    current_user: Dict[str, Any] = Depends(get_current_user),
+    token: HTTPAuthorizationCredentials = Depends(security)
+):
+    """獲取家長儀表板的所有數據"""
     try:
-        parent_id = current_user["id"]
-        children_data = await get_user_children(current_user["token"]) # Pass token here
+        logger.info(f"用戶 {current_user.get('email')} 正在請求儀表板聚合數據...")
+
+        # 並行執行所有數據獲取任務
+        stats_task = get_parent_summary_stats(None, current_user, token)
+        children_task = get_children(current_user, token)
         
-        if not children_data:
-            return {
-                "total_children": 0,
-                "overall_stats": {
-                    "total_exercises": 0,
-                    "average_accuracy": 0.0,
-                    "total_study_days": 0,
-                    "average_progress": 0.0
-                },
-                "recent_activities": [],
-                "alerts": []
-            }
+        # 獲取子女列表以遍歷活動
+        children_data = await get_user_children(token.credentials)
+        activity_tasks = [get_recent_activities(child['id'], limit=3) for child in children_data]
         
-        # 並行獲取所有子女的學習資料
-        tasks = [get_child_learning_data(child["id"]) for child in children_data]
-        learning_data_list = await asyncio.gather(*tasks, return_exceptions=True)
+        all_activities_list = await asyncio.gather(*activity_tasks, return_exceptions=True)
         
-        # 計算總體統計
-        total_exercises = 0
-        total_accuracy = 0.0
-        total_study_days = 0
-        total_progress = 0.0
-        valid_children = 0
+        # 扁平化並排序活動列表
+        recent_activities = []
+        for result in all_activities_list:
+            if not isinstance(result, Exception):
+                recent_activities.extend(result)
         
-        for learning_data in learning_data_list:
-            if not isinstance(learning_data, Exception):
-                total_exercises += learning_data.get("total_exercises", 0)
-                total_accuracy += learning_data.get("accuracy_rate", 0.0)
-                total_study_days += learning_data.get("study_days", 0)
-                total_progress += learning_data.get("overall_progress", 0.0)
-                valid_children += 1
-        
-        average_accuracy = total_accuracy / valid_children if valid_children > 0 else 0.0
-        average_progress = total_progress / valid_children if valid_children > 0 else 0.0
-        
-        # 獲取最近活動
-        recent_activities = await get_recent_activities_for_parent(parent_id, current_user["token"])
-        
-        # 生成警報
-        alerts = generate_alerts(children_data, learning_data_list)
-        
+        # 按時間倒序排序，並只取最新的5條
+        recent_activities.sort(key=lambda x: x.get('start_time') or x.get('created_at'), reverse=True)
+        recent_activities = recent_activities[:5]
+
+        # 等待統計和子女數據
+        stats_data, children_data_for_grid = await asyncio.gather(stats_task, children_task, return_exceptions=True)
+
+        # 處理異常情況
+        if isinstance(stats_data, Exception):
+            logger.error(f"獲取統計數據時出錯: {stats_data}")
+            stats_data = {}
+        if isinstance(children_data_for_grid, Exception):
+            logger.error(f"獲取子女網格數據時出錯: {children_data_for_grid}")
+            children_data_for_grid = []
+
         dashboard_data = {
-            "total_children": len(children_data),
-            "overall_stats": {
-                "total_exercises": total_exercises,
-                "average_accuracy": round(average_accuracy, 2),
-                "total_study_days": total_study_days,
-                "average_progress": round(average_progress, 2)
-            },
-            "recent_activities": recent_activities,
-            "alerts": alerts
+            "stats": stats_data,
+            "children": children_data_for_grid,
+            "activities": recent_activities,
+            "notifications": [] # 通知功能暫時返回空列表
         }
-        
+
         return dashboard_data
-        
+
     except Exception as e:
-        logger.error(f"獲取儀表板錯誤: {e}")
+        logger.error(f"獲取儀表板聚合數據時發生錯誤: {e}", exc_info=True)
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail="獲取儀表板失敗"
+            detail="無法獲取儀表板數據"
         )
 
 # 輔助函數
-async def get_recent_activities(child_id: int) -> List[Dict[str, Any]]:
+async def get_recent_activities(child_id: int, limit: int = 5) -> List[Dict[str, Any]]:
     """獲取子女的最近學習活動"""
     try:
         async with httpx.AsyncClient() as client:
             response = await client.get(
-                f"{LEARNING_SERVICE_URL}/api/v1/learning/students/{child_id}/activities",
-                params={"limit": 10}
+                f"{LEARNING_SERVICE_URL}/api/v1/internal/records/user/{child_id}",
+                params={"limit": limit, "page": 1}
             )
             
             if response.status_code == 200:
-                return response.json()
+                data = response.json()
+                logger.info(f"從 learning-service 收到的原始活動資料: {json.dumps(data, indent=2, ensure_ascii=False)}")
+                return data.get("records", [])
             else:
+                logger.error(f"從 learning-service 獲取活動失敗 (child_id: {child_id}): {response.status_code}")
                 return []
     except Exception as e:
-        logger.error(f"獲取最近活動錯誤: {e}")
+        logger.error(f"獲取最近活動時發生錯誤: {e}", exc_info=True)
         return []
 
 async def get_recent_activities_for_parent(parent_id: int, token: str) -> List[Dict[str, Any]]:
@@ -568,6 +558,25 @@ async def get_learning_trend(child_id: int) -> List[Dict[str, Any]]:
     except Exception as e:
         logger.error(f"獲取學習趨勢錯誤: {e}")
         return []
+
+@app.get("/api/v1/parent/children/{child_id}/activities")
+async def get_child_recent_activities(
+    child_id: int,
+    limit: int = 5,
+    current_user: Dict[str, Any] = Depends(get_current_user),
+    token: HTTPAuthorizationCredentials = Depends(security)
+):
+    """獲取指定子女的最近學習活動"""
+    # 驗證該家長是否對該子女有訪問權限
+    children_data = await get_user_children(token.credentials)
+    if not any(child['id'] == child_id for child in children_data):
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="您無權訪問此子女的資訊"
+        )
+    
+    activities = await get_recent_activities(child_id, limit)
+    return activities
 
 @app.get("/api/v1/parent/summary/stats")
 async def get_parent_summary_stats(
