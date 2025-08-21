@@ -509,7 +509,7 @@ pull_and_build() {
     
     # 拉取基礎映像
     log_info "拉取基礎映像..."
-    $DOCKER_COMPOSE_CMD build --parallel 2>/dev/null || $DOCKER_COMPOSE_CMD build
+    $DOCKER_COMPOSE_CMD build --no-cache
     
     # 建立自定義映像
     log_info "建立應用映像..."
