@@ -6,7 +6,7 @@
 
 **版本 (Version):** `v1.0`
 
-**最後更新 (Last Updated):** `2025-08-15`
+**最後更新 (Last Updated):** `2025-08-21`
 
 **負責人/團隊 (Owner/Team):** `AIPE01_group2`
 
@@ -100,6 +100,7 @@
     *   MinIO (圖片、檔案儲存)
     *   Redis (快取)
 *   **容器化與維運:** Docker, Docker Compose, Git/GitHub
+*   **非同步處理 (已導入):** Redis + RQ（AI 分析任務佇列）
 *   **規劃導入技術:**
     *   **向量資料庫:** Milvus (用於 RAG)
     *   **非同步處理:** Celery, RabbitMQ
@@ -113,6 +114,7 @@
         *   [題庫服務 API](http://localhost:8002/docs)
         *   [學習服務 API](http://localhost:8003/docs)
         *   [AI 分析服務 API](http://localhost:8004/docs)
+        *   [家長儀表板服務 API](http://localhost:8005/docs)
     *   專案技術規格書 (待建立)
     *   使用者介面設計稿 (待建立)
     *   資料庫設計文件 (待建立)
@@ -128,4 +130,5 @@
 
 | 日期 | 審核人 | 版本 | 備註 |
 | :--------- | :--------- | :--- | :------- |
+| 2025-08-21 | AIPE01_group2 | v0.2 | 更新進度：新增 RQ（AI 任務佇列）、補充家長儀表板 API 連結與技術現況 |
 | 2025-08-15 | AIPE01_group2 | v0.1 | 初稿建立，基於專案提案報告整合 | 

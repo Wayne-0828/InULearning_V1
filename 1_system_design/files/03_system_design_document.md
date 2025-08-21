@@ -2,9 +2,9 @@
 
 ---
 
-**文件版本 (Document Version):** `v1.0`
+**文件版本 (Document Version):** `v1.1`
 
-**最後更新 (Last Updated):** `2024-07-26`
+**最後更新 (Last Updated):** `2025-08-21`
 
 **主要作者/設計師 (Lead Author/Designer):** `AIPE01_group2`
 
@@ -35,7 +35,7 @@
 ## 1. 引言 (Introduction)
 
 ### 1.1 目的 (Purpose)
-為 InULearning 個人化學習平台的核心學習服務模組提供詳細的技術實現規格和設計細節，指導開發團隊進行程式碼實作、單元測試和系統整合工作。本設計採用前後端分離架構，確保前端專注於用戶體驗，後端專注於業務邏輯和數據處理。此版本 (v1.0) 反映了核心功能上線後的最終設計。
+為 InULearning 個人化學習平台的核心學習服務模組提供詳細的技術實現規格和設計細節，指導開發團隊進行程式碼實作、單元測試和系統整合工作。本設計採用前後端分離架構，確保前端專注於用戶體驗，後端專注於業務邏輯和數據處理。此版本 (v1.1) 反映最新架構與配置（AI 分析透過 Redis+RQ、服務/端點更新）。
 
 ### 1.2 範圍 (Scope)
 本文件涵蓋學習服務模組的完整設計，包括智慧出題、自動批改、學習歷程追蹤、AI 分析整合等核心功能，但不包括前端 UI 設計和其他服務模組的詳細實現。
@@ -92,10 +92,10 @@
     *   通知服務：通過事件機制發送學習提醒和成績通知
 
 *   **依賴 (Dependencies):**
-    *   PostgreSQL：用戶和學習歷程資料存儲
-    *   MongoDB：題目和練習結果存儲
-    *   Redis：會話狀態和熱點數據快取
-    *   RabbitMQ：異步任務和事件處理
+    *   PostgreSQL：用戶與學習歷程資料存儲
+    *   MongoDB：題庫與相關內容存儲
+    *   Redis：會話狀態與熱點數據快取
+    *   AI 分析服務：透過 HTTP 整合弱點分析與建議（AI 服務內部以 Redis+RQ 進行任務排程）
 
 ---
 
@@ -736,7 +736,12 @@ sequenceDiagram
 | :--- | :--- | :--- | :--- | :--- |
 | `MONGODB_URI` | MongoDB 題庫連接字串 | `String` | `mongodb://localhost:27017/inulearning` | `LEARNING_MONGODB_URI` |
 | `QUESTION_COLLECTION` | 題庫集合名稱 | `String` | `questions` | `LEARNING_QUESTION_COLLECTION` |
-| `AI_SERVICE_API_URL` | AI 服務 API 地址 | `String` | `http://localhost:8002` | `LEARNING_AI_API_URL` |
+| `DATABASE_URL` | PostgreSQL 連接字串 | `String` | `postgresql+asyncpg://aipe-tester:aipe-tester@postgres:5432/inulearning` | `DATABASE_URL` |
+| `MONGODB_URL` | MongoDB 連接字串 | `String` | `mongodb://aipe-tester:aipe-tester@mongodb:27017/inulearning?authSource=admin` | `MONGODB_URL` |
+| `REDIS_URL` | Redis 連接位址 | `String` | `redis://redis:6379/0` | `REDIS_URL` |
+| `AUTH_SERVICE_URL` | 認證服務 API 地址 | `String` | `http://auth-service:8000` | `AUTH_SERVICE_URL` |
+| `QUESTION_BANK_URL` | 題庫服務 API 地址 | `String` | `http://question-bank-service:8000` | `QUESTION_BANK_URL` |
+| `AI_ANALYSIS_SERVICE_URL` | AI 分析服務 API 地址 | `String` | `http://ai-analysis-service:8004` | `LEARNING_AI_ANALYSIS_SERVICE_URL` |
 | `DEFAULT_QUESTION_COUNT` | 預設題目數量 | `Integer` | `10` | `LEARNING_DEFAULT_COUNT` |
 | `MAX_SESSION_DURATION_HOURS` | 最大會話持續時間(小時) | `Integer` | `2` | `LEARNING_MAX_SESSION_HOURS` |
 | `SUPPORTED_GRADES` | 支援的年級列表 | `List[String]` | `["7A","7B","8A","8B","9A","9B"]` | `LEARNING_SUPPORTED_GRADES` |
@@ -773,7 +778,7 @@ sequenceDiagram
     *   使用資料庫連接池（最大 20 連接）
     *   為高頻查詢欄位建立索引
     *   學習記錄表按月分表
-*   **異步處理:** AI 分析和推薦生成使用 Celery 異步執行
+*   **異步處理:** AI 分析在 AI 服務內以 Redis+RQ 佇列異步執行；學習服務端採用非阻塞 HTTP 呼叫並具備重試與降級策略
 
 ### 4.4 可擴展性 (Scalability)
 *   **無狀態設計:** 學習服務實例無狀態，支持水平擴展
@@ -1261,6 +1266,7 @@ ALTER TABLE learning_progress_snapshots ADD CONSTRAINT chk_snapshots_accuracy_ra
 
 | 日期 | 審核人 | 版本 | 變更摘要/主要反饋 |
 | :--------- | :--------- | :--- | :---------------------------------------------- |
+| 2025-08-21 | AIPE01_group2 | v1.1 | 對齊架構：依賴與配置更新（AI 服務改為 Redis+RQ、API 端點與環境變數補充），優化異步處理說明 |
 | 2024-12-19 | AIPE01_group2 | v0.1 | 初稿建立，學習服務模組詳細設計完成 |
 | 2024-12-19 | AIPE01_group2 | v0.2 | 強化前後端分離設計理念，新增詳解功能要求（不分對錯都提供完整解析） |
 | 2024-12-19 | AIPE01_group2 | v0.3 | 新增學習歷程追蹤資料庫設計，包含弱點分析歷史記錄和學習進步趨勢分析功能 | 

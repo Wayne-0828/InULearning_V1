@@ -2,9 +2,9 @@
 
 ---
 
-**文件版本 (Document Version):** `v1.1.0`
+**文件版本 (Document Version):** `v1.2.0`
 
-**最後更新 (Last Updated):** `2024-07-26`
+**最後更新 (Last Updated):** `2025-08-21`
 
 **主要作者 (Lead Author):** `AIPE01_group2`
 
@@ -36,7 +36,7 @@
 
 ### 1.1 專案架構類型 (Project Architecture Type)
 *   **架構風格**: 微服務架構 (Microservices) + 事件驅動架構 (Event-Driven)
-*   **技術棧**: Python + FastAPI + PostgreSQL + MongoDB + Redis + Docker + AI/ML (CrewAI, LangChain, Gemini)
+*   **技術棧**: Python + FastAPI + PostgreSQL + MongoDB + Redis + Docker + AI/ML (Gemini；CrewAI/LangChain 規劃中) + 非同步任務（Redis + RQ）
 *   **專案規模**: 大型專案，預計 500+ 檔案，支援三大使用者角色及完整 AI 學習生態系
 
 ### 1.2 目錄組織原則 (Directory Organization Principles)
@@ -76,7 +76,7 @@ InULearning/
 │   │   ├── learning-service/             # ★ 學習管理服務
 │   │   ├── question-bank-service/        # 題庫管理服務
 │   │   ├── ai-analysis-service/          # ★ AI 分析服務
-│   │   ├── parent-dashboard-service/     # 家長儀表板服務 (規劃中)
+│   │   ├── parent-dashboard-service/     # 家長儀表板服務
 │   │   ├── teacher-management-service/   # 教師管理服務 (規劃中)
 │   │   ├── notification-service/         # 通知服務 (規劃中)
 │   │   ├── report-service/              # 報表服務 (規劃中)
@@ -138,12 +138,12 @@ InULearning/
 
 | 檔案/目錄 | 用途 | 主要功能/特性 |
 |-----------|------|---------------|
-| `ai_agents/analyst_agent.py` | 分析師 Agent | CrewAI Agent，負責學習弱點分析 |
-| `ai_agents/tutor_agent.py` | 導師 Agent | CrewAI Agent，提供學習指導建議 |
-| `ai_agents/recommender_agent.py` | 推薦 Agent | CrewAI Agent，生成個人化推薦 |
-| `services/crew_ai_service.py` | CrewAI 協作服務 | 多 Agent 協作編排和管理 |
-| `services/langchain_service.py` | LangChain 服務 | LLM 鏈式處理和提示管理 |
-| `services/gemini_service.py` | Gemini API 服務 | Google Gemini 模型呼叫和管理 |
+| `src/services/start_ai_service.py` | 簡化版 AI 服務 | FastAPI + Gemini；提供弱點分析、學習建議、任務觸發/查詢、批量端點；整合 Redis 快取 |
+| `src/services/rq_worker.py` | RQ 工作者 | 連接 Redis 佇列處理分析任務，支援退避、重試與長任務超時 |
+| `src/main.py` / `run.py` / `run_simple.py` | 啟動腳本 | 本地與容器化啟動支援；日誌與健康檢查 |
+| `src/utils/config.py` | 設定管理 | 環境變數載入、服務組態（速率限制/重試/TTL）|
+| `src/utils/database.py` | 資料庫工具 | PostgreSQL/Redis 連線、初始化檢查與健康檢查 |
+| `Dockerfile` | 容器化 | 建置與部署 AI 服務與 RQ worker |
 
 ### 3.3 題庫管理服務 (`backend/question-bank-service/`)
 
@@ -200,10 +200,11 @@ alembic==1.13.0                     # 資料庫遷移工具
 psycopg2-binary==2.9.9              # PostgreSQL 適配器
 pymongo==4.6.0                      # MongoDB 驅動
 redis==5.0.1                        # Redis 客戶端
-celery==5.3.4                       # 分散式任務佇列
+rq==1.16.2                          # AI 任務佇列（AI 分析服務）
+celery==5.3.4                       # 分散式任務佇列（規劃中）
 pydantic==2.5.0                     # 資料驗證
-langchain==0.1.0                    # LLM 應用框架
-crewai==0.1.0                       # AI Agent 協作框架
+langchain==0.1.0                    # LLM 應用框架（規劃中）
+crewai==0.1.0                       # AI Agent 協作框架（規劃中）
 google-generativeai==0.3.2          # Google Gemini API
 ```
 
@@ -257,6 +258,13 @@ coverage==7.3.2                     # 測試覆蓋率
 *   **測試環境**: `4_deployment/docker/docker-compose.staging.yml` (模擬生產環境)
 *   **生產環境**: `4_deployment/docker/docker-compose.prod.yml` (高可用性配置)
 
+### 6.4 現有 Docker 部署（根目錄）
+*   **主要編排**: `docker-compose.yml`（整合 PostgreSQL、MongoDB、Redis、MinIO、Nginx、Auth、Question-Bank、Learning、AI Analysis、Parent Dashboard 等服務）
+*   **啟動/停止**:
+    *   啟動: `docker compose up -d`
+    *   停止: `docker compose down`
+    *   重新建置: `docker compose build --no-cache`
+
 ### 6.2 Kubernetes 部署配置 (K8s Deployment Configuration)
 *   **命名空間**: `4_deployment/kubernetes/namespaces/` (環境隔離)
 *   **服務發現**: `4_deployment/kubernetes/services/` (內部服務通信)
@@ -280,6 +288,10 @@ coverage==7.3.2                     # 測試覆蓋率
 ### 7.2 技術文檔 (Technical Documentation)
 *   **API 文檔**: `docs/api/openapi.yaml` (OpenAPI 規格)
 *   **架構文檔**: `docs/architecture/` (技術架構詳述)
+    *   `diagrams/`：架構圖（Mermaid、PNG/SVG）（規劃/建議結構）
+    *   `decisions/`：架構決策記錄（ADR）（規劃/建議結構）
+    *   `patterns/`：設計模式與最佳實踐（規劃/建議結構）
+    *   `readme.md`：該目錄說明（規劃/建議）
 *   **部署指南**: `docs/deployment/` (部署和運維指南)
 
 ### 7.3 開發文檔 (Development Documentation)
@@ -309,10 +321,11 @@ coverage==7.3.2                     # 測試覆蓋率
 ```
 
 ### 8.2 服務複雜度統計 (Service Complexity Statistics)
-*   **微服務數量**: 7 個核心服務
+*   **微服務數量**: 7 個核心服務（含家長儀表板服務）
 *   **API 端點數量**: 50+ 個 RESTful 端點
 *   **資料庫表數量**: 15+ 個主要實體表
-*   **AI 模型數量**: 3 個 CrewAI Agents
+*   **AI 任務佇列**: Redis + RQ（AI 分析服務）
+*   **主要模型**: Google Gemini API
 *   **前端應用數量**: 4 個獨立應用
 
 ### 8.3 技術債務評估 (Technical Debt Assessment)
@@ -345,5 +358,6 @@ coverage==7.3.2                     # 測試覆蓋率
 
 | 日期 | 審核人 | 版本 | 變更摘要/主要反饋 |
 | :--------- | :--------- | :--- | :---------------------------------------------- |
+| 2025-08-21 | AIPE01_group2 | v1.2.0 | 同步最新架構：家長儀表板服務標記為已實現；AI 服務更新為 Gemini+Redis+RQ 並補充模組結構；依賴新增 RQ；修訂服務統計 |
 | 2024-12-19 | AIPE01_group2 | v1.0.0 | 初稿完成，整合系統架構、API設計和系統設計文檔內容建立完整專案結構 |
 | 2024-07-26 | AIPE01_group2 | v1.1.0 | 根據 v1.0 實際專案結構更新目錄樹，同步開發階段狀態，並將文件狀態更新為「已實現」。 | 

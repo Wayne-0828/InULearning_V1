@@ -2,9 +2,9 @@
 
 ---
 
-**文件版本 (Document Version):** `v1.0`
+**文件版本 (Document Version):** `v1.1`
 
-**最後更新 (Last Updated):** `2025-08-15`
+**最後更新 (Last Updated):** `2025-08-21`
 
 **主要作者/架構師 (Lead Author/Architect):** `AIPE01_group2`
 
@@ -159,13 +159,14 @@ graph TB
         G[學習服務]
         H[題庫管理服務]
         I[AI 分析服務]
+        PD[家長儀表板服務]
         J(通知服務)
         K(報表服務)
     end
     
     subgraph "AI 核心層 (AI Core Layer)"
-        L[CrewAI 協作]
-        M[LangChain 框架]
+        L(CrewAI 協作)
+        M(LangChain 框架)
         N[Gemini 模型]
         O(Milvus 向量DB)
     end
@@ -189,14 +190,15 @@ graph TB
     C --> E
     D --> E
     
-    E --> F & G & H & I & J & K
+    E --> F & G & H & I & PD & J & K
     
     I --> L & M & N & O
     
     F --> P & R
     G --> P & Q & R & S & T
     H --> Q & S
-    I --> O & T
+    I --> P & R & O
+    PD --> P
     J --> T
     
     T --> U
@@ -210,7 +212,8 @@ graph TB
 | 用戶認證服務 | 處理三種角色的註冊、登入、權限管理和 Token 驗證 | FastAPI, JWT, OAuth 2.0 | 後端團隊 | PostgreSQL, Redis | ✅ 已實現 | 99.95% 可用性 | 需支持角色切換 |
 | 學習服務 | 管理學習歷程、練習記錄、進度追蹤 | FastAPI, SQLAlchemy | 後端團隊 | PostgreSQL, MongoDB, AI分析服務 | ✅ 已實現 | 99.9% 可用性 | 核心業務邏輯 |
 | 題庫管理服務 | 題目 CRUD、分類管理、版本控制 | FastAPI, MongoDB | 後端團隊 | MongoDB, MinIO | ✅ 已實現 | 99.9% 可用性 | 需支持大量題目存儲 |
-| AI 分析服務 | 學習弱點分析、相似題推薦、個人化建議生成 | FastAPI, CrewAI, LangChain, Gemini | AI 團隊 | Milvus, MongoDB, Gemini API | ✅ 已實現 | 99.5% 可用性 | AI 模型準確性關鍵 |
+| AI 分析服務 | 學習弱點分析、相似題推薦、個人化建議生成 | FastAPI, Gemini, Redis, RQ | AI 團隊 | PostgreSQL, Redis, Gemini API | ✅ 已實現 | 99.5% 可用性 | 目前採用 Gemini（CrewAI/LangChain 規劃中）；支援 Redis+RQ 任務佇列 |
+| 家長儀表板服務 | 家長查看學習狀況、弱點與建議總覽 | FastAPI | 後端團隊 | 認證服務、學習服務、AI 分析服務、PostgreSQL | ✅ 已實現 | 99.9% 可用性 | 提供 `:8005` API 與彙整端點 |
 | 通知服務 | 學習提醒、成績通知、家長通知 | FastAPI, RabbitMQ | 後端團隊 | RabbitMQ, PostgreSQL | 🔄 規劃中 | 99% 可用性 | 異步處理 |
 | 報表服務 | 學習報告生成、統計分析、儀表板數據 | FastAPI, pandas | 後端團隊 | PostgreSQL, MongoDB | 🔄 規劃中 | 99% 可用性 | 資料計算密集 |
 
@@ -305,10 +308,11 @@ sequenceDiagram
     *   **選擇理由:** S3 相容 API，可本地部署，成本可控
 
 ### 5.4 訊息佇列/事件流 (Message Queues/Event Streaming)
-*   **選用技術:** RabbitMQ 3.12+
+*   **目前已導入:** Redis + RQ（AI 分析任務排程與結果查詢加速）
+*   **選用技術:** RabbitMQ 3.12+（規劃中）
 *   **使用場景:** 異步任務處理、服務間解耦、通知分發
 *   **選擇理由:** 可靠的消息傳遞，豐富的路由功能，管理介面友好
-*   **任務佇列:** Celery 5.3+
+*   **任務佇列:** Celery 5.3+（規劃中）
     *   **用途:** 背景任務處理，如 AI 模型推理、報表生成
     *   **選擇理由:** 與 Python 生態整合良好，支持分散式任務執行
 
@@ -476,6 +480,7 @@ sequenceDiagram
 *   **[題庫服務 API](http://localhost:8002/docs)**
 *   **[學習服務 API](http://localhost:8003/docs)**
 *   **[AI 分析服務 API](http://localhost:8004/docs)**
+*   **[家長儀表板服務 API](http://localhost:8005/docs)**
 
 ### 9.2 資料庫設計要點
 *   **用戶表設計：** 統一用戶表，通過角色欄位區分學生、家長、教師、管理者(不能註冊，由後台設定)
@@ -494,5 +499,6 @@ sequenceDiagram
 
 | 日期 | 審核人 | 版本 | 變更摘要/主要反饋 |
 | :--------- | :--------- | :--- | :---------------------------------------------- |
+| 2025-08-21 | AIPE01_group2 | v1.1 | 更新：反映 AI 採用 Gemini+Redis+RQ、補充家長儀表板服務與 API 連結，調整架構圖狀態標示 |
 | 2024-12-19 | AIPE01_group2 | v0.1 | 初稿建立，基於專案摘要和架構模板整合 |
 | 2024-07-26 | AIPE01_group2 | v1.0 | 根據 v1.0 核心功能完成情況更新架構圖、組件狀態和 API 文件連結。 | 
