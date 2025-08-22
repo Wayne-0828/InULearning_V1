@@ -129,10 +129,18 @@
     </div>
 
     <div class="test-section">
-        <h2>8. 學習記錄詳細診斷</h2>
+        <h3>🔍 資料庫直接查詢（無需認證）</h3>
+        <p>直接查詢資料庫中的學習記錄數據</p>
+        <input type="number" id="publicStudentId" placeholder="輸入學生ID" value="1" style="padding: 8px; margin: 5px;">
+        <button class="test-button" onclick="testPublicEndpoint()">直接查詢資料庫</button>
+        <div id="publicEndpointResult" class="result"></div>
+    </div>
+
+    <div class="test-section">
+        <h3>🔍 學習記錄詳細診斷</h3>
         <p>嘗試不同的查詢方式來獲取學習記錄</p>
         <input type="number" id="diagnoseStudentId" placeholder="輸入學生ID" value="1" style="padding: 8px; margin: 5px;">
-        <button class="test-button" onclick="diagnoseLearningRecords()">詳細診斷</button>
+        <button class="test-button" onclick="testLearningRecordsDetailed()">詳細診斷</button>
         <div id="learningRecordsDiagnosisResult" class="result"></div>
     </div>
 
@@ -489,47 +497,36 @@
         }
 
         // 學習記錄詳細診斷
-        async function diagnoseLearningRecords() {
+        async function testLearningRecordsDetailed() {
             const studentId = document.getElementById('diagnoseStudentId').value;
             if (!studentId) {
                 alert('請輸入學生ID');
                 return;
             }
 
-            showLoading('learningRecordsDiagnosisResult');
             try {
-                // 嘗試多個可能的API路徑
-                let data;
-                let apiPath;
+                // 使用正確的教師專用API端點
+                const response = await apiClient.get(`/api/v1/learning/teacher/student/${studentId}/records?limit=20`);
                 
-                try {
-                    data = await apiClient.get(`/api/v1/learning/records/student/${studentId}?limit=20`);
-                    apiPath = `/api/v1/learning/records/student/${studentId}?limit=20`;
-                } catch (error) {
-                    try {
-                        data = await apiClient.get(`/api/v1/learning/records?student_id=${studentId}&limit=20`);
-                        apiPath = `/api/v1/learning/records?student_id=${studentId}&limit=20`;
-                    } catch (secondError) {
-                        throw new Error(`兩個API路徑都失敗:\n1. /api/v1/learning/records/student/${studentId}?limit=20: ${error.message}\n2. /api/v1/learning/records?student_id=${studentId}&limit=20: ${secondError.message}`);
-                    }
-                }
-                
-                showResult('learningRecordsDiagnosisResult', {
+                const result = {
                     success: true,
-                    message: `學生 ${studentId} 學習記錄詳細診斷成功`,
+                    message: "學習記錄詳細診斷成功",
                     studentId: studentId,
-                    apiPath: apiPath,
-                    data: data,
+                    apiPath: `/api/v1/learning/teacher/student/${studentId}/records?limit=20`,
+                    data: response,
                     timestamp: new Date().toISOString()
-                });
+                };
+                
+                showResult('learningRecordsDiagnosisResult', result);
+                
             } catch (error) {
-                showResult('learningRecordsDiagnosisResult', {
+                const result = {
                     success: false,
-                    message: `學生 ${studentId} 學習記錄詳細診斷失敗`,
-                    studentId: studentId,
+                    message: "學習記錄詳細診斷失敗",
                     error: error.message,
                     timestamp: new Date().toISOString()
-                }, 'error');
+                };
+                showResult('learningRecordsDiagnosisResult', result);
             }
         }
 
@@ -561,6 +558,36 @@
                  }, 'error');
              }
          }
+
+        // 直接查詢資料庫（無需認證）
+        async function testPublicEndpoint() {
+            const studentId = document.getElementById('publicStudentId').value;
+            if (!studentId) {
+                alert('請輸入學生ID');
+                return;
+            }
+
+            showLoading('publicEndpointResult');
+            try {
+                // 使用正確的公開測試端點
+                const data = await apiClient.get(`/test/learning-records/${studentId}`);
+                showResult('publicEndpointResult', {
+                    success: true,
+                    message: `學生 ${studentId} 資料庫學習記錄API測試成功`,
+                    studentId: studentId,
+                    data: data,
+                    timestamp: new Date().toISOString()
+                });
+            } catch (error) {
+                showResult('publicEndpointResult', {
+                    success: false,
+                    message: `學生 ${studentId} 資料庫學習記錄API測試失敗`,
+                    studentId: studentId,
+                    error: error.message,
+                    timestamp: new Date().toISOString()
+                }, 'error');
+            }
+        }
 
         // 頁面載入時自動檢查認證狀態
         window.addEventListener('load', function() {

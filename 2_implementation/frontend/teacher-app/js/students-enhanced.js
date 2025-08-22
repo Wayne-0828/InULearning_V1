@@ -344,12 +344,13 @@ class StudentsAnalysisManager {
                     getStudentSubjectRadar: async (studentId) => {
                         console.log('🔗 調用真實 API: 獲取學生科目雷達圖數據');
                         try {
-                            const response = await apiClient.get(`/learning/analytics/subjects/radar?window=30d`);
+                            // 使用新的基於學習會話的科目分析API，傳入學生ID
+                            const response = await apiClient.get(`/learning/analytics/sessions/subjects/radar?student_id=${studentId}&window=30d`);
                             console.log('✅ 科目雷達圖API回應:', response);
                             return response;
                         } catch (error) {
                             console.error('❌ 獲取科目雷達圖失敗:', error);
-                            console.log(`🔍 嘗試的API路徑: /learning/analytics/subjects/radar?window=30d`);
+                            console.log(`🔍 嘗試的API路徑: /learning/analytics/sessions/subjects/radar?student_id=${studentId}&window=30d`);
                             return null;
                         }
                     },
@@ -358,12 +359,13 @@ class StudentsAnalysisManager {
                     getStudentSubjectTrend: async (studentId, metric = 'accuracy') => {
                         console.log('🔗 調用真實 API: 獲取學生科目趨勢數據');
                         try {
-                            const response = await apiClient.get(`/learning/analytics/subjects/trend?metric=${metric}&window=30d&limit=50`);
+                            // 使用新的基於學習會話的科目分析API，傳入學生ID
+                            const response = await apiClient.get(`/learning/analytics/sessions/subjects/trend?student_id=${studentId}&metric=${metric}&window=30d&limit=50`);
                             console.log('✅ 科目趨勢API回應:', response);
                             return response;
                         } catch (error) {
                             console.error('❌ 獲取科目趨勢失敗:', error);
-                            console.log(`🔍 嘗試的API路徑: /learning/analytics/subjects/trend?metric=${metric}&window=30d&limit=50`);
+                            console.log(`🔍 嘗試的API路徑: /learning/analytics/sessions/subjects/trend?student_id=${studentId}&metric=${metric}&window=30d&limit=50`);
                             return null;
                         }
                     }
@@ -1731,14 +1733,30 @@ class StudentsAnalysisManager {
                 // 獲取科目雷達圖數據
                 const radarData = await window.realAPIClient.getStudentSubjectRadar(studentId);
                 if (radarData) {
+                    console.log('✅ 雷達圖數據獲取成功，開始更新圖表');
                     this.updateSubjectRadarChart(radarData);
                 }
                 
                 // 獲取科目趨勢數據
                 const trendData = await window.realAPIClient.getStudentSubjectTrend(studentId, 'accuracy');
                 if (trendData) {
+                    console.log('✅ 趨勢圖數據獲取成功，開始更新圖表');
                     this.updateSubjectTrendChart(trendData);
                 }
+                
+                // 驗證圖表是否創建成功
+                setTimeout(() => {
+                    console.log('🔍 驗證圖表創建狀態:');
+                    console.log('雷達圖實例:', this.charts.subjectRadarChart);
+                    console.log('趨勢圖實例:', this.charts.subjectTrendChart);
+                    
+                    if (this.charts.subjectRadarChart && this.charts.subjectTrendChart) {
+                        console.log('✅ 科目分析圖表創建成功');
+                    } else {
+                        console.log('❌ 科目分析圖表創建失敗');
+                    }
+                }, 500);
+                
             } else {
                 console.warn('真實API客戶端未認證，跳過科目分析數據載入');
             }
@@ -1750,14 +1768,223 @@ class StudentsAnalysisManager {
     
     updateSubjectRadarChart(radarData) {
         console.log('更新科目雷達圖:', radarData);
-        // 這裡可以更新雷達圖顯示
-        // 根據實際的radarData結構來實現
+        
+        // 檢查圖表容器
+        const ctx = document.getElementById('subjectRadarChart');
+        if (!ctx) {
+            console.warn('找不到科目雷達圖容器');
+            return;
+        }
+        
+        // 如果已有圖表，先銷毀
+        if (this.charts.subjectRadarChart) {
+            console.log('銷毀舊的雷達圖實例');
+            this.charts.subjectRadarChart.destroy();
+            this.charts.subjectRadarChart = null;
+        }
+        
+        // 檢查數據
+        if (!radarData || !radarData.subjects || radarData.subjects.length === 0) {
+            console.warn('科目雷達圖數據為空');
+            return;
+        }
+        
+        console.log('雷達圖數據結構:', radarData.subjects);
+        
+        // 確保容器尺寸
+        ctx.style.width = '300px';
+        ctx.style.height = '300px';
+        
+        try {
+            // 創建雷達圖 - 修復數據格式
+            const data = {
+                labels: radarData.subjects.map(s => s.subject),
+                datasets: [
+                    {
+                        label: '準確率',
+                        data: radarData.subjects.map(s => (s.metrics.accuracy || 0) * 100),
+                        borderColor: 'rgba(59, 130, 246, 1)',
+                        backgroundColor: 'rgba(59, 130, 246, 0.2)',
+                        tension: 0.4
+                    },
+                    {
+                        label: '高準確率會話比例',
+                        data: radarData.subjects.map(s => (s.metrics.high_accuracy_sessions || 0) * 100),
+                        borderColor: 'rgba(239, 68, 68, 1)',
+                        backgroundColor: 'rgba(239, 68, 68, 0.2)',
+                        tension: 0.4
+                    },
+                    {
+                        label: '平均分數',
+                        data: radarData.subjects.map(s => s.metrics.avg_score || 0),
+                        borderColor: 'rgba(16, 185, 129, 1)',
+                        backgroundColor: 'rgba(16, 185, 129, 0.2)',
+                        tension: 0.4
+                    }
+                ]
+            };
+            
+            console.log('雷達圖數據:', data);
+            
+            this.charts.subjectRadarChart = new Chart(ctx, {
+                type: 'radar',
+                data: data,
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: true,
+                            position: 'top'
+                        },
+                        title: {
+                            display: true,
+                            text: '科目學習表現雷達圖'
+                        }
+                    },
+                    scales: {
+                        r: {
+                            beginAtZero: true,
+                            max: 100,
+                            ticks: {
+                                stepSize: 20
+                            }
+                        }
+                    }
+                }
+            });
+            
+            console.log('✅ 雷達圖創建成功:', this.charts.subjectRadarChart);
+            
+            // 強制更新圖表
+            setTimeout(() => {
+                if (this.charts.subjectRadarChart) {
+                    this.charts.subjectRadarChart.update();
+                    console.log('✅ 雷達圖更新完成');
+                }
+            }, 100);
+            
+        } catch (error) {
+            console.error('❌ 創建雷達圖失敗:', error);
+        }
     }
     
     updateSubjectTrendChart(trendData) {
         console.log('更新科目趨勢圖:', trendData);
-        // 這裡可以更新趨勢圖顯示
-        // 根據實際的trendData結構來實現
+        
+        // 檢查圖表容器
+        const ctx = document.getElementById('subjectTrendChart');
+        if (!ctx) {
+            console.warn('找不到科目趨勢圖容器');
+            return;
+        }
+        
+        // 如果已有圖表，先銷毀
+        if (this.charts.subjectTrendChart) {
+            console.log('銷毀舊的趨勢圖實例');
+            this.charts.subjectTrendChart.destroy();
+            this.charts.subjectTrendChart = null;
+        }
+        
+        // 檢查數據
+        if (!trendData || !trendData.series || trendData.series.length === 0) {
+            console.warn('科目趨勢圖數據為空');
+            return;
+        }
+        
+        console.log('趨勢圖數據結構:', trendData.series);
+        
+        // 確保容器尺寸
+        ctx.style.width = '300px';
+        ctx.style.height = '300px';
+        
+        try {
+            // 創建趨勢圖 - 修復數據格式
+            const datasets = trendData.series.map((subject, index) => {
+                const colors = [
+                    'rgba(59, 130, 246, 1)',   // 藍色
+                    'rgba(239, 68, 68, 1)',    // 紅色
+                    'rgba(16, 185, 129, 1)',  // 綠色
+                    'rgba(245, 158, 11, 1)',  // 黃色
+                    'rgba(139, 92, 246, 1)',  // 紫色
+                ];
+                
+                return {
+                    label: subject.subject,
+                    data: subject.data.map(d => {
+                        // 根據指標類型處理數據
+                        if (trendData.metric === 'accuracy') {
+                            return (d.value || 0) * 100; // 準確率轉換為百分比
+                        } else if (trendData.metric === 'score') {
+                            return d.value || 0; // 分數保持原值
+                        } else {
+                            return d.value || 0; // 其他指標保持原值
+                        }
+                    }),
+                    borderColor: colors[index % colors.length],
+                    backgroundColor: colors[index % colors.length].replace('1)', '0.2)'),
+                    tension: 0.4,
+                    fill: false
+                };
+            });
+            
+            const labels = trendData.series[0]?.data.map(d => {
+                try {
+                    return new Date(d.timestamp).toLocaleDateString('zh-TW');
+                } catch (error) {
+                    console.warn('日期解析失敗:', d.timestamp);
+                    return '未知日期';
+                }
+            }) || [];
+            
+            const data = {
+                labels: labels,
+                datasets: datasets
+            };
+            
+            console.log('趨勢圖數據:', data);
+            
+            this.charts.subjectTrendChart = new Chart(ctx, {
+                type: 'line',
+                data: data,
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: true,
+                            position: 'top'
+                        },
+                        title: {
+                            display: true,
+                            text: '科目學習趨勢圖'
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 100,
+                            ticks: {
+                                stepSize: 20
+                            }
+                        }
+                    }
+                }
+            });
+            
+            console.log('✅ 趨勢圖創建成功:', this.charts.subjectTrendChart);
+            
+            // 強制更新圖表
+            setTimeout(() => {
+                if (this.charts.subjectTrendChart) {
+                    this.charts.subjectTrendChart.update();
+                    console.log('✅ 趨勢圖更新完成');
+                }
+            }, 100);
+            
+        } catch (error) {
+            console.error('❌ 創建趨勢圖失敗:', error);
+        }
     }
     
     displayStudentDetail(studentData) {
@@ -1869,6 +2096,21 @@ class StudentsAnalysisManager {
                 }));
                 
                 console.log('✅ 處理後的學習記錄 (data字段格式):', records);
+                this.displayLearningRecords(records);
+            } else if (response && response.sessions && Array.isArray(response.sessions)) {
+                // 如果API返回sessions字段包含數組（新的教師專用API格式）
+                const records = response.sessions.map(record => ({
+                    id: record.id || record.session_id,
+                    session_name: record.session_name || `學習會話 ${record.session_id}`,
+                    subject: record.subject || '未知科目',
+                    chapter: record.chapter || '未知章節',
+                    accuracy_rate: record.accuracy_rate || 0,
+                    time_spent: record.time_spent || 0,
+                    start_time: record.start_time || record.created_at || new Date().toISOString(),
+                    questions_answered: record.questions_answered || 1
+                }));
+                
+                console.log('✅ 處理後的學習記錄 (sessions字段格式):', records);
                 this.displayLearningRecords(records);
             } else {
                 console.warn('學習記錄API返回空數據或格式不正確:', response);
