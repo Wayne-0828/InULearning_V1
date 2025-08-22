@@ -436,6 +436,25 @@
                             </div>
                         </div>
 
+                        <!-- 科目分析圖表 -->
+                        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+                            <!-- 科目雷達圖 -->
+                            <div class="card">
+                                <h3 class="text-lg font-semibold text-gray-800 mb-4">📊 科目學習表現雷達圖</h3>
+                                <div class="h-64 flex items-center justify-center">
+                                    <canvas id="subjectRadarChart" width="300" height="300" style="max-width: 100%; max-height: 100%;"></canvas>
+                                </div>
+                            </div>
+
+                            <!-- 科目趨勢圖 -->
+                            <div class="card">
+                                <h3 class="text-lg font-semibold text-gray-800 mb-4">📈 科目學習趨勢圖</h3>
+                                <div class="h-64 flex items-center justify-center">
+                                    <canvas id="subjectTrendChart" width="300" height="300" style="max-width: 100%; max-height: 100%;"></canvas>
+                                </div>
+                            </div>
+                        </div>
+
                         <!-- 學習記錄 -->
                         <div class="card">
                             <h3 class="text-lg font-semibold text-gray-800 mb-4">📚 最近學習記錄</h3>

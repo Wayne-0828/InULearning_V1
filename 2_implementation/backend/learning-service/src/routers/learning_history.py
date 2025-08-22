@@ -9,7 +9,7 @@ from datetime import datetime, timezone
 from typing import Optional
 from fastapi import APIRouter, Depends, HTTPException, status, Query, Body
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import select, func, and_, or_, desc
+from sqlalchemy import select, func, and_, or_, desc, text
 from sqlalchemy.orm import selectinload
 import math
 
@@ -503,7 +503,6 @@ async def get_done_question_ids(
         if grade:
             stmt = stmt.where(ExerciseRecord.grade == grade)
         if publisher:
-            # 嚴格依學習記錄的出版社過濾（不再以 NULL 作通配），避免過度排除
             stmt = stmt.where(ExerciseRecord.publisher == _normalize_publisher(publisher))
         if chapter:
             # 嚴格依章節過濾（chapter 為 NULL 的舊資料視為未知，不參與本次章節排除）
@@ -898,4 +897,124 @@ async def get_learning_statistics(
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="查詢學習統計失敗"
+        )
+
+
+@router.get("/teacher/student/{student_id}/records", response_model=LearningHistoryResponse)
+async def get_teacher_student_learning_records(
+    student_id: int,
+    subject: Optional[str] = Query(None, description="科目篩選"),
+    grade: Optional[str] = Query(None, description="年級篩選"),
+    publisher: Optional[str] = Query(None, description="出版社篩選"),
+    start_date: Optional[datetime] = Query(None, description="開始日期"),
+    end_date: Optional[datetime] = Query(None, description="結束日期"),
+    page: int = Query(1, ge=1, description="頁碼"),
+    page_size: int = Query(20, ge=1, le=100, description="每頁數量"),
+    current_user = Depends(get_current_user),
+    db_session: AsyncSession = Depends(get_db_session)
+):
+    """教師查詢特定學生的學習記錄"""
+    
+    try:
+        # 檢查當前用戶是否為教師
+        if current_user.role != "teacher":
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail="只有教師可以查詢學生學習記錄"
+            )
+        
+        logger.info(f"Teacher {current_user.user_id} querying learning records for student {student_id}")
+
+        # 構建查詢條件 - 使用指定的學生ID而不是當前用戶ID
+        conditions = [LearningSession.user_id == student_id]
+        
+        if subject:
+            conditions.append(LearningSession.subject == subject)
+        if grade:
+            conditions.append(LearningSession.grade == grade)
+        if publisher:
+            conditions.append(LearningSession.publisher == publisher)
+        if start_date:
+            conditions.append(LearningSession.start_time >= start_date)
+        if end_date:
+            conditions.append(LearningSession.start_time <= end_date)
+        
+        # 調試：打印查詢條件
+        logger.info(f"Query conditions: {conditions}")
+        logger.info(f"Student ID: {student_id}, Type: {type(student_id)}")
+        
+        # 查詢總數
+        count_result = await db_session.execute(
+            select(func.count(LearningSession.id)).where(and_(*conditions))
+        )
+        total = count_result.scalar()
+        logger.info(f"Total records found: {total}")
+        
+        # 調試：直接查詢資料庫
+        try:
+            debug_result = await db_session.execute(text("SELECT COUNT(*) FROM learning_sessions WHERE user_id = :user_id"), {"user_id": student_id})
+            debug_count = debug_result.scalar()
+            logger.info(f"Direct SQL query result: {debug_count} records for user_id {student_id}")
+            
+            # 檢查所有用戶ID
+            all_users_result = await db_session.execute(text("SELECT DISTINCT user_id FROM learning_sessions LIMIT 10"))
+            all_users = [row[0] for row in all_users_result]
+            logger.info(f"All user_ids in learning_sessions: {all_users}")
+        except Exception as debug_error:
+            logger.warning(f"Debug query failed: {debug_error}")
+        
+        # 分頁查詢
+        offset = (page - 1) * page_size
+        result = await db_session.execute(
+            select(LearningSession)
+            .where(and_(*conditions))
+            .order_by(desc(LearningSession.start_time))
+            .offset(offset)
+            .limit(page_size)
+        )
+        sessions = result.scalars().all()
+        logger.info(f"Retrieved {len(sessions)} sessions")
+        
+        # 轉換為響應格式
+        session_summaries = []
+        for session in sessions:
+            summary = LearningSessionSummary(
+                session_id=str(session.id),
+                session_name=session.session_name,
+                subject=session.subject,
+                grade=session.grade,
+                chapter=session.chapter,
+                publisher=session.publisher,
+                difficulty=session.difficulty,
+                knowledge_points=session.knowledge_points or [],
+                question_count=session.question_count,
+                correct_count=session.correct_count,
+                total_score=float(session.total_score) if session.total_score else 0.0,
+                accuracy_rate=float(session.accuracy_rate) if session.accuracy_rate else 0.0,
+                time_spent=session.time_spent,
+                status=session.status,
+                start_time=session.start_time,
+                end_time=session.end_time
+            )
+            session_summaries.append(summary)
+        
+        total_pages = math.ceil(total / page_size) if total > 0 else 0
+        
+        logger.info(f"Returning {len(session_summaries)} sessions, total: {total}, pages: {total_pages}")
+        
+        return LearningHistoryResponse(
+            sessions=session_summaries,
+            total=total,
+            page=page,
+            page_size=page_size,
+            total_pages=total_pages
+        )
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Failed to get learning records for student {student_id}: {e}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="查詢學生學習記錄失敗"
         )

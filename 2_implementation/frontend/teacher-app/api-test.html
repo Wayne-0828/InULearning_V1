@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API 測試頁面</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .test-section {
+            background: white;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .test-button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        .test-button:hover {
+            background: #0056b3;
+        }
+        .result {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            padding: 15px;
+            margin: 10px 0;
+            white-space: pre-wrap;
+            font-family: monospace;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        .success {
+            border-color: #28a745;
+            background-color: #d4edda;
+        }
+        .error {
+            border-color: #dc3545;
+            background-color: #f8d7da;
+        }
+        .loading {
+            border-color: #ffc107;
+            background-color: #fff3cd;
+        }
+        .warning {
+            border-color: #ffc107;
+            background-color: #fff3cd;
+        }
+        .info {
+            border-color: #17a2b8;
+            background-color: #d1ecf1;
+        }
+    </style>
+</head>
+<body>
+    <h1>🔍 API 測試頁面</h1>
+    <p>這個頁面用來測試學生分析相關的API端點是否能正常獲取數據</p>
+
+    <div class="test-section">
+        <h2>🔐 認證狀態檢查</h2>
+        <p>檢查當前的認證狀態和token</p>
+        <button class="test-button" onclick="checkAuthStatus()">檢查認證狀態</button>
+        <div id="authStatusResult" class="result"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>1. 班級列表 API 測試</h2>
+        <p>測試 <code>/relationships/teacher-class</code> 端點</p>
+        <button class="test-button" onclick="testTeacherClasses()">測試班級列表</button>
+        <div id="teacherClassesResult" class="result"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>2. 班級學生 API 測試</h2>
+        <p>測試 <code>/relationships/classes/{id}/students</code> 端點</p>
+        <input type="number" id="classIdInput" placeholder="輸入班級ID" value="1" style="padding: 8px; margin: 5px;">
+        <button class="test-button" onclick="testClassStudents()">測試班級學生</button>
+        <div id="classStudentsResult" class="result"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>3. 學生學習摘要 API 測試</h2>
+        <p>測試 <code>/learning/analytics/students/{id}/summary</code> 端點</p>
+        <input type="number" id="studentIdInput" placeholder="輸入學生ID" value="1" style="padding: 8px; margin: 5px;">
+        <button class="test-button" onclick="testStudentSummary()">測試學生摘要</button>
+        <div id="studentSummaryResult" class="result"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>4. 學習記錄 API 測試</h2>
+        <p>測試學習記錄相關端點</p>
+        <input type="number" id="studentIdForRecords" placeholder="輸入學生ID" value="1" style="padding: 8px; margin: 5px;">
+        <button class="test-button" onclick="testLearningRecords()">測試學習記錄</button>
+        <div id="learningRecordsResult" class="result"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>5. 科目分析 API 測試</h2>
+        <p>測試科目雷達圖和趨勢圖API</p>
+        <input type="number" id="studentIdForAnalytics" placeholder="輸入學生ID" value="1" style="padding: 8px; margin: 5px;">
+        <button class="test-button" onclick="testSubjectAnalytics()">測試科目分析</button>
+        <div id="subjectAnalyticsResult" class="result"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>6. 綜合測試</h2>
+        <p>測試完整的數據流程</p>
+        <button class="test-button" onclick="testCompleteFlow()">測試完整流程</button>
+        <div id="completeFlowResult" class="result"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>7. 數據庫診斷</h2>
+        <p>檢查數據庫中是否有學習記錄數據</p>
+        <button class="test-button" onclick="diagnoseDatabase()">診斷數據庫</button>
+        <div id="databaseDiagnosisResult" class="result"></div>
+    </div>
+
+    <div class="test-section">
+        <h3>🔍 資料庫直接查詢（無需認證）</h3>
+        <p>直接查詢資料庫中的學習記錄數據</p>
+        <input type="number" id="publicStudentId" placeholder="輸入學生ID" value="1" style="padding: 8px; margin: 5px;">
+        <button class="test-button" onclick="testPublicEndpoint()">直接查詢資料庫</button>
+        <div id="publicEndpointResult" class="result"></div>
+    </div>
+
+    <div class="test-section">
+        <h3>🔍 學習記錄詳細診斷</h3>
+        <p>嘗試不同的查詢方式來獲取學習記錄</p>
+        <input type="number" id="diagnoseStudentId" placeholder="輸入學生ID" value="1" style="padding: 8px; margin: 5px;">
+        <button class="test-button" onclick="testLearningRecordsDetailed()">詳細診斷</button>
+        <div id="learningRecordsDiagnosisResult" class="result"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>9. 公開測試端點（無需認證）</h2>
+        <p>測試學習記錄數據，不需要認證token</p>
+        <input type="number" id="publicTestStudentId" placeholder="輸入學生ID" value="1" style="padding: 8px; margin: 5px;">
+        <button class="test-button" onclick="testPublicLearningRecords()">公開測試學習記錄</button>
+        <div id="publicTestResult" class="result"></div>
+    </div>
+
+    <script>
+        // 檢查認證狀態
+        function checkAuthStatus() {
+            const element = document.getElementById('authStatusResult');
+            element.className = 'result loading';
+            element.textContent = '檢查中...';
+            
+            try {
+                // 檢查localStorage和sessionStorage中的token
+                const authToken = localStorage.getItem('auth_token') || sessionStorage.getItem('auth_token');
+                const teacherToken = localStorage.getItem('teacher_token') || sessionStorage.getItem('teacher_token');
+                
+                const status = {
+                    timestamp: new Date().toISOString(),
+                    authToken: authToken ? `${authToken.substring(0, 10)}...` : '無',
+                    teacherToken: teacherToken ? `${teacherToken.substring(0, 10)}...` : '無',
+                    hasToken: !!(authToken || teacherToken)
+                };
+                
+                if (status.hasToken) {
+                    element.className = 'result success';
+                    element.textContent = JSON.stringify(status, null, 2);
+                } else {
+                    element.className = 'result warning';
+                    element.textContent = JSON.stringify(status, null, 2) + '\n\n⚠️ 沒有找到認證token，請先登入';
+                }
+            } catch (error) {
+                element.className = 'result error';
+                element.textContent = `檢查認證狀態失敗: ${error.message}`;
+            }
+        }
+
+        // 簡單的API客戶端
+        const apiClient = {
+            async get(url) {
+                try {
+                    // 獲取認證token
+                    const token = localStorage.getItem('auth_token') || 
+                                 sessionStorage.getItem('auth_token') || 
+                                 localStorage.getItem('teacher_token') || 
+                                 sessionStorage.getItem('teacher_token');
+                    
+                    const headers = {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    };
+                    
+                    if (token) {
+                        headers['Authorization'] = `Bearer ${token}`;
+                    }
+                    
+                    console.log(`🌐 API 請求: ${url}`);
+                    console.log(`🔐 認證頭: ${token ? 'Bearer ' + token.substring(0, 10) + '...' : '無'}`);
+                    
+                    const response = await fetch(url, {
+                        method: 'GET',
+                        headers: headers
+                    });
+                    
+                    console.log(`📡 回應狀態: ${response.status} ${response.statusText}`);
+                    console.log(`📋 回應頭:`, Object.fromEntries(response.headers.entries()));
+                    
+                    if (!response.ok) {
+                        // 嘗試讀取錯誤回應
+                        let errorText = '';
+                        try {
+                            errorText = await response.text();
+                        } catch (e) {
+                            errorText = '無法讀取錯誤回應';
+                        }
+                        
+                        throw new Error(`HTTP ${response.status}: ${response.statusText}\n回應內容: ${errorText.substring(0, 200)}...`);
+                    }
+                    
+                    // 檢查回應類型
+                    const contentType = response.headers.get('content-type');
+                    if (contentType && contentType.includes('text/html')) {
+                        console.warn('⚠️ 回應是HTML而不是JSON，可能是認證失敗或端點不存在');
+                    }
+                    
+                    const data = await response.json();
+                    return data;
+                } catch (error) {
+                    throw error;
+                }
+            }
+        };
+
+        // 顯示結果的輔助函數
+        function showResult(elementId, data, type = 'success') {
+            const element = document.getElementById(elementId);
+            element.className = `result ${type}`;
+            element.textContent = JSON.stringify(data, null, 2);
+        }
+
+        function showLoading(elementId) {
+            const element = document.getElementById(elementId);
+            element.className = 'result loading';
+            element.textContent = '載入中...';
+        }
+
+        // 1. 測試班級列表API
+        async function testTeacherClasses() {
+            showLoading('teacherClassesResult');
+            try {
+                const data = await apiClient.get('/api/v1/relationships/teacher-class');
+                showResult('teacherClassesResult', {
+                    success: true,
+                    message: '班級列表API測試成功',
+                    data: data,
+                    timestamp: new Date().toISOString()
+                });
+            } catch (error) {
+                showResult('teacherClassesResult', {
+                    success: false,
+                    message: '班級列表API測試失敗',
+                    error: error.message,
+                    timestamp: new Date().toISOString()
+                }, 'error');
+            }
+        }
+
+        // 2. 測試班級學生API
+        async function testClassStudents() {
+            const classId = document.getElementById('classIdInput').value;
+            if (!classId) {
+                alert('請輸入班級ID');
+                return;
+            }
+            
+            showLoading('classStudentsResult');
+            try {
+                const data = await apiClient.get(`/api/v1/relationships/classes/${classId}/students`);
+                showResult('classStudentsResult', {
+                    success: true,
+                    message: `班級 ${classId} 學生API測試成功`,
+                    classId: classId,
+                    data: data,
+                    timestamp: new Date().toISOString()
+                });
+            } catch (error) {
+                showResult('classStudentsResult', {
+                    success: false,
+                    message: `班級 ${classId} 學生API測試失敗`,
+                    classId: classId,
+                    error: error.message,
+                    timestamp: new Date().toISOString()
+                }, 'error');
+            }
+        }
+
+        // 3. 測試學生學習摘要API
+        async function testStudentSummary() {
+            const studentId = document.getElementById('studentIdInput').value;
+            if (!studentId) {
+                alert('請輸入學生ID');
+                return;
+            }
+            
+            showLoading('studentSummaryResult');
+            try {
+                const data = await apiClient.get(`/api/v1/learning/analytics/students/${studentId}/summary`);
+                showResult('studentSummaryResult', {
+                    success: true,
+                    message: `學生 ${studentId} 學習摘要API測試成功`,
+                    studentId: studentId,
+                    data: data,
+                    timestamp: new Date().toISOString()
+                });
+            } catch (error) {
+                showResult('studentSummaryResult', {
+                    success: false,
+                    message: `學生 ${studentId} 學習摘要API測試失敗`,
+                    studentId: studentId,
+                    error: error.message,
+                    timestamp: new Date().toISOString()
+                }, 'error');
+            }
+        }
+
+        // 4. 測試學習記錄API
+        async function testLearningRecords() {
+            const studentId = document.getElementById('studentIdForRecords').value;
+            if (!studentId) {
+                alert('請輸入學生ID');
+                return;
+            }
+            
+            showLoading('learningRecordsResult');
+            try {
+                // 嘗試多個可能的API路徑，優先使用教師專用端點
+                let data;
+                let apiPath;
+                
+                try {
+                    // 優先使用新的教師專用API
+                    data = await apiClient.get(`/api/v1/learning/teacher/student/${studentId}/records?limit=20`);
+                    apiPath = `/api/v1/learning/teacher/student/${studentId}/records?limit=20`;
+                    console.log('✅ 使用教師專用API成功');
+                } catch (error) {
+                    console.warn('⚠️ 教師專用API失敗，嘗試備用路徑:', error);
+                    try {
+                        data = await apiClient.get(`/api/v1/learning/records/student/${studentId}?limit=20`);
+                        apiPath = `/api/v1/learning/records/student/${studentId}?limit=20`;
+                        console.log('✅ 使用備用路徑1成功');
+                    } catch (secondError) {
+                        try {
+                            data = await apiClient.get(`/api/v1/learning/records?student_id=${studentId}&limit=20`);
+                            apiPath = `/api/v1/learning/records?student_id=${studentId}&limit=20`;
+                            console.log('✅ 使用備用路徑2成功');
+                        } catch (thirdError) {
+                            throw new Error(`三個API路徑都失敗:\n1. 教師專用: /api/v1/learning/teacher/student/${studentId}/records?limit=20: ${error.message}\n2. 備用路徑1: /api/v1/learning/records/student/${studentId}?limit=20: ${secondError.message}\n3. 備用路徑2: /api/v1/learning/records?student_id=${studentId}&limit=20: ${thirdError.message}`);
+                        }
+                    }
+                }
+                
+                showResult('learningRecordsResult', {
+                    success: true,
+                    message: `學生 ${studentId} 學習記錄API測試成功`,
+                    studentId: studentId,
+                    apiPath: apiPath,
+                    data: data,
+                    timestamp: new Date().toISOString()
+                });
+            } catch (error) {
+                showResult('learningRecordsResult', {
+                    success: false,
+                    message: `學生 ${studentId} 學習記錄API測試失敗`,
+                    studentId: studentId,
+                    error: error.message,
+                    timestamp: new Date().toISOString()
+                }, 'error');
+            }
+        }
+
+        // 5. 測試科目分析API
+        async function testSubjectAnalytics() {
+            const studentId = document.getElementById('studentIdForAnalytics').value;
+            if (!studentId) {
+                alert('請輸入學生ID');
+                return;
+            }
+            
+            showLoading('subjectAnalyticsResult');
+            try {
+                // 測試科目雷達圖API
+                const radarData = await apiClient.get(`/api/v1/learning/analytics/subjects/radar?window=30d`);
+                
+                // 測試科目趨勢圖API
+                const trendData = await apiClient.get(`/api/v1/learning/analytics/subjects/trend?metric=accuracy&window=30d&limit=50`);
+                
+                showResult('subjectAnalyticsResult', {
+                    success: true,
+                    message: `學生 ${studentId} 科目分析API測試成功`,
+                    studentId: studentId,
+                    radarData: radarData,
+                    trendData: trendData,
+                    timestamp: new Date().toISOString()
+                });
+            } catch (error) {
+                showResult('subjectAnalyticsResult', {
+                    success: false,
+                    message: `學生 ${studentId} 科目分析API測試失敗`,
+                    studentId: studentId,
+                    error: error.message,
+                    timestamp: new Date().toISOString()
+                }, 'error');
+            }
+        }
+
+        // 6. 測試完整流程
+        async function testCompleteFlow() {
+            showLoading('completeFlowResult');
+            try {
+                const results = {};
+                
+                // 1. 獲取班級列表
+                try {
+                    results.teacherClasses = await apiClient.get('/api/v1/relationships/teacher-class');
+                } catch (error) {
+                    results.teacherClasses = { error: error.message };
+                }
+                
+                // 2. 如果有班級，獲取第一個班級的學生
+                if (results.teacherClasses && !results.teacherClasses.error && results.teacherClasses.length > 0) {
+                    const firstClass = results.teacherClasses[0];
+                    const classId = firstClass.class_id || firstClass.id;
+                    
+                    try {
+                        results.classStudents = await apiClient.get(`/api/v1/relationships/classes/${classId}/students`);
+                    } catch (error) {
+                        results.classStudents = { error: error.message };
+                    }
+                    
+                    // 3. 如果有學生，獲取第一個學生的學習摘要
+                    if (results.classStudents && !results.classStudents.error && results.classStudents.length > 0) {
+                        const firstStudent = results.classStudents[0];
+                        const studentId = firstStudent.student_id || firstStudent.id;
+                        
+                        try {
+                            results.studentSummary = await apiClient.get(`/api/v1/learning/analytics/students/${studentId}/summary`);
+                        } catch (error) {
+                            results.studentSummary = { error: error.message };
+                        }
+                    }
+                }
+                
+                showResult('completeFlowResult', {
+                    success: true,
+                    message: '完整流程測試完成',
+                    results: results,
+                    timestamp: new Date().toISOString()
+                });
+            } catch (error) {
+                showResult('completeFlowResult', {
+                    success: false,
+                    message: '完整流程測試失敗',
+                    error: error.message,
+                    timestamp: new Date().toISOString()
+                }, 'error');
+            }
+        }
+
+        // 數據庫診斷
+        async function diagnoseDatabase() {
+            showLoading('databaseDiagnosisResult');
+            try {
+                const data = await apiClient.get('/api/v1/diagnostics/database/learning-records');
+                showResult('databaseDiagnosisResult', {
+                    success: true,
+                    message: '數據庫學習記錄診斷成功',
+                    data: data,
+                    timestamp: new Date().toISOString()
+                });
+            } catch (error) {
+                showResult('databaseDiagnosisResult', {
+                    success: false,
+                    message: '數據庫學習記錄診斷失敗',
+                    error: error.message,
+                    timestamp: new Date().toISOString()
+                }, 'error');
+            }
+        }
+
+        // 學習記錄詳細診斷
+        async function testLearningRecordsDetailed() {
+            const studentId = document.getElementById('diagnoseStudentId').value;
+            if (!studentId) {
+                alert('請輸入學生ID');
+                return;
+            }
+
+            try {
+                // 使用正確的教師專用API端點
+                const response = await apiClient.get(`/api/v1/learning/teacher/student/${studentId}/records?limit=20`);
+                
+                const result = {
+                    success: true,
+                    message: "學習記錄詳細診斷成功",
+                    studentId: studentId,
+                    apiPath: `/api/v1/learning/teacher/student/${studentId}/records?limit=20`,
+                    data: response,
+                    timestamp: new Date().toISOString()
+                };
+                
+                showResult('learningRecordsDiagnosisResult', result);
+                
+            } catch (error) {
+                const result = {
+                    success: false,
+                    message: "學習記錄詳細診斷失敗",
+                    error: error.message,
+                    timestamp: new Date().toISOString()
+                };
+                showResult('learningRecordsDiagnosisResult', result);
+            }
+        }
+
+                 // 公開測試端點（無需認證）
+         async function testPublicLearningRecords() {
+             const studentId = document.getElementById('publicTestStudentId').value;
+             if (!studentId) {
+                 alert('請輸入學生ID');
+                 return;
+             }
+
+             showLoading('publicTestResult');
+             try {
+                 const data = await apiClient.get(`/api/v1/test/learning-records/${studentId}`);
+                 showResult('publicTestResult', {
+                     success: true,
+                     message: `學生 ${studentId} 公開學習記錄API測試成功`,
+                     studentId: studentId,
+                     data: data,
+                     timestamp: new Date().toISOString()
+                 });
+             } catch (error) {
+                 showResult('publicTestResult', {
+                     success: false,
+                     message: `學生 ${studentId} 公開學習記錄API測試失敗`,
+                     studentId: studentId,
+                     error: error.message,
+                     timestamp: new Date().toISOString()
+                 }, 'error');
+             }
+         }
+
+        // 直接查詢資料庫（無需認證）
+        async function testPublicEndpoint() {
+            const studentId = document.getElementById('publicStudentId').value;
+            if (!studentId) {
+                alert('請輸入學生ID');
+                return;
+            }
+
+            showLoading('publicEndpointResult');
+            try {
+                // 使用正確的公開測試端點
+                const data = await apiClient.get(`/test/learning-records/${studentId}`);
+                showResult('publicEndpointResult', {
+                    success: true,
+                    message: `學生 ${studentId} 資料庫學習記錄API測試成功`,
+                    studentId: studentId,
+                    data: data,
+                    timestamp: new Date().toISOString()
+                });
+            } catch (error) {
+                showResult('publicEndpointResult', {
+                    success: false,
+                    message: `學生 ${studentId} 資料庫學習記錄API測試失敗`,
+                    studentId: studentId,
+                    error: error.message,
+                    timestamp: new Date().toISOString()
+                }, 'error');
+            }
+        }
+
+        // 頁面載入時自動檢查認證狀態
+        window.addEventListener('load', function() {
+            checkAuthStatus();
+        });
+    </script>
+</body>
+</html>
