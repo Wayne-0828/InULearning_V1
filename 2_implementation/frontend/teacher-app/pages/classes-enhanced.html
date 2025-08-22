@@ -124,69 +124,77 @@
                     <div class="bg-white p-6 rounded-lg shadow-md mb-8">
                         <div class="flex items-center justify-between mb-4">
                             <h2 class="text-xl font-semibold text-gray-800">快速操作</h2>
+                            <button class="bg-blue-500 text-white px-4 py-2 rounded-lg text-sm hover:bg-blue-600 transition-colors" onclick="manualRefresh()">
+                                <span class="material-icons mr-1" style="font-size: 16px;">refresh</span>
+                                手動刷新
+                            </button>
                         </div>
                         <div class="flex flex-wrap gap-4">
-                            <button class="bg-blue-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-700 transition-colors btn-create-class">
-                                <span class="material-icons mr-2">add</span>
-                                建立新班級
-                </button>
-                            <button class="bg-green-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-green-700 transition-colors" onclick="openStudentSearchModal()">
-                                <span class="material-icons mr-2">group_add</span>
-                                新增學生
-                </button>
+                            <button class="bg-indigo-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-indigo-700 transition-colors" onclick="exportClassData()">
+                                <span class="material-icons mr-2">download</span>
+                                匯出班級資料
+                            </button>
+                            <button class="bg-teal-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-teal-700 transition-colors" onclick="importClassData()">
+                                <span class="material-icons mr-2">upload</span>
+                                匯入班級資料
+                            </button>
                             <button class="bg-purple-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-purple-700 transition-colors" onclick="showDeletedClasses()">
                                 <span class="material-icons mr-2">restore</span>
                                 管理已刪除班級
-                </button>
+                            </button>
+                            <button class="bg-orange-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-orange-700 transition-colors" onclick="bulkActions()">
+                                <span class="material-icons mr-2">settings</span>
+                                批次操作
+                            </button>
                         </div>
-            </div>
+                    </div>
 
                     <!-- 統計卡片 -->
-                    <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-                        <div class="bg-white p-6 rounded-lg shadow-md">
-                            <div class="flex items-center">
-                                <div class="bg-blue-100 p-3 rounded-lg mr-4">
-                                    <i class="fas fa-users text-blue-600 text-2xl"></i>
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6 mb-8">
+                        <div class="bg-white p-4 md:p-6 rounded-lg shadow-md">
+                            <div class="flex flex-col md:flex-row items-center text-center md:text-left">
+                                <div class="bg-blue-100 p-3 rounded-lg mb-3 md:mb-0 md:mr-4">
+                                    <i class="fas fa-users text-blue-600 text-xl md:text-2xl"></i>
                                 </div>
                                 <div>
-                                    <h3 class="text-2xl font-bold text-gray-800" id="totalClasses">0</h3>
-                                    <p class="text-gray-600">總班級數</p>
+                                    <h3 class="text-xl md:text-2xl font-bold text-gray-800" id="totalClasses">0</h3>
+                                    <p class="text-sm md:text-base text-gray-600">總班級數</p>
                                 </div>
                             </div>
-                </div>
+                        </div>
 
-                        <div class="bg-white p-6 rounded-lg shadow-md">
-                            <div class="flex items-center">
-                                <div class="bg-green-100 p-3 rounded-lg mr-4">
-                                    <i class="fas fa-check-circle text-green-600 text-2xl"></i>
-                    </div>
-                                <div>
-                                    <h3 class="text-2xl font-bold text-gray-800" id="activeClasses">0</h3>
-                                    <p class="text-gray-600">活躍班級</p>
-                                </div>
-                </div>
-            </div>
-
-                        <div class="bg-white p-6 rounded-lg shadow-md">
-                            <div class="flex items-center">
-                                <div class="bg-yellow-100 p-3 rounded-lg mr-4">
-                                    <i class="fas fa-pause-circle text-yellow-600 text-2xl"></i>
+                        <div class="bg-white p-4 md:p-6 rounded-lg shadow-md">
+                            <div class="flex flex-col md:flex-row items-center text-center md:text-left">
+                                <div class="bg-green-100 p-3 rounded-lg mb-3 md:mb-0 md:mr-4">
+                                    <i class="fas fa-check-circle text-green-600 text-xl md:text-2xl"></i>
                                 </div>
                                 <div>
-                                    <h3 class="text-2xl font-bold text-gray-800" id="inactiveClasses">0</h3>
-                                    <p class="text-gray-600">停用班級</p>
+                                    <h3 class="text-xl md:text-2xl font-bold text-gray-800" id="activeClasses">0</h3>
+                                    <p class="text-sm md:text-base text-gray-600">活躍班級</p>
                                 </div>
                             </div>
-                </div>
+                        </div>
+
+                        <div class="bg-white p-4 md:p-6 rounded-lg shadow-md">
+                            <div class="flex flex-col md:flex-row items-center text-center md:text-left">
+                                <div class="bg-yellow-100 p-3 rounded-lg mb-3 md:mb-0 md:mr-4">
+                                    <i class="fas fa-pause-circle text-yellow-600 text-xl md:text-2xl"></i>
+                                </div>
+                                <div>
+                                    <h3 class="text-xl md:text-2xl font-bold text-gray-800" id="inactiveClasses">0</h3>
+                                    <p class="text-sm md:text-base text-gray-600">停用班級</p>
+                                </div>
+                            </div>
+                        </div>
                 
-                        <div class="bg-white p-6 rounded-lg shadow-md">
-                            <div class="flex items-center">
-                                <div class="bg-red-100 p-3 rounded-lg mr-4">
-                                    <i class="fas fa-trash text-red-600 text-2xl"></i>
+                        <div class="bg-white p-4 md:p-6 rounded-lg shadow-md">
+                            <div class="flex flex-col md:flex-row items-center text-center md:text-left">
+                                <div class="bg-red-100 p-3 rounded-lg mb-3 md:mb-0 md:mr-4">
+                                    <i class="fas fa-trash text-red-600 text-xl md:text-2xl"></i>
                                 </div>
                                 <div>
-                                    <h3 class="text-2xl font-bold text-gray-800" id="deletedClasses">0</h3>
-                                    <p class="text-gray-600">已刪除</p>
+                                    <h3 class="text-xl md:text-2xl font-bold text-gray-800" id="deletedClasses">0</h3>
+                                    <p class="text-sm md:text-base text-gray-600">已刪除</p>
                                 </div>
                             </div>
                         </div>
@@ -228,13 +236,15 @@
                         <!-- 列表視圖 -->
                         <div id="listView">
                             <!-- 動態載入班級列表 -->
-                </div>
+                        </div>
 
                         <!-- 卡片視圖 -->
                         <div id="gridView" class="hidden">
-                            <!-- 動態載入班級卡片 -->
-                </div>
-            </div>
+                            <div class="classes-grid">
+                                <!-- 動態載入班級卡片 -->
+                            </div>
+                        </div>
+                    </div>
         </div>
     </main>
         </div>

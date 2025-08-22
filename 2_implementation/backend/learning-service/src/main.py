@@ -383,6 +383,112 @@ async def root():
         "health": "/health"
     }
 
+# 診斷端點 - 檢查學習記錄數據庫狀態
+@app.get("/diagnostics/database/learning-records", tags=["診斷"])
+async def diagnose_learning_records():
+    """診斷學習記錄數據庫狀態"""
+    try:
+        from .utils.database import get_db_session
+        from sqlalchemy import text
+        from datetime import datetime
+        
+        async with get_db_session() as db_session:
+            # 檢查學習會話表
+            try:
+                sessions_result = await db_session.execute(text("SELECT COUNT(*) FROM learning_sessions"))
+                total_sessions = sessions_result.scalar() or 0
+                
+                # 檢查最近的會話
+                recent_sessions_result = await db_session.execute(text(
+                    "SELECT id, user_id, subject, start_time, end_time FROM learning_sessions ORDER BY start_time DESC LIMIT 5"
+                ))
+                recent_sessions = [dict(row) for row in recent_sessions_result.mappings()]
+                
+                # 檢查練習記錄表
+                records_result = await db_session.execute(text("SELECT COUNT(*) FROM exercise_records"))
+                total_records = records_result.scalar() or 0
+                
+                # 檢查用戶表
+                users_result = await db_session.execute(text("SELECT id, username, role FROM users WHERE role = 'student' LIMIT 10"))
+                students = [dict(row) for row in users_result.mappings()]
+                
+                # 檢查學習檔案表
+                profiles_result = await db_session.execute(text("SELECT COUNT(*) FROM user_learning_profiles"))
+                total_profiles = profiles_result.scalar() or 0
+                
+                return {
+                    "status": "success",
+                    "timestamp": datetime.utcnow().isoformat() + "Z",
+                    "database_stats": {
+                        "total_learning_sessions": total_sessions,
+                        "total_exercise_records": total_records,
+                        "total_user_profiles": total_profiles
+                    },
+                    "recent_sessions": recent_sessions,
+                    "sample_students": students,
+                    "message": f"數據庫診斷完成：找到 {total_sessions} 個學習會話，{total_records} 個練習記錄，{total_profiles} 個用戶檔案"
+                }
+                
+            except Exception as db_error:
+                return {
+                    "status": "error",
+                    "timestamp": datetime.utcnow().isoformat() + "Z",
+                    "error": f"數據庫查詢失敗: {str(db_error)}",
+                    "message": "無法連接到數據庫或查詢失敗"
+                }
+                
+    except Exception as e:
+        logger.error(f"Database diagnosis failed: {e}")
+        return {
+            "status": "error",
+            "timestamp": datetime.utcnow().isoformat() + "Z",
+            "error": str(e),
+            "message": "診斷過程發生錯誤"
+        }
+
+# 公開測試端點 - 檢查學習記錄數據（不需要認證）
+@app.get("/test/learning-records/{student_id}", tags=["測試"])
+async def test_learning_records_public(student_id: int):
+    """公開測試端點：檢查特定學生的學習記錄數據"""
+    try:
+        from .utils.database import get_db_session
+        from sqlalchemy import text
+        from datetime import datetime
+        
+        async with get_db_session() as db_session:
+            # 查詢學習會話
+            sessions_result = await db_session.execute(text(
+                "SELECT id, user_id, session_name, subject, grade, chapter, publisher, start_time, end_time FROM learning_sessions WHERE user_id = :student_id ORDER BY start_time DESC LIMIT 10"
+            ), {"student_id": student_id})
+            sessions = [dict(row) for row in sessions_result.mappings()]
+            
+            # 查詢練習記錄
+            records_result = await db_session.execute(text(
+                "SELECT COUNT(*) as total_records FROM exercise_records WHERE user_id = :student_id"
+            ), {"student_id": student_id})
+            total_records = records_result.scalar() or 0
+            
+            return {
+                "status": "success",
+                "message": f"學生 {student_id} 的學習記錄測試",
+                "student_id": student_id,
+                "timestamp": datetime.utcnow().isoformat() + "Z",
+                "data": {
+                    "learning_sessions": sessions,
+                    "total_exercise_records": total_records,
+                    "session_count": len(sessions)
+                }
+            }
+            
+    except Exception as e:
+        logger.error(f"Test learning records failed for student {student_id}: {e}")
+        return {
+            "status": "error",
+            "message": f"測試失敗: {str(e)}",
+            "student_id": student_id,
+            "timestamp": datetime.utcnow().isoformat() + "Z"
+        }
+
 if __name__ == "__main__":
     import uvicorn
     

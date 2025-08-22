@@ -19,6 +19,11 @@ class ClassesManager {
         this.students = [];
         this.filteredStudents = [];
 
+        // 自動刷新設定
+        this.autoRefreshInterval = null;
+        this.autoRefreshEnabled = true;
+        this.refreshIntervalMs = 30000; // 30秒自動刷新一次
+
         this.init();
     }
 
@@ -47,6 +52,7 @@ class ClassesManager {
                 this.setupEventListeners();
                 this.renderClasses();
                 this.updateStats();
+                this.startAutoRefresh();
             } else {
                 console.log('⚠️ 用戶未登入，顯示基本 UI');
                 this.setupEventListeners();
@@ -62,18 +68,31 @@ class ClassesManager {
         }
     }
 
-    async loadClasses() {
+    async loadClasses(forceRefresh = false) {
         try {
-            // 使用 relationships.py 的 API
-            const data = await apiClient.get(`${this.apiPath}?include_deleted=true`);
+            console.log('🔄 開始載入班級資料...', forceRefresh ? '(強制刷新)' : '');
+            
+            // 如果需要強制刷新，清除緩存並設置 noCache 選項
+            if (forceRefresh) {
+                apiClient.clearCache();
+            }
+            
+            // 使用 relationships.py 的 API，強制不使用緩存
+            const data = await apiClient.get(`${this.apiPath}?include_deleted=true&t=${Date.now()}`, {
+                noCache: forceRefresh
+            });
+            console.log('📡 API 回應資料:', data);
+            
             this.classes = Array.isArray(data) ? data : [];
             console.log('✅ 成功載入班級資料:', this.classes.length, '個班級');
+            console.log('📋 班級列表:', this.classes);
         } catch (error) {
             console.error('⚠️ 班級 API 載入失敗:', error.message);
             this.classes = [];
             this.showApiStatus('無法載入班級資料', 'error');
         }
         this.filteredClasses = [...this.classes];
+        console.log('🔄 篩選後班級數量:', this.filteredClasses.length);
     }
 
     async loadClassStudents(classId) {
@@ -90,6 +109,7 @@ class ClassesManager {
 
     async createClass(payload) {
         try {
+            console.log('🆕 開始創建班級，資料:', payload);
             // 使用 relationships.py 的 create-class API
             const response = await apiClient.post(`${this.apiPath}/create-class`, {
                 class_name: payload.class_name,
@@ -97,7 +117,7 @@ class ClassesManager {
                 grade: payload.grade || '7',
                 school_year: payload.school_year || '2024-2025'
             });
-            console.log('✅ 班級創建成功:', response);
+            console.log('✅ 班級創建成功，API回應:', response);
             return response;
         } catch (error) {
             console.error('❌ 班級創建失敗:', error);
@@ -285,10 +305,22 @@ class ClassesManager {
                 await this.createClass(payload);
             }
             
-            await this.loadClasses();
-            this.filterClasses();
+            // 強制重新載入班級資料（不使用緩存）
+            await this.loadClasses(true);
+            
+            // 清除篩選器，確保新班級能顯示
+            this.clearFilters();
+            
+            // 確保篩選和渲染正確執行
+            this.filteredClasses = [...this.classes];
+            this.renderClasses();
+            this.updateStats();
+            
             this.closeClassModal();
             alert('班級儲存成功');
+            
+            // 添加調試日誌
+            console.log('🔄 班級儲存後刷新完成，當前班級數量:', this.classes.length);
         } catch (error) {
             alert('儲存失敗：' + (error.message || '未知錯誤'));
         }
@@ -306,8 +338,9 @@ class ClassesManager {
         
         try {
             await this.deleteClass(classId);
-            await this.loadClasses();
+            await this.loadClasses(true); // 強制刷新
             this.filterClasses();
+            this.updateStats();
             alert('班級刪除成功');
         } catch (error) {
             alert('刪除失敗：' + (error.message || '未知錯誤'));
@@ -319,8 +352,9 @@ class ClassesManager {
         
         try {
             await this.restoreClass(classId);
-            await this.loadClasses();
+            await this.loadClasses(true); // 強制刷新
             this.filterClasses();
+            this.updateStats();
             alert('班級恢復成功');
         } catch (error) {
             alert('恢復失敗：' + (error.message || '未知錯誤'));
@@ -335,8 +369,9 @@ class ClassesManager {
         modal.style.display = 'flex';
         
         // 載入班級學生資料
-        this.loadClassStudents(classId);
-        this.renderStudentList();
+        this.loadClassStudents(classId).then(() => {
+            this.renderStudentList();
+        });
     }
 
     closeStudentModal() {
@@ -417,6 +452,8 @@ class ClassesManager {
     }
 
     filterClasses() {
+        console.log('🔍 開始篩選班級，總數:', this.classes.length);
+        
         const searchTerm = (document.getElementById('classSearchInput')?.value || '').toLowerCase();
         const statusFilter = document.getElementById('classStatusFilter')?.value || '';
         const subjectFilter = document.getElementById('classSubjectFilter')?.value || '';
@@ -432,6 +469,7 @@ class ClassesManager {
             return matchesSearch && matchesStatus && matchesSubject;
         });
 
+        console.log('🔍 篩選完成，符合條件的班級數量:', this.filteredClasses.length);
         this.renderClasses();
     }
 
@@ -453,11 +491,16 @@ class ClassesManager {
     }
 
     renderClasses() {
+        console.log('🎨 開始渲染班級列表，當前視圖:', this.currentView);
+        console.log('📊 要渲染的班級數量:', this.filteredClasses.length);
+        
         if (this.currentView === 'list') {
             this.renderListView();
         } else {
             this.renderGridView();
         }
+        
+        console.log('✅ 班級列表渲染完成');
     }
 
     renderListView() {
@@ -516,30 +559,47 @@ class ClassesManager {
 
         if (this.filteredClasses.length === 0) {
             container.innerHTML = `
-                <div style="grid-column: 1 / -1; text-align: center; padding: 3rem; color: var(--text-light);">
-                    <i class="fas fa-search" style="font-size: 3rem; margin-bottom: 1rem; opacity: 0.3;"></i>
-                    <p>沒有找到符合條件的班級</p>
+                <div class="classes-grid">
+                    <div style="grid-column: 1 / -1; text-align: center; padding: 3rem; color: var(--text-light);">
+                        <i class="fas fa-search" style="font-size: 3rem; margin-bottom: 1rem; opacity: 0.3;"></i>
+                        <p>沒有找到符合條件的班級</p>
+                    </div>
                 </div>
             `;
             return;
         }
 
-        container.innerHTML = this.filteredClasses.map(cls => `
+        const gridContainer = container.querySelector('.classes-grid') || container;
+        gridContainer.innerHTML = this.filteredClasses.map(cls => `
             <div class="class-card">
-                <div style="display:flex; justify-content: space-between; align-items:flex-start; margin-bottom: 1rem;">
-                    <h3 style="margin:0; font-size:1.1rem;">${cls.class_name}</h3>
+                <div class="class-card-header">
+                    <h3 class="class-card-title">${cls.class_name}</h3>
                     <div class="class-status ${cls.is_active ? 'active' : 'deleted'}">
                         ${cls.is_active ? '活躍' : '已刪除'}
                     </div>
                 </div>
-                <p style="color: var(--text-light); font-size: 0.9rem; margin-bottom: 1rem; line-height: 1.4;">
-                    科目：${cls.subject || '未設定'}<br>
-                    年級：${cls.grade || '未設定'}<br>
-                    學年：${cls.school_year || '未設定'}
-                </p>
-                <div style="display:flex; gap:.5rem;">
-                    <button class="action-btn primary btn-edit-class" data-id="${cls.id}" style="flex:1; font-size:.8rem;">編輯</button>
-                    <button class="action-btn secondary btn-manage-students" data-id="${cls.id}" style="flex:1; font-size:.8rem;">管理學生</button>
+                <div class="class-card-content">
+                    <p class="class-card-info">
+                        <span><i class="fas fa-book"></i> 科目：${cls.subject || '未設定'}</span>
+                        <span><i class="fas fa-graduation-cap"></i> 年級：${cls.grade || '未設定'}</span>
+                        <span><i class="fas fa-calendar"></i> 學年：${cls.school_year || '未設定'}</span>
+                    </p>
+                </div>
+                <div class="class-card-actions">
+                    <button class="action-btn primary btn-edit-class" data-id="${cls.id}">
+                        <i class="fas fa-edit"></i> 編輯
+                    </button>
+                    <button class="action-btn secondary btn-manage-students" data-id="${cls.id}">
+                        <i class="fas fa-users"></i> 管理學生
+                    </button>
+                    ${cls.is_active ? 
+                        `<button class="action-btn danger btn-delete-class" data-id="${cls.id}">
+                            <i class="fas fa-trash"></i> 刪除
+                        </button>` :
+                        `<button class="action-btn secondary btn-restore-class" data-id="${cls.id}">
+                            <i class="fas fa-undo"></i> 恢復
+                        </button>`
+                    }
                 </div>
             </div>
         `).join('');
@@ -566,7 +626,7 @@ class ClassesManager {
                     <div class="student-email">學號：${student.student_number || '未設定'}</div>
                 </div>
                 <div class="student-actions">
-                    <button class="btn btn-danger btn-sm" onclick="classesManager.removeStudentFromClass('${this.selectedClassId}', '${student.student_id}')">
+                    <button class="btn btn-danger btn-sm" onclick="classesManager.removeStudentAndRefresh('${this.selectedClassId}', '${student.student_id}')">
                         移除
                     </button>
                 </div>
@@ -623,6 +683,83 @@ class ClassesManager {
             </div>
         `;
     }
+
+    async removeStudentAndRefresh(classId, studentId) {
+        if (!confirm('確定要將此學生從班級中移除嗎？')) return;
+        
+        try {
+            await this.removeStudentFromClass(classId, studentId);
+            alert('學生移除成功');
+            // 重新載入學生列表
+            await this.loadClassStudents(classId);
+            this.renderStudentList();
+            // 重新載入班級資料並更新統計
+            await this.loadClasses(true); // 強制刷新
+            this.filterClasses();
+            this.updateStats();
+        } catch (error) {
+            alert('移除失敗：' + (error.message || '未知錯誤'));
+        }
+    }
+
+    startAutoRefresh() {
+        if (this.autoRefreshEnabled && !this.autoRefreshInterval) {
+            console.log('✅ 啟動自動刷新機制，間隔：', this.refreshIntervalMs / 1000, '秒');
+            this.autoRefreshInterval = setInterval(() => {
+                this.silentRefresh();
+            }, this.refreshIntervalMs);
+        }
+    }
+
+    stopAutoRefresh() {
+        if (this.autoRefreshInterval) {
+            console.log('⏹️ 停止自動刷新');
+            clearInterval(this.autoRefreshInterval);
+            this.autoRefreshInterval = null;
+        }
+    }
+
+    async silentRefresh() {
+        try {
+            // 靜默刷新，不顯示錯誤訊息
+            const previousCount = this.classes.length;
+            await this.loadClasses(true); // 強制刷新，不使用緩存
+            this.filterClasses();
+            this.updateStats();
+            
+            // 如果資料有變化，在控制台記錄
+            const currentCount = this.classes.length;
+            if (previousCount !== currentCount) {
+                console.log('🔄 自動刷新檢測到資料變化，班級數量：', previousCount, '→', currentCount);
+            }
+        } catch (error) {
+            console.warn('⚠️ 自動刷新失敗:', error.message);
+        }
+    }
+
+    // 清除所有篩選器
+    clearFilters() {
+        console.log('🧹 清除所有篩選器');
+        
+        // 清除搜尋輸入
+        const searchInput = document.getElementById('classSearchInput');
+        if (searchInput) searchInput.value = '';
+        
+        // 清除狀態篩選
+        const statusFilter = document.getElementById('classStatusFilter');
+        if (statusFilter) statusFilter.value = '';
+        
+        // 清除科目篩選
+        const subjectFilter = document.getElementById('classSubjectFilter');
+        if (subjectFilter) subjectFilter.value = '';
+        
+        console.log('🧹 篩選器已清除');
+    }
+
+    // 在頁面卸載時清理定時器
+    destroy() {
+        this.stopAutoRefresh();
+    }
 }
 
 // 全域函數
@@ -647,15 +784,96 @@ function addStudentToClass(studentId) {
         // 關閉搜尋 Modal
         const modal = document.getElementById('studentSearchModal');
         if (modal) modal.style.display = 'none';
-        // 重新載入班級資料
-        classesManager.loadClasses();
+        // 重新載入班級資料和更新統計
+        classesManager.loadClasses(true).then(() => { // 強制刷新
+            classesManager.filterClasses();
+            classesManager.updateStats();
+        });
     }).catch(error => {
         alert('加入失敗：' + error.message);
     });
+}
+
+// 快速操作相關全域函數
+function exportClassData() {
+    if (!classesManager || !classesManager.classes || classesManager.classes.length === 0) {
+        alert('沒有班級資料可以匯出');
+        return;
+    }
+    
+    try {
+        const dataStr = JSON.stringify(classesManager.classes, null, 2);
+        const dataBlob = new Blob([dataStr], {type: 'application/json'});
+        const url = URL.createObjectURL(dataBlob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = `班級資料_${new Date().toISOString().split('T')[0]}.json`;
+        link.click();
+        URL.revokeObjectURL(url);
+        alert('班級資料匯出成功！');
+    } catch (error) {
+        alert('匯出失敗：' + error.message);
+    }
+}
+
+function importClassData() {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = '.json';
+    input.onchange = function(e) {
+        const file = e.target.files[0];
+        if (!file) return;
+        
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            try {
+                const data = JSON.parse(e.target.result);
+                if (Array.isArray(data)) {
+                    alert(`成功讀取 ${data.length} 筆班級資料\n注意：匯入功能需要後端API支援`);
+                } else {
+                    alert('檔案格式不正確，請選擇有效的JSON檔案');
+                }
+            } catch (error) {
+                alert('檔案讀取失敗：' + error.message);
+            }
+        };
+        reader.readAsText(file);
+    };
+    input.click();
+}
+
+function bulkActions() {
+    alert('批次操作功能開發中...\n將包含：批量啟用/停用班級、批量刪除、批量匯出等功能');
+}
+
+function manualRefresh() {
+    console.log('🔄 手動刷新開始...');
+    if (classesManager) {
+        // 清除緩存並強制刷新
+        apiClient.clearCache();
+        classesManager.loadClasses(true).then(() => {
+            classesManager.filterClasses();
+            classesManager.updateStats();
+            console.log('✅ 手動刷新完成');
+            alert('資料已刷新！');
+        }).catch(error => {
+            console.error('❌ 手動刷新失敗:', error);
+            alert('刷新失敗：' + error.message);
+        });
+    } else {
+        alert('班級管理器未初始化');
+    }
 }
 
 // 初始化
 let classesManager;
 document.addEventListener('DOMContentLoaded', () => {
     classesManager = new ClassesManager();
+});
+
+// 頁面卸載時清理資源
+window.addEventListener('beforeunload', () => {
+    if (classesManager) {
+        classesManager.destroy();
+    }
 });

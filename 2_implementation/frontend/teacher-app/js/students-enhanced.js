@@ -200,6 +200,19 @@ class StudentsAnalysisManager {
             }
             
             console.log('✅ 獲取到認證 token');
+            console.log('🔍 Token 前10個字符:', token.substring(0, 10) + '...');
+            
+            // 測試認證是否有效
+            try {
+                const testResponse = await apiClient.get('/relationships/teacher-class');
+                console.log('✅ 認證測試成功，可以訪問 relationships API');
+            } catch (authError) {
+                console.warn('⚠️ 認證測試失敗:', authError);
+                if (authError.message.includes('401')) {
+                    console.error('❌ 認證已過期或無效');
+                    throw new Error('認證已過期，請重新登入');
+                }
+            }
             
             // 設置全域認證狀態
             if (typeof window.realAPIClient === 'undefined') {
@@ -209,7 +222,8 @@ class StudentsAnalysisManager {
                     getTeacherClasses: async () => {
                         console.log('🔗 調用真實 API: 獲取教師班級列表');
                         try {
-                            const response = await apiClient.get('/teacher/classes');
+                            // 使用正確的API端點：relationships API
+                            const response = await apiClient.get('/relationships/teacher-class');
                             console.log('班級列表 API 回應:', response);
                             return response.data || response || [];
                         } catch (error) {
@@ -220,9 +234,29 @@ class StudentsAnalysisManager {
                     getClassOverview: async (classId) => {
                         console.log('🔗 調用真實 API: 獲取班級概覽');
                         try {
-                            const response = await apiClient.get(`/teacher/classes/${classId}/overview`);
-                            console.log('班級概覽 API 回應:', response);
-                            return response.data || response || {};
+                            // 從班級學生列表計算概覽數據
+                            const students = await window.realAPIClient.getStudents(classId);
+                            if (!students || students.length === 0) {
+                                return {
+                                    total_students: 0,
+                                    average_accuracy: 0,
+                                    average_speed: 0,
+                                    total_sessions: 0
+                                };
+                            }
+                            
+                            // 計算班級統計數據
+                            const totalStudents = students.length;
+                            const totalAccuracy = students.reduce((sum, s) => sum + (s.accuracy_rate || 0), 0);
+                            const totalSpeed = students.reduce((sum, s) => sum + (s.average_speed || 0), 0);
+                            const totalSessions = students.reduce((sum, s) => sum + (s.total_sessions || 0), 0);
+                            
+                            return {
+                                total_students: totalStudents,
+                                average_accuracy: totalStudents > 0 ? totalAccuracy / totalStudents : 0,
+                                average_speed: totalStudents > 0 ? totalSpeed / totalStudents : 0,
+                                total_sessions: totalSessions
+                            };
                         } catch (error) {
                             console.error('獲取班級概覽失敗:', error);
                             throw error;
@@ -231,12 +265,106 @@ class StudentsAnalysisManager {
                     getStudents: async (classId) => {
                         console.log('🔗 調用真實 API: 獲取學生列表');
                         try {
-                            const response = await apiClient.get(`/teacher/classes/${classId}/students/analysis`);
+                            // 使用正確的API端點：relationships API
+                            const response = await apiClient.get(`/relationships/classes/${classId}/students`);
                             console.log('學生列表 API 回應:', response);
-                            return response.data || response || [];
+                            
+                            // 取得學生基本資料
+                            const students = response.data || response || [];
+                            
+                            // 為每個學生獲取真實的學習分析數據
+                            const studentsWithAnalysis = await Promise.all(students.map(async (student) => {
+                                try {
+                                    // 調用真實的學生學習摘要API
+                                    const studentId = student.student_id || student.id;
+                                    console.log(`🔍 嘗試獲取學生 ${studentId} 的學習摘要...`);
+                                    
+                                    // 測試API端點是否存在
+                                    try {
+                                        const summaryResponse = await apiClient.get(`/learning/analytics/students/${studentId}/summary`);
+                                        console.log(`✅ 學生 ${studentId} 學習摘要獲取成功:`, summaryResponse);
+                                        
+                                        // 合併基本資料和學習數據
+                                        return {
+                                            ...student,
+                                            // 真實的學習分析數據
+                                            accuracy_rate: summaryResponse.accuracy_rate || 0,
+                                            average_speed: summaryResponse.avg_session_duration_minutes || 0, // 轉換為分鐘
+                                            total_sessions: summaryResponse.total_sessions || 0,
+                                            total_questions: summaryResponse.total_exercises || 0,
+                                            last_active: new Date().toISOString(), // 可以從學習記錄中獲取
+                                            class_name: student.class_name || '未知班級',
+                                            // 額外的學習統計
+                                            total_study_minutes: summaryResponse.total_study_minutes || 0,
+                                            study_days: summaryResponse.study_days || 0
+                                        };
+                                    } catch (summaryError) {
+                                        console.warn(`⚠️ 無法獲取學生 ${studentId} 的學習摘要:`, summaryError);
+                                        console.log(`🔍 嘗試的API路徑: /learning/analytics/students/${studentId}/summary`);
+                                        
+                                        // 如果無法獲取學習摘要，使用基本資料
+                                        return {
+                                            ...student,
+                                            accuracy_rate: 0,
+                                            average_speed: 0,
+                                            total_sessions: 0,
+                                            total_questions: 0,
+                                            last_active: new Date().toISOString(),
+                                            class_name: student.class_name || '未知班級',
+                                            total_study_minutes: 0,
+                                            study_days: 0
+                                        };
+                                    }
+                                } catch (summaryError) {
+                                    console.warn(`無法獲取學生 ${student.student_id || student.id} 的學習摘要:`, summaryError);
+                                    // 如果無法獲取學習摘要，使用基本資料
+                                    return {
+                                        ...student,
+                                        accuracy_rate: 0,
+                                        average_speed: 0,
+                                        total_sessions: 0,
+                                        total_questions: 0,
+                                        last_active: new Date().toISOString(),
+                                        class_name: student.class_name || '未知班級',
+                                        total_study_minutes: 0,
+                                        study_days: 0
+                                    };
+                                }
+                            }));
+                            
+                            console.log('✅ 增強後的學生數據:', studentsWithAnalysis);
+                            return studentsWithAnalysis;
                         } catch (error) {
                             console.error('獲取學生列表失敗:', error);
                             throw error;
+                        }
+                    },
+                    
+                    // 獲取學生科目分析數據（雷達圖）
+                    getStudentSubjectRadar: async (studentId) => {
+                        console.log('🔗 調用真實 API: 獲取學生科目雷達圖數據');
+                        try {
+                            const response = await apiClient.get(`/learning/analytics/subjects/radar?window=30d`);
+                            console.log('✅ 科目雷達圖API回應:', response);
+                            return response;
+                        } catch (error) {
+                            console.error('❌ 獲取科目雷達圖失敗:', error);
+                            console.log(`🔍 嘗試的API路徑: /learning/analytics/subjects/radar?window=30d`);
+                            return null;
+                        }
+                    },
+                    
+                    // 獲取學生科目趨勢數據
+                    getStudentSubjectTrend: async (studentId, metric = 'accuracy') => {
+                        console.log('🔗 調用真實 API: 獲取學生科目趨勢數據');
+                        try {
+                            const response = await apiClient.get(`/learning/analytics/subjects/trend?metric=${metric}&window=30d&limit=50`);
+                            console.log('✅ 科目趨勢API回應:', response);
+                            return response;
+                        } catch (error) {
+                            console.error('❌ 獲取科目趨勢失敗:', error);
+                            console.log(`🔍 嘗試的API路徑: /learning/analytics/subjects/trend?metric=${metric}&window=30d&limit=50`);
+                            return null;
                         }
                     }
                 };
@@ -331,8 +459,9 @@ class StudentsAnalysisManager {
             console.log(`處理班級 ${index + 1}:`, cls);
             
             const option = document.createElement('option');
-            option.value = cls.id || cls.class_id || index + 1;
-            option.textContent = cls.name || cls.class_name || `班級 ${index + 1}`;
+            // relationships API 返回的格式：{id, teacher_id, class_id, subject, class_name}
+            option.value = cls.class_id || cls.id || index + 1;
+            option.textContent = cls.class_name || cls.name || `班級 ${index + 1}`;
             
             if (cls.subject) {
                 option.textContent += ` (${cls.subject})`;
@@ -347,10 +476,10 @@ class StudentsAnalysisManager {
         // Auto-select the first class if available
         if (classes.length > 0) {
             const firstClass = classes[0];
-            const firstClassId = firstClass.id || firstClass.class_id || 1;
+            const firstClassId = firstClass.class_id || firstClass.id || 1;
             selector.value = firstClassId;
             this.currentClassId = firstClassId;
-            console.log('✅ 自動選擇第一個班級:', firstClass.name || firstClass.class_name, 'ID:', firstClassId);
+            console.log('✅ 自動選擇第一個班級:', firstClass.class_name || firstClass.name, 'ID:', firstClassId);
             
             // Trigger change event to load class data
             const event = new Event('change', { bubbles: true });
@@ -1139,18 +1268,18 @@ class StudentsAnalysisManager {
         }
         
         // 這裡可以根據實際數據創建趨勢圖
-        // 暫時使用模擬數據
+        // 暫時使用空數據，等待真實API數據
         const data = {
-            labels: ['第1週', '第2週', '第3週', '第4週'],
+            labels: [],
             datasets: [{
                 label: '平均正確率 (%)',
-                data: [78, 82, 79, 85],
+                data: [],
                 borderColor: 'rgba(59, 130, 246, 1)',
                 backgroundColor: 'rgba(59, 130, 246, 0.1)',
                 tension: 0.4
             }, {
                 label: '平均答題速度 (秒)',
-                data: [45, 42, 40, 38],
+                data: [],
                 borderColor: 'rgba(16, 185, 129, 1)',
                 backgroundColor: 'rgba(16, 185, 129, 0.1)',
                 tension: 0.4
@@ -1192,19 +1321,13 @@ class StudentsAnalysisManager {
         }
         
         // 這裡可以根據實際數據創建科目分布圖
-        // 暫時使用模擬數據
+        // 暫時使用空數據，等待真實API數據
         const data = {
-            labels: ['數學', '語文', '英語', '科學', '社會'],
+            labels: [],
             datasets: [{
                 label: '平均正確率 (%)',
-                data: [82, 78, 75, 80, 85],
-                backgroundColor: [
-                    'rgba(59, 130, 246, 0.8)',
-                    'rgba(16, 185, 129, 0.8)',
-                    'rgba(245, 158, 11, 0.8)',
-                    'rgba(139, 92, 246, 0.8)',
-                    'rgba(239, 68, 68, 0.8)'
-                ]
+                data: [],
+                backgroundColor: []
             }]
         };
         
@@ -1577,24 +1700,19 @@ class StudentsAnalysisManager {
             this.showLoading();
             console.log('Loading student detail for ID:', studentId);
             
-            // 檢查是否有真實的 API 客戶端
-            if (window.realAPIClient && window.realAPIClient.isAuthenticated) {
-                console.log('🔗 使用真實 API 獲取學生詳情...');
-                const response = await fetch(`/api/v1/teacher/students/${studentId}/profile`, {
-                    headers: {
-                        'Authorization': `Bearer ${window.realAPIClient.token}`
-                    }
-                });
-                
-                if (response.ok) {
-                    const studentData = await response.json();
-                    console.log('✅ 獲取到學生詳情:', studentData);
-                    this.displayStudentDetail(studentData);
-                } else {
-                    throw new Error(`API 錯誤: ${response.status}`);
-                }
+            // 從現有的學生列表中查找學生
+            const student = this.students.find(s => 
+                (s.student_id || s.id) == studentId
+            );
+            
+            if (student) {
+                console.log('✅ 找到學生資料:', student);
+                // 使用真實的學生數據
+                this.displayStudentDetail(student);
             } else {
-                throw new Error('API 客戶端未認證或不存在');
+                console.warn('⚠️ 未找到學生 ID:', studentId);
+                // 顯示錯誤信息而不是創建模擬數據
+                this.showError(`無法找到學生 ID: ${studentId}`);
             }
         } catch (error) {
             console.error('❌ 載入學生詳情失敗:', error);
@@ -1603,7 +1721,45 @@ class StudentsAnalysisManager {
             this.hideLoading();
         }
     }
-
+    
+    async loadStudentSubjectAnalytics(studentId) {
+        try {
+            console.log('載入學生科目分析數據 for ID:', studentId);
+            
+            // 檢查是否有真實的API客戶端
+            if (window.realAPIClient && window.realAPIClient.isAuthenticated) {
+                // 獲取科目雷達圖數據
+                const radarData = await window.realAPIClient.getStudentSubjectRadar(studentId);
+                if (radarData) {
+                    this.updateSubjectRadarChart(radarData);
+                }
+                
+                // 獲取科目趨勢數據
+                const trendData = await window.realAPIClient.getStudentSubjectTrend(studentId, 'accuracy');
+                if (trendData) {
+                    this.updateSubjectTrendChart(trendData);
+                }
+            } else {
+                console.warn('真實API客戶端未認證，跳過科目分析數據載入');
+            }
+            
+        } catch (error) {
+            console.error('載入學生科目分析數據失敗:', error);
+        }
+    }
+    
+    updateSubjectRadarChart(radarData) {
+        console.log('更新科目雷達圖:', radarData);
+        // 這裡可以更新雷達圖顯示
+        // 根據實際的radarData結構來實現
+    }
+    
+    updateSubjectTrendChart(trendData) {
+        console.log('更新科目趨勢圖:', trendData);
+        // 這裡可以更新趨勢圖顯示
+        // 根據實際的trendData結構來實現
+    }
+    
     displayStudentDetail(studentData) {
         console.log('Displaying student detail:', studentData);
         
@@ -1626,29 +1782,101 @@ class StudentsAnalysisManager {
         if (studentQuestions) studentQuestions.textContent = studentData.total_questions || 0;
         
         // 創建學生圖表
-        this.createStudentCharts(studentData);
+        try {
+            this.createStudentCharts(studentData);
+        } catch (error) {
+            console.warn('創建學生圖表失敗:', error);
+        }
         
         // 載入學習記錄
-        this.loadStudentLearningRecords(studentData.student_id);
+        const studentId = studentData.student_id || studentData.id;
+        if (studentId) {
+            this.loadStudentLearningRecords(studentId);
+        } else {
+            console.warn('無法獲取學生ID，跳過學習記錄載入');
+        }
+        
+        // 載入科目分析數據（暫時註解，避免API錯誤）
+        // this.loadStudentSubjectAnalytics(studentData.student_id);
     }
 
     async loadStudentLearningRecords(studentId) {
         try {
-            const response = await fetch(`/api/v1/teacher/students/${studentId}/learning-records`, {
-                headers: {
-                    'Authorization': `Bearer ${window.realAPIClient.token}`
-                }
-            });
+            console.log('載入學生學習記錄 (使用真實API) for ID:', studentId);
             
-            if (response.ok) {
-                const records = await response.json();
+            // 調用真實的學習記錄API（使用教師專用端點）
+            let response;
+            try {
+                // 使用新的教師查詢學生學習記錄API
+                response = await apiClient.get(`/learning/teacher/student/${studentId}/records?limit=20`);
+                console.log(`✅ 使用教師專用API獲取學生 ${studentId} 學習記錄成功`);
+            } catch (error) {
+                console.warn(`⚠️ 教師專用API失敗，嘗試備用路徑:`, error);
+                try {
+                    // 嘗試備用路徑
+                    response = await apiClient.get(`/learning/records?student_id=${studentId}&limit=20`);
+                    console.log(`✅ 使用備用API獲取學生 ${studentId} 學習記錄成功`);
+                } catch (secondError) {
+                    console.warn(`❌ 備用學習記錄API路徑也失敗:`, secondError);
+                    // 如果兩個路徑都失敗，返回空數據
+                    this.displayLearningRecords([]);
+                    return;
+                }
+            }
+            console.log('學習記錄API回應:', response);
+            
+            if (response && response.records) {
+                // 處理真實的學習記錄數據（records字段格式）
+                const records = response.records.map(record => ({
+                    id: record.id || record.record_id,
+                    session_name: record.session_name || `學習會話 ${record.session_id}`,
+                    subject: record.subject || '未知科目',
+                    chapter: record.chapter || '未知章節',
+                    accuracy_rate: record.accuracy_rate || 0,
+                    time_spent: record.time_spent || 0,
+                    start_time: record.start_time || record.created_at || new Date().toISOString(),
+                    questions_answered: record.questions_answered || 1
+                }));
+                
+                console.log('✅ 處理後的學習記錄 (records字段格式):', records);
+                this.displayLearningRecords(records);
+            } else if (response && Array.isArray(response)) {
+                // 如果API直接返回數組
+                const records = response.map(record => ({
+                    id: record.id || record.record_id,
+                    session_name: record.session_name || `學習會話 ${record.session_id}`,
+                    subject: record.subject || '未知科目',
+                    chapter: record.chapter || '未知章節',
+                    accuracy_rate: record.accuracy_rate || 0,
+                    time_spent: record.time_spent || 0,
+                    start_time: record.start_time || record.created_at || new Date().toISOString(),
+                    questions_answered: record.questions_answered || 1
+                }));
+                
+                console.log('✅ 處理後的學習記錄 (數組格式):', records);
+                this.displayLearningRecords(records);
+            } else if (response && response.data && Array.isArray(response.data)) {
+                // 如果API返回data字段包含數組
+                const records = response.data.map(record => ({
+                    id: record.id || record.record_id,
+                    session_name: record.session_name || `學習會話 ${record.session_id}`,
+                    subject: record.subject || '未知科目',
+                    chapter: record.chapter || '未知章節',
+                    accuracy_rate: record.accuracy_rate || 0,
+                    time_spent: record.time_spent || 0,
+                    start_time: record.start_time || record.created_at || new Date().toISOString(),
+                    questions_answered: record.questions_answered || 1
+                }));
+                
+                console.log('✅ 處理後的學習記錄 (data字段格式):', records);
                 this.displayLearningRecords(records);
             } else {
-                console.warn('無法載入學習記錄');
+                console.warn('學習記錄API返回空數據或格式不正確:', response);
                 this.displayLearningRecords([]);
             }
         } catch (error) {
             console.error('載入學習記錄失敗:', error);
+            // 如果真實API失敗，顯示空記錄
             this.displayLearningRecords([]);
         }
     }
@@ -1713,12 +1941,12 @@ class StudentsAnalysisManager {
         }
         
         // 這裡可以根據實際數據創建趨勢圖
-        // 暫時使用模擬數據
+        // 暫時使用空數據，等待真實API數據
         const data = {
-            labels: ['第1週', '第2週', '第3週', '第4週'],
+            labels: [],
             datasets: [{
                 label: '正確率 (%)',
-                data: [75, 82, 78, 85],
+                data: [],
                 borderColor: 'rgba(59, 130, 246, 1)',
                 backgroundColor: 'rgba(59, 130, 246, 0.1)',
                 tension: 0.4
@@ -1755,19 +1983,13 @@ class StudentsAnalysisManager {
         }
         
         // 這裡可以根據實際數據創建知識點圖
-        // 暫時使用模擬數據
+        // 暫時使用空數據，等待真實API數據
         const data = {
-            labels: ['基礎運算', '代數', '幾何', '統計', '概率'],
+            labels: [],
             datasets: [{
                 label: '掌握度 (%)',
-                data: [85, 72, 68, 90, 75],
-                backgroundColor: [
-                    'rgba(59, 130, 246, 0.8)',
-                    'rgba(16, 185, 129, 0.8)',
-                    'rgba(245, 158, 11, 0.8)',
-                    'rgba(139, 92, 246, 0.8)',
-                    'rgba(239, 68, 68, 0.8)'
-                ]
+                data: [],
+                backgroundColor: []
             }]
         };
         
