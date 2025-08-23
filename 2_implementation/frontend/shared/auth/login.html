@@ -46,8 +46,7 @@
         <!-- 側邊欄 -->
         <aside class="w-64 bg-blue-800 text-white flex-col hidden lg:flex">
             <div class="flex items-center justify-center p-6">
-                <img alt="InU Learning Logo" class="w-24 h-24 rounded-full"
-                    src="http://localhost/shared/image/InULearning_logo.png">
+                <img alt="InU Learning Logo" class="w-24 h-24 rounded-full" src="/shared/image/InULearning_logo.png">
             </div>
             <div class="px-6 pb-4">
                 <h1 class="text-xl font-bold text-center">InU Learning</h1>
@@ -55,22 +54,22 @@
             </div>
 
             <nav class="flex-1 px-4 py-4 space-y-2">
-                <div class="flex items-center px-4 py-2 text-gray-100 rounded-lg">
+                <a id="login-link-student" class="flex items-center px-4 py-2 text-gray-100 rounded-lg" href="#">
                     <span class="material-icons">school</span>
                     <span class="ml-3">學生練功專區</span>
-                </div>
-                <div class="flex items-center px-4 py-2 text-gray-100 rounded-lg">
+                </a>
+                <a id="login-link-parent" class="flex items-center px-4 py-2 text-gray-100 rounded-lg" href="#">
                     <span class="material-icons">family_restroom</span>
                     <span class="ml-3">家長控制台</span>
-                </div>
-                <div class="flex items-center px-4 py-2 text-gray-100 rounded-lg">
+                </a>
+                <a id="login-link-teacher" class="flex items-center px-4 py-2 text-gray-100 rounded-lg" href="#">
                     <span class="material-icons">person</span>
                     <span class="ml-3">教師登入</span>
-                </div>
-                <div class="flex items-center px-4 py-2 text-gray-100 rounded-lg">
+                </a>
+                <a id="login-link-admin" class="flex items-center px-4 py-2 text-gray-100 rounded-lg" href="#">
                     <span class="material-icons">admin_panel_settings</span>
                     <span class="ml-3">管理員專區</span>
-                </div>
+                </a>
             </nav>
         </aside>
 
@@ -96,7 +95,7 @@
                             <!-- Logo (小螢幕顯示) -->
                             <div class="flex justify-center mb-6">
                                 <img alt="InU Learning Logo" class="w-20 h-20 rounded-full lg:hidden"
-                                    src="http://localhost/shared/image/InULearning_logo.png">
+                                    src="/shared/image/InULearning_logo.png">
                             </div>
 
                             <!-- 標題 -->
@@ -314,8 +313,8 @@
                     localStorage.setItem('auth_token', response.access_token);
                     localStorage.setItem('user_info', JSON.stringify(userInfo));
                     if (window.Utils) {
-                        try { Utils.setStorageItem('auth_token', response.access_token); } catch (e) {}
-                        try { Utils.setStorageItem('user_info', JSON.stringify(userInfo)); } catch (e) {}
+                        try { Utils.setStorageItem('auth_token', response.access_token); } catch (e) { }
+                        try { Utils.setStorageItem('user_info', JSON.stringify(userInfo)); } catch (e) { }
                     }
 
                     this.showSuccess('登入成功！正在跳轉...');
@@ -334,7 +333,7 @@
             }
 
             async callLoginAPI(email, password) {
-                const response = await fetch('http://localhost/api/v1/auth/login', {
+                const response = await fetch(`${location.origin}/api/v1/auth/login`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
@@ -380,12 +379,13 @@
             }
 
             redirectByRole(role) {
+                const HOST = `${location.protocol}//${location.hostname}`;
                 const roleRedirectMap = {
-                    'student': 'http://localhost:8080',     // 學生前端
-                    'parent': 'http://localhost:8082',      // 家長前端  
-                    'teacher': 'http://localhost:8083',     // 教師前端
-                    'admin': 'http://localhost:8081',       // 管理員前端
-                    'manager': 'http://localhost:8081'      // 管理員前端 (別名)
+                    'student': `${HOST}:8080`,     // 學生前端
+                    'parent': `${HOST}:8082`,      // 家長前端  
+                    'teacher': `${HOST}:8083`,     // 教師前端
+                    'admin': `${HOST}:8081`,       // 管理員前端
+                    'manager': `${HOST}:8081`      // 管理員前端 (別名)
                 };
 
                 const targetURL = roleRedirectMap[role];
@@ -455,6 +455,13 @@
         // 初始化統一登入系統
         document.addEventListener('DOMContentLoaded', () => {
             new UnifiedLogin();
+            // 設定側邊欄連結為當前主機的 808x 埠
+            const base = `${location.protocol}//${location.hostname}`;
+            const m = (id, href) => { const el = document.getElementById(id); if (el) el.href = href; };
+            m('login-link-student', `${base}:8080`);
+            m('login-link-parent', `${base}:8082`);
+            m('login-link-teacher', `${base}:8083`);
+            m('login-link-admin', `${base}:8081`);
         });
     </script>
 </body>

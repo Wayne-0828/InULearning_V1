@@ -7,7 +7,7 @@ class AuthManager {
     constructor() {
         this.tokenKey = 'auth_token';
         this.userKey = 'user_info';
-        this.baseURL = 'http://localhost:8001'; // auth-service 的預設端口
+        this.baseURL = `${location.origin}/api`; // 經由 Nginx 代理
     }
 
     /**
@@ -82,7 +82,7 @@ class AuthManager {
         localStorage.removeItem('auth_token');
         localStorage.removeItem('user_info');
         this.updateAuthUI();
-        window.location.href = 'http://localhost/login.html';
+        window.location.href = (window?.Utils?.config?.LOGIN_URL) || '/login.html';
     }
 
     /**

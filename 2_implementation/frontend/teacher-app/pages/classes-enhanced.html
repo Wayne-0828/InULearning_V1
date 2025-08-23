@@ -8,7 +8,8 @@
     <meta name="description" content="InULearning 教師控制台：管理班級、學生、題庫與作業，查看學習報告。">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link rel="stylesheet" href="../css/components.css">
     <link rel="stylesheet" href="../css/responsive.css">
@@ -24,7 +25,7 @@
                 <div class="flex items-center justify-center p-6 hover:bg-blue-700">
                     <div class="w-24 h-24 rounded-full bg-blue-600 flex items-center justify-center">
                         <span class="material-icons text-3xl">school</span>
-            </div>
+                    </div>
                 </div>
                 <div class="px-6 pb-4 hover:bg-blue-700">
                     <h1 class="text-xl font-bold text-center">InU Learning</h1>
@@ -36,33 +37,40 @@
                     <span class="material-icons">dashboard</span>
                     <span class="ml-3">教師控制台</span>
                 </a>
-                <a class="flex items-center px-4 py-2 text-gray-100 bg-blue-700 rounded-lg" href="classes-enhanced.html">
+                <a class="flex items-center px-4 py-2 text-gray-100 bg-blue-700 rounded-lg"
+                    href="classes-enhanced.html">
                     <span class="material-icons">class</span>
                     <span class="ml-3">班級管理</span>
                 </a>
-                <a class="flex items-center px-4 py-2 text-gray-100 hover:bg-blue-700 rounded-lg" href="students-enhanced.html">
+                <a class="flex items-center px-4 py-2 text-gray-100 hover:bg-blue-700 rounded-lg"
+                    href="students-enhanced.html">
                     <span class="material-icons">people</span>
                     <span class="ml-3">學生分析</span>
                 </a>
-                <a class="flex items-center px-4 py-2 text-gray-100 hover:bg-blue-700 rounded-lg" href="assignments-enhanced.html">
+                <a class="flex items-center px-4 py-2 text-gray-100 hover:bg-blue-700 rounded-lg"
+                    href="assignments-enhanced.html">
                     <span class="material-icons">assignment</span>
                     <span class="ml-3">作業管理</span>
                 </a>
-                <a class="flex items-center px-4 py-2 text-gray-100 hover:bg-blue-700 rounded-lg" href="questions-enhanced.html">
+                <a class="flex items-center px-4 py-2 text-gray-100 hover:bg-blue-700 rounded-lg"
+                    href="questions-enhanced.html">
                     <span class="material-icons">quiz</span>
                     <span class="ml-3">題庫管理</span>
                 </a>
-                <a class="flex items-center px-4 py-2 text-gray-100 hover:bg-blue-700 rounded-lg" href="grades-enhanced.html">
+                <a class="flex items-center px-4 py-2 text-gray-100 hover:bg-blue-700 rounded-lg"
+                    href="grades-enhanced.html">
                     <span class="material-icons">analytics</span>
                     <span class="ml-3">成績管理</span>
                 </a>
-                <a class="flex items-center px-4 py-2 text-gray-100 hover:bg-blue-700 rounded-lg" href="analytics-enhanced.html">
+                <a class="flex items-center px-4 py-2 text-gray-100 hover:bg-blue-700 rounded-lg"
+                    href="analytics-enhanced.html">
                     <span class="material-icons">analytics</span>
                     <span class="ml-3">學習分析</span>
                 </a>
             </nav>
             <div class="p-4 border-t border-blue-700">
-                <button id="logoutBtn" class="w-full flex items-center px-4 py-2 text-gray-100 hover:bg-blue-700 rounded-lg">
+                <button id="logoutBtn"
+                    class="w-full flex items-center px-4 py-2 text-gray-100 hover:bg-blue-700 rounded-lg">
                     <span class="material-icons">logout</span>
                     <span class="ml-3">登出</span>
                 </button>
@@ -76,27 +84,32 @@
                 <div class="flex items-center flex-1">
                     <button class="text-gray-500 focus:outline-none lg:hidden">
                         <span class="material-icons">menu</span>
-                </button>
+                    </button>
                     <div class="relative text-gray-600 focus-within:text-gray-400 ml-4 flex-1 max-w-md">
                         <span class="absolute inset-y-0 left-0 flex items-center pl-2">
                             <button class="p-1 focus:outline-none" type="submit">
                                 <span class="material-icons">search</span>
                             </button>
                         </span>
-                        <input id="classSearchInput" autocomplete="off" class="py-2 text-sm text-gray-700 bg-gray-200 rounded-md pl-10 focus:outline-none focus:bg-white focus:text-gray-900 w-full" name="q" placeholder="搜尋班級..." type="search"/>
-            </div>
-        </div>
+                        <input id="classSearchInput" autocomplete="off"
+                            class="py-2 text-sm text-gray-700 bg-gray-200 rounded-md pl-10 focus:outline-none focus:bg-white focus:text-gray-900 w-full"
+                            name="q" placeholder="搜尋班級..." type="search" />
+                    </div>
+                </div>
                 <div class="flex items-center space-x-4">
                     <div id="userInfo" class="hidden flex items-center space-x-2">
                         <span class="text-sm text-gray-600">歡迎，</span>
                         <span id="userName" class="text-sm font-medium text-blue-600">王老師</span>
-                        <button id="logoutBtn" class="bg-red-500 text-white px-3 py-1 rounded text-sm hover:bg-red-600 transition-colors">
+                        <button id="logoutBtn"
+                            class="bg-red-500 text-white px-3 py-1 rounded text-sm hover:bg-red-600 transition-colors">
                             登出
                         </button>
-            </div>
+                    </div>
                     <div id="authButtons">
-                        <a class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors" href="http://localhost/login.html">登入</a>
-                        <a class="bg-gray-200 text-gray-800 px-4 py-2 rounded-lg hover:bg-gray-300 transition-colors" href="register.html">註冊</a>
+                        <a class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors"
+                            href="/login.html">登入</a>
+                        <a class="bg-gray-200 text-gray-800 px-4 py-2 rounded-lg hover:bg-gray-300 transition-colors"
+                            href="register.html">註冊</a>
                     </div>
                 </div>
             </header>
@@ -109,40 +122,53 @@
                         <h1 class="text-3xl font-bold mb-4">班級管理</h1>
                         <p class="text-xl mb-6">管理您的班級、學生和課程安排</p>
                         <div class="flex flex-wrap gap-4">
-                            <button class="bg-white text-blue-600 px-6 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-colors btn-create-class">
+                            <button
+                                class="bg-white text-blue-600 px-6 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-colors btn-create-class">
                                 <span class="material-icons mr-2">add</span>
                                 建立新班級
                             </button>
-                            <button class="bg-blue-500 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-400 transition-colors" onclick="openStudentSearchModal()">
+                            <button
+                                class="bg-blue-500 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-400 transition-colors"
+                                onclick="openStudentSearchModal()">
                                 <span class="material-icons mr-2">group_add</span>
                                 新增學生
-                </button>
+                            </button>
                         </div>
-            </div>
+                    </div>
 
                     <!-- 快速操作區 -->
                     <div class="bg-white p-6 rounded-lg shadow-md mb-8">
                         <div class="flex items-center justify-between mb-4">
                             <h2 class="text-xl font-semibold text-gray-800">快速操作</h2>
-                            <button class="bg-blue-500 text-white px-4 py-2 rounded-lg text-sm hover:bg-blue-600 transition-colors" onclick="manualRefresh()">
+                            <button
+                                class="bg-blue-500 text-white px-4 py-2 rounded-lg text-sm hover:bg-blue-600 transition-colors"
+                                onclick="manualRefresh()">
                                 <span class="material-icons mr-1" style="font-size: 16px;">refresh</span>
                                 手動刷新
                             </button>
                         </div>
                         <div class="flex flex-wrap gap-4">
-                            <button class="bg-indigo-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-indigo-700 transition-colors" onclick="exportClassData()">
+                            <button
+                                class="bg-indigo-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-indigo-700 transition-colors"
+                                onclick="exportClassData()">
                                 <span class="material-icons mr-2">download</span>
                                 匯出班級資料
                             </button>
-                            <button class="bg-teal-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-teal-700 transition-colors" onclick="importClassData()">
+                            <button
+                                class="bg-teal-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-teal-700 transition-colors"
+                                onclick="importClassData()">
                                 <span class="material-icons mr-2">upload</span>
                                 匯入班級資料
                             </button>
-                            <button class="bg-purple-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-purple-700 transition-colors" onclick="showDeletedClasses()">
+                            <button
+                                class="bg-purple-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-purple-700 transition-colors"
+                                onclick="showDeletedClasses()">
                                 <span class="material-icons mr-2">restore</span>
                                 管理已刪除班級
                             </button>
-                            <button class="bg-orange-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-orange-700 transition-colors" onclick="bulkActions()">
+                            <button
+                                class="bg-orange-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-orange-700 transition-colors"
+                                onclick="bulkActions()">
                                 <span class="material-icons mr-2">settings</span>
                                 批次操作
                             </button>
@@ -186,7 +212,7 @@
                                 </div>
                             </div>
                         </div>
-                
+
                         <div class="bg-white p-4 md:p-6 rounded-lg shadow-md">
                             <div class="flex flex-col md:flex-row items-center text-center md:text-left">
                                 <div class="bg-red-100 p-3 rounded-lg mb-3 md:mb-0 md:mr-4">
@@ -198,11 +224,12 @@
                                 </div>
                             </div>
                         </div>
-                </div>
+                    </div>
 
                     <!-- 篩選和視圖控制 -->
                     <div class="bg-white p-6 rounded-lg shadow-md mb-8">
-                        <div class="flex flex-col md:flex-row md:items-center md:justify-between space-y-4 md:space-y-0">
+                        <div
+                            class="flex flex-col md:flex-row md:items-center md:justify-between space-y-4 md:space-y-0">
                             <div class="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-4">
                                 <select id="classStatusFilter" class="form-control">
                                     <option value="">所有狀態</option>
@@ -221,16 +248,19 @@
                                 </select>
                             </div>
                             <div class="flex space-x-2">
-                                <button class="view-btn active px-4 py-2 rounded-lg bg-blue-600 text-white" data-view="list">
+                                <button class="view-btn active px-4 py-2 rounded-lg bg-blue-600 text-white"
+                                    data-view="list">
                                     <i class="fas fa-list mr-2"></i>列表視圖
-                    </button>
-                                <button class="view-btn px-4 py-2 rounded-lg bg-gray-200 text-gray-700 hover:bg-gray-300" data-view="grid">
+                                </button>
+                                <button
+                                    class="view-btn px-4 py-2 rounded-lg bg-gray-200 text-gray-700 hover:bg-gray-300"
+                                    data-view="grid">
                                     <i class="fas fa-th-large mr-2"></i>卡片視圖
-                    </button>
-                </div>
-            </div>
-                </div>
-                
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
                     <!-- 班級列表 -->
                     <div id="classesList">
                         <!-- 列表視圖 -->
@@ -245,8 +275,8 @@
                             </div>
                         </div>
                     </div>
-        </div>
-    </main>
+                </div>
+            </main>
         </div>
     </div>
 
@@ -258,24 +288,24 @@
                 <button id="classModalClose" class="modal-close">&times;</button>
             </div>
             <div class="modal-body">
-                    <form id="classForm">
-                        <div class="form-group">
+                <form id="classForm">
+                    <div class="form-group">
                         <label for="className" class="form-label">班級名稱 *</label>
                         <input type="text" id="className" class="form-control" required>
-                        </div>
-                        <div class="form-group">
+                    </div>
+                    <div class="form-group">
                         <label for="classSubject" class="form-label">科目 *</label>
-                            <select id="classSubject" class="form-control" required>
-                                <option value="">請選擇科目</option>
+                        <select id="classSubject" class="form-control" required>
+                            <option value="">請選擇科目</option>
                             <option value="math">數學</option>
                             <option value="chinese">國文</option>
                             <option value="english">英文</option>
                             <option value="science">自然</option>
                             <option value="history">歷史</option>
                             <option value="geography">地理</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
+                        </select>
+                    </div>
+                    <div class="form-group">
                         <label for="classGrade" class="form-label">年級</label>
                         <select id="classGrade" class="form-control">
                             <option value="">請選擇年級</option>
@@ -286,11 +316,11 @@
                             <option value="9A">九年級上學期</option>
                             <option value="9B">九年級下學期</option>
                         </select>
-                        </div>
+                    </div>
                     <div class="form-group">
                         <label for="classDescription" class="form-label">描述</label>
                         <textarea id="classDescription" class="form-control" rows="3" placeholder="班級描述..."></textarea>
-                        </div>
+                    </div>
                 </form>
             </div>
             <div class="modal-footer">
@@ -311,14 +341,14 @@
                 <div class="mb-4">
                     <button id="addStudentBtn" class="btn btn-primary">
                         <i class="fas fa-plus mr-2"></i>新增學生
-                </button>
-            </div>
+                    </button>
+                </div>
                 <div id="studentList">
                     <!-- 動態載入學生列表 -->
+                </div>
+            </div>
         </div>
     </div>
-                            </div>
-                            </div>
 
     <!-- 學生搜尋 Modal -->
     <div id="studentSearchModal" class="modal" style="display: none;">
@@ -326,27 +356,28 @@
             <div class="modal-header">
                 <h3 class="modal-title">搜尋並新增學生</h3>
                 <button id="studentSearchModalClose" class="modal-close">&times;</button>
-                            </div>
+            </div>
             <div class="modal-body">
                 <div class="form-group mb-4">
                     <label for="studentSearchInput" class="form-label">搜尋學生</label>
                     <div class="flex gap-2">
-                        <input type="text" id="studentSearchInput" class="form-control flex-1" placeholder="輸入學生姓名或郵箱...">
+                        <input type="text" id="studentSearchInput" class="form-control flex-1"
+                            placeholder="輸入學生姓名或郵箱...">
                         <button id="searchStudentBtn" class="btn btn-primary">搜尋</button>
-                            </div>
-                        </div>
+                    </div>
+                </div>
                 <div id="searchResults" class="mb-4">
                     <!-- 搜尋結果將在這裡顯示 -->
-                        </div>
+                </div>
                 <div class="form-group mb-4">
                     <label for="targetClassSelect" class="form-label">選擇目標班級</label>
                     <select id="targetClassSelect" class="form-control">
                         <option value="">請選擇班級</option>
                     </select>
-                    </div>
-                            </div>
-                            </div>
-                        </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <!-- 已刪除班級 Modal -->
     <div id="deletedClassesModal" class="modal" style="display: none;">
@@ -354,34 +385,34 @@
             <div class="modal-header">
                 <h3 class="modal-title">已刪除的班級</h3>
                 <button id="deletedClassesModalClose" class="modal-close">&times;</button>
-                    </div>
+            </div>
             <div class="modal-body">
                 <div id="deletedClassesList">
                     <!-- 已刪除班級列表 -->
-                    </div>
                 </div>
-                    </div>
-                            </div>
+            </div>
+        </div>
+    </div>
 
     <!-- JavaScript 檔案載入 -->
     <script src="../js/auth.js"></script>
     <script src="../js/api-client.js"></script>
     <script src="../js/classes-enhanced.js"></script>
-    
+
     <script>
         // 頁面載入完成後的初始化
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
             // 更新認證狀態和歡迎訊息
             if (typeof teacherAuth !== 'undefined') {
                 teacherAuth.updateUI();
             }
-            
+
             // 登出功能
-            document.getElementById('logoutBtn').addEventListener('click', function() {
+            document.getElementById('logoutBtn').addEventListener('click', function () {
                 if (confirm('確定要登出嗎？')) {
                     if (typeof teacherAuth !== 'undefined') {
                         teacherAuth.logout();
-                } else {
+                    } else {
                         alert('已登出');
                     }
                 }
@@ -419,8 +450,8 @@
                             classSelect.appendChild(option);
                         }
                     });
-                        }
-                    } catch (error) {
+                }
+            } catch (error) {
                 console.error('載入班級失敗:', error);
             }
         }
@@ -433,8 +464,8 @@
                     const deletedClasses = response.filter(cls => !cls.is_active);
                     if (deletedClasses.length === 0) {
                         container.innerHTML = '<p class="text-gray-500 text-center py-4">沒有已刪除的班級</p>';
-                    return;
-                }
+                        return;
+                    }
 
                     container.innerHTML = deletedClasses.map(cls => `
                         <div class="flex items-center justify-between p-4 border-b border-gray-200">
@@ -447,8 +478,8 @@
                             </button>
                     </div>
                 `).join('');
-                        }
-                    } catch (error) {
+                }
+            } catch (error) {
                 console.error('載入已刪除班級失敗:', error);
             }
         }
@@ -460,8 +491,8 @@
                 loadDeletedClasses();
                 if (typeof classesManager !== 'undefined') {
                     classesManager.loadClasses();
-                        }
-                    } catch (error) {
+                }
+            } catch (error) {
                 alert('恢復失敗：' + error.message);
             }
         }

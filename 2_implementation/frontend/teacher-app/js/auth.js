@@ -15,7 +15,7 @@ class TeacherAuthManager {
     init() {
         // 處理從統一登入頁面傳來的認證資訊
         this.handleAuthFromURL();
-        
+
         // 強制檢查認證狀態
         this.checkExistingAuth();
     }
@@ -30,15 +30,15 @@ class TeacherAuthManager {
 
         if (token && userInfo) {
             console.log('🚀 從URL接收到認證資訊');
-            
+
             // 儲存到localStorage
             localStorage.setItem(this.tokenKey, token);
             localStorage.setItem(this.userKey, userInfo);
-            
+
             // 清除URL參數
             const newURL = window.location.protocol + "//" + window.location.host + window.location.pathname;
             window.history.replaceState({}, document.title, newURL);
-            
+
             // 更新認證狀態
             this.updateUI();
         }
@@ -49,18 +49,18 @@ class TeacherAuthManager {
      */
     checkExistingAuth() {
         console.log('🔍 檢查教師端認證狀態...');
-        
+
         const token = localStorage.getItem(this.tokenKey);
         const userInfo = localStorage.getItem(this.userKey);
-        
+
         console.log('Token 存在:', !!token);
         console.log('用戶資訊存在:', !!userInfo);
-        
+
         if (token && userInfo) {
             try {
                 const user = JSON.parse(userInfo);
                 console.log('✅ 找到已存在的認證資訊:', user);
-                
+
                 // 檢查 token 是否過期
                 if (!this.isTokenExpired(token)) {
                     console.log('✅ Token 有效，更新 UI');
@@ -88,30 +88,30 @@ class TeacherAuthManager {
     async login(email, password) {
         try {
             showLoading();
-            
+
             // 檢查 apiClient 是否可用
             if (typeof apiClient === 'undefined' || !apiClient.post) {
                 throw new Error('API 客戶端未初始化');
             }
-            
+
             const response = await apiClient.post('/auth/login', { email, password });
 
             if (response.access_token) {
                 // 儲存 token 和用戶資訊
                 const token = response.access_token;
                 const user = response.user || { email: email, name: email.split('@')[0] };
-                
+
                 this.setToken(token);
                 this.setUser(user);
-                
+
                 console.log('✅ 登入成功，token 已保存:', token.substring(0, 20) + '...');
-                
+
                 // 更新 UI
                 this.updateUI();
-                
+
                 // 重定向到班級管理頁面
                 window.location.href = 'pages/classes-enhanced.html';
-                
+
                 return { success: true, message: '登入成功' };
             } else {
                 return { success: false, message: response.detail || '登入失敗' };
@@ -131,9 +131,10 @@ class TeacherAuthManager {
         // 清除本地儲存的認證資訊
         localStorage.removeItem(this.tokenKey);
         localStorage.removeItem(this.userKey);
-        
+
         // 重定向到統一登入頁面
-        window.location.href = 'http://localhost/login.html';
+        const loginUrl = (window?.Utils?.config?.LOGIN_URL) || '/login.html';
+        window.location.href = loginUrl;
     }
 
     /**
@@ -197,12 +198,12 @@ class TeacherAuthManager {
      */
     async checkAuthStatus() {
         const token = this.getToken();
-        
+
         if (!token) {
             this.redirectToLogin();
             return;
         }
-        
+
         try {
             // 檢查 token 是否過期
             if (this.isTokenExpired(token)) {
@@ -214,10 +215,10 @@ class TeacherAuthManager {
                     return;
                 }
             }
-            
+
             // 驗證 token 有效性
             const response = await apiClient.get('/auth/verify');
-            
+
             if (response.success) {
                 this.updateUI();
             } else {
@@ -243,7 +244,8 @@ class TeacherAuthManager {
      * 重定向到登入頁面
      */
     redirectToLogin() {
-        window.location.href = 'http://localhost/login.html';
+        const loginUrl = (window?.Utils?.config?.LOGIN_URL) || '/login.html';
+        window.location.href = loginUrl;
     }
 
     /**
@@ -313,10 +315,10 @@ class TeacherAuthManager {
 const teacherAuth = new TeacherAuthManager();
 
 // 全域登出事件處理
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     const logoutBtn = document.getElementById('logout-btn');
     if (logoutBtn) {
-        logoutBtn.addEventListener('click', function(e) {
+        logoutBtn.addEventListener('click', function (e) {
             e.preventDefault();
             teacherAuth.logout();
         });

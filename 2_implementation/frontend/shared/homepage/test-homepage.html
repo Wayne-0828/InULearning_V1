@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="zh-TW">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -12,13 +13,15 @@
             padding: 20px;
             background: linear-gradient(135deg, #EFF6FF 0%, #F8FAFC 100%);
         }
+
         .test-section {
             background: white;
             padding: 20px;
             margin: 20px 0;
             border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
+
         .test-button {
             background: #3B82F6;
             color: white;
@@ -28,35 +31,42 @@
             cursor: pointer;
             margin: 5px;
         }
+
         .test-button:hover {
             background: #1E40AF;
         }
+
         .status {
             padding: 10px;
             margin: 10px 0;
             border-radius: 4px;
         }
+
         .success {
             background: #d4edda;
             color: #155724;
             border: 1px solid #c3e6cb;
         }
+
         .error {
             background: #f8d7da;
             color: #721c24;
             border: 1px solid #f5c6cb;
         }
+
         .info {
             background: #d1ecf1;
             color: #0c5460;
             border: 1px solid #bee5eb;
         }
+
         .feature-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
             gap: 15px;
             margin: 20px 0;
         }
+
         .feature-item {
             background: #f8f9fa;
             padding: 15px;
@@ -65,9 +75,10 @@
         }
     </style>
 </head>
+
 <body>
     <h1>🏠 InU Learning 首頁功能測試</h1>
-    
+
     <div class="test-section">
         <h2>1. 首頁訪問測試</h2>
         <button class="test-button" onclick="testHomepage()">測試首頁訪問</button>
@@ -80,19 +91,23 @@
         <div class="feature-grid">
             <div class="feature-item">
                 <h3>學生應用</h3>
-                <button class="test-button" onclick="testApp('http://localhost:8080', '學生應用')">測試 (8080)</button>
+                <button class="test-button"
+                    onclick="testApp(`${location.protocol}//${location.hostname}:8080`, '學生應用')">測試 (8080)</button>
             </div>
             <div class="feature-item">
                 <h3>管理員應用</h3>
-                <button class="test-button" onclick="testApp('http://localhost:8081', '管理員應用')">測試 (8081)</button>
+                <button class="test-button"
+                    onclick="testApp(`${location.protocol}//${location.hostname}:8081`, '管理員應用')">測試 (8081)</button>
             </div>
             <div class="feature-item">
                 <h3>家長應用</h3>
-                <button class="test-button" onclick="testApp('http://localhost:8082', '家長應用')">測試 (8082)</button>
+                <button class="test-button"
+                    onclick="testApp(`${location.protocol}//${location.hostname}:8082`, '家長應用')">測試 (8082)</button>
             </div>
             <div class="feature-item">
                 <h3>教師應用</h3>
-                <button class="test-button" onclick="testApp('http://localhost:8083', '教師應用')">測試 (8083)</button>
+                <button class="test-button"
+                    onclick="testApp(`${location.protocol}//${location.hostname}:8083`, '教師應用')">測試 (8083)</button>
             </div>
         </div>
         <div id="appTestResult"></div>
@@ -146,12 +161,11 @@
             <div class="feature-item">
                 <h4>🏠 首頁</h4>
                 <p><a href="../homepage/index.html" target="_blank">index.html</a></p>
-                <p><a href="http://localhost/" target="_blank">localhost</a></p>
+                <p><a href="/" target="_blank">首頁</a></p>
             </div>
             <div class="feature-item">
                 <h4>🔐 登入</h4>
                 <p><a href="/login.html" target="_blank">login.html</a></p>
-                <p><a href="http://localhost/login.html" target="_blank">localhost/login.html</a></p>
             </div>
             <div class="feature-item">
                 <h4>📱 應用</h4>
@@ -193,11 +207,11 @@
         function testResponsive() {
             const width = window.innerWidth;
             let deviceType = '';
-            
+
             if (width >= 1200) deviceType = '桌面版';
             else if (width >= 768) deviceType = '平板版';
             else deviceType = '手機版';
-            
+
             showResult('homepageTestResult', `📱 當前設備: ${deviceType} (${width}px)`, 'info');
         }
 
@@ -239,12 +253,12 @@
 
         function testPerformance() {
             const startTime = performance.now();
-            
+
             // 模擬性能測試
             setTimeout(() => {
                 const endTime = performance.now();
                 const loadTime = endTime - startTime;
-                
+
                 if (loadTime < 1000) {
                     showResult('performanceTestResult', `✅ 性能良好，載入時間: ${loadTime.toFixed(2)}ms`, 'success');
                 } else if (loadTime < 3000) {
@@ -264,4 +278,5 @@
         });
     </script>
 </body>
-</html> 
+
+</html>

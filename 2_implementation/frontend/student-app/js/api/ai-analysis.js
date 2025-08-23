@@ -6,9 +6,8 @@
 // AI 分析 API 客戶端
 class AIAnalysisAPI {
     constructor() {
-        // 經由 API Gateway (nginx，對外 http://localhost/api) 做反向代理
-        // 避免在 8080 靜態前端容器上以相對路徑呼叫造成 502
-        this.baseURL = (window?.Utils?.config?.API_BASE_URL) || 'http://localhost/api/v1';
+        // 經由 API Gateway (nginx) 做反向代理
+        this.baseURL = (window?.Utils?.config?.API_BASE_URL) || (location.origin + '/api/v1');
         this.aiBase = `${this.baseURL}/ai`;
     }
 

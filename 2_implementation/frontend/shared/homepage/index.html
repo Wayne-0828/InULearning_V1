@@ -487,8 +487,7 @@
         <div class="container">
             <div class="navbar-content">
                 <a href="#" class="logo">
-                    <img src="http://localhost/shared/image/InULearning_logo.png"
-                        alt="InU Learning Logo">
+                    <img src="/shared/image/InULearning_logo.png" alt="InU Learning Logo">
                     <span class="logo-text">InU Learning</span>
                 </a>
                 <div class="nav-links">
@@ -497,8 +496,8 @@
                     <a href="#about" class="nav-link">關於我們</a>
                 </div>
                 <div class="auth-buttons">
-                    <a href="http://localhost/login.html" class="btn-login">登入</a>
-                    <a href="http://localhost/register.html" class="btn-register">註冊</a>
+                    <a href="/login.html" class="btn-login">登入</a>
+                    <a href="/register.html" class="btn-register">註冊</a>
                 </div>
             </div>
         </div>
@@ -510,16 +509,15 @@
         <section class="hero-section">
             <div class="container">
                 <div class="hero-content">
-                    <img src="http://localhost/shared/image/InULearning_logo.png"
-                        alt="InU Learning Logo" class="hero-logo">
+                    <img src="/shared/image/InULearning_logo.png" alt="InU Learning Logo" class="hero-logo">
                     <h1 class="hero-title">InU Learning</h1>
                     <p class="hero-subtitle">因你而學，學習只為你</p>
                     <div class="hero-buttons">
-                        <a href="http://localhost/login.html" class="btn-primary">
+                        <a href="/login.html" class="btn-primary">
                             <span class="material-icons">login</span>
                             立即登入
                         </a>
-                        <a href="http://localhost/register.html" class="btn-secondary">
+                        <a href="/register.html" class="btn-secondary">
                             <span class="material-icons">person_add</span>
                             立即註冊
                         </a>
@@ -584,28 +582,28 @@
             <div class="container">
                 <h2 class="section-title">應用入口</h2>
                 <div class="apps-grid">
-                    <a href="http://localhost:8080" class="app-card">
+                    <a data-app-port="8080" href="#" class="app-card">
                         <div class="app-icon">
                             <span class="material-icons">school</span>
                         </div>
                         <h3 class="app-title">學生練功專區</h3>
                         <p class="app-description">AI 驅動的個人化學習體驗，讓您的學習更有效率</p>
                     </a>
-                    <a href="http://localhost:8081" class="app-card">
+                    <a data-app-port="8081" href="#" class="app-card">
                         <div class="app-icon">
                             <span class="material-icons">admin_panel_settings</span>
                         </div>
                         <h3 class="app-title">管理員控制台</h3>
                         <p class="app-description">系統管理和數據分析，全面掌握平台運營狀況</p>
                     </a>
-                    <a href="http://localhost:8082" class="app-card">
+                    <a data-app-port="8082" href="#" class="app-card">
                         <div class="app-icon">
                             <span class="material-icons">family_restroom</span>
                         </div>
                         <h3 class="app-title">家長關懷中心</h3>
                         <p class="app-description">即時了解孩子的學習狀況，參與孩子的成長過程</p>
                     </a>
-                    <a href="http://localhost:8083" class="app-card">
+                    <a data-app-port="8083" href="#" class="app-card">
                         <div class="app-icon">
                             <span class="material-icons">person</span>
                         </div>
@@ -627,8 +625,8 @@
                 </div>
                 <div class="footer-section">
                     <h3>快速連結</h3>
-                    <p><a href="http://localhost/login.html">登入系統</a></p>
-                    <p><a href="http://localhost/register.html">註冊帳號</a></p>
+                    <p><a href="/login.html">登入系統</a></p>
+                    <p><a href="/register.html">註冊帳號</a></p>
                     <p><a href="#features">平台特色</a></p>
                     <p><a href="#apps">應用入口</a></p>
                     <p><a href="#about">關於我們</a></p>
@@ -702,6 +700,15 @@
             card.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
             observer.observe(card);
         });
+
+        // 動態設定應用入口連結為當前主機的 808x 埠
+        (function () {
+            const origin = `${location.protocol}//${location.hostname}`;
+            document.querySelectorAll('a[data-app-port]')?.forEach(a => {
+                const port = a.getAttribute('data-app-port');
+                if (port) a.href = `${origin}:${port}`;
+            });
+        })();
     </script>
 </body>
 

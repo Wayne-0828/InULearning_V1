@@ -10,7 +10,7 @@ document.addEventListener('DOMContentLoaded', function () {
     // 檢查是否已登入
     if (!authManager.isLoggedIn()) {
         console.log('用戶未登入，重定向到登入頁面');
-        window.location.href = 'http://localhost/login.html';
+        window.location.href = (window?.Utils?.config?.LOGIN_URL) || '/login.html';
         return;
     }
 
@@ -18,7 +18,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const user = authManager.getUser();
     if (user && user.role !== 'student') {
         console.log('用戶角色不符，重定向到登入頁面');
-        window.location.href = 'http://localhost/login.html';
+        window.location.href = (window?.Utils?.config?.LOGIN_URL) || '/login.html';
         return;
     }
 

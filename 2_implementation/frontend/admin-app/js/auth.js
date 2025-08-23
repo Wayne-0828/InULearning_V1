@@ -14,7 +14,7 @@ class AdminAuthManager {
         this.currentUser = null;
         this.init();
     }
-    
+
     /**
      * 初始化認證管理器
      */
@@ -22,7 +22,7 @@ class AdminAuthManager {
         this.checkAuthStatus();
         this.setupEventListeners();
     }
-    
+
     /**
      * 設定事件監聽器
      */
@@ -36,25 +36,25 @@ class AdminAuthManager {
             });
         }
     }
-    
+
     /**
      * 檢查認證狀態
      */
     async checkAuthStatus() {
         // 處理從統一登入頁面傳來的認證資訊
         this.handleAuthFromURL();
-        
+
         const token = Utils.getStorageItem('auth_token');
-        
+
         if (!token) {
             this.redirectToLogin();
             return;
         }
-        
+
         try {
             this.apiClient.setAuthToken(token);
             const response = await this.apiClient.get('/auth/verify');
-            
+
             if (response.success) {
                 this.currentUser = response.data.user;
                 this.updateUI();
@@ -79,27 +79,27 @@ class AdminAuthManager {
 
         if (token && userInfo) {
             console.log('從URL接收到認證資訊');
-            
+
             // 儲存到localStorage
             Utils.setStorageItem('auth_token', token);
             Utils.setStorageItem('user_info', userInfo);
-            
+
             // 解析用戶資訊
             try {
                 this.currentUser = JSON.parse(userInfo);
             } catch (e) {
                 console.error('解析用戶資訊失敗:', e);
             }
-            
+
             // 清除URL參數
             const newURL = window.location.protocol + "//" + window.location.host + window.location.pathname;
             window.history.replaceState({}, document.title, newURL);
-            
+
             // 更新UI
             this.updateUI();
         }
     }
-    
+
     /**
      * 更新 UI 顯示
      */
@@ -111,7 +111,7 @@ class AdminAuthManager {
             }
         }
     }
-    
+
     /**
      * 登入
      * @param {string} email - 電子郵件
@@ -120,26 +120,26 @@ class AdminAuthManager {
     async login(email, password) {
         try {
             Utils.showLoading();
-            
+
             const response = await this.apiClient.post('/auth/login', {
                 email: email,
                 password: password,
                 role: 'admin'
             });
-            
+
             if (response.success) {
                 const { access_token, user } = response.data;
-                
+
                 // 儲存 Token 和用戶資訊
                 Utils.setStorageItem('auth_token', access_token);
                 Utils.setStorageItem('user_info', JSON.stringify(user));
-                
+
                 this.currentUser = user;
                 this.apiClient.setAuthToken(access_token);
-                
+
                 // 顯示成功訊息
                 Utils.showAlert('登入成功！', 'success');
-                
+
                 // 延遲跳轉
                 setTimeout(() => {
                     window.location.href = 'index.html';
@@ -154,7 +154,7 @@ class AdminAuthManager {
             Utils.hideLoading();
         }
     }
-    
+
     /**
      * 登出
      */
@@ -170,13 +170,13 @@ class AdminAuthManager {
         } finally {
             this.clearAuth();
             Utils.showAlert('已成功登出', 'success');
-            
+
             setTimeout(() => {
                 this.redirectToLogin();
             }, 1000);
         }
     }
-    
+
     /**
      * 清除認證資訊
      */
@@ -186,16 +186,17 @@ class AdminAuthManager {
         this.currentUser = null;
         this.apiClient.clearAuthToken();
     }
-    
+
     /**
      * 跳轉到登入頁面
      */
     redirectToLogin() {
         if (window.location.pathname !== '/admin-app/pages/login.html') {
-            window.location.href = 'http://localhost/login.html';
+            const loginUrl = (window?.Utils?.config?.LOGIN_URL) || '/login.html';
+            window.location.href = loginUrl;
         }
     }
-    
+
     /**
      * 檢查是否已登入
      * @returns {boolean}
@@ -203,7 +204,7 @@ class AdminAuthManager {
     isAuthenticated() {
         return !!Utils.getStorageItem('auth_token') && !!this.currentUser;
     }
-    
+
     /**
      * 取得當前用戶
      * @returns {Object|null}
@@ -211,7 +212,7 @@ class AdminAuthManager {
     getCurrentUser() {
         return this.currentUser;
     }
-    
+
     /**
      * 取得認證 Token
      * @returns {string|null}

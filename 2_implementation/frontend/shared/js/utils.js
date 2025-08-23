@@ -11,8 +11,11 @@
  */
 
 // ===== 全域變數 =====
+const GATEWAY_ORIGIN = `${location.protocol}//${location.hostname}`;
 const APP_CONFIG = {
-    API_BASE_URL: 'http://localhost/api/v1',
+    API_BASE_URL: GATEWAY_ORIGIN + '/api/v1',
+    LOGIN_URL: GATEWAY_ORIGIN + '/login.html',
+    GATEWAY_ORIGIN: GATEWAY_ORIGIN,
     STORAGE_PREFIX: 'inulearning_',
     DATE_FORMAT: 'YYYY-MM-DD',
     TIME_FORMAT: 'HH:mm:ss',

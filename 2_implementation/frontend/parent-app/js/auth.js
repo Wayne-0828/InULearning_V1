@@ -19,7 +19,8 @@ class ParentAuthManager {
         } else {
             // 如果未登入且不在登入頁面，重定向到統一登入頁面
             if (!window.location.pathname.includes('login.html')) {
-                window.location.href = 'http://localhost/login.html';
+                const loginUrl = (window?.Utils?.config?.LOGIN_URL) || '/login.html';
+                window.location.href = loginUrl;
             }
         }
     }
@@ -95,7 +96,8 @@ class ParentAuthManager {
         localStorage.removeItem(this.userKey);
 
         // 重定向到統一登入頁面
-        window.location.href = 'http://localhost/login.html';
+        const loginUrl = (window?.Utils?.config?.LOGIN_URL) || '/login.html';
+        window.location.href = loginUrl;
     }
 
     /**

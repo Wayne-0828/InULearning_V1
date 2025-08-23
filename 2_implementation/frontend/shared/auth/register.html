@@ -94,8 +94,7 @@
         <!-- 側邊欄 -->
         <aside class="w-64 bg-blue-800 text-white flex-col hidden lg:flex">
             <div class="flex items-center justify-center p-6">
-                <img alt="InU Learning Logo" class="w-24 h-24 rounded-full"
-                    src="https://lh3.googleusercontent.com/aida-public/AB6AXuBkUkYI-c0qBm9BcHamuWBs9ebu6mgGni1SlXL6giHvgu2WnHxHaQYkRoAlzI_OZ8yNf6Rn90d73q13vLeMoBfFP0mQHcxlf2YHE9__XhpOUl-OvECBnRad91AKcE4dKkTJtEoAm_alktSTzu_Aw9Fah_2IQ6YeqBALwAqrLNP2oghwOkLSyBMdfpOrW24nKk3dnl3z6piT9-S0cISDfJ5rhAlBYvIzoAhypgUHvJCzxlSG9ag8QMkltK1Hu_rX4jqdQgGuOD2JLzo">
+                <img alt="InU Learning Logo" class="w-24 h-24 rounded-full" src="/shared/image/InULearning_logo.png">
             </div>
             <div class="px-6 pb-4">
                 <h1 class="text-xl font-bold text-center">InU Learning</h1>
@@ -103,18 +102,18 @@
             </div>
 
             <nav class="flex-1 px-4 py-4 space-y-2">
-                <div class="flex items-center px-4 py-2 text-gray-100 rounded-lg">
+                <a id="link-student" class="flex items-center px-4 py-2 text-gray-100 rounded-lg" href="#">
                     <span class="material-icons">school</span>
                     <span class="ml-3">學生練功專區</span>
-                </div>
-                <div class="flex items-center px-4 py-2 text-gray-100 rounded-lg">
+                </a>
+                <a id="link-parent" class="flex items-center px-4 py-2 text-gray-100 rounded-lg" href="#">
                     <span class="material-icons">family_restroom</span>
                     <span class="ml-3">家長控制台</span>
-                </div>
-                <div class="flex items-center px-4 py-2 text-gray-100 rounded-lg">
+                </a>
+                <a id="link-teacher" class="flex items-center px-4 py-2 text-gray-100 rounded-lg" href="#">
                     <span class="material-icons">person</span>
                     <span class="ml-3">教師專區</span>
-                </div>
+                </a>
             </nav>
         </aside>
 
@@ -316,6 +315,17 @@
     <script src="/js/utils.js"></script>
     <script src="/js/api-client.js"></script>
     <script src="/js/register.js"></script>
+    <script>
+        (function () {
+            const originHost = `${location.protocol}//${location.hostname}`;
+            const s = document.getElementById('link-student');
+            const p = document.getElementById('link-parent');
+            const t = document.getElementById('link-teacher');
+            if (s) s.href = `${originHost}:8080`;
+            if (p) p.href = `${originHost}:8082`;
+            if (t) t.href = `${originHost}:8083`;
+        })();
+    </script>
 </body>
 
 </html>
