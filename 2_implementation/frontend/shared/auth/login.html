@@ -239,6 +239,13 @@
     </div>
 
     <script>
+        // 進入登入頁時，移除所有查詢參數，保持網址乾淨
+        (function () {
+            if (window.location.search) {
+                const cleanUrl = window.location.origin + window.location.pathname + (window.location.hash || '');
+                history.replaceState(null, '', cleanUrl);
+            }
+        })();
         class UnifiedLogin {
             constructor() {
                 this.selectedRole = 'student';

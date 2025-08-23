@@ -493,12 +493,13 @@ class UnifiedRegister {
 
             console.log('✅ 註冊成功:', result);
 
-            this.showSuccess(`註冊成功！歡迎加入 InU Learning，${formData.first_name}！正在跳轉...`);
+            this.showSuccess(`註冊成功！歡迎加入 InU Learning，${formData.first_name}！正在跳轉至登入頁...`);
 
-            // 延遲跳轉到對應的前端應用
+            // 統一跳轉到登入頁（不帶查詢參數，保持網址乾淨）
             setTimeout(() => {
-                this.redirectByRole(this.selectedRole);
-            }, 2000);
+                const loginUrl = (window?.Utils?.config?.LOGIN_URL) || '/login.html';
+                window.location.href = loginUrl;
+            }, 1500);
 
         } catch (error) {
             console.error('❌ 註冊錯誤:', error);
