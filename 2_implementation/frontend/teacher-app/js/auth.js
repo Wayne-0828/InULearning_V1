@@ -18,6 +18,9 @@ class TeacherAuthManager {
 
         // 強制檢查認證狀態
         this.checkExistingAuth();
+
+        // 規範所有登入連結為公用登入頁（去除 8083 等服務埠）
+        this.normalizeLoginLinks();
     }
 
     /**
@@ -132,8 +135,9 @@ class TeacherAuthManager {
         localStorage.removeItem(this.tokenKey);
         localStorage.removeItem(this.userKey);
 
-        // 重定向到統一登入頁面
-        const loginUrl = (window?.Utils?.config?.LOGIN_URL) || '/login.html';
+        // 重定向到統一登入頁面（以網域為準，不攜帶服務埠）
+        const loginUrl = (window?.Utils?.config?.LOGIN_URL)
+            || `${window.location.protocol}//${window.location.hostname}/login.html`;
         window.location.href = loginUrl;
     }
 
@@ -244,7 +248,8 @@ class TeacherAuthManager {
      * 重定向到登入頁面
      */
     redirectToLogin() {
-        const loginUrl = (window?.Utils?.config?.LOGIN_URL) || '/login.html';
+        const loginUrl = (window?.Utils?.config?.LOGIN_URL)
+            || `${window.location.protocol}//${window.location.hostname}/login.html`;
         window.location.href = loginUrl;
     }
 
@@ -285,6 +290,25 @@ class TeacherAuthManager {
             if (authButtons) authButtons.classList.remove('hidden');
             if (logoutBtn) logoutBtn.classList.add('hidden');
         }
+    }
+
+    /**
+     * 將頁面上的登入連結統一指向公用登入頁（移除 8083 等服務埠）
+     */
+    normalizeLoginLinks() {
+        try {
+            const target = (window?.Utils?.config?.LOGIN_URL)
+                || `${window.location.protocol}//${window.location.hostname}/login.html`;
+            const selectors = [
+                'a[href="/login.html"]',
+                'a[href="login.html"]',
+                'a[href="../login.html"]',
+                'a[href$=":8083/login"]',
+                'a[href$=":8083/login.html"]'
+            ];
+            document.querySelectorAll(selectors.join(','))
+                .forEach(a => { a.setAttribute('href', target); });
+        } catch (_) { /* noop */ }
     }
 
     /**

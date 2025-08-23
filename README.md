@@ -41,14 +41,19 @@ python final_system_test.py
 ### 訪問地址
 | 服務 | 地址 | 說明 | 狀態 |
 |------|------|------|------|
+| 🌐 API Gateway | http://localhost | Nginx 反向代理與共享頁面 | ✅ 完全可用 |
 | 🎓 學生練習系統 | http://localhost:8080 | 主要練習介面 | ✅ 完全可用 |
-| 📚 題庫API | http://localhost:8002/docs | 題庫服務 API | ✅ 完全可用 |
-| 🔐 認證API | http://localhost:8001/docs | 認證服務 API | ✅ 完全可用 |
-| 📊 學習API | http://localhost:8003/docs | 學習服務 API | ✅ 完全可用 |
-| 🤖 AI分析API | http://localhost:8004/docs | AI分析服務 API | ✅ 完全可用 |
+| 🔧 管理員端 | http://localhost:8081 | 系統管理介面 | 🔄 架構完成 |
 | 👨‍👩‍👧‍👦 家長端 | http://localhost:8082 | 家長監控介面 | 🔄 架構完成 |
 | 👩‍🏫 教師端 | http://localhost:8083 | 教師管理介面 | 🔄 架構完成 |
-| 🔧 管理員 | http://localhost:8081 | 系統管理介面 | 🔄 架構完成 |
+| 🔐 認證API | http://localhost:8001/docs | 認證服務 API | ✅ 完全可用 |
+| 📚 題庫API | http://localhost:8002/docs | 題庫服務 API | ✅ 完全可用 |
+| 📊 學習API | http://localhost:8003/docs | 學習服務 API | ✅ 完全可用 |
+| 🤖 AI分析API | http://localhost:8004/docs | AI分析服務 API | ✅ 完全可用 |
+| 🧭 家長儀表板API | http://localhost:8005/docs | 家長儀表板服務 API | 🔄 架構完成 |
+| 📄 報告API | http://localhost:8007/docs | 報告服務 API | 🔄 架構完成 |
+| 🗂️ MinIO Console | http://localhost:9001 | 物件儲存管理主控台 | ✅ 完全可用 |
+| 🗄️ MinIO S3 Endpoint | http://localhost:9000 | S3 相容 API | ✅ 完全可用 |
 
 ### 快速體驗學生練習系統
 1. 訪問 http://localhost:8080
@@ -234,12 +239,15 @@ curl http://localhost:8080/pages/exam.html
 curl http://localhost:8001/health  # 認證服務
 curl http://localhost:8002/health  # 題庫服務
 curl http://localhost:8003/health  # 學習服務
+curl http://localhost:8004/api/v1/ai/health  # AI 分析服務
+curl http://localhost:8005/health  # 家長儀表板服務（若提供）
+curl http://localhost:8007/health  # 報告服務（若提供）
 
 # 檢查容器狀態
-docker-compose ps
+docker compose ps
 
 # 系統整合測試結果期望值:
-# - 服務健康: 8/8 (100%)
+# - 服務健康: 10/10 (含前端與核心後端)
 # - 功能測試: 3/3 (100%)
 # - 總耗時: < 1秒
 ```
@@ -252,24 +260,26 @@ docker-compose ps
 InULearning_V1/
 ├── 📁 2_implementation/
 │   ├── 📁 backend/                    # 後端微服務
-│   │   ├── 📁 auth-service/           # 認證服務 (Port 8001) ✅
-│   │   ├── 📁 question-bank-service/  # 題庫服務 (Port 8002) ✅
-│   │   ├── 📁 learning-service/       # 學習服務 (Port 8003) ✅
-│   │   ├── 📁 ai-analysis-service/    # AI 分析服務 (Port 8004) ✅
-│   │   ├── 📁 notification-service/   # 通知服務 (開發中)
-│   │   ├── 📁 report-service/         # 報告服務 (開發中)
-│   │   └── 📁 shared/                 # 共用組件
+│   │   ├── 📁 auth-service/                   # 認證服務 (Port 8001) ✅
+│   │   ├── 📁 question-bank-service/          # 題庫服務 (Port 8002) ✅
+│   │   ├── 📁 learning-service/               # 學習服務 (Port 8003) ✅
+│   │   ├── 📁 ai-analysis-service/            # AI 分析服務 (Port 8004) ✅
+│   │   ├── 📁 parent-dashboard-service/       # 家長儀表板 API (Port 8005)
+│   │   ├── 📁 teacher-management-service/     # 教師管理 API（內部，Nginx 代理）
+│   │   ├── 📁 report-service/                 # 報告服務 (Port 8007)
+│   │   ├── 📁 notification-service/           # 通知服務 (開發中)
+│   │   └── 📁 shared/                         # 共用組件
 │   ├── 📁 frontend/                   # 前端應用
 │   │   ├── 📁 student-app/            # 學生端 (Port 8080) ✅
 │   │   ├── 📁 parent-app/             # 家長端 (Port 8082)
 │   │   ├── 📁 teacher-app/            # 教師端 (Port 8083)
 │   │   └── 📁 admin-app/              # 管理員端 (Port 8081)
-│   └── 📁 database/                   # 資料庫配置
-├── 📁 seeds/                          # 題庫原始資料 ✅
-│   └── 📁 全題庫/                   # 60,683題已載入
+│   └── 📁 database/                   # 資料庫配置與種子資料
+│       └── 📁 seeds/                  # 題庫原始資料 ✅
+│           └── 📁 全題庫/             # 60,683題（載入用）
 ├── 📁 nginx/                          # API Gateway (Port 80)
 ├── 📄 docker-compose.yml              # 容器編排 ✅
-├── 📄 final_system_test.py             # 系統測試腳本 ✅
+├── 📄 final_system_test.py            # 系統測試腳本 ✅
 ├── 📄 load_rawdata.py                  # 資料載入腳本 ✅
 └── 📄 README.md                       # 專案說明
 ```

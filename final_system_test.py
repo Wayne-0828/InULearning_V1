@@ -26,9 +26,21 @@ class FinalSystemTest:
             'auth_service': 'http://localhost:8001',
             'question_bank_service': 'http://localhost:8002',
             'learning_service': 'http://localhost:8003',
+            'ai_analysis_service': 'http://localhost:8004',
+            'parent_dashboard_service': 'http://localhost:8005',
+            'report_service': 'http://localhost:8007',
             'admin_frontend': 'http://localhost:8081',
             'parent_frontend': 'http://localhost:8082',
             'teacher_frontend': 'http://localhost:8083'
+        }
+        # 針對不同服務的健康檢查端點
+        self.health_endpoints = {
+            'auth_service': '/health',
+            'question_bank_service': '/health',
+            'learning_service': '/health',
+            'ai_analysis_service': '/api/v1/ai/health',
+            'parent_dashboard_service': '/health',
+            'report_service': '/health',
         }
     
     def test_all_services_health(self):
@@ -39,28 +51,55 @@ class FinalSystemTest:
         
         for service, url in self.services.items():
             try:
+                # 優先檢查服務專屬健康端點（若有）
+                if service in self.health_endpoints:
+                    health_path = self.health_endpoints[service]
+                    health_url = f"{url}{health_path}"
+                    try:
+                        health_response = requests.get(health_url, timeout=5)
+                        if health_response.status_code == 200:
+                            try:
+                                health_data = health_response.json()
+                                status = health_data.get('status', 'OK')
+                            except Exception:
+                                status = 'OK'
+                            logger.info(f"  ✅ {service} 健康端點: HTTP 200")
+                            logger.info(f"    💚 健康檢查: {status}")
+                            results[service] = True
+                            continue
+                        else:
+                            logger.warning(f"  ⚠️  {service} 健康端點: HTTP {health_response.status_code}")
+                    except Exception as e:
+                        logger.warning(f"  ⚠️  {service} 健康端點異常: {e}")
+
+                # 後備：請求根路徑
                 response = requests.get(url, timeout=10)
-                
                 if response.status_code == 200:
                     logger.info(f"  ✅ {service}: HTTP {response.status_code}")
-                    
-                    # 測試API服務的健康端點
-                    if 'service' in service:
-                        health_response = requests.get(f"{url}/health", timeout=5)
-                        if health_response.status_code == 200:
-                            health_data = health_response.json()
-                            logger.info(f"    💚 健康檢查: {health_data.get('status', 'N/A')}")
-                    
                     results[service] = True
                 else:
                     logger.error(f"  ❌ {service}: HTTP {response.status_code}")
                     results[service] = False
-                    
+
             except Exception as e:
                 logger.error(f"  ❌ {service}: {e}")
                 results[service] = False
         
         return results
+
+    def test_minio_health(self) -> bool:
+        """測試 MinIO 健康狀態（S3 端點/live）"""
+        logger.info("\n🗂️ 測試 MinIO 健康狀態...")
+        try:
+            response = requests.get("http://localhost:9000/minio/health/live", timeout=10)
+            if response.status_code == 200:
+                logger.info("  ✅ MinIO Live 健康")
+                return True
+            logger.error(f"  ❌ MinIO Live: HTTP {response.status_code}")
+            return False
+        except Exception as e:
+            logger.error(f"  ❌ MinIO 健康檢查異常: {e}")
+            return False
     
     def test_question_bank_functionality(self):
         """測試題庫功能"""
@@ -273,9 +312,14 @@ class FinalSystemTest:
         results['frontend'] = frontend_ok
         
         # 4. 端到端工作流程測試
-        logger.info("\n📊 階段4/4: 端到端工作流程測試")
+        logger.info("\n📊 階段4/5: 端到端工作流程測試")
         e2e_ok = self.test_end_to_end_workflow()
         results['e2e_workflow'] = e2e_ok
+        
+        # 5. MinIO 健康檢查
+        logger.info("\n📊 階段5/5: MinIO 健康檢查")
+        minio_ok = self.test_minio_health()
+        results['minio'] = minio_ok
         
         # 計算總耗時
         elapsed_time = time.time() - start_time
@@ -285,7 +329,7 @@ class FinalSystemTest:
         
         # 判斷總體成功
         all_services_healthy = healthy_services == total_services
-        all_functions_ok = all([question_bank_ok, frontend_ok, e2e_ok])
+        all_functions_ok = all([question_bank_ok, frontend_ok, e2e_ok, results['minio']])
         
         return all_services_healthy and all_functions_ok
     
@@ -304,7 +348,8 @@ class FinalSystemTest:
         function_tests = [
             ('題庫API', results['question_bank']),
             ('前端頁面', results['frontend']),
-            ('端到端工作流程', results['e2e_workflow'])
+            ('端到端工作流程', results['e2e_workflow']),
+            ('MinIO 健康', results['minio']),
         ]
         
         passed_functions = 0
