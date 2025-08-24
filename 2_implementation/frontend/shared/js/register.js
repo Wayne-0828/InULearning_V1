@@ -94,9 +94,10 @@ class UnifiedRegister {
             this.emailInput.addEventListener('blur', () => this.validateEmail());
         }
 
-        // 用戶名格式檢查
+        // 帳號格式檢查
         if (this.usernameInput) {
             this.usernameInput.addEventListener('blur', () => this.validateUsername());
+            this.usernameInput.addEventListener('input', () => this.validateUsername());
         }
 
         // 電話號碼格式檢查
@@ -220,8 +221,8 @@ class UnifiedRegister {
                 sanitized = sanitized.replace(/[^\w\s\u4e00-\u9fa5-]/g, '');
                 break;
             case 'username':
-                // 用戶名只允許字母、數字、下底線
-                sanitized = sanitized.replace(/[^\w]/g, '');
+                // 帳號僅允許英文字母與數字
+                sanitized = sanitized.replace(/[^A-Za-z0-9]/g, '');
                 break;
             case 'email':
                 // 電子郵件只允許基本字符
@@ -322,23 +323,39 @@ class UnifiedRegister {
     }
 
     validateUsername() {
-        const username = this.usernameInput.value.trim();
+        const raw = this.usernameInput.value;
+        const username = raw.trim();
 
-        if (username && username.length < 3) {
-            this.usernameInput.setCustomValidity('用戶名至少需要3個字元');
-            this.usernameInput.classList.add('border-red-500');
-            this.usernameInput.classList.remove('border-green-500');
-            return false;
-        } else if (username && username.length >= 3) {
-            this.usernameInput.setCustomValidity('');
-            this.usernameInput.classList.remove('border-red-500');
-            this.usernameInput.classList.add('border-green-500');
-            return true;
-        } else {
+        if (!username) {
             this.usernameInput.setCustomValidity('');
             this.usernameInput.classList.remove('border-red-500', 'border-green-500');
             return true;
         }
+
+        // 僅允許英文字母與數字
+        const allowedPattern = /^[A-Za-z0-9]+$/;
+        if (!allowedPattern.test(username)) {
+            // 檢測是否包含中文
+            const hasCJK = /[\u4E00-\u9FFF]/.test(username);
+            const ruleMsg = '帳號僅能包含英文字母與數字（A-Z, a-z, 0-9），長度 3-100。';
+            const chineseMsg = '偵測到中文或不支援的字元，請改用英數字元。';
+            this.usernameInput.setCustomValidity(hasCJK ? chineseMsg + ' ' + ruleMsg : ruleMsg);
+            this.usernameInput.classList.add('border-red-500');
+            this.usernameInput.classList.remove('border-green-500');
+            return false;
+        }
+
+        if (username.length < 3) {
+            this.usernameInput.setCustomValidity('帳號至少需要 3 個字元');
+            this.usernameInput.classList.add('border-red-500');
+            this.usernameInput.classList.remove('border-green-500');
+            return false;
+        }
+
+        this.usernameInput.setCustomValidity('');
+        this.usernameInput.classList.remove('border-red-500');
+        this.usernameInput.classList.add('border-green-500');
+        return true;
     }
 
     validatePhone() {
@@ -382,7 +399,7 @@ class UnifiedRegister {
             { field: this.firstNameInput, name: '名字', type: 'name' },
             { field: this.lastNameInput, name: '姓氏', type: 'name' },
             { field: this.emailInput, name: '電子郵件', type: 'email' },
-            { field: this.usernameInput, name: '用戶名', type: 'username' },
+            { field: this.usernameInput, name: '帳號', type: 'username' },
             { field: this.passwordInput, name: '密碼', type: 'password' },
             { field: this.confirmPasswordInput, name: '確認密碼', type: 'password' }
         ];
