@@ -62,6 +62,7 @@ class ExerciseManager {
         this.selectedCriteria = {};
         this.chapterData = null; // 儲存章節資料
         this.initialized = false;
+        this.autoCheckTimer = null; // 自動檢查防抖計時器
 
         // 直接初始化，因為已經在 DOMContentLoaded 中調用
         this.init();
@@ -124,31 +125,27 @@ class ExerciseManager {
     }
 
     bindEvents() {
-        // 檢查題庫按鈕
-        const checkBtn = document.getElementById('checkQuestionsBtn');
-        if (checkBtn) {
-            checkBtn.addEventListener('click', () => this.checkQuestionBank());
-        }
-
-        // 開始練習按鈕
+        // 開始練習按鈕（先合併檢查題庫流程）
         const startBtn = document.getElementById('startExerciseBtn');
         if (startBtn) {
-            startBtn.addEventListener('click', () => this.startExercise());
+            startBtn.addEventListener('click', () => this.startExerciseMerged());
         }
 
         // 表單變更事件
         const gradeSelect = document.getElementById('gradeSelect');
         const editionSelect = document.getElementById('editionSelect');
         const subjectSelect = document.getElementById('subjectSelect');
+        const chapterSelect = document.getElementById('chapterSelect');
 
-        if (gradeSelect) gradeSelect.addEventListener('change', () => this.updateChapterOptions());
-        if (editionSelect) editionSelect.addEventListener('change', () => this.updateChapterOptions());
-        if (subjectSelect) subjectSelect.addEventListener('change', () => this.updateChapterOptions());
+        if (gradeSelect) gradeSelect.addEventListener('change', () => { this.updateChapterOptions(); this.scheduleAutoCheck(); });
+        if (editionSelect) editionSelect.addEventListener('change', () => { this.updateChapterOptions(); this.scheduleAutoCheck(); });
+        if (subjectSelect) subjectSelect.addEventListener('change', () => { this.updateChapterOptions(); this.scheduleAutoCheck(); });
+        if (chapterSelect) chapterSelect.addEventListener('change', () => this.scheduleAutoCheck());
 
         // 題數輸入驗證
         const questionCountInput = document.getElementById('questionCountInput');
         if (questionCountInput) {
-            questionCountInput.addEventListener('input', () => this.validateQuestionCount());
+            questionCountInput.addEventListener('input', () => { this.validateQuestionCount(); this.scheduleAutoCheck(); });
         }
 
         // 選項選擇事件
@@ -182,8 +179,26 @@ class ExerciseManager {
         if (onlyUnseenCheckbox) {
             onlyUnseenCheckbox.addEventListener('change', () => {
                 localStorage.setItem('exercise_only_unseen', onlyUnseenCheckbox.checked ? 'true' : 'false');
+                this.scheduleAutoCheck();
             });
         }
+    }
+
+    scheduleAutoCheck(delayMs = 300) {
+        // 僅在必要條件具備時才檢查
+        const criteria = this.getSelectedCriteria();
+        if (!criteria.grade || !criteria.edition || !criteria.subject) {
+            this.disableStartButton();
+            const questionsInfo = document.getElementById('questionsInfo');
+            if (questionsInfo) questionsInfo.innerHTML = '';
+            if (this.autoCheckTimer) clearTimeout(this.autoCheckTimer);
+            return;
+        }
+
+        if (this.autoCheckTimer) clearTimeout(this.autoCheckTimer);
+        this.autoCheckTimer = setTimeout(() => {
+            this.checkQuestionBank();
+        }, delayMs);
     }
 
     updateChapterOptions() {
@@ -246,13 +261,25 @@ class ExerciseManager {
             input.value = 1;
             hint.textContent = '題數不能少於1題';
             hint.className = 'text-xs text-red-500 mt-1';
+            this.disableStartButton();
         } else if (value > 50) {
             input.value = 50;
             hint.textContent = '題數不能超過50題';
             hint.className = 'text-xs text-red-500 mt-1';
+            this.disableStartButton();
         } else {
             hint.textContent = '可選擇1-50題';
             hint.className = 'text-xs text-gray-500 mt-1';
+            // 題數在有效範圍時，自動啟用開始（後續自動檢查會再次驗證可用題數）
+            const criteria = this.getSelectedCriteria();
+            if (criteria.grade && criteria.edition && criteria.subject) {
+                this.enableStartButton();
+            }
+        }
+
+        // 由於有可能是按下「調整為 X 題」直接呼叫本函式，這裡主動排程一次立即檢查
+        if (typeof this.scheduleAutoCheck === 'function') {
+            this.scheduleAutoCheck(0);
         }
     }
 
@@ -343,29 +370,122 @@ class ExerciseManager {
                     this.showUnseenQuestionBankInfo(total, unseen, requestedCount);
                     if (unseen >= requestedCount) {
                         this.enableStartButton();
+                        return { ok: true, available: unseen };
                     } else {
                         this.showInsufficientUnseen(unseen, requestedCount);
                         this.disableStartButton();
+                        return { ok: false, available: unseen };
                     }
                 } else {
-                    // 原行為
+                    // 原行為：若可用題數不足，立即提示更改題數
                     this.showQuestionBankInfo(totalCount, requestedCount);
-                    this.enableStartButton();
+                    if (totalCount >= requestedCount) {
+                        this.enableStartButton();
+                        return { ok: true, available: totalCount };
+                    } else {
+                        this.showInsufficientQuestions(totalCount, requestedCount);
+                        this.disableStartButton();
+                        return { ok: false, available: totalCount };
+                    }
                 }
             } else {
-                // 如果 API 調用失敗，顯示通用可用訊息
-                console.log('API 調用失敗，顯示通用訊息');
-                this.showQuestionBankInfo(35711, this.selectedCriteria.question_count);
-                this.enableStartButton();
+                // API 調用失敗或回傳無效資料：提示錯誤並停用開始
+                this.showError('題庫建置中，請更改條件後再試');
+                this.disableStartButton();
+                const questionsInfo = document.getElementById('questionsInfo');
+                if (questionsInfo) questionsInfo.innerHTML = '';
+                return { ok: false, available: 0 };
             }
         } catch (error) {
             console.error('檢查題庫失敗:', error);
-            // 即使出錯也顯示題庫可用
-            this.showQuestionBankInfo(35711, this.selectedCriteria.question_count);
-            this.enableStartButton();
+            // 出錯時提示並停用
+            this.showError('題庫檢查失敗，請稍後再試');
+            this.disableStartButton();
+            const questionsInfo = document.getElementById('questionsInfo');
+            if (questionsInfo) questionsInfo.innerHTML = '';
+            return { ok: false, available: 0 };
         } finally {
             this.hideLoading();
         }
+    }
+
+    // 合併流程：按一下「開始練習」先檢查題庫，再決定是否進入作答
+    async startExerciseMerged() {
+        // 擷取條件
+        this.selectedCriteria = this.getSelectedCriteria();
+
+        // 檢查必填欄位
+        if (!this.selectedCriteria.grade) {
+            this.showError('請選擇年級');
+            return;
+        }
+        if (!this.selectedCriteria.edition) {
+            this.showError('請選擇版本');
+            return;
+        }
+        if (!this.selectedCriteria.subject) {
+            this.showError('請選擇科目');
+            return;
+        }
+
+        // 先檢查題庫
+        const check = await this.checkQuestionBank();
+        const requested = this.selectedCriteria.question_count;
+
+        if (!check || typeof check.available !== 'number' || check.available < 0) {
+            this.showError('題庫檢查失敗，請稍後再試');
+            return;
+        }
+
+        if (check.available === 0) {
+            // 無題目
+            const questionsInfo = document.getElementById('questionsInfo');
+            if (questionsInfo) {
+                questionsInfo.innerHTML = `
+                    <div class="bg-red-50 border border-red-200 rounded-lg p-4">
+                        <div class="flex items-center">
+                            <svg class="w-5 h-5 text-red-400 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"></path>
+                            </svg>
+                            <div>
+                                <h4 class="text-red-800 font-medium">題庫建置中</h4>
+                                <p class="text-red-700 text-sm mt-1">目前沒有符合所選條件的題目，請選擇其他範圍。</p>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+            this.disableStartButton();
+            return;
+        }
+
+        if (requested <= check.available) {
+            // 題量足夠，直接開始
+            await this.startExercise();
+            return;
+        }
+
+        // 題量不足：提示超過最大題數，建議更改題數
+        const questionsInfo = document.getElementById('questionsInfo');
+        if (questionsInfo) {
+            questionsInfo.innerHTML = `
+                <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+                    <div class="flex items-center">
+                        <svg class="w-5 h-5 text-yellow-400 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path>
+                        </svg>
+                        <div>
+                            <h4 class="text-yellow-800 font-medium">超過最大題數</h4>
+                            <p class="text-yellow-700 text-sm mt-1">您要求 ${requested} 題，但題庫目前最多提供 ${check.available} 題。建議將題數調整為 ${check.available} 題。</p>
+                            <button onclick="document.getElementById('questionCountInput').value=${check.available}; exerciseManager.validateQuestionCount(); exerciseManager.scheduleAutoCheck(0); exerciseManager.enableStartButton();" class="mt-2 px-3 py-1 bg-yellow-200 text-yellow-800 rounded text-sm hover:bg-yellow-300" id="adjustToAvailableBtn">調整為 ${check.available} 題</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+        // 立即檢查並啟用開始
+        this.scheduleAutoCheck(0);
+        this.enableStartButton();
     }
 
     showAllDoneMessage() {
@@ -431,7 +551,7 @@ class ExerciseManager {
                         <div>
                             <h4 class="text-yellow-800 font-medium">未做過的題目數量不足</h4>
                             <p class="text-yellow-700 text-sm mt-1">您要求 ${requested} 題，但目前僅找到 ${unseen} 題未做過。</p>
-                            <button onclick="document.getElementById('questionCountInput').value=${unseen}; exerciseManager.validateQuestionCount(); exerciseManager.enableStartButton();" class="mt-2 px-3 py-1 bg-yellow-200 text-yellow-800 rounded text-sm hover:bg-yellow-300">調整為 ${unseen} 題</button>
+                            <button onclick="document.getElementById('questionCountInput').value=${unseen}; exerciseManager.validateQuestionCount(); exerciseManager.scheduleAutoCheck(0); exerciseManager.enableStartButton();" class="mt-2 px-3 py-1 bg-yellow-200 text-yellow-800 rounded text-sm hover:bg-yellow-300">調整為 ${unseen} 題</button>
                         </div>
                     </div>
                 </div>
