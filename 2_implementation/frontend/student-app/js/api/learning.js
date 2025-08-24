@@ -10,6 +10,99 @@ class LearningAPI {
         this.questionBankURL = '/api/v1/questions';
         // 開發環境直接調用服務
         this.directQuestionBankURL = 'http://localhost:8002/api/v1/questions';
+
+        // 章節對應快取（由全題庫掃描生成的 mapping 檔案）
+        this.chapterMapping = null; // { 南一: { 科目: { raw_to_canonical, canonical_to_raws } } }
+    }
+
+    // ===== 章節模糊搜尋工具 =====
+    normalizeChapter(chapter) {
+        if (!chapter) return '';
+        return String(chapter).trim();
+    }
+
+    generateChapterVariants(chapter) {
+        const variants = new Set();
+        if (!chapter) return [];
+        const raw = this.normalizeChapter(chapter);
+        variants.add(raw);
+
+        // 去除常見標點與空白
+        const noSpace = raw.replace(/\s+/g, '');
+        const noPunct = noSpace.replace(/[，,。.!？?；;：:、/\\()\[\]{}<>【】『』“”"'\-]/g, '');
+        variants.add(noSpace);
+        variants.add(noPunct);
+
+        // 取前半截（遇到冒號、頓號、問號等）
+        const head = raw.split(/[：:、，,。.!？?；;\-]/)[0]?.trim();
+        if (head) {
+            variants.add(head);
+            const headNoSpace = head.replace(/\s+/g, '');
+            const headNoPunct = headNoSpace.replace(/[，,。.!？?；;：:、/\\()\[\]{}<>【】『』“”"'\-]/g, '');
+            variants.add(headNoSpace);
+            variants.add(headNoPunct);
+        }
+
+        // 僅中文（移除數字與符號）
+        const onlyZh = raw.replace(/[^\u4e00-\u9fa5]/g, '').trim();
+        if (onlyZh) variants.add(onlyZh);
+
+        // 章節號（如 6.2 或 6-2）
+        const numPrefixMatch = raw.match(/^(\d+(?:[.．-]\d+)?)/);
+        if (numPrefixMatch) {
+            const numToken = numPrefixMatch[1];
+            variants.add(numToken);
+            variants.add(numToken.replace(/[.．]/g, '-'));
+            // 取主章（如 6）
+            const major = numToken.split(/[.．-]/)[0];
+            if (major) variants.add(major);
+        }
+
+        return Array.from(variants).filter(Boolean);
+    }
+
+    // ====== 章節對應載入與使用 ======
+    async ensureChapterMappingLoaded() {
+        if (this.chapterMapping !== null) return;
+        try {
+            const res = await fetch('/files/chapter_mapping.json', { cache: 'no-cache' });
+            if (res.ok) {
+                this.chapterMapping = await res.json();
+            } else {
+                this.chapterMapping = {};
+            }
+        } catch (e) {
+            this.chapterMapping = {};
+        }
+    }
+
+    findCanonicalByMapping(publisher, subject, chapter) {
+        if (!publisher || !subject || !chapter) return null;
+        const map = this.chapterMapping?.[publisher]?.[subject]?.raw_to_canonical;
+        if (!map) return null;
+
+        // 1) 直接命中
+        if (map[chapter]) return map[chapter];
+
+        // 2) 正規化後的相等（掃描 keys）
+        const target = this.normalizeChapter(chapter);
+        try {
+            for (const rawKey of Object.keys(map)) {
+                if (this.normalizeChapter(rawKey) === target) {
+                    return map[rawKey];
+                }
+            }
+        } catch (_) { }
+        return null;
+    }
+
+    async buildChapterTryList(publisher, subject, chapter) {
+        await this.ensureChapterMappingLoaded();
+        const variants = new Set();
+        const mapped = this.findCanonicalByMapping(publisher, subject, chapter);
+        if (mapped) variants.add(mapped);
+        this.generateChapterVariants(chapter).forEach(v => variants.add(v));
+        return Array.from(variants);
     }
 
     // 取得科目雷達圖資料（analytics）
@@ -66,37 +159,43 @@ class LearningAPI {
     async checkQuestionBank(conditions) {
         try {
             // 構建查詢參數
-            const params = new URLSearchParams();
-            if (conditions.grade) params.append('grade', conditions.grade);
-            if (conditions.edition) params.append('edition', conditions.edition);
-            if (conditions.subject) params.append('subject', conditions.subject);
-            if (conditions.chapter) params.append('chapter', conditions.chapter);
+            const base = new URLSearchParams();
+            if (conditions.grade) base.append('grade', conditions.grade);
+            if (conditions.edition) base.append('edition', conditions.edition);
+            if (conditions.edition) base.append('publisher', conditions.edition);
+            if (conditions.subject) base.append('subject', conditions.subject);
 
-            // 先嘗試代理 URL，失敗則使用直接 URL
-            let response;
-            try {
-                response = await fetch(`${this.questionBankURL}/check?${params}`, {
-                    method: 'GET',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    }
-                });
-            } catch (proxyError) {
-                console.log('代理調用失敗，嘗試直接調用:', proxyError);
-                response = await fetch(`${this.directQuestionBankURL}/check?${params}`, {
-                    method: 'GET',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    }
-                });
+            const publisher = conditions.edition; // edition 即出版社
+            const chapters = await this.buildChapterTryList(publisher, conditions.subject, conditions.chapter || '');
+            const tryVariants = chapters.length ? chapters : [''];
+
+            for (const chapterVariant of tryVariants) {
+                const params = new URLSearchParams(base.toString());
+                if (chapterVariant) params.append('chapter', chapterVariant);
+
+                let response;
+                try {
+                    response = await fetch(`${this.questionBankURL}/check?${params}`, {
+                        method: 'GET',
+                        headers: { 'Content-Type': 'application/json' }
+                    });
+                } catch (proxyError) {
+                    console.log('代理調用失敗，嘗試直接調用:', proxyError);
+                    response = await fetch(`${this.directQuestionBankURL}/check?${params}`, {
+                        method: 'GET',
+                        headers: { 'Content-Type': 'application/json' }
+                    });
+                }
+
+                if (!response.ok) continue;
+                const result = await response.json();
+                if (result && result.success && result.data && typeof result.data.count === 'number' && result.data.count > 0) {
+                    return { ...result, matched_chapter: chapterVariant };
+                }
             }
 
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-
-            const result = await response.json();
-            return result;
+            // 全部變體都無結果
+            return { success: true, data: { count: 0 }, matched_chapter: null };
         } catch (error) {
             console.error('檢查題庫失敗:', error);
             return {
@@ -111,38 +210,44 @@ class LearningAPI {
     async getQuestionsByConditions(conditions) {
         try {
             // 構建查詢參數
-            const params = new URLSearchParams();
-            if (conditions.grade) params.append('grade', conditions.grade);
-            if (conditions.edition) params.append('edition', conditions.edition);
-            if (conditions.subject) params.append('subject', conditions.subject);
-            if (conditions.chapter) params.append('chapter', conditions.chapter);
-            if (conditions.questionCount) params.append('questionCount', conditions.questionCount);
+            const base = new URLSearchParams();
+            if (conditions.grade) base.append('grade', conditions.grade);
+            if (conditions.edition) base.append('edition', conditions.edition);
+            if (conditions.edition) base.append('publisher', conditions.edition);
+            if (conditions.subject) base.append('subject', conditions.subject);
+            if (conditions.questionCount) base.append('questionCount', conditions.questionCount);
 
-            // 先嘗試代理 URL，失敗則使用直接 URL
-            let response;
-            try {
-                response = await fetch(`${this.questionBankURL}/by-conditions?${params}`, {
-                    method: 'GET',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    }
-                });
-            } catch (proxyError) {
-                console.log('代理調用失敗，嘗試直接調用:', proxyError);
-                response = await fetch(`${this.directQuestionBankURL}/by-conditions?${params}`, {
-                    method: 'GET',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    }
-                });
+            const publisher = conditions.edition;
+            const chapters = await this.buildChapterTryList(publisher, conditions.subject, conditions.chapter || '');
+            const tryVariants = chapters.length ? chapters : [''];
+
+            for (const chapterVariant of tryVariants) {
+                const params = new URLSearchParams(base.toString());
+                if (chapterVariant) params.append('chapter', chapterVariant);
+
+                let response;
+                try {
+                    response = await fetch(`${this.questionBankURL}/by-conditions?${params}`, {
+                        method: 'GET',
+                        headers: { 'Content-Type': 'application/json' }
+                    });
+                } catch (proxyError) {
+                    console.log('代理調用失敗，嘗試直接調用:', proxyError);
+                    response = await fetch(`${this.directQuestionBankURL}/by-conditions?${params}`, {
+                        method: 'GET',
+                        headers: { 'Content-Type': 'application/json' }
+                    });
+                }
+
+                if (!response.ok) continue;
+                const result = await response.json();
+                if (result && result.success && Array.isArray(result.data) && result.data.length > 0) {
+                    return { ...result, matched_chapter: chapterVariant };
+                }
             }
 
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-
-            const result = await response.json();
-            return result;
+            // 無匹配時返回空陣列（保持原回傳格式）
+            return { success: true, data: [], matched_chapter: null };
         } catch (error) {
             console.error('獲取題目失敗:', error);
             return {
@@ -439,19 +544,30 @@ class LearningAPI {
     // 可用題數彙總：total/done/unseen
     async getAvailabilitySummary(filters = {}) {
         try {
-            const params = new URLSearchParams();
-            if (filters.grade) params.append('grade', filters.grade);
-            if (filters.subject) params.append('subject', filters.subject);
-            if (filters.publisher || filters.edition) params.append('publisher', filters.publisher || filters.edition);
-            if (filters.chapter) params.append('chapter', filters.chapter);
+            const base = new URLSearchParams();
+            if (filters.grade) base.append('grade', filters.grade);
+            if (filters.subject) base.append('subject', filters.subject);
+            if (filters.publisher || filters.edition) base.append('publisher', filters.publisher || filters.edition);
 
-            const response = await fetch(`${this.baseURL}/availability/summary?${params.toString()}`, {
-                headers: this.getAuthHeaders()
-            });
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
+            const publisher = filters.publisher || filters.edition;
+            const chapters = await this.buildChapterTryList(publisher, filters.subject, filters.chapter || '');
+            const tryVariants = chapters.length ? chapters : [''];
+
+            for (const chapterVariant of tryVariants) {
+                const params = new URLSearchParams(base.toString());
+                if (chapterVariant) params.append('chapter', chapterVariant);
+
+                const response = await fetch(`${this.baseURL}/availability/summary?${params.toString()}`, {
+                    headers: this.getAuthHeaders()
+                });
+                if (!response.ok) continue;
+                const result = await response.json();
+                if (result && result.success && result.data && typeof result.data.total === 'number' && result.data.total > 0) {
+                    return { ...result, matched_chapter: chapterVariant };
+                }
             }
-            return await response.json();
+
+            return { success: true, data: { total: 0, done: 0, unseen: 0 }, matched_chapter: null };
         } catch (error) {
             console.error('取得題庫彙總失敗:', error);
             return { success: false, data: { total: 0, done: 0, unseen: 0 }, error: error.message };
@@ -461,25 +577,35 @@ class LearningAPI {
     // 服務端過濾：依條件出題並排除指定題目ID
     async getQuestionsByConditionsExcluding(payload = {}) {
         try {
-            const body = {
+            const baseBody = {
                 grade: payload.grade,
                 subject: payload.subject,
                 publisher: payload.publisher || payload.edition,
-                chapter: payload.chapter,
                 questionCount: payload.questionCount || payload.question_count,
                 excludeIds: payload.excludeIds || payload.exclude_ids || []
             };
 
-            const response = await fetch(`${this.baseURL}/questions/by-conditions-excluding`, {
-                method: 'POST',
-                headers: this.getAuthHeaders(),
-                body: JSON.stringify(body)
-            });
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
+            const publisher = baseBody.publisher;
+            const chapters = await this.buildChapterTryList(publisher, payload.subject, payload.chapter || '');
+            const tryVariants = chapters.length ? chapters : [''];
+
+            for (const chapterVariant of tryVariants) {
+                const body = { ...baseBody };
+                if (chapterVariant) body.chapter = chapterVariant;
+
+                const response = await fetch(`${this.baseURL}/questions/by-conditions-excluding`, {
+                    method: 'POST',
+                    headers: this.getAuthHeaders(),
+                    body: JSON.stringify(body)
+                });
+                if (!response.ok) continue;
+                const result = await response.json();
+                if (result && result.success && Array.isArray(result.data) && result.data.length > 0) {
+                    return { ...result, matched_chapter: chapterVariant };
+                }
             }
-            const result = await response.json();
-            return result;
+
+            return { success: true, data: [], matched_chapter: null };
         } catch (error) {
             console.error('服務端過濾抓題失敗:', error);
             return { success: false, data: [], error: error.message };
